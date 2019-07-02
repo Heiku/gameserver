@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option java_package = "com.ljh.gamedemo.proto";
+option java_outer_classname = "MessageBase";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Message.proto
+message Message{
+    string requestId = 1;
+    CommandType cmd = 2;
+    string content = 3;
+    int32 result = 4;
+
+    repeated UserInfo user = 5;     // 用户登录请求
+    int64 userId = 6;
+
+    enum CommandType{
+        NORMAL = 0;             // 常规业务消息
+        HEARTBEAT_REQUEST = 1;  // 客户端心跳信息
+        HEARTBEAT_RESPONSE = 2; // 服务端心跳信息
+
+        SITE = 3;               // 获取当前所处的位置
+        MAP = 4;                // 获取当前的地图信息
+        DATE = 5;               // 获取当前的日期
+        NOW = 6;               // 获取当前的时间
+        MOVE = 7;               // 移动到指定位置
+        AOI = 8;                // 获取当前的所有实体信息
+
+        USER_STATE = 9;             // 获取当前的用户信息
+        LOGIN = 10;                 // 用户登录
+        REGISTER = 11;              // 用户注册
+    }
+}
+
+message UserInfo{
+    string userName = 1;        // 用户名
+    string password = 2;        // 密码
+    string token = 3;           // token
+}
