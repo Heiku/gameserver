@@ -4,6 +4,7 @@ import com.ljh.gamedemo.entity.Role;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -25,4 +26,7 @@ public interface UserRoleDao {
 
     @Select("select * from role")
     List<Role> selectAllRole();
+
+    @Update("Update role set site_id = #{siteId} where user_id = #{userId} and role_id = #{roleId}")
+    int updateRoleSiteInfo(long userId, long roleId, int siteId);
 }

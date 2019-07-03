@@ -3,7 +3,8 @@ package com.ljh.gamedemo.common;
 public class ContentType {
 
     // User Request
-    public static final String USER_EMPTY_PARAM = "用户请求的数据为空，请输入指令\n";
+    public static final String USER_EMPTY_REGISTER_PARAM = "用户注册的数据为空，请输入指令\n";
+    public static final String USER_EMPTY_LOGIN_PARAM = "用户登录的数据为空，请输入指令\n";
 
     public static final String USER_EMPTY_DATA = "数据库中暂无用户记录，请重新注册\n";
 
@@ -29,4 +30,11 @@ public class ContentType {
 
     // Site
     public static final String MOVE_EMPTY = "目的地为空，请输入正确的目的地\n";
+
+    // DB
+    public static final String UPDATE_ROLE_SITE = "更新角色位置信息失败！\n";
+
+
+    // Exit
+    public static final String EXIT_SUCCESS = "退出成功！\n";
 }

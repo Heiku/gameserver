@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.ljh.gamedemo.common.ContentType.USER_EMPTY_PARAM;
+import static com.ljh.gamedemo.common.ContentType.USER_EMPTY_DATA;
 
 /**
  * 角色 & npc 服务类
@@ -33,7 +33,7 @@ public class EntityService {
         long userId = message.getUserId();
         if (userId <= 0){
             return MessageBase.Message.newBuilder()
-                    .setContent(USER_EMPTY_PARAM)
+                    .setContent(USER_EMPTY_DATA)
                     .build();
         }
 
@@ -74,7 +74,7 @@ public class EntityService {
                 String playerType = EntityType.getContentFromCode(r.getType()).getContent();
                 String playerLevel = String.valueOf(r.getLevel());
                 String playerAlive = r.getAlive() == 1 ? "存活" : "死亡";
-                sb.append("玩家：" + r.getName() + " 职业：" + playerType + " 等级：" + playerLevel + " 状态：" + playerAlive + " \n\n");
+                sb.append("玩家：" + r.getName() + " 职业：" + playerType + " 等级：" + playerLevel + " 状态：" + playerAlive + " \n");
             }
         }
 

@@ -110,7 +110,7 @@ public class SiteService {
 
         // 判断是否能够到达
         // 先查缓存，在查数据库
-        Role role = null;
+        Role role;
         role = LocalUserMap.userRoleMap.get(userId);
         if (role == null){
             role = userRoleDao.selectUserRole(userId).get(0);
@@ -123,10 +123,16 @@ public class SiteService {
         }
         // 获取当前场景名
         String siteName = LocalSiteMap.idSiteMap.get(role.getSiteId()).getName();
+
+        // 判断能否到达目的地，到达后更新当前缓存位置信息
         if (getDestination(userId, role,siteName, destination)){
+
+            // 重新获取当前位置信息
+            Role r = LocalUserMap.userRoleMap.get(userId);
+            String site = LocalSiteMap.idSiteMap.get(r.getSiteId()).getName();
             return MessageBase.Message.newBuilder()
                     .setContent("成功到达" + destination + "\n" +
-                            "可到达附近地点：" + getNext(siteName).toString())
+                            "可到达附近地点：" + getNext(site).toString())
                     .build();
         }
 
@@ -137,10 +143,19 @@ public class SiteService {
     }
 
 
+    /**
+     * 获得当前角色的位置信息
+     *
+     * @param msg
+     * @return
+     */
     public String getNowSiteCName(MessageBase.Message msg){
+        if (msg == null){
+            System.out.println("msg == null");
+        }
         long userId = msg.getUserId();
         if (userId <= 0){
-            return ContentType.USER_EMPTY_DATA;
+            return ContentType.USER_TOKEN_DATA_EMPTY;
         }
 
         // 玩家角色存在判断

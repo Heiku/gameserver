@@ -55,7 +55,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MessageBase.
             log.info("收到客户端的业务信息: {}", message.toString());
 
             // 封装返回消息
-            msg = tranformMessage("你当前的位置是：" + siteService.getNowSiteCName(msg));
+            msg = tranformMessage("你当前的位置是：" + siteService.getNowSiteCName(message));
             ctx.writeAndFlush(msg);
 
             // 获取当前时间
@@ -96,6 +96,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MessageBase.
             log.info("收到客户端的业务消息：{}", message.toString());
 
             msg = userService.register(message);
+            ctx.writeAndFlush(msg);
+        }else if (message.getCmd().equals(MessageBase.Message.CommandType.EXIT)){
+            log.info("收到客户端的业务消息：{}", message.toString());
+
+            msg = userService.exit(message);
             ctx.writeAndFlush(msg);
         }
     }

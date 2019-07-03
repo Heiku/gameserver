@@ -15,6 +15,7 @@ import com.ljh.gamedemo.proto.MessageBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -58,8 +59,18 @@ public class UserService {
         // 本地保存
         LocalUserMap.userRoleMap.put(userId, role);
 
+        // 确定角色成功，返回角色信息
+        MessageBase.Role roleMsg = MessageBase.Role.newBuilder()
+                .setRoleId(role.getRoleId())
+                .setName(role.getName())
+                .setType(role.getType())
+                .setLevel(role.getLevel())
+                .setAlive(role.getAlive()).build();
+
         return MessageBase.Message.newBuilder()
+                .setCmd(MessageBase.Message.CommandType.USER_STATE)
                 .setUserId(userId)
+                .addRole(roleMsg)
                 .setContent(ContentType.ROLE_CHOOSE)
                 .build();
     }
@@ -80,7 +91,7 @@ public class UserService {
         // 校验请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
             return MessageBase.Message.newBuilder()
-                    .setContent(ContentType.USER_EMPTY_PARAM)
+                    .setContent(ContentType.USER_EMPTY_LOGIN_PARAM)
                     .setResult(ResultCode.FAILED)
                     .build();
         }
@@ -136,9 +147,10 @@ public class UserService {
         String userName = userInfo.getUserName();
         String password = userInfo.getPassword();
 
+        // 判断请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
             return MessageBase.Message.newBuilder()
-                    .setContent(ContentType.USER_EMPTY_PARAM)
+                    .setContent(ContentType.USER_EMPTY_REGISTER_PARAM)
                     .setResult(ResultCode.FAILED)
                     .build();
         }
@@ -174,6 +186,70 @@ public class UserService {
                 .setContent(ContentType.REGISTER_SUCCESS)
                 .setResult(ResultCode.SUCCESS)
                 .setCmd(MessageBase.Message.CommandType.REGISTER)
+                .build();
+    }
+
+
+    /**
+     * 玩家退出游戏，玩家状态改变，角色最终位置持久化
+     *
+     * @param msg
+     * @return
+     */
+    public MessageBase.Message exit(MessageBase.Message msg){
+        // 用户判断
+        long userId = msg.getUserId();
+        if (userId <= 0){
+            return MessageBase.Message.newBuilder()
+                    .setContent(ContentType.USER_EMPTY_DATA)
+                    .build();
+        }
+
+        // 获取当前的玩家角色
+        Role role = null;
+        role = LocalUserMap.userRoleMap.get(userId);
+        if (role == null){
+            role = userRoleDao.selectUserRole(userId).get(0);
+        }
+        if (role == null){
+            return MessageBase.Message.newBuilder()
+                    .setContent(ContentType.ROLE_EMPTY)
+                    .build();
+        }
+
+        // 获取当前的位置信息
+        int siteId = role.getSiteId();
+        long roleId = role.getRoleId();
+
+        // 移除当前玩家角色的位置信息
+        List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
+
+        // Iterator解决并发修改的问题
+        Iterator<Role> iterator = roleList.iterator();
+        while (iterator.hasNext()){
+            if (iterator.next().getRoleId() == roleId){
+                iterator.remove();
+            }
+        }
+
+        // 移除当前的玩家在线信息
+        LocalUserMap.userMap.remove(userId);
+
+        // 移除当前玩家的角色在线信息
+        LocalUserMap.userRoleMap.remove(userId);
+
+        // 更新数据库role的site信息
+        int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId);
+        if (n <= 0){
+            return MessageBase.Message.newBuilder()
+                    .setContent(ContentType.UPDATE_ROLE_SITE)
+                    .build();
+        }
+
+        // 成功操作
+        return MessageBase.Message.newBuilder()
+                .setContent(ContentType.EXIT_SUCCESS)
+                .setCmd(MessageBase.Message.CommandType.EXIT)
                 .build();
     }
 }

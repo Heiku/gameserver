@@ -53,6 +53,11 @@ public final class MessageBase {
     int getResult();
 
     /**
+     * <code>int64 userId = 6;</code>
+     */
+    long getUserId();
+
+    /**
      * <pre>
      * 用户登录请求
      * </pre>
@@ -97,9 +102,48 @@ public final class MessageBase {
         int index);
 
     /**
-     * <code>int64 userId = 6;</code>
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
      */
-    long getUserId();
+    java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> 
+        getRoleList();
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    com.ljh.gamedemo.proto.MessageBase.Role getRole(int index);
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    int getRoleCount();
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
+        getRoleOrBuilderList();
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder getRoleOrBuilder(
+        int index);
   }
   /**
    * <pre>
@@ -122,6 +166,7 @@ public final class MessageBase {
       cmd_ = 0;
       content_ = "";
       user_ = java.util.Collections.emptyList();
+      role_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -192,6 +237,15 @@ public final class MessageBase {
               userId_ = input.readInt64();
               break;
             }
+            case 58: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                role_ = new java.util.ArrayList<com.ljh.gamedemo.proto.MessageBase.Role>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              role_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.MessageBase.Role.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -209,6 +263,9 @@ public final class MessageBase {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           user_ = java.util.Collections.unmodifiableList(user_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          role_ = java.util.Collections.unmodifiableList(role_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -328,6 +385,14 @@ public final class MessageBase {
        * <code>REGISTER = 11;</code>
        */
       REGISTER(11),
+      /**
+       * <pre>
+       * 退出系统
+       * </pre>
+       *
+       * <code>EXIT = 12;</code>
+       */
+      EXIT(12),
       UNRECOGNIZED(-1),
       ;
 
@@ -427,6 +492,14 @@ public final class MessageBase {
        * <code>REGISTER = 11;</code>
        */
       public static final int REGISTER_VALUE = 11;
+      /**
+       * <pre>
+       * 退出系统
+       * </pre>
+       *
+       * <code>EXIT = 12;</code>
+       */
+      public static final int EXIT_VALUE = 12;
 
 
       public final int getNumber() {
@@ -459,6 +532,7 @@ public final class MessageBase {
           case 9: return USER_STATE;
           case 10: return LOGIN;
           case 11: return REGISTER;
+          case 12: return EXIT;
           default: return null;
         }
       }
@@ -605,6 +679,15 @@ public final class MessageBase {
       return result_;
     }
 
+    public static final int USERID_FIELD_NUMBER = 6;
+    private long userId_;
+    /**
+     * <code>int64 userId = 6;</code>
+     */
+    public long getUserId() {
+      return userId_;
+    }
+
     public static final int USER_FIELD_NUMBER = 5;
     private java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo> user_;
     /**
@@ -660,13 +743,59 @@ public final class MessageBase {
       return user_.get(index);
     }
 
-    public static final int USERID_FIELD_NUMBER = 6;
-    private long userId_;
+    public static final int ROLE_FIELD_NUMBER = 7;
+    private java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> role_;
     /**
-     * <code>int64 userId = 6;</code>
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
      */
-    public long getUserId() {
-      return userId_;
+    public java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> getRoleList() {
+      return role_;
+    }
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    public java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
+        getRoleOrBuilderList() {
+      return role_;
+    }
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    public int getRoleCount() {
+      return role_.size();
+    }
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    public com.ljh.gamedemo.proto.MessageBase.Role getRole(int index) {
+      return role_.get(index);
+    }
+    /**
+     * <pre>
+     * 用户角色
+     * </pre>
+     *
+     * <code>repeated .Role role = 7;</code>
+     */
+    public com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder getRoleOrBuilder(
+        int index) {
+      return role_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -701,6 +830,9 @@ public final class MessageBase {
       if (userId_ != 0L) {
         output.writeInt64(6, userId_);
       }
+      for (int i = 0; i < role_.size(); i++) {
+        output.writeMessage(7, role_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -732,6 +864,10 @@ public final class MessageBase {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(6, userId_);
       }
+      for (int i = 0; i < role_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, role_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -754,10 +890,12 @@ public final class MessageBase {
           .equals(other.getContent())) return false;
       if (getResult()
           != other.getResult()) return false;
-      if (!getUserList()
-          .equals(other.getUserList())) return false;
       if (getUserId()
           != other.getUserId()) return false;
+      if (!getUserList()
+          .equals(other.getUserList())) return false;
+      if (!getRoleList()
+          .equals(other.getRoleList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -777,13 +915,17 @@ public final class MessageBase {
       hash = (53 * hash) + getContent().hashCode();
       hash = (37 * hash) + RESULT_FIELD_NUMBER;
       hash = (53 * hash) + getResult();
+      hash = (37 * hash) + USERID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getUserId());
       if (getUserCount() > 0) {
         hash = (37 * hash) + USER_FIELD_NUMBER;
         hash = (53 * hash) + getUserList().hashCode();
       }
-      hash = (37 * hash) + USERID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getUserId());
+      if (getRoleCount() > 0) {
+        hash = (37 * hash) + ROLE_FIELD_NUMBER;
+        hash = (53 * hash) + getRoleList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -917,6 +1059,7 @@ public final class MessageBase {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getUserFieldBuilder();
+          getRoleFieldBuilder();
         }
       }
       @java.lang.Override
@@ -930,14 +1073,20 @@ public final class MessageBase {
 
         result_ = 0;
 
+        userId_ = 0L;
+
         if (userBuilder_ == null) {
           user_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           userBuilder_.clear();
         }
-        userId_ = 0L;
-
+        if (roleBuilder_ == null) {
+          role_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          roleBuilder_.clear();
+        }
         return this;
       }
 
@@ -969,6 +1118,7 @@ public final class MessageBase {
         result.cmd_ = cmd_;
         result.content_ = content_;
         result.result_ = result_;
+        result.userId_ = userId_;
         if (userBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             user_ = java.util.Collections.unmodifiableList(user_);
@@ -978,7 +1128,15 @@ public final class MessageBase {
         } else {
           result.user_ = userBuilder_.build();
         }
-        result.userId_ = userId_;
+        if (roleBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            role_ = java.util.Collections.unmodifiableList(role_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.role_ = role_;
+        } else {
+          result.role_ = roleBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -1041,6 +1199,9 @@ public final class MessageBase {
         if (other.getResult() != 0) {
           setResult(other.getResult());
         }
+        if (other.getUserId() != 0L) {
+          setUserId(other.getUserId());
+        }
         if (userBuilder_ == null) {
           if (!other.user_.isEmpty()) {
             if (user_.isEmpty()) {
@@ -1067,8 +1228,31 @@ public final class MessageBase {
             }
           }
         }
-        if (other.getUserId() != 0L) {
-          setUserId(other.getUserId());
+        if (roleBuilder_ == null) {
+          if (!other.role_.isEmpty()) {
+            if (role_.isEmpty()) {
+              role_ = other.role_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureRoleIsMutable();
+              role_.addAll(other.role_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.role_.isEmpty()) {
+            if (roleBuilder_.isEmpty()) {
+              roleBuilder_.dispose();
+              roleBuilder_ = null;
+              role_ = other.role_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              roleBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getRoleFieldBuilder() : null;
+            } else {
+              roleBuilder_.addAllMessages(other.role_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1305,6 +1489,32 @@ public final class MessageBase {
       public Builder clearResult() {
         
         result_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long userId_ ;
+      /**
+       * <code>int64 userId = 6;</code>
+       */
+      public long getUserId() {
+        return userId_;
+      }
+      /**
+       * <code>int64 userId = 6;</code>
+       */
+      public Builder setUserId(long value) {
+        
+        userId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 userId = 6;</code>
+       */
+      public Builder clearUserId() {
+        
+        userId_ = 0L;
         onChanged();
         return this;
       }
@@ -1621,30 +1831,316 @@ public final class MessageBase {
         return userBuilder_;
       }
 
-      private long userId_ ;
+      private java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> role_ =
+        java.util.Collections.emptyList();
+      private void ensureRoleIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          role_ = new java.util.ArrayList<com.ljh.gamedemo.proto.MessageBase.Role>(role_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.MessageBase.Role, com.ljh.gamedemo.proto.MessageBase.Role.Builder, com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> roleBuilder_;
+
       /**
-       * <code>int64 userId = 6;</code>
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
        */
-      public long getUserId() {
-        return userId_;
+      public java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> getRoleList() {
+        if (roleBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(role_);
+        } else {
+          return roleBuilder_.getMessageList();
+        }
       }
       /**
-       * <code>int64 userId = 6;</code>
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
        */
-      public Builder setUserId(long value) {
-        
-        userId_ = value;
-        onChanged();
+      public int getRoleCount() {
+        if (roleBuilder_ == null) {
+          return role_.size();
+        } else {
+          return roleBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.MessageBase.Role getRole(int index) {
+        if (roleBuilder_ == null) {
+          return role_.get(index);
+        } else {
+          return roleBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder setRole(
+          int index, com.ljh.gamedemo.proto.MessageBase.Role value) {
+        if (roleBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRoleIsMutable();
+          role_.set(index, value);
+          onChanged();
+        } else {
+          roleBuilder_.setMessage(index, value);
+        }
         return this;
       }
       /**
-       * <code>int64 userId = 6;</code>
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
        */
-      public Builder clearUserId() {
-        
-        userId_ = 0L;
-        onChanged();
+      public Builder setRole(
+          int index, com.ljh.gamedemo.proto.MessageBase.Role.Builder builderForValue) {
+        if (roleBuilder_ == null) {
+          ensureRoleIsMutable();
+          role_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          roleBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder addRole(com.ljh.gamedemo.proto.MessageBase.Role value) {
+        if (roleBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRoleIsMutable();
+          role_.add(value);
+          onChanged();
+        } else {
+          roleBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder addRole(
+          int index, com.ljh.gamedemo.proto.MessageBase.Role value) {
+        if (roleBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRoleIsMutable();
+          role_.add(index, value);
+          onChanged();
+        } else {
+          roleBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder addRole(
+          com.ljh.gamedemo.proto.MessageBase.Role.Builder builderForValue) {
+        if (roleBuilder_ == null) {
+          ensureRoleIsMutable();
+          role_.add(builderForValue.build());
+          onChanged();
+        } else {
+          roleBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder addRole(
+          int index, com.ljh.gamedemo.proto.MessageBase.Role.Builder builderForValue) {
+        if (roleBuilder_ == null) {
+          ensureRoleIsMutable();
+          role_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          roleBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder addAllRole(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.MessageBase.Role> values) {
+        if (roleBuilder_ == null) {
+          ensureRoleIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, role_);
+          onChanged();
+        } else {
+          roleBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder clearRole() {
+        if (roleBuilder_ == null) {
+          role_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          roleBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public Builder removeRole(int index) {
+        if (roleBuilder_ == null) {
+          ensureRoleIsMutable();
+          role_.remove(index);
+          onChanged();
+        } else {
+          roleBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.MessageBase.Role.Builder getRoleBuilder(
+          int index) {
+        return getRoleFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder getRoleOrBuilder(
+          int index) {
+        if (roleBuilder_ == null) {
+          return role_.get(index);  } else {
+          return roleBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
+           getRoleOrBuilderList() {
+        if (roleBuilder_ != null) {
+          return roleBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(role_);
+        }
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.MessageBase.Role.Builder addRoleBuilder() {
+        return getRoleFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.MessageBase.Role.Builder addRoleBuilder(
+          int index) {
+        return getRoleFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 用户角色
+       * </pre>
+       *
+       * <code>repeated .Role role = 7;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.MessageBase.Role.Builder> 
+           getRoleBuilderList() {
+        return getRoleFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.MessageBase.Role, com.ljh.gamedemo.proto.MessageBase.Role.Builder, com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
+          getRoleFieldBuilder() {
+        if (roleBuilder_ == null) {
+          roleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.MessageBase.Role, com.ljh.gamedemo.proto.MessageBase.Role.Builder, com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder>(
+                  role_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          role_ = null;
+        }
+        return roleBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2636,6 +3132,926 @@ public final class MessageBase {
 
   }
 
+  public interface RoleOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Role)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 角色Id
+     * </pre>
+     *
+     * <code>int64 roleId = 1;</code>
+     */
+    long getRoleId();
+
+    /**
+     * <pre>
+     * 角色名称
+     * </pre>
+     *
+     * <code>string name = 2;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <pre>
+     * 角色名称
+     * </pre>
+     *
+     * <code>string name = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <pre>
+     * 角色类型
+     * </pre>
+     *
+     * <code>int32 type = 3;</code>
+     */
+    int getType();
+
+    /**
+     * <pre>
+     * 角色等级
+     * </pre>
+     *
+     * <code>int32 level = 4;</code>
+     */
+    int getLevel();
+
+    /**
+     * <pre>
+     * 角色状态
+     * </pre>
+     *
+     * <code>int32 alive = 5;</code>
+     */
+    int getAlive();
+  }
+  /**
+   * Protobuf type {@code Role}
+   */
+  public  static final class Role extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Role)
+      RoleOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Role.newBuilder() to construct.
+    private Role(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Role() {
+      name_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Role();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Role(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              roleId_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
+              break;
+            }
+            case 24: {
+
+              type_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              level_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              alive_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.ljh.gamedemo.proto.MessageBase.Role.class, com.ljh.gamedemo.proto.MessageBase.Role.Builder.class);
+    }
+
+    public static final int ROLEID_FIELD_NUMBER = 1;
+    private long roleId_;
+    /**
+     * <pre>
+     * 角色Id
+     * </pre>
+     *
+     * <code>int64 roleId = 1;</code>
+     */
+    public long getRoleId() {
+      return roleId_;
+    }
+
+    public static final int NAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object name_;
+    /**
+     * <pre>
+     * 角色名称
+     * </pre>
+     *
+     * <code>string name = 2;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 角色名称
+     * </pre>
+     *
+     * <code>string name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 3;
+    private int type_;
+    /**
+     * <pre>
+     * 角色类型
+     * </pre>
+     *
+     * <code>int32 type = 3;</code>
+     */
+    public int getType() {
+      return type_;
+    }
+
+    public static final int LEVEL_FIELD_NUMBER = 4;
+    private int level_;
+    /**
+     * <pre>
+     * 角色等级
+     * </pre>
+     *
+     * <code>int32 level = 4;</code>
+     */
+    public int getLevel() {
+      return level_;
+    }
+
+    public static final int ALIVE_FIELD_NUMBER = 5;
+    private int alive_;
+    /**
+     * <pre>
+     * 角色状态
+     * </pre>
+     *
+     * <code>int32 alive = 5;</code>
+     */
+    public int getAlive() {
+      return alive_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (roleId_ != 0L) {
+        output.writeInt64(1, roleId_);
+      }
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
+      }
+      if (type_ != 0) {
+        output.writeInt32(3, type_);
+      }
+      if (level_ != 0) {
+        output.writeInt32(4, level_);
+      }
+      if (alive_ != 0) {
+        output.writeInt32(5, alive_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (roleId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, roleId_);
+      }
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
+      }
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, type_);
+      }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, level_);
+      }
+      if (alive_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, alive_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.ljh.gamedemo.proto.MessageBase.Role)) {
+        return super.equals(obj);
+      }
+      com.ljh.gamedemo.proto.MessageBase.Role other = (com.ljh.gamedemo.proto.MessageBase.Role) obj;
+
+      if (getRoleId()
+          != other.getRoleId()) return false;
+      if (!getName()
+          .equals(other.getName())) return false;
+      if (getType()
+          != other.getType()) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
+      if (getAlive()
+          != other.getAlive()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ROLEID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRoleId());
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
+      hash = (37 * hash) + ALIVE_FIELD_NUMBER;
+      hash = (53 * hash) + getAlive();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.ljh.gamedemo.proto.MessageBase.Role prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Role}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Role)
+        com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.ljh.gamedemo.proto.MessageBase.Role.class, com.ljh.gamedemo.proto.MessageBase.Role.Builder.class);
+      }
+
+      // Construct using com.ljh.gamedemo.proto.MessageBase.Role.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        roleId_ = 0L;
+
+        name_ = "";
+
+        type_ = 0;
+
+        level_ = 0;
+
+        alive_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_descriptor;
+      }
+
+      @java.lang.Override
+      public com.ljh.gamedemo.proto.MessageBase.Role getDefaultInstanceForType() {
+        return com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.ljh.gamedemo.proto.MessageBase.Role build() {
+        com.ljh.gamedemo.proto.MessageBase.Role result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.ljh.gamedemo.proto.MessageBase.Role buildPartial() {
+        com.ljh.gamedemo.proto.MessageBase.Role result = new com.ljh.gamedemo.proto.MessageBase.Role(this);
+        result.roleId_ = roleId_;
+        result.name_ = name_;
+        result.type_ = type_;
+        result.level_ = level_;
+        result.alive_ = alive_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.ljh.gamedemo.proto.MessageBase.Role) {
+          return mergeFrom((com.ljh.gamedemo.proto.MessageBase.Role)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.ljh.gamedemo.proto.MessageBase.Role other) {
+        if (other == com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance()) return this;
+        if (other.getRoleId() != 0L) {
+          setRoleId(other.getRoleId());
+        }
+        if (!other.getName().isEmpty()) {
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
+        }
+        if (other.getAlive() != 0) {
+          setAlive(other.getAlive());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.ljh.gamedemo.proto.MessageBase.Role parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.ljh.gamedemo.proto.MessageBase.Role) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private long roleId_ ;
+      /**
+       * <pre>
+       * 角色Id
+       * </pre>
+       *
+       * <code>int64 roleId = 1;</code>
+       */
+      public long getRoleId() {
+        return roleId_;
+      }
+      /**
+       * <pre>
+       * 角色Id
+       * </pre>
+       *
+       * <code>int64 roleId = 1;</code>
+       */
+      public Builder setRoleId(long value) {
+        
+        roleId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 角色Id
+       * </pre>
+       *
+       * <code>int64 roleId = 1;</code>
+       */
+      public Builder clearRoleId() {
+        
+        roleId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object name_ = "";
+      /**
+       * <pre>
+       * 角色名称
+       * </pre>
+       *
+       * <code>string name = 2;</code>
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 角色名称
+       * </pre>
+       *
+       * <code>string name = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 角色名称
+       * </pre>
+       *
+       * <code>string name = 2;</code>
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 角色名称
+       * </pre>
+       *
+       * <code>string name = 2;</code>
+       */
+      public Builder clearName() {
+        
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 角色名称
+       * </pre>
+       *
+       * <code>string name = 2;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int type_ ;
+      /**
+       * <pre>
+       * 角色类型
+       * </pre>
+       *
+       * <code>int32 type = 3;</code>
+       */
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 角色类型
+       * </pre>
+       *
+       * <code>int32 type = 3;</code>
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 角色类型
+       * </pre>
+       *
+       * <code>int32 type = 3;</code>
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int level_ ;
+      /**
+       * <pre>
+       * 角色等级
+       * </pre>
+       *
+       * <code>int32 level = 4;</code>
+       */
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <pre>
+       * 角色等级
+       * </pre>
+       *
+       * <code>int32 level = 4;</code>
+       */
+      public Builder setLevel(int value) {
+        
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 角色等级
+       * </pre>
+       *
+       * <code>int32 level = 4;</code>
+       */
+      public Builder clearLevel() {
+        
+        level_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int alive_ ;
+      /**
+       * <pre>
+       * 角色状态
+       * </pre>
+       *
+       * <code>int32 alive = 5;</code>
+       */
+      public int getAlive() {
+        return alive_;
+      }
+      /**
+       * <pre>
+       * 角色状态
+       * </pre>
+       *
+       * <code>int32 alive = 5;</code>
+       */
+      public Builder setAlive(int value) {
+        
+        alive_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 角色状态
+       * </pre>
+       *
+       * <code>int32 alive = 5;</code>
+       */
+      public Builder clearAlive() {
+        
+        alive_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Role)
+    }
+
+    // @@protoc_insertion_point(class_scope:Role)
+    private static final com.ljh.gamedemo.proto.MessageBase.Role DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.ljh.gamedemo.proto.MessageBase.Role();
+    }
+
+    public static com.ljh.gamedemo.proto.MessageBase.Role getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Role>
+        PARSER = new com.google.protobuf.AbstractParser<Role>() {
+      @java.lang.Override
+      public Role parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Role(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Role> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Role> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.ljh.gamedemo.proto.MessageBase.Role getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Message_descriptor;
   private static final 
@@ -2646,6 +4062,11 @@ public final class MessageBase {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_UserInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Role_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Role_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2656,17 +4077,20 @@ public final class MessageBase {
   static {
     java.lang.String[] descriptorData = {
       "\n2src/main/java/com/ljh/gamedemo/proto/M" +
-      "essage.proto\"\266\002\n\007Message\022\021\n\trequestId\030\001 " +
+      "essage.proto\"\325\002\n\007Message\022\021\n\trequestId\030\001 " +
       "\001(\t\022!\n\003cmd\030\002 \001(\0162\024.Message.CommandType\022\017" +
-      "\n\007content\030\003 \001(\t\022\016\n\006result\030\004 \001(\005\022\027\n\004user\030" +
-      "\005 \003(\0132\t.UserInfo\022\016\n\006userId\030\006 \001(\003\"\252\001\n\013Com" +
-      "mandType\022\n\n\006NORMAL\020\000\022\025\n\021HEARTBEAT_REQUES" +
-      "T\020\001\022\026\n\022HEARTBEAT_RESPONSE\020\002\022\010\n\004SITE\020\003\022\007\n" +
-      "\003MAP\020\004\022\010\n\004DATE\020\005\022\007\n\003NOW\020\006\022\010\n\004MOVE\020\007\022\007\n\003A" +
-      "OI\020\010\022\016\n\nUSER_STATE\020\t\022\t\n\005LOGIN\020\n\022\014\n\010REGIS" +
-      "TER\020\013\"=\n\010UserInfo\022\020\n\010userName\030\001 \001(\t\022\020\n\010p" +
-      "assword\030\002 \001(\t\022\r\n\005token\030\003 \001(\tB%\n\026com.ljh." +
-      "gamedemo.protoB\013MessageBaseb\006proto3"
+      "\n\007content\030\003 \001(\t\022\016\n\006result\030\004 \001(\005\022\016\n\006userI" +
+      "d\030\006 \001(\003\022\027\n\004user\030\005 \003(\0132\t.UserInfo\022\023\n\004role" +
+      "\030\007 \003(\0132\005.Role\"\264\001\n\013CommandType\022\n\n\006NORMAL\020" +
+      "\000\022\025\n\021HEARTBEAT_REQUEST\020\001\022\026\n\022HEARTBEAT_RE" +
+      "SPONSE\020\002\022\010\n\004SITE\020\003\022\007\n\003MAP\020\004\022\010\n\004DATE\020\005\022\007\n" +
+      "\003NOW\020\006\022\010\n\004MOVE\020\007\022\007\n\003AOI\020\010\022\016\n\nUSER_STATE\020" +
+      "\t\022\t\n\005LOGIN\020\n\022\014\n\010REGISTER\020\013\022\010\n\004EXIT\020\014\"=\n\010" +
+      "UserInfo\022\020\n\010userName\030\001 \001(\t\022\020\n\010password\030\002" +
+      " \001(\t\022\r\n\005token\030\003 \001(\t\"P\n\004Role\022\016\n\006roleId\030\001 " +
+      "\001(\003\022\014\n\004name\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\r\n\005level" +
+      "\030\004 \001(\005\022\r\n\005alive\030\005 \001(\005B%\n\026com.ljh.gamedem" +
+      "o.protoB\013MessageBaseb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2677,13 +4101,19 @@ public final class MessageBase {
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
-        new java.lang.String[] { "RequestId", "Cmd", "Content", "Result", "User", "UserId", });
+        new java.lang.String[] { "RequestId", "Cmd", "Content", "Result", "UserId", "User", "Role", });
     internal_static_UserInfo_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_UserInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_UserInfo_descriptor,
         new java.lang.String[] { "UserName", "Password", "Token", });
+    internal_static_Role_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_Role_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Role_descriptor,
+        new java.lang.String[] { "RoleId", "Name", "Type", "Level", "Alive", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

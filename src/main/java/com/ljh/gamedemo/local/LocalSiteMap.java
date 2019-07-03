@@ -4,13 +4,15 @@ import com.google.common.base.Strings;
 import com.ljh.gamedemo.entity.Site;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.*;
 
 public class LocalSiteMap {
-    private static String srcPath = "src/main/resources/site.csv";
     private static String charset = "utf-8";
+
+    private static File sitefile = null;
 
     // 存储实体的数据 <name, site>
     public static Map<String, Site> siteMap = new HashMap<>();
@@ -21,11 +23,19 @@ public class LocalSiteMap {
     // 存储实体的数据 <id, entity>
     public static Map<Integer, Site> idSiteMap = new HashMap<>();
 
+    static {
+        try {
+            sitefile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "site.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 将.csv文件解析为实体数据
     public static void readCsv(){
         try {
             CSVReader csvReader = new CSVReaderBuilder(new BufferedReader(
-                    new InputStreamReader(new FileInputStream(new File(srcPath)), charset))).build();
+                    new InputStreamReader(new FileInputStream(sitefile), charset))).build();
             Iterator<String[]> iterator = csvReader.iterator();
             while (iterator.hasNext()){
                 String[] strArr = iterator.next();
@@ -57,7 +67,7 @@ public class LocalSiteMap {
     public static void fillSiteBeanNext(){
         try {
             CSVReader reader = new CSVReaderBuilder(new BufferedReader(
-                    new InputStreamReader(new FileInputStream(new File(srcPath)), charset))).build();
+                    new InputStreamReader(new FileInputStream(sitefile), charset))).build();
             Iterator<String[]> iterator = reader.iterator();
 
             Site site = null;
@@ -88,9 +98,11 @@ public class LocalSiteMap {
 
     public static void main(String[] args) {
         readCsv();
-
+/*
         for (Map.Entry<String, Site> entry : siteMap.entrySet()){
             System.out.println("key= " + entry.getKey() + " values= " + entry.getValue());
-        }
+        }*/
+
+        //System.out.println(ResourceUtils.CLASSPATH_URL_PREFIX);
     }
 }

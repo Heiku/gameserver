@@ -30,6 +30,7 @@ public class LocalUserMap {
     public static Map<Integer, List<Role>> siteRolesMap = Maps.newConcurrentMap();
 
 
+    // 读取数据库，获取role的位置信息
     public static void readSiteRoles(){
         List<Role> roles = userRoleDao.selectAllRole();
         for (Role role : roles){
@@ -38,12 +39,16 @@ public class LocalUserMap {
             // 获取场景ID
             int siteId = role.getSiteId();
 
-            if (siteRolesMap.get(siteId).isEmpty()) {
-                list = new ArrayList<Role>();
-                list.add(role);
-            }
             list = siteRolesMap.get(siteId);
+            if (list == null){
+                list = new ArrayList<>();
+            }
             list.add(role);
+            siteRolesMap.put(siteId, list);
         }
+
     }
+
+
+
 }
