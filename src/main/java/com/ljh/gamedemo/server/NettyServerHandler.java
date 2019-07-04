@@ -105,6 +105,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MessageBase.
         }
     }
 
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+    }
+
     // 消息组装
     public static MessageBase.Message tranformMessage(String content){
         return MessageBase.Message.newBuilder()
