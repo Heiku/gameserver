@@ -9,7 +9,9 @@ import java.lang.reflect.Constructor;
 public enum MessageType {
 
     MESSAGE_PROTO(0x01, MessageBase.Message.class),
-    USERINFO_PROTO(0x02, UserInfoProto.RequestUserInfo.class);
+    REQUEST_USERINFO_PROTO(0x02, UserInfoProto.RequestUserInfo.class),
+    RESPONSE_USERINFO_PROTO(0x03, UserInfoProto.ResponseUserInfo.class)
+    ;
 
 
     Integer protoCode;

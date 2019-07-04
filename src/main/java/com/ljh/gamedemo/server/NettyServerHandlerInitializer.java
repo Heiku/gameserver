@@ -7,7 +7,9 @@ import com.ljh.gamedemo.server.handler.UserInfoServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
