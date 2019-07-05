@@ -18,16 +18,7 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
 
-        // 添加心跳机制
-       /* pipeline.addLast(new ServerIdleStateHandler())
-                .addLast(new ProtobufVarint32FrameDecoder())
-                .addLast(new ProtobufDecoder(MessageBase.Message.getDefaultInstance()))
-
-                .addLast(new ProtobufVarint32LengthFieldPrepender())
-                .addLast(new ProtobufEncoder())
-
-                .addLast(new NettyServerHandler());*/
-
+        // 添加自定义编码解码器
         pipeline.addLast("decoder",new CustomProtobufDecoder());
         pipeline.addLast("encoder",new CustomProtobufEncoder());
 

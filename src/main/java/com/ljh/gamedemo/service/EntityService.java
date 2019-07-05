@@ -16,6 +16,7 @@ import com.ljh.gamedemo.proto.RoleProto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ljh.gamedemo.common.ContentType.USER_EMPTY_DATA;
@@ -145,6 +146,8 @@ public class EntityService {
         // 添加真实的玩家角色信息：
         // 组装 role
         List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
+
+        List<RoleProto.Role> roles = new ArrayList<>();
         if (!roleList.isEmpty()){
             for (Role r : roleList){
                 RoleProto.Role roleProto = RoleProto.Role.newBuilder()
@@ -155,12 +158,13 @@ public class EntityService {
                         .setAlive(r.getAlive())
                         .build();
 
-                responseEntityInfo.toBuilder().addRole(roleProto);
+                roles.add(roleProto);
             }
         }
 
         // 添加场景中的所有npc信息：
         // 组装 entity
+        List<EntityProto.Entity> entities = new ArrayList<>();
         for (Entity entity : entityList){
             EntityProto.Entity entityProto = EntityProto.Entity.newBuilder()
                     .setId(entity.getId())
@@ -170,12 +174,14 @@ public class EntityService {
                     .setAlive(entity.getAlive())
                     .build();
 
-            responseEntityInfo.toBuilder().addEntity(entityProto);
+            entities.add(entityProto);
         }
 
         return responseEntityInfo.toBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.ENTITY_FIND_ALL)
+                .addAllRole(roles)
+                .addAllEntity(entities)
                 .build();
     }
 }
