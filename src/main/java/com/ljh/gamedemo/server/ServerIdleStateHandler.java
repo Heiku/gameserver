@@ -25,4 +25,9 @@ public class ServerIdleStateHandler extends IdleStateHandler {
         //log.info("{}秒内没有读取到数据，关闭连接", READER_IDLE_TIME);
         //ctx.channel().close();
     }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+    }
 }
