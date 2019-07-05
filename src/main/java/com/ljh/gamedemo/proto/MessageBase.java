@@ -14,6 +14,154 @@ public final class MessageBase {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  /**
+   * Protobuf enum {@code RequestType}
+   */
+  public enum RequestType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <pre>
+     * 常规业务消息
+     * </pre>
+     *
+     * <code>NORMAL = 0;</code>
+     */
+    NORMAL(0),
+    /**
+     * <pre>
+     * 客户端心跳信息
+     * </pre>
+     *
+     * <code>HEARTBEAT_REQUEST = 1;</code>
+     */
+    HEARTBEAT_REQUEST(1),
+    /**
+     * <pre>
+     * 服务端心跳信息
+     * </pre>
+     *
+     * <code>HEARTBEAT_RESPONSE = 2;</code>
+     */
+    HEARTBEAT_RESPONSE(2),
+    /**
+     * <pre>
+     * 获取当前的日期
+     * </pre>
+     *
+     * <code>DATE = 3;</code>
+     */
+    DATE(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <pre>
+     * 常规业务消息
+     * </pre>
+     *
+     * <code>NORMAL = 0;</code>
+     */
+    public static final int NORMAL_VALUE = 0;
+    /**
+     * <pre>
+     * 客户端心跳信息
+     * </pre>
+     *
+     * <code>HEARTBEAT_REQUEST = 1;</code>
+     */
+    public static final int HEARTBEAT_REQUEST_VALUE = 1;
+    /**
+     * <pre>
+     * 服务端心跳信息
+     * </pre>
+     *
+     * <code>HEARTBEAT_RESPONSE = 2;</code>
+     */
+    public static final int HEARTBEAT_RESPONSE_VALUE = 2;
+    /**
+     * <pre>
+     * 获取当前的日期
+     * </pre>
+     *
+     * <code>DATE = 3;</code>
+     */
+    public static final int DATE_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static RequestType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static RequestType forNumber(int value) {
+      switch (value) {
+        case 0: return NORMAL;
+        case 1: return HEARTBEAT_REQUEST;
+        case 2: return HEARTBEAT_RESPONSE;
+        case 3: return DATE;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<RequestType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        RequestType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<RequestType>() {
+            public RequestType findValueByNumber(int number) {
+              return RequestType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.ljh.gamedemo.proto.MessageBase.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final RequestType[] VALUES = values();
+
+    public static RequestType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private RequestType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:RequestType)
+  }
+
   public interface MessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Message)
       com.google.protobuf.MessageOrBuilder {
@@ -29,127 +177,35 @@ public final class MessageBase {
         getRequestIdBytes();
 
     /**
-     * <code>.Message.CommandType cmd = 2;</code>
-     */
-    int getCmdValue();
-    /**
-     * <code>.Message.CommandType cmd = 2;</code>
-     */
-    com.ljh.gamedemo.proto.MessageBase.Message.CommandType getCmd();
-
-    /**
-     * <code>string content = 3;</code>
+     * <code>string content = 2;</code>
      */
     java.lang.String getContent();
     /**
-     * <code>string content = 3;</code>
+     * <code>string content = 2;</code>
      */
     com.google.protobuf.ByteString
         getContentBytes();
 
     /**
-     * <code>int32 result = 4;</code>
+     * <code>int32 result = 3;</code>
      */
     int getResult();
 
     /**
-     * <code>int64 userId = 6;</code>
+     * <code>int64 userId = 4;</code>
      */
     long getUserId();
 
     /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
+     * <code>.RequestType type = 5;</code>
      */
-    java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo> 
-        getUserList();
+    int getTypeValue();
     /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
+     * <code>.RequestType type = 5;</code>
      */
-    com.ljh.gamedemo.proto.MessageBase.UserInfo getUser(int index);
-    /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
-     */
-    int getUserCount();
-    /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
-     */
-    java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder> 
-        getUserOrBuilderList();
-    /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
-     */
-    com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder getUserOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> 
-        getRoleList();
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    com.ljh.gamedemo.proto.MessageBase.Role getRole(int index);
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    int getRoleCount();
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
-        getRoleOrBuilderList();
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder getRoleOrBuilder(
-        int index);
+    com.ljh.gamedemo.proto.MessageBase.RequestType getType();
   }
   /**
-   * <pre>
-   * protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Message.proto
-   * </pre>
-   *
    * Protobuf type {@code Message}
    */
   public  static final class Message extends
@@ -163,10 +219,8 @@ public final class MessageBase {
     }
     private Message() {
       requestId_ = "";
-      cmd_ = 0;
       content_ = "";
-      user_ = java.util.Collections.emptyList();
-      role_ = java.util.Collections.emptyList();
+      type_ = 0;
     }
 
     @java.lang.Override
@@ -189,7 +243,6 @@ public final class MessageBase {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -206,44 +259,26 @@ public final class MessageBase {
               requestId_ = s;
               break;
             }
-            case 16: {
-              int rawValue = input.readEnum();
-
-              cmd_ = rawValue;
-              break;
-            }
-            case 26: {
+            case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
               content_ = s;
               break;
             }
-            case 32: {
+            case 24: {
 
               result_ = input.readInt32();
               break;
             }
-            case 42: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                user_ = new java.util.ArrayList<com.ljh.gamedemo.proto.MessageBase.UserInfo>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              user_.add(
-                  input.readMessage(com.ljh.gamedemo.proto.MessageBase.UserInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 48: {
+            case 32: {
 
               userId_ = input.readInt64();
               break;
             }
-            case 58: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                role_ = new java.util.ArrayList<com.ljh.gamedemo.proto.MessageBase.Role>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              role_.add(
-                  input.readMessage(com.ljh.gamedemo.proto.MessageBase.Role.parser(), extensionRegistry));
+            case 40: {
+              int rawValue = input.readEnum();
+
+              type_ = rawValue;
               break;
             }
             default: {
@@ -261,12 +296,6 @@ public final class MessageBase {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          user_ = java.util.Collections.unmodifiableList(user_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          role_ = java.util.Collections.unmodifiableList(role_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -282,307 +311,6 @@ public final class MessageBase {
       return com.ljh.gamedemo.proto.MessageBase.internal_static_Message_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.ljh.gamedemo.proto.MessageBase.Message.class, com.ljh.gamedemo.proto.MessageBase.Message.Builder.class);
-    }
-
-    /**
-     * Protobuf enum {@code Message.CommandType}
-     */
-    public enum CommandType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <pre>
-       * 常规业务消息
-       * </pre>
-       *
-       * <code>NORMAL = 0;</code>
-       */
-      NORMAL(0),
-      /**
-       * <pre>
-       * 客户端心跳信息
-       * </pre>
-       *
-       * <code>HEARTBEAT_REQUEST = 1;</code>
-       */
-      HEARTBEAT_REQUEST(1),
-      /**
-       * <pre>
-       * 服务端心跳信息
-       * </pre>
-       *
-       * <code>HEARTBEAT_RESPONSE = 2;</code>
-       */
-      HEARTBEAT_RESPONSE(2),
-      /**
-       * <pre>
-       * 获取当前所处的位置
-       * </pre>
-       *
-       * <code>SITE = 3;</code>
-       */
-      SITE(3),
-      /**
-       * <pre>
-       * 获取当前的地图信息
-       * </pre>
-       *
-       * <code>MAP = 4;</code>
-       */
-      MAP(4),
-      /**
-       * <pre>
-       * 获取当前的日期
-       * </pre>
-       *
-       * <code>DATE = 5;</code>
-       */
-      DATE(5),
-      /**
-       * <pre>
-       * 获取当前的时间
-       * </pre>
-       *
-       * <code>NOW = 6;</code>
-       */
-      NOW(6),
-      /**
-       * <pre>
-       * 移动到指定位置
-       * </pre>
-       *
-       * <code>MOVE = 7;</code>
-       */
-      MOVE(7),
-      /**
-       * <pre>
-       * 获取当前的所有实体信息
-       * </pre>
-       *
-       * <code>AOI = 8;</code>
-       */
-      AOI(8),
-      /**
-       * <pre>
-       * 获取当前的用户信息
-       * </pre>
-       *
-       * <code>USER_STATE = 9;</code>
-       */
-      USER_STATE(9),
-      /**
-       * <pre>
-       * 用户登录
-       * </pre>
-       *
-       * <code>LOGIN = 10;</code>
-       */
-      LOGIN(10),
-      /**
-       * <pre>
-       * 用户注册
-       * </pre>
-       *
-       * <code>REGISTER = 11;</code>
-       */
-      REGISTER(11),
-      /**
-       * <pre>
-       * 退出系统
-       * </pre>
-       *
-       * <code>EXIT = 12;</code>
-       */
-      EXIT(12),
-      UNRECOGNIZED(-1),
-      ;
-
-      /**
-       * <pre>
-       * 常规业务消息
-       * </pre>
-       *
-       * <code>NORMAL = 0;</code>
-       */
-      public static final int NORMAL_VALUE = 0;
-      /**
-       * <pre>
-       * 客户端心跳信息
-       * </pre>
-       *
-       * <code>HEARTBEAT_REQUEST = 1;</code>
-       */
-      public static final int HEARTBEAT_REQUEST_VALUE = 1;
-      /**
-       * <pre>
-       * 服务端心跳信息
-       * </pre>
-       *
-       * <code>HEARTBEAT_RESPONSE = 2;</code>
-       */
-      public static final int HEARTBEAT_RESPONSE_VALUE = 2;
-      /**
-       * <pre>
-       * 获取当前所处的位置
-       * </pre>
-       *
-       * <code>SITE = 3;</code>
-       */
-      public static final int SITE_VALUE = 3;
-      /**
-       * <pre>
-       * 获取当前的地图信息
-       * </pre>
-       *
-       * <code>MAP = 4;</code>
-       */
-      public static final int MAP_VALUE = 4;
-      /**
-       * <pre>
-       * 获取当前的日期
-       * </pre>
-       *
-       * <code>DATE = 5;</code>
-       */
-      public static final int DATE_VALUE = 5;
-      /**
-       * <pre>
-       * 获取当前的时间
-       * </pre>
-       *
-       * <code>NOW = 6;</code>
-       */
-      public static final int NOW_VALUE = 6;
-      /**
-       * <pre>
-       * 移动到指定位置
-       * </pre>
-       *
-       * <code>MOVE = 7;</code>
-       */
-      public static final int MOVE_VALUE = 7;
-      /**
-       * <pre>
-       * 获取当前的所有实体信息
-       * </pre>
-       *
-       * <code>AOI = 8;</code>
-       */
-      public static final int AOI_VALUE = 8;
-      /**
-       * <pre>
-       * 获取当前的用户信息
-       * </pre>
-       *
-       * <code>USER_STATE = 9;</code>
-       */
-      public static final int USER_STATE_VALUE = 9;
-      /**
-       * <pre>
-       * 用户登录
-       * </pre>
-       *
-       * <code>LOGIN = 10;</code>
-       */
-      public static final int LOGIN_VALUE = 10;
-      /**
-       * <pre>
-       * 用户注册
-       * </pre>
-       *
-       * <code>REGISTER = 11;</code>
-       */
-      public static final int REGISTER_VALUE = 11;
-      /**
-       * <pre>
-       * 退出系统
-       * </pre>
-       *
-       * <code>EXIT = 12;</code>
-       */
-      public static final int EXIT_VALUE = 12;
-
-
-      public final int getNumber() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
-      }
-
-      /**
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static CommandType valueOf(int value) {
-        return forNumber(value);
-      }
-
-      public static CommandType forNumber(int value) {
-        switch (value) {
-          case 0: return NORMAL;
-          case 1: return HEARTBEAT_REQUEST;
-          case 2: return HEARTBEAT_RESPONSE;
-          case 3: return SITE;
-          case 4: return MAP;
-          case 5: return DATE;
-          case 6: return NOW;
-          case 7: return MOVE;
-          case 8: return AOI;
-          case 9: return USER_STATE;
-          case 10: return LOGIN;
-          case 11: return REGISTER;
-          case 12: return EXIT;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<CommandType>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          CommandType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<CommandType>() {
-              public CommandType findValueByNumber(int number) {
-                return CommandType.forNumber(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(ordinal());
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.ljh.gamedemo.proto.MessageBase.Message.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final CommandType[] VALUES = values();
-
-      public static CommandType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int value;
-
-      private CommandType(int value) {
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:Message.CommandType)
     }
 
     public static final int REQUESTID_FIELD_NUMBER = 1;
@@ -619,27 +347,10 @@ public final class MessageBase {
       }
     }
 
-    public static final int CMD_FIELD_NUMBER = 2;
-    private int cmd_;
-    /**
-     * <code>.Message.CommandType cmd = 2;</code>
-     */
-    public int getCmdValue() {
-      return cmd_;
-    }
-    /**
-     * <code>.Message.CommandType cmd = 2;</code>
-     */
-    public com.ljh.gamedemo.proto.MessageBase.Message.CommandType getCmd() {
-      @SuppressWarnings("deprecation")
-      com.ljh.gamedemo.proto.MessageBase.Message.CommandType result = com.ljh.gamedemo.proto.MessageBase.Message.CommandType.valueOf(cmd_);
-      return result == null ? com.ljh.gamedemo.proto.MessageBase.Message.CommandType.UNRECOGNIZED : result;
-    }
-
-    public static final int CONTENT_FIELD_NUMBER = 3;
+    public static final int CONTENT_FIELD_NUMBER = 2;
     private volatile java.lang.Object content_;
     /**
-     * <code>string content = 3;</code>
+     * <code>string content = 2;</code>
      */
     public java.lang.String getContent() {
       java.lang.Object ref = content_;
@@ -654,7 +365,7 @@ public final class MessageBase {
       }
     }
     /**
-     * <code>string content = 3;</code>
+     * <code>string content = 2;</code>
      */
     public com.google.protobuf.ByteString
         getContentBytes() {
@@ -670,132 +381,39 @@ public final class MessageBase {
       }
     }
 
-    public static final int RESULT_FIELD_NUMBER = 4;
+    public static final int RESULT_FIELD_NUMBER = 3;
     private int result_;
     /**
-     * <code>int32 result = 4;</code>
+     * <code>int32 result = 3;</code>
      */
     public int getResult() {
       return result_;
     }
 
-    public static final int USERID_FIELD_NUMBER = 6;
+    public static final int USERID_FIELD_NUMBER = 4;
     private long userId_;
     /**
-     * <code>int64 userId = 6;</code>
+     * <code>int64 userId = 4;</code>
      */
     public long getUserId() {
       return userId_;
     }
 
-    public static final int USER_FIELD_NUMBER = 5;
-    private java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo> user_;
+    public static final int TYPE_FIELD_NUMBER = 5;
+    private int type_;
     /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
+     * <code>.RequestType type = 5;</code>
      */
-    public java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo> getUserList() {
-      return user_;
+    public int getTypeValue() {
+      return type_;
     }
     /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
+     * <code>.RequestType type = 5;</code>
      */
-    public java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder> 
-        getUserOrBuilderList() {
-      return user_;
-    }
-    /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
-     */
-    public int getUserCount() {
-      return user_.size();
-    }
-    /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
-     */
-    public com.ljh.gamedemo.proto.MessageBase.UserInfo getUser(int index) {
-      return user_.get(index);
-    }
-    /**
-     * <pre>
-     * 用户登录请求
-     * </pre>
-     *
-     * <code>repeated .UserInfo user = 5;</code>
-     */
-    public com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder getUserOrBuilder(
-        int index) {
-      return user_.get(index);
-    }
-
-    public static final int ROLE_FIELD_NUMBER = 7;
-    private java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> role_;
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    public java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> getRoleList() {
-      return role_;
-    }
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    public java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
-        getRoleOrBuilderList() {
-      return role_;
-    }
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    public int getRoleCount() {
-      return role_.size();
-    }
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    public com.ljh.gamedemo.proto.MessageBase.Role getRole(int index) {
-      return role_.get(index);
-    }
-    /**
-     * <pre>
-     * 用户角色
-     * </pre>
-     *
-     * <code>repeated .Role role = 7;</code>
-     */
-    public com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder getRoleOrBuilder(
-        int index) {
-      return role_.get(index);
+    public com.ljh.gamedemo.proto.MessageBase.RequestType getType() {
+      @SuppressWarnings("deprecation")
+      com.ljh.gamedemo.proto.MessageBase.RequestType result = com.ljh.gamedemo.proto.MessageBase.RequestType.valueOf(type_);
+      return result == null ? com.ljh.gamedemo.proto.MessageBase.RequestType.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -815,23 +433,17 @@ public final class MessageBase {
       if (!getRequestIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, requestId_);
       }
-      if (cmd_ != com.ljh.gamedemo.proto.MessageBase.Message.CommandType.NORMAL.getNumber()) {
-        output.writeEnum(2, cmd_);
-      }
       if (!getContentBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, content_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, content_);
       }
       if (result_ != 0) {
-        output.writeInt32(4, result_);
-      }
-      for (int i = 0; i < user_.size(); i++) {
-        output.writeMessage(5, user_.get(i));
+        output.writeInt32(3, result_);
       }
       if (userId_ != 0L) {
-        output.writeInt64(6, userId_);
+        output.writeInt64(4, userId_);
       }
-      for (int i = 0; i < role_.size(); i++) {
-        output.writeMessage(7, role_.get(i));
+      if (type_ != com.ljh.gamedemo.proto.MessageBase.RequestType.NORMAL.getNumber()) {
+        output.writeEnum(5, type_);
       }
       unknownFields.writeTo(output);
     }
@@ -845,28 +457,20 @@ public final class MessageBase {
       if (!getRequestIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, requestId_);
       }
-      if (cmd_ != com.ljh.gamedemo.proto.MessageBase.Message.CommandType.NORMAL.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, cmd_);
-      }
       if (!getContentBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, content_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, content_);
       }
       if (result_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, result_);
-      }
-      for (int i = 0; i < user_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, user_.get(i));
+          .computeInt32Size(3, result_);
       }
       if (userId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(6, userId_);
+          .computeInt64Size(4, userId_);
       }
-      for (int i = 0; i < role_.size(); i++) {
+      if (type_ != com.ljh.gamedemo.proto.MessageBase.RequestType.NORMAL.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, role_.get(i));
+          .computeEnumSize(5, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -885,17 +489,13 @@ public final class MessageBase {
 
       if (!getRequestId()
           .equals(other.getRequestId())) return false;
-      if (cmd_ != other.cmd_) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
       if (getResult()
           != other.getResult()) return false;
       if (getUserId()
           != other.getUserId()) return false;
-      if (!getUserList()
-          .equals(other.getUserList())) return false;
-      if (!getRoleList()
-          .equals(other.getRoleList())) return false;
+      if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -909,8 +509,6 @@ public final class MessageBase {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + REQUESTID_FIELD_NUMBER;
       hash = (53 * hash) + getRequestId().hashCode();
-      hash = (37 * hash) + CMD_FIELD_NUMBER;
-      hash = (53 * hash) + cmd_;
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
       hash = (37 * hash) + RESULT_FIELD_NUMBER;
@@ -918,14 +516,8 @@ public final class MessageBase {
       hash = (37 * hash) + USERID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getUserId());
-      if (getUserCount() > 0) {
-        hash = (37 * hash) + USER_FIELD_NUMBER;
-        hash = (53 * hash) + getUserList().hashCode();
-      }
-      if (getRoleCount() > 0) {
-        hash = (37 * hash) + ROLE_FIELD_NUMBER;
-        hash = (53 * hash) + getRoleList().hashCode();
-      }
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1022,10 +614,6 @@ public final class MessageBase {
       return builder;
     }
     /**
-     * <pre>
-     * protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Message.proto
-     * </pre>
-     *
      * Protobuf type {@code Message}
      */
     public static final class Builder extends
@@ -1058,8 +646,6 @@ public final class MessageBase {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getUserFieldBuilder();
-          getRoleFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1067,26 +653,14 @@ public final class MessageBase {
         super.clear();
         requestId_ = "";
 
-        cmd_ = 0;
-
         content_ = "";
 
         result_ = 0;
 
         userId_ = 0L;
 
-        if (userBuilder_ == null) {
-          user_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          userBuilder_.clear();
-        }
-        if (roleBuilder_ == null) {
-          role_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        } else {
-          roleBuilder_.clear();
-        }
+        type_ = 0;
+
         return this;
       }
 
@@ -1113,30 +687,11 @@ public final class MessageBase {
       @java.lang.Override
       public com.ljh.gamedemo.proto.MessageBase.Message buildPartial() {
         com.ljh.gamedemo.proto.MessageBase.Message result = new com.ljh.gamedemo.proto.MessageBase.Message(this);
-        int from_bitField0_ = bitField0_;
         result.requestId_ = requestId_;
-        result.cmd_ = cmd_;
         result.content_ = content_;
         result.result_ = result_;
         result.userId_ = userId_;
-        if (userBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            user_ = java.util.Collections.unmodifiableList(user_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.user_ = user_;
-        } else {
-          result.user_ = userBuilder_.build();
-        }
-        if (roleBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0)) {
-            role_ = java.util.Collections.unmodifiableList(role_);
-            bitField0_ = (bitField0_ & ~0x00000002);
-          }
-          result.role_ = role_;
-        } else {
-          result.role_ = roleBuilder_.build();
-        }
+        result.type_ = type_;
         onBuilt();
         return result;
       }
@@ -1189,9 +744,6 @@ public final class MessageBase {
           requestId_ = other.requestId_;
           onChanged();
         }
-        if (other.cmd_ != 0) {
-          setCmdValue(other.getCmdValue());
-        }
         if (!other.getContent().isEmpty()) {
           content_ = other.content_;
           onChanged();
@@ -1202,57 +754,8 @@ public final class MessageBase {
         if (other.getUserId() != 0L) {
           setUserId(other.getUserId());
         }
-        if (userBuilder_ == null) {
-          if (!other.user_.isEmpty()) {
-            if (user_.isEmpty()) {
-              user_ = other.user_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureUserIsMutable();
-              user_.addAll(other.user_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.user_.isEmpty()) {
-            if (userBuilder_.isEmpty()) {
-              userBuilder_.dispose();
-              userBuilder_ = null;
-              user_ = other.user_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              userBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getUserFieldBuilder() : null;
-            } else {
-              userBuilder_.addAllMessages(other.user_);
-            }
-          }
-        }
-        if (roleBuilder_ == null) {
-          if (!other.role_.isEmpty()) {
-            if (role_.isEmpty()) {
-              role_ = other.role_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-            } else {
-              ensureRoleIsMutable();
-              role_.addAll(other.role_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.role_.isEmpty()) {
-            if (roleBuilder_.isEmpty()) {
-              roleBuilder_.dispose();
-              roleBuilder_ = null;
-              role_ = other.role_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-              roleBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getRoleFieldBuilder() : null;
-            } else {
-              roleBuilder_.addAllMessages(other.role_);
-            }
-          }
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1282,7 +785,6 @@ public final class MessageBase {
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object requestId_ = "";
       /**
@@ -1353,54 +855,9 @@ public final class MessageBase {
         return this;
       }
 
-      private int cmd_ = 0;
-      /**
-       * <code>.Message.CommandType cmd = 2;</code>
-       */
-      public int getCmdValue() {
-        return cmd_;
-      }
-      /**
-       * <code>.Message.CommandType cmd = 2;</code>
-       */
-      public Builder setCmdValue(int value) {
-        cmd_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.Message.CommandType cmd = 2;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.Message.CommandType getCmd() {
-        @SuppressWarnings("deprecation")
-        com.ljh.gamedemo.proto.MessageBase.Message.CommandType result = com.ljh.gamedemo.proto.MessageBase.Message.CommandType.valueOf(cmd_);
-        return result == null ? com.ljh.gamedemo.proto.MessageBase.Message.CommandType.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>.Message.CommandType cmd = 2;</code>
-       */
-      public Builder setCmd(com.ljh.gamedemo.proto.MessageBase.Message.CommandType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        cmd_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.Message.CommandType cmd = 2;</code>
-       */
-      public Builder clearCmd() {
-        
-        cmd_ = 0;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object content_ = "";
       /**
-       * <code>string content = 3;</code>
+       * <code>string content = 2;</code>
        */
       public java.lang.String getContent() {
         java.lang.Object ref = content_;
@@ -1415,7 +872,7 @@ public final class MessageBase {
         }
       }
       /**
-       * <code>string content = 3;</code>
+       * <code>string content = 2;</code>
        */
       public com.google.protobuf.ByteString
           getContentBytes() {
@@ -1431,7 +888,7 @@ public final class MessageBase {
         }
       }
       /**
-       * <code>string content = 3;</code>
+       * <code>string content = 2;</code>
        */
       public Builder setContent(
           java.lang.String value) {
@@ -1444,7 +901,7 @@ public final class MessageBase {
         return this;
       }
       /**
-       * <code>string content = 3;</code>
+       * <code>string content = 2;</code>
        */
       public Builder clearContent() {
         
@@ -1453,7 +910,7 @@ public final class MessageBase {
         return this;
       }
       /**
-       * <code>string content = 3;</code>
+       * <code>string content = 2;</code>
        */
       public Builder setContentBytes(
           com.google.protobuf.ByteString value) {
@@ -1469,13 +926,13 @@ public final class MessageBase {
 
       private int result_ ;
       /**
-       * <code>int32 result = 4;</code>
+       * <code>int32 result = 3;</code>
        */
       public int getResult() {
         return result_;
       }
       /**
-       * <code>int32 result = 4;</code>
+       * <code>int32 result = 3;</code>
        */
       public Builder setResult(int value) {
         
@@ -1484,7 +941,7 @@ public final class MessageBase {
         return this;
       }
       /**
-       * <code>int32 result = 4;</code>
+       * <code>int32 result = 3;</code>
        */
       public Builder clearResult() {
         
@@ -1495,13 +952,13 @@ public final class MessageBase {
 
       private long userId_ ;
       /**
-       * <code>int64 userId = 6;</code>
+       * <code>int64 userId = 4;</code>
        */
       public long getUserId() {
         return userId_;
       }
       /**
-       * <code>int64 userId = 6;</code>
+       * <code>int64 userId = 4;</code>
        */
       public Builder setUserId(long value) {
         
@@ -1510,7 +967,7 @@ public final class MessageBase {
         return this;
       }
       /**
-       * <code>int64 userId = 6;</code>
+       * <code>int64 userId = 4;</code>
        */
       public Builder clearUserId() {
         
@@ -1519,628 +976,49 @@ public final class MessageBase {
         return this;
       }
 
-      private java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo> user_ =
-        java.util.Collections.emptyList();
-      private void ensureUserIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          user_ = new java.util.ArrayList<com.ljh.gamedemo.proto.MessageBase.UserInfo>(user_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.MessageBase.UserInfo, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder, com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder> userBuilder_;
-
+      private int type_ = 0;
       /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
+       * <code>.RequestType type = 5;</code>
        */
-      public java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo> getUserList() {
-        if (userBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(user_);
-        } else {
-          return userBuilder_.getMessageList();
-        }
+      public int getTypeValue() {
+        return type_;
       }
       /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
+       * <code>.RequestType type = 5;</code>
        */
-      public int getUserCount() {
-        if (userBuilder_ == null) {
-          return user_.size();
-        } else {
-          return userBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo getUser(int index) {
-        if (userBuilder_ == null) {
-          return user_.get(index);
-        } else {
-          return userBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder setUser(
-          int index, com.ljh.gamedemo.proto.MessageBase.UserInfo value) {
-        if (userBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureUserIsMutable();
-          user_.set(index, value);
-          onChanged();
-        } else {
-          userBuilder_.setMessage(index, value);
-        }
+      public Builder setTypeValue(int value) {
+        type_ = value;
+        onChanged();
         return this;
       }
       /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
+       * <code>.RequestType type = 5;</code>
        */
-      public Builder setUser(
-          int index, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder builderForValue) {
-        if (userBuilder_ == null) {
-          ensureUserIsMutable();
-          user_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          userBuilder_.setMessage(index, builderForValue.build());
+      public com.ljh.gamedemo.proto.MessageBase.RequestType getType() {
+        @SuppressWarnings("deprecation")
+        com.ljh.gamedemo.proto.MessageBase.RequestType result = com.ljh.gamedemo.proto.MessageBase.RequestType.valueOf(type_);
+        return result == null ? com.ljh.gamedemo.proto.MessageBase.RequestType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.RequestType type = 5;</code>
+       */
+      public Builder setType(com.ljh.gamedemo.proto.MessageBase.RequestType value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        
+        type_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
+       * <code>.RequestType type = 5;</code>
        */
-      public Builder addUser(com.ljh.gamedemo.proto.MessageBase.UserInfo value) {
-        if (userBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureUserIsMutable();
-          user_.add(value);
-          onChanged();
-        } else {
-          userBuilder_.addMessage(value);
-        }
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
         return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder addUser(
-          int index, com.ljh.gamedemo.proto.MessageBase.UserInfo value) {
-        if (userBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureUserIsMutable();
-          user_.add(index, value);
-          onChanged();
-        } else {
-          userBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder addUser(
-          com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder builderForValue) {
-        if (userBuilder_ == null) {
-          ensureUserIsMutable();
-          user_.add(builderForValue.build());
-          onChanged();
-        } else {
-          userBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder addUser(
-          int index, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder builderForValue) {
-        if (userBuilder_ == null) {
-          ensureUserIsMutable();
-          user_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          userBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder addAllUser(
-          java.lang.Iterable<? extends com.ljh.gamedemo.proto.MessageBase.UserInfo> values) {
-        if (userBuilder_ == null) {
-          ensureUserIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, user_);
-          onChanged();
-        } else {
-          userBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder clearUser() {
-        if (userBuilder_ == null) {
-          user_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          userBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public Builder removeUser(int index) {
-        if (userBuilder_ == null) {
-          ensureUserIsMutable();
-          user_.remove(index);
-          onChanged();
-        } else {
-          userBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder getUserBuilder(
-          int index) {
-        return getUserFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder getUserOrBuilder(
-          int index) {
-        if (userBuilder_ == null) {
-          return user_.get(index);  } else {
-          return userBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder> 
-           getUserOrBuilderList() {
-        if (userBuilder_ != null) {
-          return userBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(user_);
-        }
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder addUserBuilder() {
-        return getUserFieldBuilder().addBuilder(
-            com.ljh.gamedemo.proto.MessageBase.UserInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder addUserBuilder(
-          int index) {
-        return getUserFieldBuilder().addBuilder(
-            index, com.ljh.gamedemo.proto.MessageBase.UserInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 用户登录请求
-       * </pre>
-       *
-       * <code>repeated .UserInfo user = 5;</code>
-       */
-      public java.util.List<com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder> 
-           getUserBuilderList() {
-        return getUserFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.MessageBase.UserInfo, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder, com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder> 
-          getUserFieldBuilder() {
-        if (userBuilder_ == null) {
-          userBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.ljh.gamedemo.proto.MessageBase.UserInfo, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder, com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder>(
-                  user_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          user_ = null;
-        }
-        return userBuilder_;
-      }
-
-      private java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> role_ =
-        java.util.Collections.emptyList();
-      private void ensureRoleIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          role_ = new java.util.ArrayList<com.ljh.gamedemo.proto.MessageBase.Role>(role_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.MessageBase.Role, com.ljh.gamedemo.proto.MessageBase.Role.Builder, com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> roleBuilder_;
-
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public java.util.List<com.ljh.gamedemo.proto.MessageBase.Role> getRoleList() {
-        if (roleBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(role_);
-        } else {
-          return roleBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public int getRoleCount() {
-        if (roleBuilder_ == null) {
-          return role_.size();
-        } else {
-          return roleBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.Role getRole(int index) {
-        if (roleBuilder_ == null) {
-          return role_.get(index);
-        } else {
-          return roleBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder setRole(
-          int index, com.ljh.gamedemo.proto.MessageBase.Role value) {
-        if (roleBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRoleIsMutable();
-          role_.set(index, value);
-          onChanged();
-        } else {
-          roleBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder setRole(
-          int index, com.ljh.gamedemo.proto.MessageBase.Role.Builder builderForValue) {
-        if (roleBuilder_ == null) {
-          ensureRoleIsMutable();
-          role_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          roleBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder addRole(com.ljh.gamedemo.proto.MessageBase.Role value) {
-        if (roleBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRoleIsMutable();
-          role_.add(value);
-          onChanged();
-        } else {
-          roleBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder addRole(
-          int index, com.ljh.gamedemo.proto.MessageBase.Role value) {
-        if (roleBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRoleIsMutable();
-          role_.add(index, value);
-          onChanged();
-        } else {
-          roleBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder addRole(
-          com.ljh.gamedemo.proto.MessageBase.Role.Builder builderForValue) {
-        if (roleBuilder_ == null) {
-          ensureRoleIsMutable();
-          role_.add(builderForValue.build());
-          onChanged();
-        } else {
-          roleBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder addRole(
-          int index, com.ljh.gamedemo.proto.MessageBase.Role.Builder builderForValue) {
-        if (roleBuilder_ == null) {
-          ensureRoleIsMutable();
-          role_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          roleBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder addAllRole(
-          java.lang.Iterable<? extends com.ljh.gamedemo.proto.MessageBase.Role> values) {
-        if (roleBuilder_ == null) {
-          ensureRoleIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, role_);
-          onChanged();
-        } else {
-          roleBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder clearRole() {
-        if (roleBuilder_ == null) {
-          role_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-          onChanged();
-        } else {
-          roleBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public Builder removeRole(int index) {
-        if (roleBuilder_ == null) {
-          ensureRoleIsMutable();
-          role_.remove(index);
-          onChanged();
-        } else {
-          roleBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.Role.Builder getRoleBuilder(
-          int index) {
-        return getRoleFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder getRoleOrBuilder(
-          int index) {
-        if (roleBuilder_ == null) {
-          return role_.get(index);  } else {
-          return roleBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public java.util.List<? extends com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
-           getRoleOrBuilderList() {
-        if (roleBuilder_ != null) {
-          return roleBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(role_);
-        }
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.Role.Builder addRoleBuilder() {
-        return getRoleFieldBuilder().addBuilder(
-            com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public com.ljh.gamedemo.proto.MessageBase.Role.Builder addRoleBuilder(
-          int index) {
-        return getRoleFieldBuilder().addBuilder(
-            index, com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 用户角色
-       * </pre>
-       *
-       * <code>repeated .Role role = 7;</code>
-       */
-      public java.util.List<com.ljh.gamedemo.proto.MessageBase.Role.Builder> 
-           getRoleBuilderList() {
-        return getRoleFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.MessageBase.Role, com.ljh.gamedemo.proto.MessageBase.Role.Builder, com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder> 
-          getRoleFieldBuilder() {
-        if (roleBuilder_ == null) {
-          roleBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.ljh.gamedemo.proto.MessageBase.Role, com.ljh.gamedemo.proto.MessageBase.Role.Builder, com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder>(
-                  role_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
-          role_ = null;
-        }
-        return roleBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2195,1878 +1073,11 @@ public final class MessageBase {
 
   }
 
-  public interface UserInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:UserInfo)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 用户名
-     * </pre>
-     *
-     * <code>string userName = 1;</code>
-     */
-    java.lang.String getUserName();
-    /**
-     * <pre>
-     * 用户名
-     * </pre>
-     *
-     * <code>string userName = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getUserNameBytes();
-
-    /**
-     * <pre>
-     * 密码
-     * </pre>
-     *
-     * <code>string password = 2;</code>
-     */
-    java.lang.String getPassword();
-    /**
-     * <pre>
-     * 密码
-     * </pre>
-     *
-     * <code>string password = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getPasswordBytes();
-
-    /**
-     * <pre>
-     * token
-     * </pre>
-     *
-     * <code>string token = 3;</code>
-     */
-    java.lang.String getToken();
-    /**
-     * <pre>
-     * token
-     * </pre>
-     *
-     * <code>string token = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getTokenBytes();
-  }
-  /**
-   * Protobuf type {@code UserInfo}
-   */
-  public  static final class UserInfo extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:UserInfo)
-      UserInfoOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use UserInfo.newBuilder() to construct.
-    private UserInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private UserInfo() {
-      userName_ = "";
-      password_ = "";
-      token_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new UserInfo();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private UserInfo(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              userName_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              password_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              token_ = s;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.ljh.gamedemo.proto.MessageBase.internal_static_UserInfo_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.ljh.gamedemo.proto.MessageBase.internal_static_UserInfo_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.ljh.gamedemo.proto.MessageBase.UserInfo.class, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder.class);
-    }
-
-    public static final int USERNAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object userName_;
-    /**
-     * <pre>
-     * 用户名
-     * </pre>
-     *
-     * <code>string userName = 1;</code>
-     */
-    public java.lang.String getUserName() {
-      java.lang.Object ref = userName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        userName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 用户名
-     * </pre>
-     *
-     * <code>string userName = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getUserNameBytes() {
-      java.lang.Object ref = userName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        userName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PASSWORD_FIELD_NUMBER = 2;
-    private volatile java.lang.Object password_;
-    /**
-     * <pre>
-     * 密码
-     * </pre>
-     *
-     * <code>string password = 2;</code>
-     */
-    public java.lang.String getPassword() {
-      java.lang.Object ref = password_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        password_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 密码
-     * </pre>
-     *
-     * <code>string password = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPasswordBytes() {
-      java.lang.Object ref = password_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        password_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TOKEN_FIELD_NUMBER = 3;
-    private volatile java.lang.Object token_;
-    /**
-     * <pre>
-     * token
-     * </pre>
-     *
-     * <code>string token = 3;</code>
-     */
-    public java.lang.String getToken() {
-      java.lang.Object ref = token_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        token_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * token
-     * </pre>
-     *
-     * <code>string token = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getTokenBytes() {
-      java.lang.Object ref = token_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        token_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getUserNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, userName_);
-      }
-      if (!getPasswordBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, password_);
-      }
-      if (!getTokenBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, token_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getUserNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, userName_);
-      }
-      if (!getPasswordBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, password_);
-      }
-      if (!getTokenBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, token_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.ljh.gamedemo.proto.MessageBase.UserInfo)) {
-        return super.equals(obj);
-      }
-      com.ljh.gamedemo.proto.MessageBase.UserInfo other = (com.ljh.gamedemo.proto.MessageBase.UserInfo) obj;
-
-      if (!getUserName()
-          .equals(other.getUserName())) return false;
-      if (!getPassword()
-          .equals(other.getPassword())) return false;
-      if (!getToken()
-          .equals(other.getToken())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + USERNAME_FIELD_NUMBER;
-      hash = (53 * hash) + getUserName().hashCode();
-      hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
-      hash = (53 * hash) + getPassword().hashCode();
-      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
-      hash = (53 * hash) + getToken().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.ljh.gamedemo.proto.MessageBase.UserInfo prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code UserInfo}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:UserInfo)
-        com.ljh.gamedemo.proto.MessageBase.UserInfoOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.ljh.gamedemo.proto.MessageBase.internal_static_UserInfo_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.ljh.gamedemo.proto.MessageBase.internal_static_UserInfo_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.ljh.gamedemo.proto.MessageBase.UserInfo.class, com.ljh.gamedemo.proto.MessageBase.UserInfo.Builder.class);
-      }
-
-      // Construct using com.ljh.gamedemo.proto.MessageBase.UserInfo.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        userName_ = "";
-
-        password_ = "";
-
-        token_ = "";
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.ljh.gamedemo.proto.MessageBase.internal_static_UserInfo_descriptor;
-      }
-
-      @java.lang.Override
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo getDefaultInstanceForType() {
-        return com.ljh.gamedemo.proto.MessageBase.UserInfo.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo build() {
-        com.ljh.gamedemo.proto.MessageBase.UserInfo result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public com.ljh.gamedemo.proto.MessageBase.UserInfo buildPartial() {
-        com.ljh.gamedemo.proto.MessageBase.UserInfo result = new com.ljh.gamedemo.proto.MessageBase.UserInfo(this);
-        result.userName_ = userName_;
-        result.password_ = password_;
-        result.token_ = token_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.ljh.gamedemo.proto.MessageBase.UserInfo) {
-          return mergeFrom((com.ljh.gamedemo.proto.MessageBase.UserInfo)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.ljh.gamedemo.proto.MessageBase.UserInfo other) {
-        if (other == com.ljh.gamedemo.proto.MessageBase.UserInfo.getDefaultInstance()) return this;
-        if (!other.getUserName().isEmpty()) {
-          userName_ = other.userName_;
-          onChanged();
-        }
-        if (!other.getPassword().isEmpty()) {
-          password_ = other.password_;
-          onChanged();
-        }
-        if (!other.getToken().isEmpty()) {
-          token_ = other.token_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.ljh.gamedemo.proto.MessageBase.UserInfo parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.ljh.gamedemo.proto.MessageBase.UserInfo) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object userName_ = "";
-      /**
-       * <pre>
-       * 用户名
-       * </pre>
-       *
-       * <code>string userName = 1;</code>
-       */
-      public java.lang.String getUserName() {
-        java.lang.Object ref = userName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          userName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 用户名
-       * </pre>
-       *
-       * <code>string userName = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getUserNameBytes() {
-        java.lang.Object ref = userName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          userName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 用户名
-       * </pre>
-       *
-       * <code>string userName = 1;</code>
-       */
-      public Builder setUserName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        userName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户名
-       * </pre>
-       *
-       * <code>string userName = 1;</code>
-       */
-      public Builder clearUserName() {
-        
-        userName_ = getDefaultInstance().getUserName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 用户名
-       * </pre>
-       *
-       * <code>string userName = 1;</code>
-       */
-      public Builder setUserNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        userName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object password_ = "";
-      /**
-       * <pre>
-       * 密码
-       * </pre>
-       *
-       * <code>string password = 2;</code>
-       */
-      public java.lang.String getPassword() {
-        java.lang.Object ref = password_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          password_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 密码
-       * </pre>
-       *
-       * <code>string password = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPasswordBytes() {
-        java.lang.Object ref = password_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          password_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 密码
-       * </pre>
-       *
-       * <code>string password = 2;</code>
-       */
-      public Builder setPassword(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        password_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 密码
-       * </pre>
-       *
-       * <code>string password = 2;</code>
-       */
-      public Builder clearPassword() {
-        
-        password_ = getDefaultInstance().getPassword();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 密码
-       * </pre>
-       *
-       * <code>string password = 2;</code>
-       */
-      public Builder setPasswordBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        password_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object token_ = "";
-      /**
-       * <pre>
-       * token
-       * </pre>
-       *
-       * <code>string token = 3;</code>
-       */
-      public java.lang.String getToken() {
-        java.lang.Object ref = token_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          token_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * token
-       * </pre>
-       *
-       * <code>string token = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getTokenBytes() {
-        java.lang.Object ref = token_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          token_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * token
-       * </pre>
-       *
-       * <code>string token = 3;</code>
-       */
-      public Builder setToken(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        token_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * token
-       * </pre>
-       *
-       * <code>string token = 3;</code>
-       */
-      public Builder clearToken() {
-        
-        token_ = getDefaultInstance().getToken();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * token
-       * </pre>
-       *
-       * <code>string token = 3;</code>
-       */
-      public Builder setTokenBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        token_ = value;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:UserInfo)
-    }
-
-    // @@protoc_insertion_point(class_scope:UserInfo)
-    private static final com.ljh.gamedemo.proto.MessageBase.UserInfo DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.ljh.gamedemo.proto.MessageBase.UserInfo();
-    }
-
-    public static com.ljh.gamedemo.proto.MessageBase.UserInfo getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<UserInfo>
-        PARSER = new com.google.protobuf.AbstractParser<UserInfo>() {
-      @java.lang.Override
-      public UserInfo parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new UserInfo(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<UserInfo> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<UserInfo> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.ljh.gamedemo.proto.MessageBase.UserInfo getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface RoleOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Role)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 角色Id
-     * </pre>
-     *
-     * <code>int64 roleId = 1;</code>
-     */
-    long getRoleId();
-
-    /**
-     * <pre>
-     * 角色名称
-     * </pre>
-     *
-     * <code>string name = 2;</code>
-     */
-    java.lang.String getName();
-    /**
-     * <pre>
-     * 角色名称
-     * </pre>
-     *
-     * <code>string name = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getNameBytes();
-
-    /**
-     * <pre>
-     * 角色类型
-     * </pre>
-     *
-     * <code>int32 type = 3;</code>
-     */
-    int getType();
-
-    /**
-     * <pre>
-     * 角色等级
-     * </pre>
-     *
-     * <code>int32 level = 4;</code>
-     */
-    int getLevel();
-
-    /**
-     * <pre>
-     * 角色状态
-     * </pre>
-     *
-     * <code>int32 alive = 5;</code>
-     */
-    int getAlive();
-  }
-  /**
-   * Protobuf type {@code Role}
-   */
-  public  static final class Role extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Role)
-      RoleOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use Role.newBuilder() to construct.
-    private Role(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private Role() {
-      name_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new Role();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private Role(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              roleId_ = input.readInt64();
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              name_ = s;
-              break;
-            }
-            case 24: {
-
-              type_ = input.readInt32();
-              break;
-            }
-            case 32: {
-
-              level_ = input.readInt32();
-              break;
-            }
-            case 40: {
-
-              alive_ = input.readInt32();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.ljh.gamedemo.proto.MessageBase.Role.class, com.ljh.gamedemo.proto.MessageBase.Role.Builder.class);
-    }
-
-    public static final int ROLEID_FIELD_NUMBER = 1;
-    private long roleId_;
-    /**
-     * <pre>
-     * 角色Id
-     * </pre>
-     *
-     * <code>int64 roleId = 1;</code>
-     */
-    public long getRoleId() {
-      return roleId_;
-    }
-
-    public static final int NAME_FIELD_NUMBER = 2;
-    private volatile java.lang.Object name_;
-    /**
-     * <pre>
-     * 角色名称
-     * </pre>
-     *
-     * <code>string name = 2;</code>
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 角色名称
-     * </pre>
-     *
-     * <code>string name = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 3;
-    private int type_;
-    /**
-     * <pre>
-     * 角色类型
-     * </pre>
-     *
-     * <code>int32 type = 3;</code>
-     */
-    public int getType() {
-      return type_;
-    }
-
-    public static final int LEVEL_FIELD_NUMBER = 4;
-    private int level_;
-    /**
-     * <pre>
-     * 角色等级
-     * </pre>
-     *
-     * <code>int32 level = 4;</code>
-     */
-    public int getLevel() {
-      return level_;
-    }
-
-    public static final int ALIVE_FIELD_NUMBER = 5;
-    private int alive_;
-    /**
-     * <pre>
-     * 角色状态
-     * </pre>
-     *
-     * <code>int32 alive = 5;</code>
-     */
-    public int getAlive() {
-      return alive_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (roleId_ != 0L) {
-        output.writeInt64(1, roleId_);
-      }
-      if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
-      }
-      if (type_ != 0) {
-        output.writeInt32(3, type_);
-      }
-      if (level_ != 0) {
-        output.writeInt32(4, level_);
-      }
-      if (alive_ != 0) {
-        output.writeInt32(5, alive_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (roleId_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, roleId_);
-      }
-      if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
-      }
-      if (type_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, type_);
-      }
-      if (level_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, level_);
-      }
-      if (alive_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, alive_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.ljh.gamedemo.proto.MessageBase.Role)) {
-        return super.equals(obj);
-      }
-      com.ljh.gamedemo.proto.MessageBase.Role other = (com.ljh.gamedemo.proto.MessageBase.Role) obj;
-
-      if (getRoleId()
-          != other.getRoleId()) return false;
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (getType()
-          != other.getType()) return false;
-      if (getLevel()
-          != other.getLevel()) return false;
-      if (getAlive()
-          != other.getAlive()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ROLEID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getRoleId());
-      hash = (37 * hash) + NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getName().hashCode();
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + getType();
-      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
-      hash = (53 * hash) + getLevel();
-      hash = (37 * hash) + ALIVE_FIELD_NUMBER;
-      hash = (53 * hash) + getAlive();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.ljh.gamedemo.proto.MessageBase.Role parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.ljh.gamedemo.proto.MessageBase.Role prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code Role}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Role)
-        com.ljh.gamedemo.proto.MessageBase.RoleOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.ljh.gamedemo.proto.MessageBase.Role.class, com.ljh.gamedemo.proto.MessageBase.Role.Builder.class);
-      }
-
-      // Construct using com.ljh.gamedemo.proto.MessageBase.Role.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        roleId_ = 0L;
-
-        name_ = "";
-
-        type_ = 0;
-
-        level_ = 0;
-
-        alive_ = 0;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.ljh.gamedemo.proto.MessageBase.internal_static_Role_descriptor;
-      }
-
-      @java.lang.Override
-      public com.ljh.gamedemo.proto.MessageBase.Role getDefaultInstanceForType() {
-        return com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public com.ljh.gamedemo.proto.MessageBase.Role build() {
-        com.ljh.gamedemo.proto.MessageBase.Role result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public com.ljh.gamedemo.proto.MessageBase.Role buildPartial() {
-        com.ljh.gamedemo.proto.MessageBase.Role result = new com.ljh.gamedemo.proto.MessageBase.Role(this);
-        result.roleId_ = roleId_;
-        result.name_ = name_;
-        result.type_ = type_;
-        result.level_ = level_;
-        result.alive_ = alive_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.ljh.gamedemo.proto.MessageBase.Role) {
-          return mergeFrom((com.ljh.gamedemo.proto.MessageBase.Role)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.ljh.gamedemo.proto.MessageBase.Role other) {
-        if (other == com.ljh.gamedemo.proto.MessageBase.Role.getDefaultInstance()) return this;
-        if (other.getRoleId() != 0L) {
-          setRoleId(other.getRoleId());
-        }
-        if (!other.getName().isEmpty()) {
-          name_ = other.name_;
-          onChanged();
-        }
-        if (other.getType() != 0) {
-          setType(other.getType());
-        }
-        if (other.getLevel() != 0) {
-          setLevel(other.getLevel());
-        }
-        if (other.getAlive() != 0) {
-          setAlive(other.getAlive());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.ljh.gamedemo.proto.MessageBase.Role parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.ljh.gamedemo.proto.MessageBase.Role) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private long roleId_ ;
-      /**
-       * <pre>
-       * 角色Id
-       * </pre>
-       *
-       * <code>int64 roleId = 1;</code>
-       */
-      public long getRoleId() {
-        return roleId_;
-      }
-      /**
-       * <pre>
-       * 角色Id
-       * </pre>
-       *
-       * <code>int64 roleId = 1;</code>
-       */
-      public Builder setRoleId(long value) {
-        
-        roleId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色Id
-       * </pre>
-       *
-       * <code>int64 roleId = 1;</code>
-       */
-      public Builder clearRoleId() {
-        
-        roleId_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object name_ = "";
-      /**
-       * <pre>
-       * 角色名称
-       * </pre>
-       *
-       * <code>string name = 2;</code>
-       */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          name_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 角色名称
-       * </pre>
-       *
-       * <code>string name = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          name_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 角色名称
-       * </pre>
-       *
-       * <code>string name = 2;</code>
-       */
-      public Builder setName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色名称
-       * </pre>
-       *
-       * <code>string name = 2;</code>
-       */
-      public Builder clearName() {
-        
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色名称
-       * </pre>
-       *
-       * <code>string name = 2;</code>
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        name_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int type_ ;
-      /**
-       * <pre>
-       * 角色类型
-       * </pre>
-       *
-       * <code>int32 type = 3;</code>
-       */
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <pre>
-       * 角色类型
-       * </pre>
-       *
-       * <code>int32 type = 3;</code>
-       */
-      public Builder setType(int value) {
-        
-        type_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色类型
-       * </pre>
-       *
-       * <code>int32 type = 3;</code>
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int level_ ;
-      /**
-       * <pre>
-       * 角色等级
-       * </pre>
-       *
-       * <code>int32 level = 4;</code>
-       */
-      public int getLevel() {
-        return level_;
-      }
-      /**
-       * <pre>
-       * 角色等级
-       * </pre>
-       *
-       * <code>int32 level = 4;</code>
-       */
-      public Builder setLevel(int value) {
-        
-        level_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色等级
-       * </pre>
-       *
-       * <code>int32 level = 4;</code>
-       */
-      public Builder clearLevel() {
-        
-        level_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int alive_ ;
-      /**
-       * <pre>
-       * 角色状态
-       * </pre>
-       *
-       * <code>int32 alive = 5;</code>
-       */
-      public int getAlive() {
-        return alive_;
-      }
-      /**
-       * <pre>
-       * 角色状态
-       * </pre>
-       *
-       * <code>int32 alive = 5;</code>
-       */
-      public Builder setAlive(int value) {
-        
-        alive_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 角色状态
-       * </pre>
-       *
-       * <code>int32 alive = 5;</code>
-       */
-      public Builder clearAlive() {
-        
-        alive_ = 0;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Role)
-    }
-
-    // @@protoc_insertion_point(class_scope:Role)
-    private static final com.ljh.gamedemo.proto.MessageBase.Role DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.ljh.gamedemo.proto.MessageBase.Role();
-    }
-
-    public static com.ljh.gamedemo.proto.MessageBase.Role getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<Role>
-        PARSER = new com.google.protobuf.AbstractParser<Role>() {
-      @java.lang.Override
-      public Role parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Role(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<Role> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Role> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.ljh.gamedemo.proto.MessageBase.Role getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Message_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Message_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_UserInfo_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_UserInfo_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Role_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Role_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4077,20 +1088,13 @@ public final class MessageBase {
   static {
     java.lang.String[] descriptorData = {
       "\n2src/main/java/com/ljh/gamedemo/proto/M" +
-      "essage.proto\"\325\002\n\007Message\022\021\n\trequestId\030\001 " +
-      "\001(\t\022!\n\003cmd\030\002 \001(\0162\024.Message.CommandType\022\017" +
-      "\n\007content\030\003 \001(\t\022\016\n\006result\030\004 \001(\005\022\016\n\006userI" +
-      "d\030\006 \001(\003\022\027\n\004user\030\005 \003(\0132\t.UserInfo\022\023\n\004role" +
-      "\030\007 \003(\0132\005.Role\"\264\001\n\013CommandType\022\n\n\006NORMAL\020" +
-      "\000\022\025\n\021HEARTBEAT_REQUEST\020\001\022\026\n\022HEARTBEAT_RE" +
-      "SPONSE\020\002\022\010\n\004SITE\020\003\022\007\n\003MAP\020\004\022\010\n\004DATE\020\005\022\007\n" +
-      "\003NOW\020\006\022\010\n\004MOVE\020\007\022\007\n\003AOI\020\010\022\016\n\nUSER_STATE\020" +
-      "\t\022\t\n\005LOGIN\020\n\022\014\n\010REGISTER\020\013\022\010\n\004EXIT\020\014\"=\n\010" +
-      "UserInfo\022\020\n\010userName\030\001 \001(\t\022\020\n\010password\030\002" +
-      " \001(\t\022\r\n\005token\030\003 \001(\t\"P\n\004Role\022\016\n\006roleId\030\001 " +
-      "\001(\003\022\014\n\004name\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\r\n\005level" +
-      "\030\004 \001(\005\022\r\n\005alive\030\005 \001(\005B%\n\026com.ljh.gamedem" +
-      "o.protoB\013MessageBaseb\006proto3"
+      "essage.proto\"i\n\007Message\022\021\n\trequestId\030\001 \001" +
+      "(\t\022\017\n\007content\030\002 \001(\t\022\016\n\006result\030\003 \001(\005\022\016\n\006u" +
+      "serId\030\004 \001(\003\022\032\n\004type\030\005 \001(\0162\014.RequestType*" +
+      "R\n\013RequestType\022\n\n\006NORMAL\020\000\022\025\n\021HEARTBEAT_" +
+      "REQUEST\020\001\022\026\n\022HEARTBEAT_RESPONSE\020\002\022\010\n\004DAT" +
+      "E\020\003B%\n\026com.ljh.gamedemo.protoB\013MessageBa" +
+      "seb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4101,19 +1105,7 @@ public final class MessageBase {
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
-        new java.lang.String[] { "RequestId", "Cmd", "Content", "Result", "UserId", "User", "Role", });
-    internal_static_UserInfo_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_UserInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_UserInfo_descriptor,
-        new java.lang.String[] { "UserName", "Password", "Token", });
-    internal_static_Role_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_Role_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Role_descriptor,
-        new java.lang.String[] { "RoleId", "Name", "Type", "Level", "Alive", });
+        new java.lang.String[] { "RequestId", "Content", "Result", "UserId", "Type", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

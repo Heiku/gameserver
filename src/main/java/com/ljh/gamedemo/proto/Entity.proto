@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "com.ljh.gamedemo.proto";
+option java_outer_classname = "EntityProto";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Entity.proto
+
+message Entity{
+    int64 id = 1;       // 实体id
+    int32 type = 2;     // 实体类型
+    string name = 3;    // 名称
+    int32 level = 4;    // 等级
+    int32 alive = 5;    // 状态：1：存活，0：死亡
+}

@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/RoleInfo.proto
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Role.proto
 
 option java_package = "com.ljh.gamedemo.proto";
-option java_outer_classname = "RoleInfoProto";
+option java_outer_classname = "RoleProto";
 
 message Role{
     int64 roleId = 1;

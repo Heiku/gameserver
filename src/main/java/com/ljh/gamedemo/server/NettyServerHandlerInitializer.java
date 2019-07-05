@@ -2,7 +2,9 @@ package com.ljh.gamedemo.server;
 
 import com.ljh.gamedemo.server.codec.CustomProtobufDecoder;
 import com.ljh.gamedemo.server.codec.CustomProtobufEncoder;
-import com.ljh.gamedemo.server.handler.CustomProtoServerHandler;
+import com.ljh.gamedemo.server.handler.CommonServerHandler;
+import com.ljh.gamedemo.server.handler.EntityInfoServerHandler;
+import com.ljh.gamedemo.server.handler.SiteInfoServerHandler;
 import com.ljh.gamedemo.server.handler.UserInfoServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -28,7 +30,17 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
 
         pipeline.addLast("decoder",new CustomProtobufDecoder());
         pipeline.addLast("encoder",new CustomProtobufEncoder());
-        pipeline.addLast(new CustomProtoServerHandler());
+
+        // 公共处理器
+        pipeline.addLast(new CommonServerHandler());
+
+        // 用户请求处理器
         pipeline.addLast(new UserInfoServerHandler());
+
+        // 实体请求处理器
+        pipeline.addLast(new EntityInfoServerHandler());
+
+        // 场景请求处理器
+        pipeline.addLast(new SiteInfoServerHandler());
     }
 }

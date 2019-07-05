@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_package = "com.ljh.gamedemo.proto";
+option java_outer_classname = "MsgSiteInfoProto";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgSiteInfo.proto
+
+
+enum RequestType{
+    SITE = 0;
+    MOVE = 1;
+}
+
+message RequestSiteInfo{
+    string requestId = 1;       // 请求ID
+    int64 userId = 2;           // 请求的uid
+    string content = 3;         // 请求文本
+
+    RequestType type = 4;       // 请求类型
+}
+
+
+message ResponseSiteInfo{
+    int32 result = 1;
+    string content = 2;
+}

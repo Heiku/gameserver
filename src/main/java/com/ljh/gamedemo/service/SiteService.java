@@ -2,12 +2,13 @@ package com.ljh.gamedemo.service;
 
 import com.google.common.base.Strings;
 import com.ljh.gamedemo.common.ContentType;
+import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.proto.MessageBase;
 import com.ljh.gamedemo.entity.Site;
+import com.ljh.gamedemo.proto.MsgSiteInfoProto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -88,22 +89,22 @@ public class SiteService {
      * 2.判断位置是否相邻
      * 3.移动后将数据记录
      *
-     * @param message
+     * @param requestSiteInfo
      * @return
      */
-    public MessageBase.Message move(MessageBase.Message message){
+    public MsgSiteInfoProto.ResponseSiteInfo move(MsgSiteInfoProto.RequestSiteInfo requestSiteInfo){
         // 先判断用户的信息
-        long userId = message.getUserId();
+        long userId = requestSiteInfo.getUserId();
         if (userId <= 0){
-            return MessageBase.Message.newBuilder()
+            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
                     .setContent(ContentType.USER_EMPTY_TOKEN)
                     .build();
         }
 
         // 获取对应的目的地
-        String destination = message.getContent();
+        String destination = requestSiteInfo.getContent();
         if (Strings.isNullOrEmpty(destination)){
-            return MessageBase.Message.newBuilder()
+            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
                     .setContent(ContentType.MOVE_EMPTY)
                     .build();
         }
@@ -117,7 +118,7 @@ public class SiteService {
         }
         // 数据库还是查不到，直接返回结果
         if (role == null){
-            return MessageBase.Message.newBuilder()
+            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
                     .setContent(ContentType.ROLE_EMPTY)
                     .build();
         }
@@ -130,13 +131,13 @@ public class SiteService {
             // 重新获取当前位置信息
             Role r = LocalUserMap.userRoleMap.get(userId);
             String site = LocalSiteMap.idSiteMap.get(r.getSiteId()).getName();
-            return MessageBase.Message.newBuilder()
+            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
                     .setContent("成功到达" + destination + "\n" +
                             "可到达附近地点：" + getNext(site).toString())
                     .build();
         }
 
-        return MessageBase.Message.newBuilder()
+        return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
                 .setContent("无法到达" + destination + "，原因是：场景间不相邻。\n" +
                         "可到达附近地点：" + getNext(siteName).toString())
                 .build();
@@ -146,16 +147,17 @@ public class SiteService {
     /**
      * 获得当前角色的位置信息
      *
-     * @param msg
+     * @param requestSiteInfo
      * @return
      */
-    public String getNowSiteCName(MessageBase.Message msg){
-        if (msg == null){
-            System.out.println("msg == null");
-        }
-        long userId = msg.getUserId();
+    public MsgSiteInfoProto.ResponseSiteInfo getNowSiteCName(MsgSiteInfoProto.RequestSiteInfo requestSiteInfo){
+        // 用户认证信息判断
+        long userId = requestSiteInfo.getUserId();
         if (userId <= 0){
-            return ContentType.USER_TOKEN_DATA_EMPTY;
+            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.USER_TOKEN_DATA_EMPTY)
+                    .build();
         }
 
         // 玩家角色存在判断
@@ -165,14 +167,23 @@ public class SiteService {
             role = userRoleDao.selectUserRole(userId).get(0);
         }
         if (role == null){
-            return ContentType.ROLE_EMPTY;
+            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.ROLE_EMPTY)
+                    .build();
         }
 
         // 如果存在
         int siteId = role.getSiteId();
         Site site = LocalSiteMap.idSiteMap.get(siteId);
 
-        return site.getCName();
+        // 返回消息
+        String content = ContentType.SITE_NOW + site.getCName();
+
+        return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setContent(content)
+                .build();
     }
 
     // 将name -> cname

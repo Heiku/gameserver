@@ -11,8 +11,8 @@ import com.ljh.gamedemo.entity.User;
 
 import com.ljh.gamedemo.local.LocalUserMap;
 
-import com.ljh.gamedemo.proto.RoleInfoProto;
-import com.ljh.gamedemo.proto.UserInfoProto;
+import com.ljh.gamedemo.proto.MsgUserInfoProto;
+import com.ljh.gamedemo.proto.RoleProto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public UserInfoProto.ResponseUserInfo getState(UserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo getState(MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析得到userId
         long userId = requestUserInfo.getUserId();
         Role role = null;
@@ -47,7 +47,7 @@ public class UserService {
             // 数据库查找
             List<Role> roles = userRoleDao.selectUserRole(userId);
             if (roles.isEmpty()){
-                return UserInfoProto.ResponseUserInfo.newBuilder()
+                return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                         .setContent(ContentType.ROLE_EMPTY)
                         .build();
             }
@@ -60,7 +60,7 @@ public class UserService {
         LocalUserMap.userRoleMap.put(userId, role);
 
         // 确定角色成功，返回角色信息
-        RoleInfoProto.Role roleMsg = RoleInfoProto.Role.newBuilder()
+        RoleProto.Role roleMsg = RoleProto.Role.newBuilder()
                 .setRoleId(role.getRoleId())
                 .setName(role.getName())
                 .setType(role.getType())
@@ -68,7 +68,7 @@ public class UserService {
                 .setAlive(role.getAlive())
                 .build();
 
-        return UserInfoProto.ResponseUserInfo.newBuilder()
+        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setUserId(userId)
                 .setContent(ContentType.ROLE_CHOOSE)
                 .setResult(ResultCode.SUCCESS)
@@ -86,14 +86,14 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public UserInfoProto.ResponseUserInfo login(UserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo login(MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析message的请求参数
         String userName = requestUserInfo.getUsername();
         String password = requestUserInfo.getPassword();
 
         // 校验请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.USER_EMPTY_LOGIN_PARAM)
                     .build();
@@ -103,7 +103,7 @@ public class UserService {
         String md5Pwd = MD5Util.hashPwd(password);
         User user = userDao.selectUser(userName);
         if (user == null){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.USER_EMPTY_DATA)
                     .build();
@@ -111,7 +111,7 @@ public class UserService {
 
         // 校验密码的正确性
         if (!user.getPassword().equals(md5Pwd)){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setContent(ContentType.BAD_PASSWORD)
                     .setResult(ResultCode.FAILED)
                     .build();
@@ -124,11 +124,11 @@ public class UserService {
         LocalUserMap.userMap.put(userId, user);
 
         // 成功消息返回
-        return UserInfoProto.ResponseUserInfo.newBuilder()
+        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setContent(ContentType.LOGIN_SUCCESS)
                 .setUserId(userId)
                 .setResult(ResultCode.SUCCESS)
-                .setType(UserInfoProto.RequestType.LOGIN)
+                .setType(MsgUserInfoProto.RequestType.LOGIN)
                 .build();
     }
 
@@ -139,14 +139,14 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public UserInfoProto.ResponseUserInfo register(UserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo register(MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析message请求参数
         String userName = requestUserInfo.getUsername();
         String password = requestUserInfo.getPassword();
 
         // 判断请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setContent(ContentType.USER_EMPTY_REGISTER_PARAM)
                     .setResult(ResultCode.FAILED)
                     .build();
@@ -156,7 +156,7 @@ public class UserService {
         String md5Pwd = MD5Util.hashPwd(password);
         int n = userDao.insertUserAccount(0l, userName, md5Pwd);
         if (n <= 0){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setContent(ContentType.REGISTER_FAILED)
                     .setResult(ResultCode.FAILED)
                     .build();
@@ -173,11 +173,11 @@ public class UserService {
         // 注册成功，将玩家信息写如本地缓存
         LocalUserMap.userMap.put(userId, user);
 
-        return UserInfoProto.ResponseUserInfo.newBuilder()
+        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setUserId(userId)
                 .setContent(ContentType.REGISTER_SUCCESS)
                 .setResult(ResultCode.SUCCESS)
-                .setType(UserInfoProto.RequestType.REGISTER)
+                .setType(MsgUserInfoProto.RequestType.REGISTER)
                 .build();
     }
 
@@ -188,11 +188,11 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public UserInfoProto.ResponseUserInfo exit(UserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo exit(MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 用户判断
         long userId = requestUserInfo.getUserId();
         if (userId <= 0){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.USER_EMPTY_DATA)
                     .build();
@@ -205,7 +205,7 @@ public class UserService {
             role = userRoleDao.selectUserRole(userId).get(0);
         }
         if (role == null){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.ROLE_EMPTY)
                     .build();
@@ -235,15 +235,15 @@ public class UserService {
         // 更新数据库role的site信息
         int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId);
         if (n <= 0){
-            return UserInfoProto.ResponseUserInfo.newBuilder()
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.UPDATE_ROLE_SITE)
                     .build();
         }
 
         // 成功操作
-        return UserInfoProto.ResponseUserInfo.newBuilder()
-                .setType(RequestTy)
+        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setType(MsgUserInfoProto.RequestType.EXIT)
                 .setResult(ResultCode.FAILED)
                 .setContent(ContentType.EXIT_SUCCESS)
                 .build();

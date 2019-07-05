@@ -1,24 +1,30 @@
 package com.ljh.gamedemo.server.handler;
 
-import com.ljh.gamedemo.proto.UserInfoProto;
+import com.ljh.gamedemo.proto.MsgUserInfoProto;
 import com.ljh.gamedemo.service.UserService;
+import com.ljh.gamedemo.util.SpringUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import static com.ljh.gamedemo.common.RequestUserInfoType.*;
+import static com.ljh.gamedemo.server.request.RequestUserInfoType.*;
 
-@Component
-public class UserInfoServerHandler extends SimpleChannelInboundHandler<UserInfoProto.RequestUserInfo> {
+
+@ChannelHandler.Sharable
+public class UserInfoServerHandler extends SimpleChannelInboundHandler<MsgUserInfoProto.RequestUserInfo> {
 
     @Autowired
-    private UserService userService;
+    private static UserService userService;
 
-    private UserInfoProto.ResponseUserInfo responseUserInfo;
+    private MsgUserInfoProto.ResponseUserInfo responseUserInfo;
+
+    static {
+        userService = SpringUtil.getBean(UserService.class);
+    }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, UserInfoProto.RequestUserInfo requestUserInfo) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, MsgUserInfoProto.RequestUserInfo requestUserInfo) throws Exception {
 
         // TODO: 这里先暂时这样写，如果后期再再再细分协议的时候，就需要修改
         int requestType = requestUserInfo.getType().getNumber();
@@ -38,6 +44,6 @@ public class UserInfoServerHandler extends SimpleChannelInboundHandler<UserInfoP
         }
 
         // 返回消息
-        channelHandlerContext.channel().writeAndFlush(responseUserInfo);
+        ctx.writeAndFlush(responseUserInfo);
     }
 }

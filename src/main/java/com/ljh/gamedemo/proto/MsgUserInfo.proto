@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-import "RoleInfo.proto";
+import "Role.proto";
 
 option java_package = "com.ljh.gamedemo.proto";
-option java_outer_classname = "UserInfoProto";
+option java_outer_classname = "MsgUserInfoProto";
 
-// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/UserInfo.proto
-// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/UserInfo.proto
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgUserInfo.proto
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgUserInfo.proto
 
 enum RequestType{
     LOGIN = 0;

@@ -28,7 +28,13 @@ public class ContentType {
     public static final String ROLE_CHOOSE = "角色选择成功！\n";
 
 
+    // Entity
+    public static final String ENTITY_FIND_ALL = "获取所有实体信息成功！\n";
+
+
     // Site
+    public static final String SITE_NOW = "你当前的位置是：";
+
     public static final String MOVE_EMPTY = "目的地为空，请输入正确的目的地\n";
 
     // DB
