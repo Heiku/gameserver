@@ -30,6 +30,8 @@ public class SiteService {
             return false;
         }
         String destinationEname = LocalSiteMap.nameMap.get(destination);
+
+        // 获取当前地点的临近场景列表，用于下方进行位置判断能否到达
         List<String> destinationList = LocalSiteMap.siteMap.get(nowSiteName).getNext();
 
         // 相邻列表判断是否存在目的地
@@ -37,32 +39,43 @@ public class SiteService {
             if (nextStr.equals(destinationEname)){
 
                 // 获取对应目的地场景的id
-                Site site = LocalSiteMap.siteMap.get(destinationEname);
-                int siteId = site.getId();
+                int desSiteId = LocalSiteMap.siteMap.get(destinationEname).getId();
 
-                // 更新role
-                role.setSiteId(siteId);
+                // 更新role的位置信息
+                role.setSiteId(desSiteId);
 
-                // 更新LocalMap
+                // 更新LocalUserRoleMap
                 LocalUserMap.userRoleMap.put(userId, role);
-                List<Role> rolesList = LocalUserMap.siteRolesMap.get(siteId);
-                if (rolesList == null){
-                    rolesList = new ArrayList<>();
-                    rolesList.add(role);
-                }else {
-                    // 更新rolesList中的role，如果没有则添加进去
-                    for (Role r : rolesList){
-                        if (r.getRoleId() == role.getRoleId()){
-                            r.setSiteId(siteId);
 
-                            return true;
+
+                // 这里分为两部分：都是更新 siteRolesMap
+                // 一个是更新目的地的所有角色信息，添加move 的role
+                // 二是更新出发点的所有角色信息，移除move 的role
+
+                // 这里是第一步,因为目的地中是没有当前角色的，所以直接加进来
+                List<Role> desRoleList = LocalUserMap.siteRolesMap.get(desSiteId);
+                if (desRoleList == null || desRoleList.isEmpty()){
+                    desRoleList = new ArrayList<>();
+                }
+                desRoleList.add(role);
+
+                // 最后更新 desSiteRoleMap 中的list信息
+                LocalUserMap.siteRolesMap.put(desSiteId, desRoleList);
+
+
+                // 这是第二步，将oldSite的roleList更新，即移除
+                int nowSiteId = LocalSiteMap.siteMap.get(nowSiteName).getId();
+                List<Role> startRoleList = LocalUserMap.siteRolesMap.get(nowSiteId);
+                if (!startRoleList.isEmpty()) {
+                    synchronized (this) {
+                        for (Role r : startRoleList) {
+                            if (r.getRoleId().longValue() == role.getRoleId()) {
+                                startRoleList.remove(r);
+                                break;
+                            }
                         }
                     }
-                    rolesList.add(role);
                 }
-
-                // 最后将siteRolesMap更新
-                LocalUserMap.siteRolesMap.put(siteId, rolesList);
                 return true;
             }
         }
@@ -126,7 +139,7 @@ public class SiteService {
         String siteName = LocalSiteMap.idSiteMap.get(role.getSiteId()).getName();
 
         // 判断能否到达目的地，到达后更新当前缓存位置信息
-        if (getDestination(userId, role,siteName, destination)){
+        if (getDestination(userId, role, siteName, destination)){
 
             // 重新获取当前位置信息
             Role r = LocalUserMap.userRoleMap.get(userId);

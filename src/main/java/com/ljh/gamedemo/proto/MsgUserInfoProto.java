@@ -1242,10 +1242,28 @@ public final class MsgUserInfoProto {
 
     /**
      * <pre>
+     * token信息
+     * </pre>
+     *
+     * <code>string token = 4;</code>
+     */
+    java.lang.String getToken();
+    /**
+     * <pre>
+     * token信息
+     * </pre>
+     *
+     * <code>string token = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getTokenBytes();
+
+    /**
+     * <pre>
      * 返回类型
      * </pre>
      *
-     * <code>.RequestType type = 4;</code>
+     * <code>.RequestType type = 5;</code>
      */
     int getTypeValue();
     /**
@@ -1253,7 +1271,7 @@ public final class MsgUserInfoProto {
      * 返回类型
      * </pre>
      *
-     * <code>.RequestType type = 4;</code>
+     * <code>.RequestType type = 5;</code>
      */
     com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType getType();
 
@@ -1262,7 +1280,7 @@ public final class MsgUserInfoProto {
      * 用户角色
      * </pre>
      *
-     * <code>.Role role = 5;</code>
+     * <code>.Role role = 6;</code>
      */
     boolean hasRole();
     /**
@@ -1270,7 +1288,7 @@ public final class MsgUserInfoProto {
      * 用户角色
      * </pre>
      *
-     * <code>.Role role = 5;</code>
+     * <code>.Role role = 6;</code>
      */
     com.ljh.gamedemo.proto.RoleProto.Role getRole();
     /**
@@ -1278,7 +1296,7 @@ public final class MsgUserInfoProto {
      * 用户角色
      * </pre>
      *
-     * <code>.Role role = 5;</code>
+     * <code>.Role role = 6;</code>
      */
     com.ljh.gamedemo.proto.RoleProto.RoleOrBuilder getRoleOrBuilder();
   }
@@ -1296,6 +1314,7 @@ public final class MsgUserInfoProto {
     }
     private ResponseUserInfo() {
       content_ = "";
+      token_ = "";
       type_ = 0;
     }
 
@@ -1345,13 +1364,19 @@ public final class MsgUserInfoProto {
               content_ = s;
               break;
             }
-            case 32: {
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              token_ = s;
+              break;
+            }
+            case 40: {
               int rawValue = input.readEnum();
 
               type_ = rawValue;
               break;
             }
-            case 42: {
+            case 50: {
               com.ljh.gamedemo.proto.RoleProto.Role.Builder subBuilder = null;
               if (role_ != null) {
                 subBuilder = role_.toBuilder();
@@ -1456,14 +1481,56 @@ public final class MsgUserInfoProto {
       }
     }
 
-    public static final int TYPE_FIELD_NUMBER = 4;
+    public static final int TOKEN_FIELD_NUMBER = 4;
+    private volatile java.lang.Object token_;
+    /**
+     * <pre>
+     * token信息
+     * </pre>
+     *
+     * <code>string token = 4;</code>
+     */
+    public java.lang.String getToken() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        token_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * token信息
+     * </pre>
+     *
+     * <code>string token = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTokenBytes() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        token_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 5;
     private int type_;
     /**
      * <pre>
      * 返回类型
      * </pre>
      *
-     * <code>.RequestType type = 4;</code>
+     * <code>.RequestType type = 5;</code>
      */
     public int getTypeValue() {
       return type_;
@@ -1473,7 +1540,7 @@ public final class MsgUserInfoProto {
      * 返回类型
      * </pre>
      *
-     * <code>.RequestType type = 4;</code>
+     * <code>.RequestType type = 5;</code>
      */
     public com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType getType() {
       @SuppressWarnings("deprecation")
@@ -1481,14 +1548,14 @@ public final class MsgUserInfoProto {
       return result == null ? com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType.UNRECOGNIZED : result;
     }
 
-    public static final int ROLE_FIELD_NUMBER = 5;
+    public static final int ROLE_FIELD_NUMBER = 6;
     private com.ljh.gamedemo.proto.RoleProto.Role role_;
     /**
      * <pre>
      * 用户角色
      * </pre>
      *
-     * <code>.Role role = 5;</code>
+     * <code>.Role role = 6;</code>
      */
     public boolean hasRole() {
       return role_ != null;
@@ -1498,7 +1565,7 @@ public final class MsgUserInfoProto {
      * 用户角色
      * </pre>
      *
-     * <code>.Role role = 5;</code>
+     * <code>.Role role = 6;</code>
      */
     public com.ljh.gamedemo.proto.RoleProto.Role getRole() {
       return role_ == null ? com.ljh.gamedemo.proto.RoleProto.Role.getDefaultInstance() : role_;
@@ -1508,7 +1575,7 @@ public final class MsgUserInfoProto {
      * 用户角色
      * </pre>
      *
-     * <code>.Role role = 5;</code>
+     * <code>.Role role = 6;</code>
      */
     public com.ljh.gamedemo.proto.RoleProto.RoleOrBuilder getRoleOrBuilder() {
       return getRole();
@@ -1537,11 +1604,14 @@ public final class MsgUserInfoProto {
       if (!getContentBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, content_);
       }
+      if (!getTokenBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, token_);
+      }
       if (type_ != com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType.LOGIN.getNumber()) {
-        output.writeEnum(4, type_);
+        output.writeEnum(5, type_);
       }
       if (role_ != null) {
-        output.writeMessage(5, getRole());
+        output.writeMessage(6, getRole());
       }
       unknownFields.writeTo(output);
     }
@@ -1563,13 +1633,16 @@ public final class MsgUserInfoProto {
       if (!getContentBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, content_);
       }
+      if (!getTokenBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, token_);
+      }
       if (type_ != com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType.LOGIN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(4, type_);
+          .computeEnumSize(5, type_);
       }
       if (role_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getRole());
+          .computeMessageSize(6, getRole());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1592,6 +1665,8 @@ public final class MsgUserInfoProto {
           != other.getUserId()) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
+      if (!getToken()
+          .equals(other.getToken())) return false;
       if (type_ != other.type_) return false;
       if (hasRole() != other.hasRole()) return false;
       if (hasRole()) {
@@ -1616,6 +1691,8 @@ public final class MsgUserInfoProto {
           getUserId());
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
+      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getToken().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
       if (hasRole()) {
@@ -1761,6 +1838,8 @@ public final class MsgUserInfoProto {
 
         content_ = "";
 
+        token_ = "";
+
         type_ = 0;
 
         if (roleBuilder_ == null) {
@@ -1798,6 +1877,7 @@ public final class MsgUserInfoProto {
         result.result_ = result_;
         result.userId_ = userId_;
         result.content_ = content_;
+        result.token_ = token_;
         result.type_ = type_;
         if (roleBuilder_ == null) {
           result.role_ = role_;
@@ -1860,6 +1940,10 @@ public final class MsgUserInfoProto {
         }
         if (!other.getContent().isEmpty()) {
           content_ = other.content_;
+          onChanged();
+        }
+        if (!other.getToken().isEmpty()) {
+          token_ = other.token_;
           onChanged();
         }
         if (other.type_ != 0) {
@@ -2042,13 +2126,102 @@ public final class MsgUserInfoProto {
         return this;
       }
 
+      private java.lang.Object token_ = "";
+      /**
+       * <pre>
+       * token信息
+       * </pre>
+       *
+       * <code>string token = 4;</code>
+       */
+      public java.lang.String getToken() {
+        java.lang.Object ref = token_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          token_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * token信息
+       * </pre>
+       *
+       * <code>string token = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTokenBytes() {
+        java.lang.Object ref = token_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          token_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * token信息
+       * </pre>
+       *
+       * <code>string token = 4;</code>
+       */
+      public Builder setToken(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        token_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * token信息
+       * </pre>
+       *
+       * <code>string token = 4;</code>
+       */
+      public Builder clearToken() {
+        
+        token_ = getDefaultInstance().getToken();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * token信息
+       * </pre>
+       *
+       * <code>string token = 4;</code>
+       */
+      public Builder setTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        token_ = value;
+        onChanged();
+        return this;
+      }
+
       private int type_ = 0;
       /**
        * <pre>
        * 返回类型
        * </pre>
        *
-       * <code>.RequestType type = 4;</code>
+       * <code>.RequestType type = 5;</code>
        */
       public int getTypeValue() {
         return type_;
@@ -2058,7 +2231,7 @@ public final class MsgUserInfoProto {
        * 返回类型
        * </pre>
        *
-       * <code>.RequestType type = 4;</code>
+       * <code>.RequestType type = 5;</code>
        */
       public Builder setTypeValue(int value) {
         type_ = value;
@@ -2070,7 +2243,7 @@ public final class MsgUserInfoProto {
        * 返回类型
        * </pre>
        *
-       * <code>.RequestType type = 4;</code>
+       * <code>.RequestType type = 5;</code>
        */
       public com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType getType() {
         @SuppressWarnings("deprecation")
@@ -2082,7 +2255,7 @@ public final class MsgUserInfoProto {
        * 返回类型
        * </pre>
        *
-       * <code>.RequestType type = 4;</code>
+       * <code>.RequestType type = 5;</code>
        */
       public Builder setType(com.ljh.gamedemo.proto.MsgUserInfoProto.RequestType value) {
         if (value == null) {
@@ -2098,7 +2271,7 @@ public final class MsgUserInfoProto {
        * 返回类型
        * </pre>
        *
-       * <code>.RequestType type = 4;</code>
+       * <code>.RequestType type = 5;</code>
        */
       public Builder clearType() {
         
@@ -2115,7 +2288,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public boolean hasRole() {
         return roleBuilder_ != null || role_ != null;
@@ -2125,7 +2298,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public com.ljh.gamedemo.proto.RoleProto.Role getRole() {
         if (roleBuilder_ == null) {
@@ -2139,7 +2312,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public Builder setRole(com.ljh.gamedemo.proto.RoleProto.Role value) {
         if (roleBuilder_ == null) {
@@ -2159,7 +2332,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public Builder setRole(
           com.ljh.gamedemo.proto.RoleProto.Role.Builder builderForValue) {
@@ -2177,7 +2350,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public Builder mergeRole(com.ljh.gamedemo.proto.RoleProto.Role value) {
         if (roleBuilder_ == null) {
@@ -2199,7 +2372,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public Builder clearRole() {
         if (roleBuilder_ == null) {
@@ -2217,7 +2390,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public com.ljh.gamedemo.proto.RoleProto.Role.Builder getRoleBuilder() {
         
@@ -2229,7 +2402,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       public com.ljh.gamedemo.proto.RoleProto.RoleOrBuilder getRoleOrBuilder() {
         if (roleBuilder_ != null) {
@@ -2244,7 +2417,7 @@ public final class MsgUserInfoProto {
        * 用户角色
        * </pre>
        *
-       * <code>.Role role = 5;</code>
+       * <code>.Role role = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.ljh.gamedemo.proto.RoleProto.Role, com.ljh.gamedemo.proto.RoleProto.Role.Builder, com.ljh.gamedemo.proto.RoleProto.RoleOrBuilder> 
@@ -2334,13 +2507,13 @@ public final class MsgUserInfoProto {
       "\n\021MsgUserInfo.proto\032\nRole.proto\"t\n\017Reque" +
       "stUserInfo\022\021\n\trequestId\030\001 \001(\t\022\016\n\006userId\030" +
       "\002 \001(\003\022\020\n\010username\030\003 \001(\t\022\020\n\010password\030\004 \001(" +
-      "\t\022\032\n\004type\030\005 \001(\0162\014.RequestType\"t\n\020Respons" +
-      "eUserInfo\022\016\n\006result\030\001 \001(\005\022\016\n\006userId\030\002 \001(" +
-      "\003\022\017\n\007content\030\003 \001(\t\022\032\n\004type\030\004 \001(\0162\014.Reque" +
-      "stType\022\023\n\004role\030\005 \001(\0132\005.Role*;\n\013RequestTy" +
-      "pe\022\t\n\005LOGIN\020\000\022\014\n\010REGISTER\020\001\022\t\n\005STATE\020\002\022\010" +
-      "\n\004EXIT\020\003B*\n\026com.ljh.gamedemo.protoB\020MsgU" +
-      "serInfoProtob\006proto3"
+      "\t\022\032\n\004type\030\005 \001(\0162\014.RequestType\"\203\001\n\020Respon" +
+      "seUserInfo\022\016\n\006result\030\001 \001(\005\022\016\n\006userId\030\002 \001" +
+      "(\003\022\017\n\007content\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\032\n\004ty" +
+      "pe\030\005 \001(\0162\014.RequestType\022\023\n\004role\030\006 \001(\0132\005.R" +
+      "ole*;\n\013RequestType\022\t\n\005LOGIN\020\000\022\014\n\010REGISTE" +
+      "R\020\001\022\t\n\005STATE\020\002\022\010\n\004EXIT\020\003B*\n\026com.ljh.game" +
+      "demo.protoB\020MsgUserInfoProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2358,7 +2531,7 @@ public final class MsgUserInfoProto {
     internal_static_ResponseUserInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseUserInfo_descriptor,
-        new java.lang.String[] { "Result", "UserId", "Content", "Type", "Role", });
+        new java.lang.String[] { "Result", "UserId", "Content", "Token", "Type", "Role", });
     com.ljh.gamedemo.proto.RoleProto.getDescriptor();
   }
 

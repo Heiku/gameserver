@@ -28,9 +28,10 @@ message ResponseUserInfo{
     int32 result = 1;           // 返回结果
     int64 userId = 2;           // 返回的uid
     string content = 3;
+    string token = 4;           // token信息
 
-    RequestType type = 4;       // 返回类型
+    RequestType type = 5;       // 返回类型
 
-    Role role = 5;          // 用户角色
+    Role role = 6;          // 用户角色
 }
 

@@ -8,6 +8,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalSiteMap {
     private static String charset = "utf-8";
@@ -15,13 +16,13 @@ public class LocalSiteMap {
     private static File sitefile = null;
 
     // 存储实体的数据 <name, site>
-    public static Map<String, Site> siteMap = new HashMap<>();
+    public static Map<String, Site> siteMap = new ConcurrentHashMap<>();
 
     // 存储实体的命名对应 <cName, name>
     public static Map<String, String> nameMap = new HashMap<>();
 
     // 存储实体的数据 <id, entity>
-    public static Map<Integer, Site> idSiteMap = new HashMap<>();
+    public static Map<Integer, Site> idSiteMap = new ConcurrentHashMap<>();
 
     static {
         try {

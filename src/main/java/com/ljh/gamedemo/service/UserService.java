@@ -9,6 +9,7 @@ import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.User;
 
+import com.ljh.gamedemo.entity.UserToken;
 import com.ljh.gamedemo.local.LocalUserMap;
 
 import com.ljh.gamedemo.proto.MsgUserInfoProto;
@@ -117,18 +118,22 @@ public class UserService {
                     .build();
         }
 
-        // 登录成功，获取ID
+        // 登录成功，获取ID和token
         long userId = user.getUserId();
+
+        UserToken userToken = userDao.selectUserTokenByID(userId);
+        String token = userToken.getToken();
 
         // 在本地缓存Map中存储当前的用户信息
         LocalUserMap.userMap.put(userId, user);
 
         // 成功消息返回
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setType(MsgUserInfoProto.RequestType.LOGIN)
                 .setContent(ContentType.LOGIN_SUCCESS)
                 .setUserId(userId)
+                .setToken(token)
                 .setResult(ResultCode.SUCCESS)
-                .setType(MsgUserInfoProto.RequestType.LOGIN)
                 .build();
     }
 
@@ -174,10 +179,11 @@ public class UserService {
         LocalUserMap.userMap.put(userId, user);
 
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                .setUserId(userId)
-                .setContent(ContentType.REGISTER_SUCCESS)
-                .setResult(ResultCode.SUCCESS)
                 .setType(MsgUserInfoProto.RequestType.REGISTER)
+                .setResult(ResultCode.SUCCESS)
+                .setUserId(userId)
+                .setToken(token)
+                .setContent(ContentType.REGISTER_SUCCESS)
                 .build();
     }
 
