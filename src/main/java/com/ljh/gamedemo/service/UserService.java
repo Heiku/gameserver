@@ -14,6 +14,8 @@ import com.ljh.gamedemo.local.LocalUserMap;
 
 import com.ljh.gamedemo.proto.MsgUserInfoProto;
 import com.ljh.gamedemo.proto.RoleProto;
+import com.ljh.gamedemo.util.SessionUtil;
+import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -87,7 +89,7 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public MsgUserInfoProto.ResponseUserInfo login(MsgUserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo login(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析message的请求参数
         String userName = requestUserInfo.getUsername();
         String password = requestUserInfo.getPassword();
@@ -127,6 +129,9 @@ public class UserService {
         // 在本地缓存Map中存储当前的用户信息
         LocalUserMap.userMap.put(userId, user);
 
+        // 绑定channel
+        SessionUtil.bindSession(userId, channel);
+
         // 成功消息返回
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setType(MsgUserInfoProto.RequestType.LOGIN)
@@ -144,7 +149,7 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public MsgUserInfoProto.ResponseUserInfo register(MsgUserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo register(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析message请求参数
         String userName = requestUserInfo.getUsername();
         String password = requestUserInfo.getPassword();
@@ -178,6 +183,8 @@ public class UserService {
         // 注册成功，将玩家信息写如本地缓存
         LocalUserMap.userMap.put(userId, user);
 
+        SessionUtil.bindSession(userId, channel);
+
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setType(MsgUserInfoProto.RequestType.REGISTER)
                 .setResult(ResultCode.SUCCESS)
@@ -194,7 +201,7 @@ public class UserService {
      * @param requestUserInfo
      * @return
      */
-    public MsgUserInfoProto.ResponseUserInfo exit(MsgUserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo exit(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 用户判断
         long userId = requestUserInfo.getUserId();
         if (userId <= 0){
@@ -237,6 +244,8 @@ public class UserService {
 
         // 移除当前玩家的角色在线信息
         LocalUserMap.userRoleMap.remove(userId);
+
+        SessionUtil.unBindSession(channel);
 
         // 更新数据库role的site信息
         int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId);
