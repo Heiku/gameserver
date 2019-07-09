@@ -1,23 +1,30 @@
 package com.ljh.gamedemo.server.handler;
 
-import com.ljh.gamedemo.proto.MsgSiteInfoProto;
+import com.ljh.gamedemo.proto.protoc.MsgSiteInfoProto;
+import com.ljh.gamedemo.service.SaveDataService;
 import com.ljh.gamedemo.service.SiteService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.ljh.gamedemo.server.request.RequestSiteType.*;
+import static com.ljh.gamedemo.server.request.RequestSiteType.MOVE;
+import static com.ljh.gamedemo.server.request.RequestSiteType.SITE;
 
-public class SiteInfoServerHandler extends SimpleChannelInboundHandler<MsgSiteInfoProto.RequestSiteInfo> {
+
+public class SiteInfoHandler extends SimpleChannelInboundHandler<MsgSiteInfoProto.RequestSiteInfo> {
 
     @Autowired
     private static SiteService siteService;
+
+    @Autowired
+    private static SaveDataService saveDataService;
 
     private MsgSiteInfoProto.ResponseSiteInfo responseSiteInfo;
 
     static {
         siteService = SpringUtil.getBean(SiteService.class);
+        saveDataService = SpringUtil.getBean(SaveDataService.class);
     }
 
     @Override
@@ -34,4 +41,10 @@ public class SiteInfoServerHandler extends SimpleChannelInboundHandler<MsgSiteIn
 
         ctx.writeAndFlush(responseSiteInfo);
     }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+
+    }
+
 }

@@ -17,22 +17,22 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
 
         pipeline.addLast(new ServerIdleStateHandler());
 
-        pipeline.addLast(new NoDataReadHandler());
-
         // 添加自定义编码解码器
         pipeline.addLast("decoder",new CustomProtobufDecoder());
         pipeline.addLast("encoder",new CustomProtobufEncoder());
 
         // 公共处理器
-        pipeline.addLast(new CommonServerHandler());
+        pipeline.addLast(new CommonHandler());
 
         // 用户请求处理器
-        pipeline.addLast(new UserInfoServerHandler());
+        pipeline.addLast(new UserInfoHandler());
 
         // 实体请求处理器
-        pipeline.addLast(new EntityInfoServerHandler());
+        pipeline.addLast(new EntityInfoHandler());
 
         // 场景请求处理器
-        pipeline.addLast(new SiteInfoServerHandler());
+        pipeline.addLast(new SiteInfoHandler());
+
+
     }
 }

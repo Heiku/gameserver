@@ -14,7 +14,6 @@ public class SessionUtil {
     // 用于以后的广播通知
     private static final Map<Long, ChannelGroup> groupIdChannelGroupMap = Maps.newConcurrentMap();
 
-
     /**
      * userId 绑定channel
      *
@@ -42,6 +41,9 @@ public class SessionUtil {
 
 
     public static long getUserId(Channel channel){
+        if (channel.attr(Attributes.USER_ID).get() == null){
+            return 0;
+        }
         return channel.attr(Attributes.USER_ID).get();
     }
 

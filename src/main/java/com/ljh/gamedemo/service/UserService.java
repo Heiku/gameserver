@@ -12,8 +12,8 @@ import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.UserToken;
 import com.ljh.gamedemo.local.LocalUserMap;
 
-import com.ljh.gamedemo.proto.MsgUserInfoProto;
-import com.ljh.gamedemo.proto.RoleProto;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
+import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;

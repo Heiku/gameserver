@@ -1,6 +1,6 @@
 package com.ljh.gamedemo.server.handler;
 
-import com.ljh.gamedemo.proto.MsgEntityInfoProto;
+import com.ljh.gamedemo.proto.protoc.MsgEntityInfoProto;
 import com.ljh.gamedemo.service.EntityService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.ljh.gamedemo.server.request.RequestEntityInfoType.*;
 
-public class EntityInfoServerHandler extends SimpleChannelInboundHandler<MsgEntityInfoProto.RequestEntityInfo> {
+public class EntityInfoHandler extends SimpleChannelInboundHandler<MsgEntityInfoProto.RequestEntityInfo> {
 
     @Autowired
     private static EntityService entityService;

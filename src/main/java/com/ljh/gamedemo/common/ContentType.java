@@ -41,6 +41,10 @@ public class ContentType {
     public static final String UPDATE_ROLE_SITE = "更新角色位置信息失败！\n";
 
 
+    // TALK
+    public static final String TALK_EMPTY = "该npc对你无话可说！\n";
+
+
     // Exit
     public static final String EXIT_SUCCESS = "退出成功！\n";
 }

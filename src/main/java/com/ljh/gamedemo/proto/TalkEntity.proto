@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// 这里暂时是一对一的npc对话
+// 如果到时要增加一对多的npc对话时，只需要增加一个TALK_MUCH指令
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/TalkEntity.proto
+
+import "Role.proto";
+import "Entity.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "TalkEntityProto";
+
+enum RequestType{
+    TALK = 0;
+}
+
+message RequestTalkEntity{
+    int64 userId = 1;       // userId
+    string entityName = 2;     // npc name
+    //int32 level = 3;        // 在做任务的时候，不同阶段与npc的对话可能不同
+    int32 solo = 4;         // 单独发送，暂时用不着，后期可以进行多npc对话
+    RequestType type = 5;   // 获取请求类型
+}
+
+message ResponseTalkEntity{
+    int32 result = 1;
+    int32 first = 2;        // 用于标识是谁先进行对话，利于下面的对话分组
+    string content = 3;
+
+    Role role = 4;          // 返回角色信息
+    Entity entity = 5;      // 返回实体信息
+}

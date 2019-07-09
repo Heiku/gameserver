@@ -1,10 +1,7 @@
 package com.ljh.gamedemo.server.codec;
 
 import com.google.protobuf.MessageLite;
-import com.ljh.gamedemo.proto.MessageBase;
-import com.ljh.gamedemo.proto.MsgEntityInfoProto;
-import com.ljh.gamedemo.proto.MsgSiteInfoProto;
-import com.ljh.gamedemo.proto.MsgUserInfoProto;
+import com.ljh.gamedemo.proto.protoc.*;
 
 import java.lang.reflect.Constructor;
 
@@ -21,8 +18,12 @@ public enum MessageType {
     RESPONSE_SITE_PROTO(0x05, MsgSiteInfoProto.ResponseSiteInfo.class),
 
     // entity
-    REQUEST_ENTITY_PROTO(0x06,MsgEntityInfoProto.RequestEntityInfo.class),
+    REQUEST_ENTITY_PROTO(0x06, MsgEntityInfoProto.RequestEntityInfo.class),
     RESPONSE_ENTITY_PROTO(0x07, MsgEntityInfoProto.ResponseEntityInfo.class),
+
+    // talk entity
+    REQUEST_TALK_ENTITY(0x08, TalkEntityProto.RequestTalkEntity.class),
+    RESPONSE_TALK_ENTITY(0x09,TalkEntityProto.ResponseTalkEntity.class)
     ;
 
 

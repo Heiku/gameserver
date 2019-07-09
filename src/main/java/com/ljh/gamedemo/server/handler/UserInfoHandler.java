@@ -1,6 +1,6 @@
 package com.ljh.gamedemo.server.handler;
 
-import com.ljh.gamedemo.proto.MsgUserInfoProto;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.service.UserService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
@@ -13,7 +13,7 @@ import static com.ljh.gamedemo.server.request.RequestUserInfoType.*;
 
 
 @ChannelHandler.Sharable
-public class UserInfoServerHandler extends SimpleChannelInboundHandler<MsgUserInfoProto.RequestUserInfo> {
+public class UserInfoHandler extends SimpleChannelInboundHandler<MsgUserInfoProto.RequestUserInfo> {
 
     @Autowired
     private static UserService userService;

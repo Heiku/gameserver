@@ -4,15 +4,13 @@ import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Entity;
-import com.ljh.gamedemo.common.EntityType;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalEntityMap;
 import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.proto.EntityProto;
-import com.ljh.gamedemo.proto.MessageBase;
-import com.ljh.gamedemo.proto.MsgEntityInfoProto;
-import com.ljh.gamedemo.proto.RoleProto;
+import com.ljh.gamedemo.proto.protoc.EntityProto;
+import com.ljh.gamedemo.proto.protoc.MsgEntityInfoProto;
+import com.ljh.gamedemo.proto.protoc.RoleProto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +55,7 @@ public class EntityService {
         if (LocalUserMap.userRoleMap.containsKey(userId)){
             role = LocalUserMap.userRoleMap.get(userId);
         }else {
-            // TODO:这里是直接数据库中读取一个角色，当一个用户对应多个角色时，这里需要修改以西
+            // TODO:这里是直接数据库中读取一个角色，当一个用户对应多个角色时，这里需要修改
             role = userRoleDao.selectUserRole(userId).get(0);
         }
 

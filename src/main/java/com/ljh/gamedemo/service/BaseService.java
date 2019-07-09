@@ -1,7 +1,7 @@
 package com.ljh.gamedemo.service;
 
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.proto.MessageBase;
+import com.ljh.gamedemo.proto.protoc.MessageBase;
 import com.ljh.gamedemo.util.DateUtil;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,13 @@ public class BaseService {
         return MessageBase.Message.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(date)
+                .build();
+    }
+
+
+    public MessageBase.Message sendHeartBeatResponse(){
+        return MessageBase.Message.newBuilder()
+                .setResult(ResultCode.SUCCESS)
                 .build();
     }
 }

@@ -8,7 +8,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.entity.Site;
-import com.ljh.gamedemo.proto.MsgSiteInfoProto;
+import com.ljh.gamedemo.proto.protoc.MsgSiteInfoProto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
