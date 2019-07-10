@@ -3,11 +3,14 @@ package com.ljh.gamedemo.service;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.UserRoleDao;
+import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Entity;
 import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalEntityMap;
 import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.proto.protoc.CreepProto;
 import com.ljh.gamedemo.proto.protoc.EntityProto;
 import com.ljh.gamedemo.proto.protoc.MsgEntityInfoProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
@@ -71,7 +74,10 @@ public class EntityService {
 
 
         // 获取当前场景下的所有npc
-        List<Entity> entityList = LocalEntityMap.entitySiteMap.get(siteName);
+        List<Entity> entityList = LocalEntityMap.siteEntityMap.get(siteName);
+
+        // 获取当前场景下的所有野怪信息
+        List<Creep> creepList = LocalCreepMap.getSiteCreepMap().get(siteName);
 
         // 添加真实的玩家角色信息：
         // 组装 role
@@ -108,11 +114,28 @@ public class EntityService {
             entities.add(entityProto);
         }
 
+        // 添加场景中的所有野怪信息
+        List<CreepProto.Creep> creeps = new ArrayList<>();
+        for (Creep creep : creepList){
+            CreepProto.Creep creepProto = CreepProto.Creep.newBuilder()
+                    .setCreepId(creep.getCreepId())
+                    .setName(creep.getName())
+                    .setNum(creep.getNum())
+                    .setType(creep.getType())
+                    .setLevel(creep.getLevel())
+                    .setHp(creep.getHp())
+                    .setDamage(creep.getDamage())
+                    .build();
+
+            creeps.add(creepProto);
+        }
+
         return responseEntityInfo.toBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.ENTITY_FIND_ALL)
                 .addAllRole(roles)
                 .addAllEntity(entities)
+                .addAllCreep(creeps)
                 .build();
     }
 }

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Creep.proto
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "CreepProto";
+
+message Creep{
+
+    int32 creepId = 1;
+    int32 type = 2;
+    string name = 3;
+    int32 num = 4;
+    int32 level = 5;
+    int32 hp = 6;
+    int32 damage = 7;
+
+}

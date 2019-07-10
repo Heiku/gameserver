@@ -2,6 +2,9 @@ package com.ljh.gamedemo.entity;
 
 import lombok.Data;
 
+/**
+ * npc对话实体类
+ */
 @Data
 public class TalkText implements Comparable<TalkText> {
 

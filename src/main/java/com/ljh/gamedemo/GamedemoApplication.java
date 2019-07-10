@@ -14,16 +14,16 @@ public class GamedemoApplication {
         SpringApplication.run(GamedemoApplication.class, args);
 
         // 初始化时载入地图数据
-        LocalSiteMap.readCsv();
+        LocalSiteMap.readExcel();
 
         // 初始化时载入实体数据
-        LocalEntityMap.readCsv();
+        LocalEntityMap.readExcel();
 
         // 初始化载入角色信息
         LocalUserMap.readSiteRoles();
 
         // 初始化npc对话信息
-        LocalTalkTextMap.readCsv();
+        LocalTalkTextMap.readExcel();
     }
 
 }

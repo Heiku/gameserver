@@ -925,6 +925,50 @@ public final class MsgEntityInfoProto {
      */
     com.ljh.gamedemo.proto.protoc.EntityProto.EntityOrBuilder getEntityOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    java.util.List<com.ljh.gamedemo.proto.protoc.CreepProto.Creep> 
+        getCreepList();
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.CreepProto.Creep getCreep(int index);
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    int getCreepCount();
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder> 
+        getCreepOrBuilderList();
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder getCreepOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code ResponseEntityInfo}
@@ -942,6 +986,7 @@ public final class MsgEntityInfoProto {
       content_ = "";
       role_ = java.util.Collections.emptyList();
       entity_ = java.util.Collections.emptyList();
+      creep_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1004,6 +1049,15 @@ public final class MsgEntityInfoProto {
                   input.readMessage(com.ljh.gamedemo.proto.protoc.EntityProto.Entity.parser(), extensionRegistry));
               break;
             }
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                creep_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.CreepProto.Creep>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              creep_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.CreepProto.Creep.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -1024,6 +1078,9 @@ public final class MsgEntityInfoProto {
         }
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
           entity_ = java.util.Collections.unmodifiableList(entity_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) != 0)) {
+          creep_ = java.util.Collections.unmodifiableList(creep_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1199,6 +1256,61 @@ public final class MsgEntityInfoProto {
       return entity_.get(index);
     }
 
+    public static final int CREEP_FIELD_NUMBER = 5;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.CreepProto.Creep> creep_;
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    public java.util.List<com.ljh.gamedemo.proto.protoc.CreepProto.Creep> getCreepList() {
+      return creep_;
+    }
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder> 
+        getCreepOrBuilderList() {
+      return creep_;
+    }
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    public int getCreepCount() {
+      return creep_.size();
+    }
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.CreepProto.Creep getCreep(int index) {
+      return creep_.get(index);
+    }
+    /**
+     * <pre>
+     * 获取野怪信息
+     * </pre>
+     *
+     * <code>repeated .Creep creep = 5;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder getCreepOrBuilder(
+        int index) {
+      return creep_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1225,6 +1337,9 @@ public final class MsgEntityInfoProto {
       for (int i = 0; i < entity_.size(); i++) {
         output.writeMessage(4, entity_.get(i));
       }
+      for (int i = 0; i < creep_.size(); i++) {
+        output.writeMessage(5, creep_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -1249,6 +1364,10 @@ public final class MsgEntityInfoProto {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, entity_.get(i));
       }
+      for (int i = 0; i < creep_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, creep_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1272,6 +1391,8 @@ public final class MsgEntityInfoProto {
           .equals(other.getRoleList())) return false;
       if (!getEntityList()
           .equals(other.getEntityList())) return false;
+      if (!getCreepList()
+          .equals(other.getCreepList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1294,6 +1415,10 @@ public final class MsgEntityInfoProto {
       if (getEntityCount() > 0) {
         hash = (37 * hash) + ENTITY_FIELD_NUMBER;
         hash = (53 * hash) + getEntityList().hashCode();
+      }
+      if (getCreepCount() > 0) {
+        hash = (37 * hash) + CREEP_FIELD_NUMBER;
+        hash = (53 * hash) + getCreepList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1425,6 +1550,7 @@ public final class MsgEntityInfoProto {
                 .alwaysUseFieldBuilders) {
           getRoleFieldBuilder();
           getEntityFieldBuilder();
+          getCreepFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1445,6 +1571,12 @@ public final class MsgEntityInfoProto {
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           entityBuilder_.clear();
+        }
+        if (creepBuilder_ == null) {
+          creep_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          creepBuilder_.clear();
         }
         return this;
       }
@@ -1492,6 +1624,15 @@ public final class MsgEntityInfoProto {
           result.entity_ = entity_;
         } else {
           result.entity_ = entityBuilder_.build();
+        }
+        if (creepBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0)) {
+            creep_ = java.util.Collections.unmodifiableList(creep_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.creep_ = creep_;
+        } else {
+          result.creep_ = creepBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1597,6 +1738,32 @@ public final class MsgEntityInfoProto {
                    getEntityFieldBuilder() : null;
             } else {
               entityBuilder_.addAllMessages(other.entity_);
+            }
+          }
+        }
+        if (creepBuilder_ == null) {
+          if (!other.creep_.isEmpty()) {
+            if (creep_.isEmpty()) {
+              creep_ = other.creep_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureCreepIsMutable();
+              creep_.addAll(other.creep_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.creep_.isEmpty()) {
+            if (creepBuilder_.isEmpty()) {
+              creepBuilder_.dispose();
+              creepBuilder_ = null;
+              creep_ = other.creep_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              creepBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getCreepFieldBuilder() : null;
+            } else {
+              creepBuilder_.addAllMessages(other.creep_);
             }
           }
         }
@@ -2360,6 +2527,318 @@ public final class MsgEntityInfoProto {
         }
         return entityBuilder_;
       }
+
+      private java.util.List<com.ljh.gamedemo.proto.protoc.CreepProto.Creep> creep_ =
+        java.util.Collections.emptyList();
+      private void ensureCreepIsMutable() {
+        if (!((bitField0_ & 0x00000004) != 0)) {
+          creep_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.CreepProto.Creep>(creep_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.CreepProto.Creep, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder, com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder> creepBuilder_;
+
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.CreepProto.Creep> getCreepList() {
+        if (creepBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(creep_);
+        } else {
+          return creepBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public int getCreepCount() {
+        if (creepBuilder_ == null) {
+          return creep_.size();
+        } else {
+          return creepBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.CreepProto.Creep getCreep(int index) {
+        if (creepBuilder_ == null) {
+          return creep_.get(index);
+        } else {
+          return creepBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder setCreep(
+          int index, com.ljh.gamedemo.proto.protoc.CreepProto.Creep value) {
+        if (creepBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureCreepIsMutable();
+          creep_.set(index, value);
+          onChanged();
+        } else {
+          creepBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder setCreep(
+          int index, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder builderForValue) {
+        if (creepBuilder_ == null) {
+          ensureCreepIsMutable();
+          creep_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          creepBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder addCreep(com.ljh.gamedemo.proto.protoc.CreepProto.Creep value) {
+        if (creepBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureCreepIsMutable();
+          creep_.add(value);
+          onChanged();
+        } else {
+          creepBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder addCreep(
+          int index, com.ljh.gamedemo.proto.protoc.CreepProto.Creep value) {
+        if (creepBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureCreepIsMutable();
+          creep_.add(index, value);
+          onChanged();
+        } else {
+          creepBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder addCreep(
+          com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder builderForValue) {
+        if (creepBuilder_ == null) {
+          ensureCreepIsMutable();
+          creep_.add(builderForValue.build());
+          onChanged();
+        } else {
+          creepBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder addCreep(
+          int index, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder builderForValue) {
+        if (creepBuilder_ == null) {
+          ensureCreepIsMutable();
+          creep_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          creepBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder addAllCreep(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.CreepProto.Creep> values) {
+        if (creepBuilder_ == null) {
+          ensureCreepIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, creep_);
+          onChanged();
+        } else {
+          creepBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder clearCreep() {
+        if (creepBuilder_ == null) {
+          creep_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          creepBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public Builder removeCreep(int index) {
+        if (creepBuilder_ == null) {
+          ensureCreepIsMutable();
+          creep_.remove(index);
+          onChanged();
+        } else {
+          creepBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder getCreepBuilder(
+          int index) {
+        return getCreepFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder getCreepOrBuilder(
+          int index) {
+        if (creepBuilder_ == null) {
+          return creep_.get(index);  } else {
+          return creepBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder> 
+           getCreepOrBuilderList() {
+        if (creepBuilder_ != null) {
+          return creepBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(creep_);
+        }
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder addCreepBuilder() {
+        return getCreepFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.CreepProto.Creep.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder addCreepBuilder(
+          int index) {
+        return getCreepFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 获取野怪信息
+       * </pre>
+       *
+       * <code>repeated .Creep creep = 5;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder> 
+           getCreepBuilderList() {
+        return getCreepFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.CreepProto.Creep, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder, com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder> 
+          getCreepFieldBuilder() {
+        if (creepBuilder_ == null) {
+          creepBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.CreepProto.Creep, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder, com.ljh.gamedemo.proto.protoc.CreepProto.CreepOrBuilder>(
+                  creep_,
+                  ((bitField0_ & 0x00000004) != 0),
+                  getParentForChildren(),
+                  isClean());
+          creep_ = null;
+        }
+        return creepBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2433,19 +2912,21 @@ public final class MsgEntityInfoProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\023MsgEntityInfo.proto\032\nRole.proto\032\014Entit" +
-      "y.proto\"R\n\021RequestEntityInfo\022\021\n\trequestI" +
-      "d\030\001 \001(\t\022\016\n\006userId\030\002 \001(\003\022\032\n\004type\030\003 \001(\0162\014." +
-      "RequestType\"c\n\022ResponseEntityInfo\022\016\n\006res" +
-      "ult\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\023\n\004role\030\003 \003(\013" +
-      "2\005.Role\022\027\n\006entity\030\004 \003(\0132\007.Entity*\026\n\013Requ" +
-      "estType\022\007\n\003AOI\020\000B3\n\035com.ljh.gamedemo.pro" +
-      "to.protocB\022MsgEntityInfoProtob\006proto3"
+      "y.proto\032\013Creep.proto\"R\n\021RequestEntityInf" +
+      "o\022\021\n\trequestId\030\001 \001(\t\022\016\n\006userId\030\002 \001(\003\022\032\n\004" +
+      "type\030\003 \001(\0162\014.RequestType\"z\n\022ResponseEnti" +
+      "tyInfo\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022" +
+      "\023\n\004role\030\003 \003(\0132\005.Role\022\027\n\006entity\030\004 \003(\0132\007.E" +
+      "ntity\022\025\n\005creep\030\005 \003(\0132\006.Creep*\026\n\013RequestT" +
+      "ype\022\007\n\003AOI\020\000B3\n\035com.ljh.gamedemo.proto.p" +
+      "rotocB\022MsgEntityInfoProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor(),
           com.ljh.gamedemo.proto.protoc.EntityProto.getDescriptor(),
+          com.ljh.gamedemo.proto.protoc.CreepProto.getDescriptor(),
         });
     internal_static_RequestEntityInfo_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2458,9 +2939,10 @@ public final class MsgEntityInfoProto {
     internal_static_ResponseEntityInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseEntityInfo_descriptor,
-        new java.lang.String[] { "Result", "Content", "Role", "Entity", });
+        new java.lang.String[] { "Result", "Content", "Role", "Entity", "Creep", });
     com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor();
     com.ljh.gamedemo.proto.protoc.EntityProto.getDescriptor();
+    com.ljh.gamedemo.proto.protoc.CreepProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

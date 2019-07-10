@@ -2,6 +2,9 @@ package com.ljh.gamedemo.entity;
 
 import lombok.Data;
 
+/**
+ * 用户实体类
+ */
 @Data
 public class User {
 
