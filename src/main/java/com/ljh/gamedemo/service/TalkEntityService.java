@@ -11,13 +11,21 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.EntityProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.proto.protoc.TalkEntityProto;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class TalkEntityService {
 
+    /**
+     * 获取 npc 的对话
+     *
+     * @param requestTalkEntity
+     * @return
+     */
     public TalkEntityProto.ResponseTalkEntity talkNpc(TalkEntityProto.RequestTalkEntity requestTalkEntity){
 
         // 用户id标识判断
@@ -39,7 +47,7 @@ public class TalkEntityService {
         }
 
         // 读取请求request中的npcName
-        String npcName = requestTalkEntity.getEntityName();
+        String npcName = requestTalkEntity.getEntityName().trim();
 
         // 构造proto，准备返回
         Entity entity = LocalEntityMap.entityMap.get(npcName);
@@ -59,18 +67,31 @@ public class TalkEntityService {
                 .setAlive(role.getAlive())
                 .build();
 
-
         // 获取npc的对话信息
-        Map<Integer, TalkText> textMap = LocalTalkTextMap.getTalkTextMap().get(npcName);
-        if (textMap.isEmpty()){
+        List<TalkText> talkTextList = LocalTalkTextMap.getTalkTextMap().get(npcName);
+        if (talkTextList == null || talkTextList.isEmpty()){
             return TalkEntityProto.ResponseTalkEntity.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.TALK_EMPTY)
                     .build();
         }
 
-        // TODO:后期根据角色等级进行对话筛选，这里先通用
-        TalkText talkText = textMap.get(1);
+
+        // 这里根据role的level获取不同阶段的npc对话
+        TalkText talkText = new TalkText();
+
+        // 排序进行level降序，找到一个等级符合的对话
+        Collections.sort(talkTextList);
+        talkTextList.forEach(e -> {
+            if (role.getLevel() >= e.getLevel()){
+                try {
+                    BeanUtils.copyProperties(talkText, e);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
 
         // 返回消息
         return TalkEntityProto.ResponseTalkEntity.newBuilder()

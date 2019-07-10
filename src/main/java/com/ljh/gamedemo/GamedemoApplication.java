@@ -2,6 +2,7 @@ package com.ljh.gamedemo;
 
 import com.ljh.gamedemo.local.LocalEntityMap;
 import com.ljh.gamedemo.local.LocalSiteMap;
+import com.ljh.gamedemo.local.LocalTalkTextMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,9 @@ public class GamedemoApplication {
 
         // 初始化载入角色信息
         LocalUserMap.readSiteRoles();
+
+        // 初始化npc对话信息
+        LocalTalkTextMap.readCsv();
     }
 
 }

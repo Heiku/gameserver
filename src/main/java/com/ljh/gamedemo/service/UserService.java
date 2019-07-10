@@ -72,6 +72,7 @@ public class UserService {
                 .build();
 
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setType(MsgUserInfoProto.RequestType.STATE)
                 .setUserId(userId)
                 .setContent(ContentType.ROLE_CHOOSE)
                 .setResult(ResultCode.SUCCESS)

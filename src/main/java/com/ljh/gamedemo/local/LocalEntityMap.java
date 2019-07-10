@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.local;
 
+import com.google.common.collect.Maps;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Entity;
 import com.ljh.gamedemo.entity.Site;
@@ -27,10 +28,10 @@ public class LocalEntityMap {
     private static String charset = "utf-8";
 
     // 存储实体的数据 <name, entity>
-    public static Map<String, Entity> entityMap = new HashMap<>();
+    public static Map<String, Entity> entityMap = Maps.newHashMap();
 
     // 存储实体的位置数据 <siteName, List<Entity>>
-    public static Map<String, List<Entity>> entitySiteMap = new HashMap<>();
+    public static Map<String, List<Entity>> entitySiteMap = Maps.newHashMap();
 
     // 将.csv文件解析成实体数据
     public static void readCsv(){

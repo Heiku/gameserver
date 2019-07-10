@@ -9,9 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class LocalTalkTextMap {
 
@@ -19,8 +17,8 @@ public class LocalTalkTextMap {
 
     private static File talkTestFile = null;
 
-    // npc对话文本 <name,<level,entity>>
-    private static Map<String, Map<Integer, TalkText>> talkTextMap = new HashMap<>();
+    // npc对话文本 <name,List<entity>>
+    private static Map<String, List<TalkText>> talkTextMap = new HashMap<>();
 
     static {
         try {
@@ -51,31 +49,26 @@ public class LocalTalkTextMap {
                 talkText.setContent(strArr[3]);
 
                 // 先存放<level,entity>
-                Map<Integer, TalkText> levelMap = new HashMap<>();
-                levelMap.put(level, talkText);
+                List<TalkText> talkTextList = talkTextMap.get(npcName);
+                if (talkTextList == null || talkTextList.isEmpty()){
+                    talkTextList = new ArrayList<>();
+                }
+                talkTextList.add(talkText);
 
                 // 再放big map
-                talkTextMap.put(npcName, levelMap);
+                talkTextMap.put(npcName, talkTextList);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public static Map<String, Map<Integer, TalkText>> getTalkTextMap(){
+    public static Map<String,List<TalkText>> getTalkTextMap(){
         return talkTextMap;
     }
 
-    public static void setTalkTextMap(Map<String, Map<Integer, TalkText>> map){
+    public static void setTalkTextMap(Map<String, List<TalkText>> map){
         talkTextMap = map;
     }
 
-
-    public static void main(String[] args) {
-        readCsv();
-
-        talkTextMap.forEach((k,v) -> {
-            System.out.println("key: " + k + "  value: " + v);
-        });
-    }
 }
