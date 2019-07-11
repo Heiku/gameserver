@@ -3,6 +3,9 @@ package com.ljh.gamedemo.entity;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 玩家角色
  */
@@ -25,4 +28,18 @@ public class Role {
      * 是否或者 1：存活，0：死亡
      */
     private Integer alive;
+
+
+    /**
+     * hp
+     */
+    private Integer hp;
+
+    /**
+     * mp
+     */
+    private Integer mp;
+
+
+    private List<Spell> spellList = new ArrayList<>();
 }

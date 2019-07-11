@@ -92,6 +92,8 @@ public class EntityService {
                         .setType(r.getType())
                         .setLevel(r.getLevel())
                         .setAlive(r.getAlive())
+                        .setHp(r.getHp())
+                        .setMp(r.getMp())
                         .build();
 
                 roles.add(roleProto);

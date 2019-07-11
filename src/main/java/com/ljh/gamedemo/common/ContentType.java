@@ -45,6 +45,17 @@ public class ContentType {
     public static final String TALK_EMPTY = "该npc对你无话可说！\n";
 
 
+    // Spell
+    public static final String SPELL_ALL = "查找成功！\n";
+
+    public static final String SPELL_EMPTY = "暂无该技能，请重新输入 learn 指令！\n";
+
+    public static final String SPELL_LEARN_SUCCESS = "技能学习成功！\n";
+
     // Exit
     public static final String EXIT_SUCCESS = "退出成功！\n";
+
+
+    // DB
+    public static final String INSERT_FAILED = "插入失败！\n";
 }

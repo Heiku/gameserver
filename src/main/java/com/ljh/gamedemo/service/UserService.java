@@ -69,6 +69,8 @@ public class UserService {
                 .setType(role.getType())
                 .setLevel(role.getLevel())
                 .setAlive(role.getAlive())
+                .setHp(role.getHp())
+                .setMp(role.getMp())
                 .build();
 
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
@@ -213,7 +215,7 @@ public class UserService {
         }
 
         // 获取当前的玩家角色
-        Role role = null;
+        Role role;
         role = LocalUserMap.userRoleMap.get(userId);
         if (role == null){
             role = userRoleDao.selectUserRole(userId).get(0);

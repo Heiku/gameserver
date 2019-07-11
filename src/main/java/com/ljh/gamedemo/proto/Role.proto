@@ -11,4 +11,6 @@ message Role{
     int32 type = 3;
     int32 level = 4;
     int32 alive = 5;
+    int32 hp = 6;
+    int32 mp = 7;
 }

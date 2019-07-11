@@ -28,7 +28,7 @@ public class LocalCreepMap {
     private static File creepFile = null;
 
     // creep idMap：<creepId, Creep>
-    private static Map<Integer, Creep> idMap = Maps.newConcurrentMap();
+    private static Map<Integer, Creep> idCreepMap = Maps.newConcurrentMap();
 
     // creep nameCreepMap：<creepName, Creep>
     private static Map<String, Creep> nameCreepMap = Maps.newConcurrentMap();
@@ -73,7 +73,7 @@ public class LocalCreepMap {
                     creep.setDamage(Integer.valueOf(getValue(row.getCell(6))));
                     creep.setSiteId(Integer.valueOf(getValue(row.getCell(7))));
 
-                    idMap.put(creep.getCreepId(), creep);
+                    idCreepMap.put(creep.getCreepId(), creep);
                     nameCreepMap.put(creep.getName(), creep);
 
                     // 存放 siteCreepMap
@@ -107,7 +107,7 @@ public class LocalCreepMap {
 
         System.out.println("======================");
 
-        idMap.forEach((k, v) -> {
+        idCreepMap.forEach((k, v) -> {
             System.out.println("k: " + k + " value: " + v);
         });
 
@@ -116,6 +116,8 @@ public class LocalCreepMap {
 
         siteCreepMap.forEach((k, v) -> {
             System.out.println("k: " + k + " value: " + v);
+
+
         });
 
     }

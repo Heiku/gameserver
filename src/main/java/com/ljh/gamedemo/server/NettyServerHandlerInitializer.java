@@ -35,5 +35,8 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
 
         // npc对话处理器
         pipeline.addLast(new TalkEntityHandler());
+
+        // 技能处理器
+        pipeline.addLast(new SpellHandler());
     }
 }

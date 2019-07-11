@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgSpell.proto
+
+import "Spell.proto";
+import "Role.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgSpellProto";
+
+enum RequestType{
+    SPELL = 0;
+    LEARN = 1;
+}
+
+message RequestSpell{
+    int64 userId = 1;
+    int32 spellId = 2;
+
+    RequestType type = 3;
+}
+
+
+message ResponseSpell{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    Role role = 4;
+    repeated Spell spell = 5;
+}

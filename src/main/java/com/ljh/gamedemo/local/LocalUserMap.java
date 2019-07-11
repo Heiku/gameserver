@@ -1,9 +1,12 @@
 package com.ljh.gamedemo.local;
 
 import com.google.common.collect.Maps;
+import com.ljh.gamedemo.dao.RoleSpellDao;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.User;
+import com.ljh.gamedemo.entity.dto.RoleSpell;
 import com.ljh.gamedemo.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +33,10 @@ public class LocalUserMap {
     public static Map<Integer, List<Role>> siteRolesMap = Maps.newConcurrentMap();
 
 
+    // 存放玩家的角色id，只用于初始化
+    public static Map<Long, Role> idRoleMap = Maps.newHashMap();
+
+
     // 读取数据库，获取role的位置信息
     public static void readSiteRoles(){
         List<Role> roles = userRoleDao.selectAllRole();
@@ -45,7 +52,17 @@ public class LocalUserMap {
             }
             list.add(role);
             siteRolesMap.put(siteId, list);
+
+
+            idRoleMap.put(role.getRoleId(), role);
         }
 
+    }
+    public static Map<Long, Role> getIdRoleMap() {
+        return idRoleMap;
+    }
+
+    public static void setIdRoleMap(Map<Long, Role> idRoleMap) {
+        LocalUserMap.idRoleMap = idRoleMap;
     }
 }

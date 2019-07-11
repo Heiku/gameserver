@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Spell.proto
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "SpellProto";
+
+message Spell{
+    int32 spellId = 1;
+    string name = 2;
+    int32 level = 3;
+    int32 damage = 4;
+    int32 cost = 5;
+    int32 coolDown = 6;
+    int32 range = 7;
+}
