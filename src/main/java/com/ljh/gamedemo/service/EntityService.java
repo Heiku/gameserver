@@ -54,7 +54,7 @@ public class EntityService {
         }
 
         // 缓存读，再数据库
-        Role role = null;
+        Role role;
         if (LocalUserMap.userRoleMap.containsKey(userId)){
             role = LocalUserMap.userRoleMap.get(userId);
         }else {
@@ -116,18 +116,20 @@ public class EntityService {
 
         // 添加场景中的所有野怪信息
         List<CreepProto.Creep> creeps = new ArrayList<>();
-        for (Creep creep : creepList){
-            CreepProto.Creep creepProto = CreepProto.Creep.newBuilder()
-                    .setCreepId(creep.getCreepId())
-                    .setName(creep.getName())
-                    .setNum(creep.getNum())
-                    .setType(creep.getType())
-                    .setLevel(creep.getLevel())
-                    .setHp(creep.getHp())
-                    .setDamage(creep.getDamage())
-                    .build();
+        if (creepList != null && !creepList.isEmpty()) {
+            for (Creep creep : creepList){
+                CreepProto.Creep creepProto = CreepProto.Creep.newBuilder()
+                        .setCreepId(creep.getCreepId())
+                        .setName(creep.getName())
+                        .setNum(creep.getNum())
+                        .setType(creep.getType())
+                        .setLevel(creep.getLevel())
+                        .setHp(creep.getHp())
+                        .setDamage(creep.getDamage())
+                        .build();
 
-            creeps.add(creepProto);
+                creeps.add(creepProto);
+            }
         }
 
         return responseEntityInfo.toBuilder()

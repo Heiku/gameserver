@@ -1,9 +1,6 @@
 package com.ljh.gamedemo;
 
-import com.ljh.gamedemo.local.LocalEntityMap;
-import com.ljh.gamedemo.local.LocalSiteMap;
-import com.ljh.gamedemo.local.LocalTalkTextMap;
-import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.local.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -24,6 +21,9 @@ public class GamedemoApplication {
 
         // 初始化npc对话信息
         LocalTalkTextMap.readExcel();
+
+        // 初始化野怪信息
+        LocalCreepMap.readExcel();
     }
 
 }
