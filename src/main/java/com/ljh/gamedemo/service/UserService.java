@@ -251,7 +251,7 @@ public class UserService {
         SessionUtil.unBindSession(channel);
 
         // 更新数据库role的site信息
-        int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId);
+        int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId, role.getLevel(), role.getHp(), role.getMp());
         if (n <= 0){
             return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)

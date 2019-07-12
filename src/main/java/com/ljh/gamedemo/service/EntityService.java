@@ -77,7 +77,7 @@ public class EntityService {
         List<Entity> entityList = LocalEntityMap.siteEntityMap.get(siteName);
 
         // 获取当前场景下的所有野怪信息
-        List<Creep> creepList = LocalCreepMap.getSiteCreepMap().get(siteName);
+        List<Creep> creepList = LocalCreepMap.getSiteCreepMap().get(siteId);
 
         // 添加真实的玩家角色信息：
         // 组装 role

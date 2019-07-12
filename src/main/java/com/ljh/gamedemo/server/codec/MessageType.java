@@ -26,8 +26,12 @@ public enum MessageType {
     RESPONSE_TALK_ENTITY(0x09,TalkEntityProto.ResponseTalkEntity.class),
 
     // spell
-    REQUEST_SPELL(0x10, MsgSpellProto.RequestSpell.class),
-    RESPONSE_SPELL(0x11, MsgSpellProto.ResponseSpell.class)
+    REQUEST_SPELL(0xa, MsgSpellProto.RequestSpell.class),
+    RESPONSE_SPELL(0xb, MsgSpellProto.ResponseSpell.class),
+
+    // attack spell
+    REQUEST_ATTACK_SPELL(0xc, MsgAttackCreepProto.RequestAttackCreep.class),
+    RESPONSE_ATTACK_SPELL(0xd, MsgAttackCreepProto.ResponseAttackCreep.class)
     ;
 
 

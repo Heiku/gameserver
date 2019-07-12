@@ -32,6 +32,11 @@ public class ContentType {
     public static final String ENTITY_FIND_ALL = "获取所有实体信息成功！\n";
 
 
+    // Creep
+    public static final String CREEP_PARAM_EMPTY = "请输入正确的野怪id！\n";
+
+    public static final String CREEP_EMPTY = "找不到id对应的野怪信息，请重新输入指令！\n";
+
     // Site
     public static final String SITE_NOW = "你当前的位置是：";
 
@@ -55,6 +60,9 @@ public class ContentType {
     // Exit
     public static final String EXIT_SUCCESS = "退出成功！\n";
 
+
+    // Attack
+    public static final String ATTACK_DEATH_CREEP = "你攻击的野怪已经死亡！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

@@ -34,7 +34,7 @@ public class SaveDataService {
         }
 
         Role role = LocalUserMap.userRoleMap.get(userId);
-        int n = userRoleDao.updateRoleSiteInfo(userId, role.getRoleId(), role.getSiteId());
+        int n = userRoleDao.updateRoleSiteInfo(userId, role.getRoleId(), role.getSiteId(), role.getLevel(), role.getHp(), role.getMp());
 
         log.info(userId + " - "  + role.getName() + " 暂时下线！");
     }

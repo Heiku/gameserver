@@ -1,7 +1,9 @@
 package com.ljh.gamedemo.service;
 
+import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
+import com.ljh.gamedemo.proto.protoc.CreepProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.proto.protoc.SpellProto;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,18 @@ public class ProtoService {
                 .setCost(spell.getCost())
                 .setDamage(spell.getDamage())
                 .setRange(spell.getRange())
+                .build();
+    }
+
+    public CreepProto.Creep transToCreep(Creep creep){
+        return CreepProto.Creep.newBuilder()
+                .setCreepId(creep.getCreepId())
+                .setName(creep.getName())
+                .setType(creep.getType())
+                .setLevel(creep.getLevel())
+                .setNum(creep.getNum())
+                .setHp(creep.getHp())
+                .setDamage(creep.getNum())
                 .build();
     }
 }

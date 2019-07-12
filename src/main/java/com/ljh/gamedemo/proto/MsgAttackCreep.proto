@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgAttackCreep.proto
+
+import "Creep.proto";
+import "Role.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgAttackCreepProto";
+
+enum RequestType{
+    ATTACK = 0;
+}
+
+message RequestAttackCreep{
+    int64 userId = 1;
+    int32 creepId = 2;
+
+    RequestType type = 3;
+}
+
+message ResponseAttackCreep{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    Creep creep = 4;
+    Role role = 5;
+}

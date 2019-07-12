@@ -34,7 +34,7 @@ public class LocalCreepMap {
     private static Map<String, Creep> nameCreepMap = Maps.newConcurrentMap();
 
     // creep siteCreepMap：<siteName, List<Creep>>
-    private static Map<String, List<Creep>> siteCreepMap = Maps.newConcurrentMap();
+    private static Map<Integer, List<Creep>> siteCreepMap = Maps.newConcurrentMap();
 
     static {
         try {
@@ -78,21 +78,41 @@ public class LocalCreepMap {
 
                     // 存放 siteCreepMap
                     List<Creep> creepList;
+                    Integer siteId = creep.getSiteId();
                     String siteName = LocalSiteMap.idSiteMap.get(creep.getSiteId()).getName();
-                    creepList = siteCreepMap.get(siteName);
+                    creepList = siteCreepMap.get(siteId);
                     if (creepList == null){
                         creepList = new ArrayList<>();
                     }
                     creepList.add(creep);
-                    siteCreepMap.put(siteName, creepList);
+                    siteCreepMap.put(siteId, creepList);
                 }
             }
         }
     }
 
-
-    public static Map<String, List<Creep>> getSiteCreepMap(){
+    public static Map<Integer, List<Creep>> getSiteCreepMap() {
         return siteCreepMap;
+    }
+
+    public static void setSiteCreepMap(Map<Integer, List<Creep>> siteCreepMap) {
+        LocalCreepMap.siteCreepMap = siteCreepMap;
+    }
+
+    public static Map<Integer, Creep> getIdCreepMap() {
+        return idCreepMap;
+    }
+
+    public static void setIdCreepMap(Map<Integer, Creep> idCreepMap) {
+        LocalCreepMap.idCreepMap = idCreepMap;
+    }
+
+    public static Map<String, Creep> getNameCreepMap() {
+        return nameCreepMap;
+    }
+
+    public static void setNameCreepMap(Map<String, Creep> nameCreepMap) {
+        LocalCreepMap.nameCreepMap = nameCreepMap;
     }
 
     public static void main(String[] args) {

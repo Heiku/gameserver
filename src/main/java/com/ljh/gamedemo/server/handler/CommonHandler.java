@@ -42,22 +42,6 @@ public class CommonHandler extends SimpleChannelInboundHandler<MessageBase.Messa
         ctx.writeAndFlush(message);
     }
 
-
-/*    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent){
-            // 空闲6s之后触发 （心跳包丢失）
-            if (counter >= 3){
-                // 连续丢失3个心跳包（断开连接）
-                ctx.channel().close().sync();
-                System.out.println("已与 Client 断开连接");
-            }else {
-                counter++;
-                System.out.println("丢失了第 " + ctx + " 个心跳包");
-            }
-        }
-    }*/
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         System.out.println("client 连接出现异常");
