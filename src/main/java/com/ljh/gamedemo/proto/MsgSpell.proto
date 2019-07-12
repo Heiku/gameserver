@@ -28,4 +28,5 @@ message ResponseSpell{
 
     Role role = 4;
     repeated Spell spell = 5;
+    repeated Spell own = 6;
 }

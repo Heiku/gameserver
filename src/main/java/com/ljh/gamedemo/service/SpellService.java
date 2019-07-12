@@ -52,8 +52,10 @@ public class SpellService {
         for (Spell s : spells){
             setMap.put(s.getSpellId(), s);
         }
-        for (Spell h : hasLearn){
-            setMap.put(h.getSpellId(), h);
+        if (hasLearn != null && !hasLearn.isEmpty()) {
+            for (Spell h : hasLearn) {
+                setMap.remove(h.getSpellId());
+            }
         }
         List<Spell> res = new ArrayList<>();
         setMap.forEach((k, v) -> {
@@ -61,9 +63,13 @@ public class SpellService {
         });
 
 
-        // 构造response
+        // 构造response，包括全部技能和当前已经学习的技能
         RoleProto.Role r = protoService.transToRole(role);
         List<SpellProto.Spell> spellList = protoService.transToSpellList(res);
+        List<SpellProto.Spell> ownList = new ArrayList<>();
+        if (hasLearn != null && !hasLearn.isEmpty()){
+            ownList = protoService.transToSpellList(hasLearn);
+        }
 
         return MsgSpellProto.ResponseSpell.newBuilder()
                 .setType(MsgSpellProto.RequestType.SPELL)
@@ -71,6 +77,7 @@ public class SpellService {
                 .setContent(ContentType.SPELL_ALL)
                 .setRole(r)
                 .addAllSpell(spellList)
+                .addAllOwn(ownList)
                 .build();
     }
 
@@ -106,7 +113,7 @@ public class SpellService {
 
         // 技能存在，新增信息至 数据库 & map
         // 更新数据库
-        int n = roleSpellDao.insertRoleSpell(100, roleId, spellId);
+        int n = roleSpellDao.insertRoleSpell(roleId, spellId);
         if (n <= 0){
             return MsgSpellProto.ResponseSpell.newBuilder()
                     .setResult(ResultCode.FAILED)

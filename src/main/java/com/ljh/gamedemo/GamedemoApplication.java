@@ -24,6 +24,9 @@ public class GamedemoApplication {
 
         // 初始化野怪信息
         LocalCreepMap.readExcel();
+
+        // 获取所有技能信息
+        LocalSpellMap.readExcel();
     }
 
 }

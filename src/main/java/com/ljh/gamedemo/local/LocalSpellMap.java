@@ -137,6 +137,8 @@ public class LocalSpellMap {
                 spells = new ArrayList<>();
             }
             spells.add(spell);
+
+            roleSpellMap.put(role.getRoleId(), spells);
         }
     }
 

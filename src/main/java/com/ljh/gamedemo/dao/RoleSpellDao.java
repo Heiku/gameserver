@@ -15,8 +15,8 @@ import java.util.List;
 @Mapper
 public interface RoleSpellDao {
 
-    @Insert("insert into role_spell(id, role_id, spell_id) values (#{id}, #{roleId}, #{spellId})")
-    int insertRoleSpell(int id, long roleId, int spellId);
+    @Insert("insert into role_spell(role_id, spell_id) values (#{roleId}, #{spellId})")
+    int insertRoleSpell(long roleId, int spellId);
 
     @Select("select * from role_spell")
     List<RoleSpell> selectAllRoleSpell();

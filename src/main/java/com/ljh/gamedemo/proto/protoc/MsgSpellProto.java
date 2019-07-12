@@ -813,6 +813,30 @@ public final class MsgSpellProto {
      */
     com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder(
         int index);
+
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> 
+        getOwnList();
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.SpellProto.Spell getOwn(int index);
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    int getOwnCount();
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+        getOwnOrBuilderList();
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getOwnOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code ResponseSpell}
@@ -830,6 +854,7 @@ public final class MsgSpellProto {
       content_ = "";
       type_ = 0;
       spell_ = java.util.Collections.emptyList();
+      own_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -902,6 +927,15 @@ public final class MsgSpellProto {
                   input.readMessage(com.ljh.gamedemo.proto.protoc.SpellProto.Spell.parser(), extensionRegistry));
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                own_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.SpellProto.Spell>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              own_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.SpellProto.Spell.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -919,6 +953,9 @@ public final class MsgSpellProto {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           spell_ = java.util.Collections.unmodifiableList(spell_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          own_ = java.util.Collections.unmodifiableList(own_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1053,6 +1090,41 @@ public final class MsgSpellProto {
       return spell_.get(index);
     }
 
+    public static final int OWN_FIELD_NUMBER = 6;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> own_;
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    public java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> getOwnList() {
+      return own_;
+    }
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+        getOwnOrBuilderList() {
+      return own_;
+    }
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    public int getOwnCount() {
+      return own_.size();
+    }
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.SpellProto.Spell getOwn(int index) {
+      return own_.get(index);
+    }
+    /**
+     * <code>repeated .Spell own = 6;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getOwnOrBuilder(
+        int index) {
+      return own_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1082,6 +1154,9 @@ public final class MsgSpellProto {
       for (int i = 0; i < spell_.size(); i++) {
         output.writeMessage(5, spell_.get(i));
       }
+      for (int i = 0; i < own_.size(); i++) {
+        output.writeMessage(6, own_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -1110,6 +1185,10 @@ public final class MsgSpellProto {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, spell_.get(i));
       }
+      for (int i = 0; i < own_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, own_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1137,6 +1216,8 @@ public final class MsgSpellProto {
       }
       if (!getSpellList()
           .equals(other.getSpellList())) return false;
+      if (!getOwnList()
+          .equals(other.getOwnList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1161,6 +1242,10 @@ public final class MsgSpellProto {
       if (getSpellCount() > 0) {
         hash = (37 * hash) + SPELL_FIELD_NUMBER;
         hash = (53 * hash) + getSpellList().hashCode();
+      }
+      if (getOwnCount() > 0) {
+        hash = (37 * hash) + OWN_FIELD_NUMBER;
+        hash = (53 * hash) + getOwnList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1291,6 +1376,7 @@ public final class MsgSpellProto {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getSpellFieldBuilder();
+          getOwnFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1313,6 +1399,12 @@ public final class MsgSpellProto {
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           spellBuilder_.clear();
+        }
+        if (ownBuilder_ == null) {
+          own_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          ownBuilder_.clear();
         }
         return this;
       }
@@ -1357,6 +1449,15 @@ public final class MsgSpellProto {
           result.spell_ = spell_;
         } else {
           result.spell_ = spellBuilder_.build();
+        }
+        if (ownBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            own_ = java.util.Collections.unmodifiableList(own_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.own_ = own_;
+        } else {
+          result.own_ = ownBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1442,6 +1543,32 @@ public final class MsgSpellProto {
                    getSpellFieldBuilder() : null;
             } else {
               spellBuilder_.addAllMessages(other.spell_);
+            }
+          }
+        }
+        if (ownBuilder_ == null) {
+          if (!other.own_.isEmpty()) {
+            if (own_.isEmpty()) {
+              own_ = other.own_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureOwnIsMutable();
+              own_.addAll(other.own_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.own_.isEmpty()) {
+            if (ownBuilder_.isEmpty()) {
+              ownBuilder_.dispose();
+              ownBuilder_ = null;
+              own_ = other.own_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              ownBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getOwnFieldBuilder() : null;
+            } else {
+              ownBuilder_.addAllMessages(other.own_);
             }
           }
         }
@@ -1971,6 +2098,246 @@ public final class MsgSpellProto {
         }
         return spellBuilder_;
       }
+
+      private java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> own_ =
+        java.util.Collections.emptyList();
+      private void ensureOwnIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          own_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.SpellProto.Spell>(own_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> ownBuilder_;
+
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> getOwnList() {
+        if (ownBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(own_);
+        } else {
+          return ownBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public int getOwnCount() {
+        if (ownBuilder_ == null) {
+          return own_.size();
+        } else {
+          return ownBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell getOwn(int index) {
+        if (ownBuilder_ == null) {
+          return own_.get(index);
+        } else {
+          return ownBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder setOwn(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+        if (ownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOwnIsMutable();
+          own_.set(index, value);
+          onChanged();
+        } else {
+          ownBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder setOwn(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder builderForValue) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          ownBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder addOwn(com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+        if (ownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOwnIsMutable();
+          own_.add(value);
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder addOwn(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+        if (ownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOwnIsMutable();
+          own_.add(index, value);
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder addOwn(
+          com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder builderForValue) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.add(builderForValue.build());
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder addOwn(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder builderForValue) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder addAllOwn(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.SpellProto.Spell> values) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, own_);
+          onChanged();
+        } else {
+          ownBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder clearOwn() {
+        if (ownBuilder_ == null) {
+          own_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          ownBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public Builder removeOwn(int index) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.remove(index);
+          onChanged();
+        } else {
+          ownBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder getOwnBuilder(
+          int index) {
+        return getOwnFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getOwnOrBuilder(
+          int index) {
+        if (ownBuilder_ == null) {
+          return own_.get(index);  } else {
+          return ownBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+           getOwnOrBuilderList() {
+        if (ownBuilder_ != null) {
+          return ownBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(own_);
+        }
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder addOwnBuilder() {
+        return getOwnFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder addOwnBuilder(
+          int index) {
+        return getOwnFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Spell own = 6;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder> 
+           getOwnBuilderList() {
+        return getOwnFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+          getOwnFieldBuilder() {
+        if (ownBuilder_ == null) {
+          ownBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder>(
+                  own_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          own_ = null;
+        }
+        return ownBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2045,13 +2412,13 @@ public final class MsgSpellProto {
     java.lang.String[] descriptorData = {
       "\n\016MsgSpell.proto\032\013Spell.proto\032\nRole.prot" +
       "o\"K\n\014RequestSpell\022\016\n\006userId\030\001 \001(\003\022\017\n\007spe" +
-      "llId\030\002 \001(\005\022\032\n\004type\030\003 \001(\0162\014.RequestType\"x" +
-      "\n\rResponseSpell\022\016\n\006result\030\001 \001(\005\022\017\n\007conte" +
-      "nt\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\023\n\004" +
-      "role\030\004 \001(\0132\005.Role\022\025\n\005spell\030\005 \003(\0132\006.Spell" +
-      "*#\n\013RequestType\022\t\n\005SPELL\020\000\022\t\n\005LEARN\020\001B.\n" +
-      "\035com.ljh.gamedemo.proto.protocB\rMsgSpell" +
-      "Protob\006proto3"
+      "llId\030\002 \001(\005\022\032\n\004type\030\003 \001(\0162\014.RequestType\"\215" +
+      "\001\n\rResponseSpell\022\016\n\006result\030\001 \001(\005\022\017\n\007cont" +
+      "ent\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\023\n" +
+      "\004role\030\004 \001(\0132\005.Role\022\025\n\005spell\030\005 \003(\0132\006.Spel" +
+      "l\022\023\n\003own\030\006 \003(\0132\006.Spell*#\n\013RequestType\022\t\n" +
+      "\005SPELL\020\000\022\t\n\005LEARN\020\001B.\n\035com.ljh.gamedemo." +
+      "proto.protocB\rMsgSpellProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2070,7 +2437,7 @@ public final class MsgSpellProto {
     internal_static_ResponseSpell_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseSpell_descriptor,
-        new java.lang.String[] { "Result", "Content", "Type", "Role", "Spell", });
+        new java.lang.String[] { "Result", "Content", "Type", "Role", "Spell", "Own", });
     com.ljh.gamedemo.proto.protoc.SpellProto.getDescriptor();
     com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor();
   }
