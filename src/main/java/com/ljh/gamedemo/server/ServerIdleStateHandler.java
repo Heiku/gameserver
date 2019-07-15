@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ServerIdleStateHandler extends IdleStateHandler {
 
-    private static final int READER_IDLE_TIME = 60;
+    private static final int READER_IDLE_TIME = 60 * 5;
 
     @Autowired
     private static SaveDataService saveDataService;

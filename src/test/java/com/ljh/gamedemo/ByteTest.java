@@ -7,10 +7,10 @@ import java.util.List;
 
 public class ByteTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         //System.out.println(0x10);
 
-        Creep c1 = new Creep();
+        /*Creep c1 = new Creep();
         c1.setCreepId(1);
         c1.setName("小");
 
@@ -24,6 +24,17 @@ public class ByteTest {
         creeps.add(c1);
         creeps.sort((a, b) -> a.getCreepId().compareTo(b.getCreepId()));
 
-        System.out.println(creeps);
+        System.out.println(creeps);*/
+
+
+        long start = System.currentTimeMillis();
+
+        Thread.sleep(6 * 1000);
+
+        long end = System.currentTimeMillis();
+
+        int cd = 4;
+
+        System.out.println(Math.floor(((end - start) - cd * 1000)/ 1000));
     }
 }

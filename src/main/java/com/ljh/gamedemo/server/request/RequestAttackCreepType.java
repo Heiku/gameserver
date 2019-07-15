@@ -6,6 +6,8 @@ package com.ljh.gamedemo.server.request;
  */
 public class RequestAttackCreepType {
 
-    public static final int ATTACK = 1;
+    public static final int ATTACK = 0;
+
+    public static final int SPELL = 1;
 
 }

@@ -32,10 +32,15 @@ public class SpellService {
     @Autowired
     private ProtoService protoService;
 
+    private MsgSpellProto.ResponseSpell response;
+
     public MsgSpellProto.ResponseSpell getSpell(MsgSpellProto.RequestSpell requestSpell){
 
         // 用户角色认证
-        userStateInterceptor(requestSpell);
+        response = userStateInterceptor(requestSpell);
+        if (response != null){
+            return response;
+        }
 
         // 获取请求参数
         long userId = requestSpell.getUserId();
@@ -94,7 +99,10 @@ public class SpellService {
      */
     public MsgSpellProto.ResponseSpell learn(MsgSpellProto.RequestSpell requestSpell){
         // 用户状态认证
-        userStateInterceptor(requestSpell);
+        response = userStateInterceptor(requestSpell);
+        if (response != null){
+            return response;
+        }
 
         // 获取角色信息
         long userId = requestSpell.getUserId();

@@ -23,6 +23,10 @@ public final class MsgAttackCreepProto {
      * <code>ATTACK = 0;</code>
      */
     ATTACK(0),
+    /**
+     * <code>SPELL = 1;</code>
+     */
+    SPELL(1),
     UNRECOGNIZED(-1),
     ;
 
@@ -30,6 +34,10 @@ public final class MsgAttackCreepProto {
      * <code>ATTACK = 0;</code>
      */
     public static final int ATTACK_VALUE = 0;
+    /**
+     * <code>SPELL = 1;</code>
+     */
+    public static final int SPELL_VALUE = 1;
 
 
     public final int getNumber() {
@@ -51,6 +59,7 @@ public final class MsgAttackCreepProto {
     public static RequestType forNumber(int value) {
       switch (value) {
         case 0: return ATTACK;
+        case 1: return SPELL;
         default: return null;
       }
     }
@@ -118,11 +127,16 @@ public final class MsgAttackCreepProto {
     int getCreepId();
 
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>int32 spellId = 3;</code>
+     */
+    int getSpellId();
+
+    /**
+     * <code>.RequestType type = 4;</code>
      */
     int getTypeValue();
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>.RequestType type = 4;</code>
      */
     com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType getType();
   }
@@ -183,6 +197,11 @@ public final class MsgAttackCreepProto {
               break;
             }
             case 24: {
+
+              spellId_ = input.readInt32();
+              break;
+            }
+            case 32: {
               int rawValue = input.readEnum();
 
               type_ = rawValue;
@@ -238,16 +257,25 @@ public final class MsgAttackCreepProto {
       return creepId_;
     }
 
-    public static final int TYPE_FIELD_NUMBER = 3;
+    public static final int SPELLID_FIELD_NUMBER = 3;
+    private int spellId_;
+    /**
+     * <code>int32 spellId = 3;</code>
+     */
+    public int getSpellId() {
+      return spellId_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 4;
     private int type_;
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>.RequestType type = 4;</code>
      */
     public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>.RequestType type = 4;</code>
      */
     public com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType getType() {
       @SuppressWarnings("deprecation")
@@ -275,8 +303,11 @@ public final class MsgAttackCreepProto {
       if (creepId_ != 0) {
         output.writeInt32(2, creepId_);
       }
+      if (spellId_ != 0) {
+        output.writeInt32(3, spellId_);
+      }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType.ATTACK.getNumber()) {
-        output.writeEnum(3, type_);
+        output.writeEnum(4, type_);
       }
       unknownFields.writeTo(output);
     }
@@ -295,9 +326,13 @@ public final class MsgAttackCreepProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, creepId_);
       }
+      if (spellId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, spellId_);
+      }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType.ATTACK.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, type_);
+          .computeEnumSize(4, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -318,6 +353,8 @@ public final class MsgAttackCreepProto {
           != other.getUserId()) return false;
       if (getCreepId()
           != other.getCreepId()) return false;
+      if (getSpellId()
+          != other.getSpellId()) return false;
       if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -335,6 +372,8 @@ public final class MsgAttackCreepProto {
           getUserId());
       hash = (37 * hash) + CREEPID_FIELD_NUMBER;
       hash = (53 * hash) + getCreepId();
+      hash = (37 * hash) + SPELLID_FIELD_NUMBER;
+      hash = (53 * hash) + getSpellId();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -474,6 +513,8 @@ public final class MsgAttackCreepProto {
 
         creepId_ = 0;
 
+        spellId_ = 0;
+
         type_ = 0;
 
         return this;
@@ -504,6 +545,7 @@ public final class MsgAttackCreepProto {
         com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestAttackCreep result = new com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestAttackCreep(this);
         result.userId_ = userId_;
         result.creepId_ = creepId_;
+        result.spellId_ = spellId_;
         result.type_ = type_;
         onBuilt();
         return result;
@@ -558,6 +600,9 @@ public final class MsgAttackCreepProto {
         }
         if (other.getCreepId() != 0) {
           setCreepId(other.getCreepId());
+        }
+        if (other.getSpellId() != 0) {
+          setSpellId(other.getSpellId());
         }
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
@@ -643,15 +688,41 @@ public final class MsgAttackCreepProto {
         return this;
       }
 
+      private int spellId_ ;
+      /**
+       * <code>int32 spellId = 3;</code>
+       */
+      public int getSpellId() {
+        return spellId_;
+      }
+      /**
+       * <code>int32 spellId = 3;</code>
+       */
+      public Builder setSpellId(int value) {
+        
+        spellId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 spellId = 3;</code>
+       */
+      public Builder clearSpellId() {
+        
+        spellId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int type_ = 0;
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public Builder setTypeValue(int value) {
         type_ = value;
@@ -659,7 +730,7 @@ public final class MsgAttackCreepProto {
         return this;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType getType() {
         @SuppressWarnings("deprecation")
@@ -667,7 +738,7 @@ public final class MsgAttackCreepProto {
         return result == null ? com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public Builder setType(com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto.RequestType value) {
         if (value == null) {
@@ -679,7 +750,7 @@ public final class MsgAttackCreepProto {
         return this;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public Builder clearType() {
         
@@ -1859,14 +1930,15 @@ public final class MsgAttackCreepProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\024MsgAttackCreep.proto\032\013Creep.proto\032\nRol" +
-      "e.proto\"Q\n\022RequestAttackCreep\022\016\n\006userId\030" +
-      "\001 \001(\003\022\017\n\007creepId\030\002 \001(\005\022\032\n\004type\030\003 \001(\0162\014.R" +
-      "equestType\"~\n\023ResponseAttackCreep\022\016\n\006res" +
-      "ult\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004type\030\003 \001(\016" +
-      "2\014.RequestType\022\025\n\005creep\030\004 \001(\0132\006.Creep\022\023\n" +
-      "\004role\030\005 \001(\0132\005.Role*\031\n\013RequestType\022\n\n\006ATT" +
-      "ACK\020\000B4\n\035com.ljh.gamedemo.proto.protocB\023" +
-      "MsgAttackCreepProtob\006proto3"
+      "e.proto\"b\n\022RequestAttackCreep\022\016\n\006userId\030" +
+      "\001 \001(\003\022\017\n\007creepId\030\002 \001(\005\022\017\n\007spellId\030\003 \001(\005\022" +
+      "\032\n\004type\030\004 \001(\0162\014.RequestType\"~\n\023ResponseA" +
+      "ttackCreep\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 " +
+      "\001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\025\n\005creep" +
+      "\030\004 \001(\0132\006.Creep\022\023\n\004role\030\005 \001(\0132\005.Role*$\n\013R" +
+      "equestType\022\n\n\006ATTACK\020\000\022\t\n\005SPELL\020\001B4\n\035com" +
+      ".ljh.gamedemo.proto.protocB\023MsgAttackCre" +
+      "epProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1879,7 +1951,7 @@ public final class MsgAttackCreepProto {
     internal_static_RequestAttackCreep_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RequestAttackCreep_descriptor,
-        new java.lang.String[] { "UserId", "CreepId", "Type", });
+        new java.lang.String[] { "UserId", "CreepId", "SpellId", "Type", });
     internal_static_ResponseAttackCreep_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ResponseAttackCreep_fieldAccessorTable = new

@@ -64,6 +64,16 @@ public class ContentType {
     // Attack
     public static final String ATTACK_DEATH_CREEP = "你攻击的野怪已经死亡！\n";
 
+    public static final String ATTACK_CURRENT = "正在攻击野怪！\n";
+
+    public static final String ATTACK_SPELL_EMPTY = "请输入正确的技能id！\n";
+
+    public static final String ATTACK_SPELL_NOT_FOUND = "找不到该技能，或许你该学一学！\n";
+
+    public static final String ATTACK_SPELL_SUCCESS = "成功施放技能成功！\n";
+
+    public static final String ATTACK_SPELL_CD = "技能还在cd哦，请等待";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }

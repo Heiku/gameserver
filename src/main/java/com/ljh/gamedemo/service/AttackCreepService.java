@@ -10,10 +10,14 @@ import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.run.NormalAttackRun;
+import com.ljh.gamedemo.server.request.RequestAttackCreepType;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +29,13 @@ import java.util.Map;
 @Service
 public class AttackCreepService {
 
-    private MsgAttackCreepProto.ResponseAttackCreep response;
+    @Autowired
+    private ProtoService protoService;
 
+    @Autowired
+    private DeathCreepService deathCreepService;
+
+    private MsgAttackCreepProto.ResponseAttackCreep response;
 
     /**
      * 处理攻击野怪请求，默认采用普攻攻击的方式
@@ -36,6 +45,8 @@ public class AttackCreepService {
      * @return
      */
     public MsgAttackCreepProto.ResponseAttackCreep attackCreep(MsgAttackCreepProto.RequestAttackCreep request, Channel channel){
+
+        // 先进行角色状态，野怪状态的拦截判断
         response = userStateInterceptor(request);
         if (response != null){
             return response;
@@ -45,6 +56,7 @@ public class AttackCreepService {
         if (response != null){
             return response;
         }
+
 
         // 获取角色的基本信息
         long userId = request.getUserId();
@@ -57,8 +69,44 @@ public class AttackCreepService {
         int creepId = request.getCreepId();
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
 
+        // 初始化数据，关联角色和攻击的野怪
+        LocalAttackCreepMap.channelCreepMap.put(channel, creep);
 
+        // 攻击野怪
         doAttack(role, creep, channel);
+
+        return null;
+    }
+
+
+    public MsgAttackCreepProto.ResponseAttackCreep spellAttackCreep(MsgAttackCreepProto.RequestAttackCreep request, Channel channel){
+        // 先进行角色状态，野怪状态的拦截判断
+        response = userStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+
+        // 技能拦截判断
+        response = spellStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+
+        // 获取角色的基本信息
+        long userId = request.getUserId();
+        Role role = LocalUserMap.userRoleMap.get(userId);
+        long roleId = role.getRoleId();
+        List<Spell> spells = LocalSpellMap.getRoleSpellMap().get(roleId);
+        role.setSpellList(spells);
+
+
+        // 获取施放的技能spell
+        int spellId = request.getSpellId();
+        Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
+
+        // 根据正在攻击的野怪
+        Creep creep = LocalAttackCreepMap.getChannelCreepMap().get(channel);
+        spellAttack(spell, creep, channel);
 
         return null;
     }
@@ -79,7 +127,73 @@ public class AttackCreepService {
         Spell spell = spells.get(0);
 
         //Thread
+        Thread attackTd = new Thread(new NormalAttackRun(creep, spell, channel, true));
+        attackTd.start();
     }
+
+
+    /**
+     * 使用技能攻击野怪
+     *
+     * @param spell
+     * @param creep
+     * @param channel
+     */
+    private void spellAttack(Spell spell, Creep creep, Channel channel){
+        int startHp = creep.getHp();
+
+        // 施放技能前，进行一次时间戳判断，判断是否在cd时间内
+        int cd = spell.getCoolDown();
+
+        long last = 0L;
+        if (LocalAttackCreepMap.channelTimeStampMap.containsKey(channel)){
+            last = LocalAttackCreepMap.channelTimeStampMap.get(channel);
+        }
+        long now = System.currentTimeMillis();
+        if (last > 0){
+            long t = now - last;
+            if (t < cd * 1000){
+                double interval = Math.floor((cd * 1000 - t) / 1000);
+
+                response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                        .setResult(ResultCode.FAILED)
+                        .setType(MsgAttackCreepProto.RequestType.SPELL)
+                        .setContent(ContentType.ATTACK_SPELL_CD + interval + "秒\n")
+                        .build();
+
+                channel.writeAndFlush(response);
+            }
+        }
+        // 记录下本次施放技能的时间戳
+        LocalAttackCreepMap.getChannelTimeStampMap().put(channel, now);
+
+        Creep c = LocalAttackCreepMap.getChannelCreepMap().get(channel);
+        // 获取野怪血量，技能伤害
+        int hp = c.getHp();
+        int damage = c.getDamage();
+
+        if (c.getHp() > 0){
+            hp -= damage;
+        }
+        log.info("spell attack creep info: " + c.getHp());
+
+        // 更新野怪的生命值，同步到缓存中去
+        c.setHp(hp);
+        LocalAttackCreepMap.getChannelCreepMap().put(channel, c);
+        if (hp < 0){
+            deathCreepService.deathCreep(channel, startHp);
+        }
+
+        response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setType(MsgAttackCreepProto.RequestType.SPELL)
+                .setResult(ResultCode.SUCCESS)
+                .setContent(ContentType.ATTACK_SPELL_SUCCESS)
+                .setCreep(protoService.transToCreep(c))
+                .build();
+
+        channel.writeAndFlush(response);
+    }
+
 
     /**
      * 用户状态拦截器，检验参数
@@ -116,6 +230,9 @@ public class AttackCreepService {
      * @return
      */
     private MsgAttackCreepProto.ResponseAttackCreep creepStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
+        if (requestAttackCreep.getSpellId() > 0){
+            return null;
+        }
 
         // 判断野怪的id是否有问题
         int creepId = requestAttackCreep.getCreepId();
@@ -136,96 +253,35 @@ public class AttackCreepService {
 
         return null;
     }
-}
-
-class AttackRun implements Runnable{
-
-    private Creep creep;
-    private Spell spell;
-    private Channel channel;
-
-    private ProtoService protoService = new ProtoService();
-
-    public AttackRun(Creep creep, Spell spell, Channel channel){
-        this.creep = creep;
-        this.spell= spell;
-        this.channel = channel;
-    }
-
-    // 这里暂时只杀一只野怪，对的
-    @Override
-    public void run() {
-        while (true){
-            Creep creep = LocalAttackCreepMap.getChannelCreepMap().get(channel);
-
-            // 获取野怪的血量，技能的伤害值
-            int hp = creep.getHp();
-            int damage = spell.getDamage();
-
-            // 野怪的生命值 -= 技能的伤害值
-            if (creep.getHp() > 0){
-                hp -= damage;
-            }
-
-            // 调用deathCreep() 野怪死亡相关
-            if (hp < 0){
-                deathCreep(channel);
-                break;
-            }
-
-            // 返回攻击的消息
-            //channel.writeAndFlush()
-        }
-    }
 
 
     /**
-     * 野怪死亡，更新
-     *
-     * @param channel
+     * 技能信息查询拦截
      */
-    private void deathCreep(Channel channel){
-        // 更新缓存中野怪的数量 ( -1 )
-        Map<Channel,Creep> channelCreepMap = LocalAttackCreepMap.getChannelCreepMap();
-        Creep creep = channelCreepMap.get(channel);
-        creep.setNum(creep.getNum() - 1);
-        channelCreepMap.put(channel, creep);
+    private MsgAttackCreepProto.ResponseAttackCreep spellStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
 
-        // update LocalAttackCreepMap channelCreepMap
-        LocalAttackCreepMap.setChannelCreepMap(channelCreepMap);
-
-        // 同时更新 LocalCreepMap中的 idCreepMap 和 siteCreepMap
-        // 1.先更新idCreepMap
-        Map<Integer, Creep> idCreepMap = LocalCreepMap.getIdCreepMap();
-        Creep idCreep = idCreepMap.get(creep.getCreepId());
-        idCreep.setNum(idCreep.getNum() - 1);
-        idCreepMap.put(idCreep.getCreepId(), idCreep);
-
-        // update LocalCreepMap idCreepMap
-        LocalCreepMap.setIdCreepMap(idCreepMap);
-
-        // 2. 再更新 siteCreepMap
-        Map<Integer, List<Creep>> siteCreepMap = LocalCreepMap.getSiteCreepMap();
-        List<Creep> creeps = siteCreepMap.get(creep.getSiteId());
-        for (Creep c : creeps) {
-            if (c.getCreepId().intValue() == creep.getCreepId().intValue()){
-                c.setNum(c.getNum() - 1);
-            }
+        // 判断技能信息是否存在的问题
+        int spellId = requestAttackCreep.getSpellId();
+        if (spellId <= 0){
+            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setType(MsgAttackCreepProto.RequestType.SPELL)
+                    .setContent(ContentType.ATTACK_SPELL_EMPTY)
+                    .build();
         }
-        siteCreepMap.put(creep.getSiteId(), creeps);
 
-        // update LocalCreepMap siteCreepMap
-        LocalCreepMap.setSiteCreepMap(siteCreepMap);
+        Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
+        if (spell == null){
+            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setType(MsgAttackCreepProto.RequestType.SPELL)
+                    .setContent(ContentType.ATTACK_SPELL_NOT_FOUND)
+                    .build();
+        }
 
-
-        // 所有缓存更新完毕，返回结果消息
-        MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(ContentType.ATTACK_DEATH_CREEP)
-                .setCreep(protoService.transToCreep(creep))
-                .build();
-
-        channel.writeAndFlush(response);
+        return null;
     }
 
+
 }
+
