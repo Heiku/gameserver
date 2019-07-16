@@ -7,6 +7,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.dto.RoleSpell;
+import com.ljh.gamedemo.run.RecoverUserStateRun;
 import com.ljh.gamedemo.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,7 +35,7 @@ public class LocalUserMap {
 
 
     // 存放玩家的角色id，只用于初始化
-    public static Map<Long, Role> idRoleMap = Maps.newHashMap();
+    public static Map<Long, Role> idRoleMap = Maps.newConcurrentMap();
 
 
     // 读取数据库，获取role的位置信息
@@ -56,6 +57,11 @@ public class LocalUserMap {
 
             idRoleMap.put(role.getRoleId(), role);
         }
+
+
+        // 完成数据读取后，加入角色状态恢复机制
+        Thread t1 = new Thread(new RecoverUserStateRun());
+        t1.start();
 
     }
     public static Map<Long, Role> getIdRoleMap() {

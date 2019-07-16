@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.local;
 
 import com.ljh.gamedemo.entity.Role;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

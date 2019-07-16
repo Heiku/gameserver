@@ -27,6 +27,9 @@ public class GamedemoApplication {
 
         // 获取所有技能信息
         LocalSpellMap.readExcel();
+
+        // 获取角色背包信息
+        LocalItemsMap.readExcel();
     }
 
 }

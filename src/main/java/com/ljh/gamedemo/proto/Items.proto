@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Items.proto
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "ItemsProto";
+
+message Items{
+    int64 itemsId = 1;
+    string name = 2;
+    int32 type = 3;
+    int32 num = 4;
+    string desc = 5;
+    int32 up = 6;
+}

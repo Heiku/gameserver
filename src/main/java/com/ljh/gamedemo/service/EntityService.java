@@ -14,6 +14,7 @@ import com.ljh.gamedemo.proto.protoc.CreepProto;
 import com.ljh.gamedemo.proto.protoc.EntityProto;
 import com.ljh.gamedemo.proto.protoc.MsgEntityInfoProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,8 @@ import static com.ljh.gamedemo.common.ContentType.USER_EMPTY_DATA;
  * 角色 & npc 服务类
  *
  */
+
+@Slf4j
 @Component
 public class EntityService {
 
@@ -82,6 +85,7 @@ public class EntityService {
         // 添加真实的玩家角色信息：
         // 组装 role
         List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
+        System.out.println(roleList);
 
         List<RoleProto.Role> roles = new ArrayList<>();
         if (!roleList.isEmpty()){
@@ -98,7 +102,6 @@ public class EntityService {
 
                 roles.add(roleProto);
             }
-            System.out.println(roles);
         }
 
         // 添加场景中的所有npc信息：

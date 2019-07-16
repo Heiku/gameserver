@@ -31,7 +31,11 @@ public enum MessageType {
 
     // attack spell
     REQUEST_ATTACK_SPELL(0xc, MsgAttackCreepProto.RequestAttackCreep.class),
-    RESPONSE_ATTACK_SPELL(0xd, MsgAttackCreepProto.ResponseAttackCreep.class)
+    RESPONSE_ATTACK_SPELL(0xd, MsgAttackCreepProto.ResponseAttackCreep.class),
+
+    // items
+    REQUEST_ITEMS(0xe, MsgItemProto.RequestItem.class),
+    RESPONSE_ITEMS(0xf, MsgItemProto.ResponseItem.class)
     ;
 
 

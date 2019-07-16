@@ -11,15 +11,12 @@ import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.NormalAttackRun;
-import com.ljh.gamedemo.server.request.RequestAttackCreepType;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: Heiku
@@ -79,6 +76,13 @@ public class AttackCreepService {
     }
 
 
+    /**
+     * 处理技能攻击野怪请求
+     *
+     * @param request
+     * @param channel
+     * @return
+     */
     public MsgAttackCreepProto.ResponseAttackCreep spellAttackCreep(MsgAttackCreepProto.RequestAttackCreep request, Channel channel){
         // 先进行角色状态，野怪状态的拦截判断
         response = userStateInterceptor(request);
@@ -95,6 +99,9 @@ public class AttackCreepService {
         // 获取角色的基本信息
         long userId = request.getUserId();
         Role role = LocalUserMap.userRoleMap.get(userId);
+
+        log.info(role.getName() + " attack creep by spell");
+
         long roleId = role.getRoleId();
         List<Spell> spells = LocalSpellMap.getRoleSpellMap().get(roleId);
         role.setSpellList(spells);
@@ -106,7 +113,7 @@ public class AttackCreepService {
 
         // 根据正在攻击的野怪
         Creep creep = LocalAttackCreepMap.getChannelCreepMap().get(channel);
-        spellAttack(spell, creep, channel);
+        spellAttack(spell, creep, role, channel);
 
         return null;
     }
@@ -134,17 +141,35 @@ public class AttackCreepService {
 
     /**
      * 使用技能攻击野怪
+     * 1.计算技能cd时间
+     * 2.计算mp值是不是足以施放技能
+     * 3.攻击成功，野怪掉血，记录缓存
+     * 4.技能消耗mp，记录缓存
      *
      * @param spell
      * @param creep
      * @param channel
      */
-    private void spellAttack(Spell spell, Creep creep, Channel channel){
+    private void spellAttack(Spell spell, Creep creep, Role role,  Channel channel){
         int startHp = creep.getHp();
 
-        // 施放技能前，进行一次时间戳判断，判断是否在cd时间内
+        // 获取施放技能的cd，蓝耗
         int cd = spell.getCoolDown();
+        int cost = spell.getCost();
 
+        // 用户当前mp值，判断是否足够施放技能
+        int lastMp = role.getMp();
+        if (lastMp < cost){
+            response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setType(MsgAttackCreepProto.RequestType.SPELL)
+                    .setContent(ContentType.ATTACK_SPELL_MP_NO_ENOUGH)
+                    .build();
+            channel.writeAndFlush(response);
+            return;
+        }
+
+        // 施放技能前，进行一次时间戳判断，判断是否在cd时间内
         long last = 0L;
         if (LocalAttackCreepMap.channelTimeStampMap.containsKey(channel)){
             last = LocalAttackCreepMap.channelTimeStampMap.get(channel);
@@ -152,6 +177,8 @@ public class AttackCreepService {
         long now = System.currentTimeMillis();
         if (last > 0){
             long t = now - last;
+
+            // 还在cd中，通知用户等待时间点
             if (t < cd * 1000){
                 double interval = Math.floor((cd * 1000 - t) / 1000);
 
@@ -162,10 +189,13 @@ public class AttackCreepService {
                         .build();
 
                 channel.writeAndFlush(response);
+                return;
             }
         }
         // 记录下本次施放技能的时间戳
         LocalAttackCreepMap.getChannelTimeStampMap().put(channel, now);
+
+
 
         Creep c = LocalAttackCreepMap.getChannelCreepMap().get(channel);
         // 获取野怪血量，技能伤害
@@ -183,6 +213,15 @@ public class AttackCreepService {
         if (hp < 0){
             deathCreepService.deathCreep(channel, startHp);
         }
+
+
+
+        // 技能消耗mp，更新用户的mp值
+        long userId = role.getUserId();
+        role.setMp(lastMp - cost);
+
+        // 用户mp更新成功，更新role cache
+        LocalUserMap.userRoleMap.put(userId, role);
 
         response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
                 .setType(MsgAttackCreepProto.RequestType.SPELL)
@@ -281,7 +320,5 @@ public class AttackCreepService {
 
         return null;
     }
-
-
 }
 

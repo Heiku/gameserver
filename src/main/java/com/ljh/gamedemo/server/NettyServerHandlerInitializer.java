@@ -41,5 +41,8 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
 
         // 攻击野怪
         pipeline.addLast(new AttackCreepHandler());
+
+        // 背包处理
+        pipeline.addLast(new ItemsHandler());
     }
 }

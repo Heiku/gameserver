@@ -2,6 +2,9 @@ package com.ljh.gamedemo.common;
 
 public class ContentType {
 
+    // Common
+    public static final String FIND_SUCCESS = "查找成功！\n";
+
     // User Request
     public static final String USER_EMPTY_REGISTER_PARAM = "用户注册的数据为空，请输入指令\n";
     public static final String USER_EMPTY_LOGIN_PARAM = "用户登录的数据为空，请输入指令\n";
@@ -73,6 +76,23 @@ public class ContentType {
     public static final String ATTACK_SPELL_SUCCESS = "成功施放技能成功！\n";
 
     public static final String ATTACK_SPELL_CD = "技能还在cd哦，请等待";
+
+    public static final String ATTACK_SPELL_MP_NO_ENOUGH = "当前mp值不足以施放技能，请等待或使用蓝药！\n";
+
+
+    // Item
+    public static final String ITEM_PARAM_EMPTY = "输入的物品参数有误，请重新输入！\n";
+
+    public static final String ITEM_EMPTY = "当前角色暂无物品信息！\n";
+
+    public static final String ITEM_NOT_CONTAIN = "当前角色还没有该物品！\n";
+
+
+    public static final String ITEM_USE_FAILED_FULL_BLOOD = "使用物品失败，因为当前角色的血量为满状态！\n";
+
+    public static final String ITEM_USE_FAILED_FULL_BLUE = "使用物品失败，因为当前角色的蓝量为满状态！\n";
+
+    public static final String ITEM_USE_SUCCESS = "物品使用成功！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
