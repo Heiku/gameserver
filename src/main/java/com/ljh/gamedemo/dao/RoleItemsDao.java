@@ -4,6 +4,7 @@ import com.ljh.gamedemo.entity.dto.RoleItems;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -23,4 +24,7 @@ public interface RoleItemsDao {
 
     @Select("select * from role_objects")
     List<RoleItems> selectAllRoleItems();
+
+    @Update("update role_objects set num = #{num} where role_id = #{roleId} and objects_id = #{itemId}")
+    int updateItem(int num, long roleId, long itemId);
 }

@@ -100,34 +100,34 @@ public class ItemService {
 
 
         long userId = requestItem.getUserId();
-        long roleId = LocalUserMap.getIdRoleMap().get(userId).getRoleId();
+        long roleId = LocalUserMap.userRoleMap.get(userId).getRoleId();
         long itemsId = requestItem.getItemsId();
 
         // 获取物品
         Items items = LocalItemsMap.getIdItemsMap().get(itemsId);
 
         // 使用物品
-        return doUseItem(roleId, items);
+        return doUseItem(userId, items);
     }
 
 
     /**
      * 根据物品的类别 进行对应的使用操作
      *
-     * @param roleId
+     * @param userId
      * @param items
      * @return
      */
-    private MsgItemProto.ResponseItem doUseItem(long roleId, Items items){
+    private MsgItemProto.ResponseItem doUseItem(long userId, Items items){
         MsgItemProto.ResponseItem responseItem = MsgItemProto.ResponseItem.newBuilder().build();
 
         int type = items.getType();
         switch (type){
             case BLOOD:
-                responseItem = recoverBlood(roleId, items);
+                responseItem = recoverBlood(userId, items);
                 break;
             case BLUE:
-                responseItem = recoverBlue(roleId, items);
+                responseItem = recoverBlue(userId, items);
                 break;
         }
 
@@ -138,18 +138,19 @@ public class ItemService {
     /**
      * 具体的回血操作
      *
-     * @param roleId
+     * @param userId
      * @param items
      * @return
      */
-    private MsgItemProto.ResponseItem recoverBlood(long roleId, Items items){
+    private MsgItemProto.ResponseItem recoverBlood(long userId, Items items){
         // 获取角色信息
-        Role role = LocalUserMap.userRoleMap.get(roleId);
+        Role role = LocalUserMap.userRoleMap.get(userId);
         int hp = role.getHp();
 
         // 血量已经满格，无法使用
         if (hp == BLOOD_MAX_VALUE){
             return MsgItemProto.ResponseItem.newBuilder()
+                    .setType(MsgItemProto.RequestType.USE)
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.ITEM_USE_FAILED_FULL_BLOOD)
                     .build();
@@ -165,7 +166,7 @@ public class ItemService {
 
         // 更血量信息
         role.setHp(hp);
-        LocalUserMap.userRoleMap.put(roleId, role);
+        LocalUserMap.userRoleMap.put(userId, role);
 
         return updateCacheRepsonse(role, items);
     }
@@ -186,6 +187,7 @@ public class ItemService {
         // 蓝量已经满格，无法使用
         if (mp == BLUE_MAX_VALUE){
             return MsgItemProto.ResponseItem.newBuilder()
+                    .setType(MsgItemProto.RequestType.USE)
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.ITEM_USE_FAILED_FULL_BLOOD)
                     .build();
@@ -217,6 +219,10 @@ public class ItemService {
         // 更新items的数量
         items.setNum(items.getNum() - 1);
         LocalItemsMap.getIdItemsMap().put(items.getItemsId(), items);
+
+        // 数据库更新
+        roleItemsDao.updateItem(items.getNum(), role.getRoleId(), items.getItemsId());
+
 
         // TODO: 暂时不更新 siteRolesMap
         // 直接返回消息
@@ -277,7 +283,7 @@ public class ItemService {
         // 判断用户是否存有该物品
         Items sign = null;
         long userId = requestItem.getUserId();
-        long roleId = LocalUserMap.getIdRoleMap().get(userId).getRoleId();
+        long roleId = LocalUserMap.userRoleMap.get(userId).getRoleId();
         List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(roleId);
         for (Items i : itemsList){
             if (i.getItemsId() == itemId){

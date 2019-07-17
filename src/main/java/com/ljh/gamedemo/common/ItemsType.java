@@ -15,8 +15,8 @@ public enum ItemsType {
     int code;
     String content;
 
-    public static final int BLOOD = 1;
-    public static final int BLUE = 2;
+    public static final int BLOOD = 101;
+    public static final int BLUE = 102;
 
 
     ItemsType(int code, String content){

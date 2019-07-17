@@ -62,7 +62,7 @@ public class NormalAttackRun implements Runnable {
             log.info("attack current creep info: " + creep.getHp());
 
             // 调用deathCreep() 野怪死亡相关
-            if (hp < 0) {
+            if (hp <= 0) {
                 deathCreepService.deathCreep(channel, startHp);
                 break;
             }

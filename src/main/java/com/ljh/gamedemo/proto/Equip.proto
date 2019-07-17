@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "EquipProto";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Equip.proto
+
+message Equip{
+
+    int64 equipId = 1;
+    string name = 2;
+    int32 type = 3;
+    int32 part = 4;
+    int32 level = 5;
+    int32 durability = 6;
+    string up = 7;
+    int32 state = 8;
+}

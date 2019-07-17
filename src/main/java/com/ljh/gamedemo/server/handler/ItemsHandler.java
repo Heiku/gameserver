@@ -30,15 +30,13 @@ public class ItemsHandler extends SimpleChannelInboundHandler<MsgItemProto.Reque
         int type = requestItem.getType().getNumber();
         switch (type){
             case ALL:
-                // System.out.println(itemService.getAll(requestItem));
                 response = itemService.getAll(requestItem);
                 break;
             case USE:
                 response = itemService.useItem(requestItem);
                 break;
-        }
 
-        System.out.println(response);
+        }
         ctx.writeAndFlush(response);
     }
 }

@@ -7,6 +7,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.dto.RoleSpell;
+import com.ljh.gamedemo.run.ExecutorManager;
 import com.ljh.gamedemo.run.RecoverUserStateRun;
 import com.ljh.gamedemo.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,7 @@ public class LocalUserMap {
 
 
         // 完成数据读取后，加入角色状态恢复机制
-        Thread t1 = new Thread(new RecoverUserStateRun());
-        t1.start();
+        ExecutorManager.getExecutors().execute(new RecoverUserStateRun());
 
     }
     public static Map<Long, Role> getIdRoleMap() {

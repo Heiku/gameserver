@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgEquip.proto
+
+import "Equip.proto";
+import "Role.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgEquipProto";
+
+enum RequestType{
+    EQUIP = 0;
+    PUT = 1;
+    TAKEOFF = 2;
+    FIX = 3;
+}
+
+message RequestEquip{
+
+    int64 userId = 1;
+    int64 equipId = 2;
+
+    RequestType type = 3;
+}
+
+message ResponseEquip{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    Role role = 4;
+
+    repeated Equip equip = 5;
+}

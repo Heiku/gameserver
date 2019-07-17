@@ -10,6 +10,7 @@ import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.run.ExecutorManager;
 import com.ljh.gamedemo.run.NormalAttackRun;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -134,8 +135,7 @@ public class AttackCreepService {
         Spell spell = spells.get(0);
 
         //Thread
-        Thread attackTd = new Thread(new NormalAttackRun(creep, spell, channel, true));
-        attackTd.start();
+        ExecutorManager.getExecutors().execute(new NormalAttackRun(creep, spell, channel, true));
     }
 
 
@@ -200,7 +200,7 @@ public class AttackCreepService {
         Creep c = LocalAttackCreepMap.getChannelCreepMap().get(channel);
         // 获取野怪血量，技能伤害
         int hp = c.getHp();
-        int damage = c.getDamage();
+        int damage = spell.getDamage();
 
         if (c.getHp() > 0){
             hp -= damage;
@@ -213,8 +213,6 @@ public class AttackCreepService {
         if (hp < 0){
             deathCreepService.deathCreep(channel, startHp);
         }
-
-
 
         // 技能消耗mp，更新用户的mp值
         long userId = role.getUserId();
