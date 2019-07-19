@@ -14,6 +14,7 @@ import com.ljh.gamedemo.local.LocalUserMap;
 
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
+import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,9 @@ public class UserService {
 
         // 本地保存
         LocalUserMap.userRoleMap.put(userId, role);
+
+        // 分配用户的业务线程
+        UserExecutorManager.bindUserExecutor(userId);
 
         // 确定角色成功，返回角色信息
         RoleProto.Role roleMsg = RoleProto.Role.newBuilder()
@@ -135,6 +139,9 @@ public class UserService {
         // 绑定channel
         SessionUtil.bindSession(userId, channel);
 
+        // 分配用户的业务线程
+        UserExecutorManager.bindUserExecutor(userId);
+
         // 成功消息返回
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setType(MsgUserInfoProto.RequestType.LOGIN)
@@ -187,6 +194,9 @@ public class UserService {
         LocalUserMap.userMap.put(userId, user);
 
         SessionUtil.bindSession(userId, channel);
+
+        // 分配用户的业务线程
+        UserExecutorManager.bindUserExecutor(userId);
 
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setType(MsgUserInfoProto.RequestType.REGISTER)
@@ -249,6 +259,9 @@ public class UserService {
         LocalUserMap.userRoleMap.remove(userId);
 
         SessionUtil.unBindSession(channel);
+
+        // 解除绑定用户线程
+        UserExecutorManager.unBindUserExecutor(userId);
 
         // 更新数据库role的site信息
         int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId, role.getLevel(), role.getHp(), role.getMp());

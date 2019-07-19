@@ -12,6 +12,12 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.ExecutorManager;
 import com.ljh.gamedemo.run.NormalAttackRun;
+import com.ljh.gamedemo.run.SiteCreepExecutorManager;
+import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.creep.CreepBeAttackedRun;
+import com.ljh.gamedemo.run.user.UserBeAttackedRun;
+import com.ljh.gamedemo.run.user.UserDeclineMpRun;
+import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +77,7 @@ public class AttackCreepService {
         LocalAttackCreepMap.channelCreepMap.put(channel, creep);
 
         // 攻击野怪
-        doAttack(role, creep, channel);
+        doAttack(userId, role, creep, channel);
 
         return null;
     }
@@ -100,7 +106,6 @@ public class AttackCreepService {
         // 获取角色的基本信息
         long userId = request.getUserId();
         Role role = LocalUserMap.userRoleMap.get(userId);
-
         log.info(role.getName() + " attack creep by spell");
 
         long roleId = role.getRoleId();
@@ -112,10 +117,17 @@ public class AttackCreepService {
         int spellId = request.getSpellId();
         Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
 
-        // 根据正在攻击的野怪
-        Creep creep = LocalAttackCreepMap.getChannelCreepMap().get(channel);
-        spellAttack(spell, creep, role, channel);
+        // 获取施放技能的目标野怪id
+        int creepId = request.getCreepId();
 
+        // 根据正在攻击的野怪
+        // Creep creep = LocalAttackCreepMap.getChannelCreepMap().get(channel);
+        // spellAttack(spell, creep, role, channel);
+
+        // TODO: 这里到时要用到 CountDownLatch 控制两个任务的顺序，要考虑到万一任务一：扣蓝失败后，任务二不执行
+        CountDownLatchUtil.newLatch(1);
+        UserExecutorManager.addUserTask(userId, new UserDeclineMpRun(roleId, spell, channel));
+        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creepId, channel, true));
         return null;
     }
 
@@ -126,7 +138,7 @@ public class AttackCreepService {
      * @param creep
      * @param channel
      */
-    private void doAttack(Role role, Creep creep, Channel channel){
+    private void doAttack(long userId, Role role, Creep creep, Channel channel){
         // 先选择一个普通攻击的技能
         List<Spell> spells = role.getSpellList();
         spells.sort((a, b) -> a.getSpellId().compareTo(b.getSpellId()));
@@ -135,7 +147,13 @@ public class AttackCreepService {
         Spell spell = spells.get(0);
 
         //Thread
-        ExecutorManager.getExecutors().execute(new NormalAttackRun(creep, spell, channel, true));
+        //ExecutorManager.getExecutors().execute(new NormalAttackRun(creep, spell, channel, true));
+
+        // 修改 交由用户独立的线程池进行处理
+        // UserExecutorManager.addUserTask(userId, new NormalAttackRun(creep, spell, channel, true));
+
+        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creep.getCreepId(), channel, false));
+        UserExecutorManager.addUserTask(userId, new UserBeAttackedRun(userId, creep, channel));
     }
 
 

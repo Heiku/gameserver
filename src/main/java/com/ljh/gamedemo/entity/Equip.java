@@ -2,8 +2,6 @@ package com.ljh.gamedemo.entity;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @Author: Heiku
  * @Date: 2019/7/17
@@ -34,16 +32,24 @@ public class Equip {
     private Integer level;
 
     /**
+     * 普通攻击增益
+     */
+    private Integer aUp;
+
+    /**
+     * 技能攻击增益
+     */
+    private Integer spUp;
+
+    /**
+     * 血量增益
+     */
+    private Integer hpUp;
+
+    /**
      * 耐久
      */
     private Integer durability;
-
-
-    /**
-     * 增益效果，len = 2，[0] = 普攻， [1] = 技能伤害
-     */
-    private List<Integer> up;
-
 
     /**
      * 表示装备的状态：1：可用，0：不可用

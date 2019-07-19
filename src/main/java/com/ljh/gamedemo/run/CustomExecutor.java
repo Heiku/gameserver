@@ -11,11 +11,10 @@ import java.util.concurrent.TimeUnit;
  * @Author: Heiku
  * @Date: 2019/7/17
  */
-    public class NormalAttackRunExecutor extends SingleThreadEventExecutor {
+public class CustomExecutor extends SingleThreadEventExecutor {
 
-    public NormalAttackRunExecutor(EventExecutorGroup parent, ThreadFactory threadFactory, boolean addTaskWakesUp) {
+    public CustomExecutor(EventExecutorGroup parent, ThreadFactory threadFactory, boolean addTaskWakesUp) {
         super(parent, threadFactory, addTaskWakesUp);
-
     }
 
     @Override
@@ -38,6 +37,10 @@ import java.util.concurrent.TimeUnit;
         return super.takeTask();
     }
 
+    @Override
+    protected boolean removeTask(Runnable task) {
+        return super.removeTask(task);
+    }
 
     @Override
     public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {

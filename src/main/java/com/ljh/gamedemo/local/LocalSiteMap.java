@@ -2,6 +2,7 @@ package com.ljh.gamedemo.local;
 
 import com.google.common.base.Strings;
 import com.ljh.gamedemo.entity.Site;
+import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -66,6 +67,7 @@ public class LocalSiteMap {
                     siteMap.put(site.getName(), site);
                     idSiteMap.put(site.getId(), site);
                     nameMap.put(site.getCName(), site.getName());
+
                 }
             }
         }
@@ -100,6 +102,13 @@ public class LocalSiteMap {
                 }
             }
         }
+
+
+        idSiteMap.forEach((k,v) -> {
+            // 为每一个 siteId 绑定一个线程池
+            SiteCreepExecutorManager.bindSiteExecutor(k);
+        } );
+
     }
     public static void main(String[] args) {
         readExcel();

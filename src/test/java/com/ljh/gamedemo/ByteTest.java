@@ -1,6 +1,8 @@
 package com.ljh.gamedemo;
 
 import com.ljh.gamedemo.entity.Creep;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +28,31 @@ public class ByteTest {
 
         System.out.println(creeps);*/
 
+        /*long[] l = new long[]{10001,10002,10003,10004,10005,10006};
+        for (int i = 0; i < 5; i++){
+            for (int j = 0; j < l.length; j++){
+                System.out.print(l[j] % 10 + " ");
+            }
+            System.out.println();
+        }*/
 
-        long start = System.currentTimeMillis();
+        No no = new No(2, "nono");
+        List<No> noList = new ArrayList<>();
+        noList.add(no);
 
-        Thread.sleep(6 * 1000);
+        no = noList.get(0);
+        no.setName("yesyes");
 
-        long end = System.currentTimeMillis();
+        System.out.println(noList);
 
-        int cd = 4;
-
-        System.out.println(Math.floor(((end - start) - cd * 1000)/ 1000));
     }
+}
+
+@Data
+@AllArgsConstructor
+class No{
+
+    private Integer id;
+    private String name;
+
 }

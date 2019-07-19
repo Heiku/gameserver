@@ -39,8 +39,8 @@ public enum MessageType {
     ;
 
 
-    Integer protoCode;
-    Class messageLite;
+    public Integer protoCode;
+    public Class messageLite;
 
     MessageType(Integer protoCode, Class messageLite){
         this.protoCode = protoCode;

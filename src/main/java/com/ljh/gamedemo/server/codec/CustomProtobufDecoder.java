@@ -1,11 +1,14 @@
 package com.ljh.gamedemo.server.codec;
 
-import com.google.protobuf.MessageLite;
+import com.google.protobuf.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 public class CustomProtobufDecoder extends ByteToMessageDecoder {
 
@@ -51,6 +54,8 @@ public class CustomProtobufDecoder extends ByteToMessageDecoder {
             //反序列化
             MessageLite result = decodeBody(dataType, array, offset, readableLen);
             out.add(result);
+
+
         }
     }
 

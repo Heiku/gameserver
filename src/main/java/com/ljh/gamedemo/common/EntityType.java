@@ -14,7 +14,10 @@ public enum  EntityType {
     Orc(110, "兽人"),
     Devil(111, "恶魔"),
     HUMAN(112, "人类"),
-    NONE(113, "虫子");
+    NONE(113, "虫子"),
+    ELF(114, "精灵"),
+
+    COMMON(200, "通用");
 
     int code;
     String content;

@@ -1,6 +1,7 @@
 package com.ljh.gamedemo;
 
 import com.ljh.gamedemo.local.*;
+import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,6 +10,9 @@ public class GamedemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GamedemoApplication.class, args);
+
+        // 载入协议信息
+        LocalMessageMap.readAllMessageType();
 
         // 初始化时载入地图数据
         LocalSiteMap.readExcel();

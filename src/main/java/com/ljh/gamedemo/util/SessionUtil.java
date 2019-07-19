@@ -22,7 +22,6 @@ public class SessionUtil {
      */
     public static void bindSession(Long userId, Channel channel){
         userIdChannelMap.put(userId, channel);
-
         channel.attr(Attributes.USER_ID).set(userId);
     }
 

@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class ExecutorManager {
 
    /* private static ThreadFactory threadFactory;
-    private static NormalAttackRunExecutor executors;
+    private static CustomExecutor executors;
 
     static {
         threadFactory = new ThreadFactoryBuilder()
@@ -19,7 +19,7 @@ public class ExecutorManager {
                 .build();
     }*/
 
-    // NormalAttackRunExecutor executors = new NormalAttackRunExecutor(null, threadFactory, true);
+    // CustomExecutor executors = new CustomExecutor(null, threadFactory, true);
 
     private static final int corePoolSize = 10;
     private static final int maximumPoolSize = 20;

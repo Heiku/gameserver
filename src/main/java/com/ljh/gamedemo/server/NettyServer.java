@@ -1,12 +1,17 @@
 package com.ljh.gamedemo.server;
 
+import com.ljh.gamedemo.server.codec.CustomProtobufDecoder;
+import com.ljh.gamedemo.server.codec.CustomProtobufEncoder;
+import com.ljh.gamedemo.server.handler.DispatcherHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultEventExecutor;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,6 +26,8 @@ public class NettyServer {
 
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup worker = new NioEventLoopGroup();
+
+    private final EventExecutorGroup businessGroup = new DefaultEventExecutorGroup(8);
 
     @Value("${netty.port}")
     private Integer port;
@@ -50,7 +57,22 @@ public class NettyServer {
                 // 将小的数据包包装成更大的帧进行传送，提高网络的负载，即TCP延迟传输(Nagle算法)
                 .childOption(ChannelOption.TCP_NODELAY, true)
 
-                .childHandler(new NettyServerHandlerInitializer());
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+
+                    @Override
+                    protected void initChannel(SocketChannel channel) throws Exception {
+                        ChannelPipeline pipeline = channel.pipeline();
+
+                        pipeline.addLast(new ServerIdleStateHandler());
+
+                        // 添加自定义编码解码器
+                        pipeline.addLast("decoder",new CustomProtobufDecoder());
+                        pipeline.addLast("encoder",new CustomProtobufEncoder());
+
+                        // 添加业务线程池，处理耗时任务
+                        pipeline.addLast(businessGroup, DispatcherHandler.INSTANCE);
+                    }
+                });
 
         ChannelFuture channelFuture = b.bind().sync();
         if (channelFuture.isSuccess()){

@@ -23,6 +23,15 @@ import java.util.List;
 @Service
 public class ProtoService {
 
+    private static ProtoService protoService;
+
+    public static ProtoService getInstance(){
+        if (protoService == null){
+            protoService = new ProtoService();
+        }
+        return protoService;
+    }
+
 
     public RoleProto.Role transToRole(Role role){
 
