@@ -114,5 +114,15 @@ public class SiteCreepExecutorManager {
 
         return true;
     }
+
+    /**
+     * 通过siteId 获取对应的线程池
+     *
+     * @param siteId
+     * @return
+     */
+    public static CustomExecutor getExecutor(int siteId){
+        return siteCreepExecutorMap.get(siteId);
+    }
 }
 

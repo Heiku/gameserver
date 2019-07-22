@@ -57,6 +57,11 @@ public final class CreepProto {
      * <code>int32 damage = 7;</code>
      */
     int getDamage();
+
+    /**
+     * <code>int32 maxHp = 8;</code>
+     */
+    int getMaxHp();
   }
   /**
    * Protobuf type {@code Creep}
@@ -138,6 +143,11 @@ public final class CreepProto {
             case 56: {
 
               damage_ = input.readInt32();
+              break;
+            }
+            case 64: {
+
+              maxHp_ = input.readInt32();
               break;
             }
             default: {
@@ -260,6 +270,15 @@ public final class CreepProto {
       return damage_;
     }
 
+    public static final int MAXHP_FIELD_NUMBER = 8;
+    private int maxHp_;
+    /**
+     * <code>int32 maxHp = 8;</code>
+     */
+    public int getMaxHp() {
+      return maxHp_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -294,6 +313,9 @@ public final class CreepProto {
       }
       if (damage_ != 0) {
         output.writeInt32(7, damage_);
+      }
+      if (maxHp_ != 0) {
+        output.writeInt32(8, maxHp_);
       }
       unknownFields.writeTo(output);
     }
@@ -331,6 +353,10 @@ public final class CreepProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(7, damage_);
       }
+      if (maxHp_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, maxHp_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -360,6 +386,8 @@ public final class CreepProto {
           != other.getHp()) return false;
       if (getDamage()
           != other.getDamage()) return false;
+      if (getMaxHp()
+          != other.getMaxHp()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -385,6 +413,8 @@ public final class CreepProto {
       hash = (53 * hash) + getHp();
       hash = (37 * hash) + DAMAGE_FIELD_NUMBER;
       hash = (53 * hash) + getDamage();
+      hash = (37 * hash) + MAXHP_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxHp();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -532,6 +562,8 @@ public final class CreepProto {
 
         damage_ = 0;
 
+        maxHp_ = 0;
+
         return this;
       }
 
@@ -565,6 +597,7 @@ public final class CreepProto {
         result.level_ = level_;
         result.hp_ = hp_;
         result.damage_ = damage_;
+        result.maxHp_ = maxHp_;
         onBuilt();
         return result;
       }
@@ -634,6 +667,9 @@ public final class CreepProto {
         }
         if (other.getDamage() != 0) {
           setDamage(other.getDamage());
+        }
+        if (other.getMaxHp() != 0) {
+          setMaxHp(other.getMaxHp());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -888,6 +924,32 @@ public final class CreepProto {
         onChanged();
         return this;
       }
+
+      private int maxHp_ ;
+      /**
+       * <code>int32 maxHp = 8;</code>
+       */
+      public int getMaxHp() {
+        return maxHp_;
+      }
+      /**
+       * <code>int32 maxHp = 8;</code>
+       */
+      public Builder setMaxHp(int value) {
+        
+        maxHp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 maxHp = 8;</code>
+       */
+      public Builder clearMaxHp() {
+        
+        maxHp_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -956,11 +1018,11 @@ public final class CreepProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/C" +
-      "reep.proto\"l\n\005Creep\022\017\n\007creepId\030\001 \001(\005\022\014\n\004" +
+      "reep.proto\"{\n\005Creep\022\017\n\007creepId\030\001 \001(\005\022\014\n\004" +
       "type\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\013\n\003num\030\004 \001(\005\022\r\n" +
       "\005level\030\005 \001(\005\022\n\n\002hp\030\006 \001(\005\022\016\n\006damage\030\007 \001(\005" +
-      "B+\n\035com.ljh.gamedemo.proto.protocB\nCreep" +
-      "Protob\006proto3"
+      "\022\r\n\005maxHp\030\010 \001(\005B+\n\035com.ljh.gamedemo.prot" +
+      "o.protocB\nCreepProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -971,7 +1033,7 @@ public final class CreepProto {
     internal_static_Creep_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Creep_descriptor,
-        new java.lang.String[] { "CreepId", "Type", "Name", "Num", "Level", "Hp", "Damage", });
+        new java.lang.String[] { "CreepId", "Type", "Name", "Num", "Level", "Hp", "Damage", "MaxHp", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

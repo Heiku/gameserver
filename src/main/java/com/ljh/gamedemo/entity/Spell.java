@@ -42,7 +42,7 @@ public class Spell {
     private Integer coolDown;
 
     /**
-     * school：物理伤害：1，法术伤害：2，暗影伤害：3
+     * school：物理伤害：1，法术伤害：2，暗影伤害：3， 魔法护盾：4
      */
     private Integer school;
 
@@ -55,4 +55,9 @@ public class Spell {
      * range：判断是否是范围伤害 1:单独伤害，2：范围伤害
      */
     private Integer range;
+
+    /**
+     * sec: 技能的持续时间
+     */
+    private Integer sec;
 }

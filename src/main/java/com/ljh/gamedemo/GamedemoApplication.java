@@ -1,6 +1,7 @@
 package com.ljh.gamedemo;
 
 import com.ljh.gamedemo.local.*;
+import com.ljh.gamedemo.run.SaveRoleItemManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,6 +35,9 @@ public class GamedemoApplication {
 
         // 获取角色背包信息
         LocalItemsMap.readExcel();
+
+        // 启动背包数据存库线程池
+        SaveRoleItemManager.run();
     }
 
 }

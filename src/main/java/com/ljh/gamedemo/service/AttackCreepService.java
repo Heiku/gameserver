@@ -13,15 +13,19 @@ import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.creep.CreepBeAttackedRun;
+import com.ljh.gamedemo.run.creep.CreepBeAttackedScheduleRun;
+import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.UserBeAttackedRun;
 import com.ljh.gamedemo.run.user.UserDeclineMpRun;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: Heiku
@@ -134,9 +138,16 @@ public class AttackCreepService {
         // countDownLatch 保证用户的状态先进行操作
         CountDownLatchUtil.newLatch(1);
         UserExecutorManager.addUserTask(userId, new UserDeclineMpRun(roleId, spell, channel));
-        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creepId, channel, true));
 
+        // 判断是直接伤害还是持续伤害？
+        if (spell.getSec() > 0){
+            CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, true);
+            ScheduledFuture future = SiteCreepExecutorManager.getExecutor(role.getSiteId()).scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
+            FutureMap.futureMap.put(r.hashCode(), future);
+        }else {
+            SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creepId, channel, true));
 
+        }
         return null;
     }
 

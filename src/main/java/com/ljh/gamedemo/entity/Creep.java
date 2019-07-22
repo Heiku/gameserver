@@ -42,6 +42,11 @@ public class Creep {
     private Integer hp;
 
     /**
+     * 野怪最大生命值
+     */
+    private Integer maxHp;
+
+    /**
      * 伤害值
      */
     private Integer damage;

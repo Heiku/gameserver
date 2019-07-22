@@ -8,6 +8,8 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
+import com.ljh.gamedemo.run.SaveRoleItemManager;
+import com.ljh.gamedemo.run.db.SaveRoleItemRun;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
@@ -130,7 +132,7 @@ public class UseItemNowRun implements Runnable {
 
 
         // 同步更新数据库
-        int i = itemsDao.updateItem(items.getNum(), role.getRoleId(), items.getItemsId());
-        log.info("更新 role_objects 的记录信息，更新记录数量：" + i);
+        SaveRoleItemRun run = new SaveRoleItemRun(items, role);
+        SaveRoleItemManager.addQueue(run);
     }
 }

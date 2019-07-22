@@ -76,6 +76,7 @@ public class ProtoService {
                 .setLevel(creep.getLevel())
                 .setNum(creep.getNum())
                 .setHp(creep.getHp())
+                .setMaxHp(creep.getMaxHp())
                 .setDamage(creep.getNum())
                 .build();
     }
