@@ -21,6 +21,8 @@ public class Items {
 
     private Integer num;
 
+    private Integer sec;
+
     private String desc;
 
     private Integer up;

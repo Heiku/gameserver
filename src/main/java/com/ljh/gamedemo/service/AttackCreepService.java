@@ -10,8 +10,6 @@ import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
-import com.ljh.gamedemo.run.ExecutorManager;
-import com.ljh.gamedemo.run.NormalAttackRun;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.creep.CreepBeAttackedRun;
@@ -120,14 +118,25 @@ public class AttackCreepService {
         // 获取施放技能的目标野怪id
         int creepId = request.getCreepId();
 
-        // 根据正在攻击的野怪
-        // Creep creep = LocalAttackCreepMap.getChannelCreepMap().get(channel);
-        // spellAttack(spell, creep, role, channel);
+        // 加锁判断野怪的状态
+        synchronized (this){
+           Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
+           if (creep.getNum() <= 0 || creep.getHp() <= 0){
 
-        // TODO: 这里到时要用到 CountDownLatch 控制两个任务的顺序，要考虑到万一任务一：扣蓝失败后，任务二不执行
+               response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                       .setResult(ResultCode.FAILED)
+                       .setContent(ContentType.ATTACK_DEATH_CREEP)
+                       .build();
+               return response;
+           }
+        }
+
+        // countDownLatch 保证用户的状态先进行操作
         CountDownLatchUtil.newLatch(1);
         UserExecutorManager.addUserTask(userId, new UserDeclineMpRun(roleId, spell, channel));
         SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creepId, channel, true));
+
+
         return null;
     }
 
@@ -146,109 +155,21 @@ public class AttackCreepService {
         // 普通攻击技能
         Spell spell = spells.get(0);
 
-        //Thread
-        //ExecutorManager.getExecutors().execute(new NormalAttackRun(creep, spell, channel, true));
+        // 加锁判断野怪的状态
+        synchronized (this){
+            if (creep.getNum() <= 0 || creep.getHp() <= 0){
+                response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                        .setResult(ResultCode.FAILED)
+                        .setContent(ContentType.ATTACK_DEATH_CREEP)
+                        .build();
+                channel.writeAndFlush(channel);
+            }
+        }
 
-        // 修改 交由用户独立的线程池进行处理
-        // UserExecutorManager.addUserTask(userId, new NormalAttackRun(creep, spell, channel, true));
-
+        // 添加任务到用户线程
         SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creep.getCreepId(), channel, false));
         UserExecutorManager.addUserTask(userId, new UserBeAttackedRun(userId, creep, channel));
     }
-
-
-    /**
-     * 使用技能攻击野怪
-     * 1.计算技能cd时间
-     * 2.计算mp值是不是足以施放技能
-     * 3.攻击成功，野怪掉血，记录缓存
-     * 4.技能消耗mp，记录缓存
-     *
-     * @param spell
-     * @param creep
-     * @param channel
-     */
-    private void spellAttack(Spell spell, Creep creep, Role role,  Channel channel){
-        int startHp = creep.getHp();
-
-        // 获取施放技能的cd，蓝耗
-        int cd = spell.getCoolDown();
-        int cost = spell.getCost();
-
-        // 用户当前mp值，判断是否足够施放技能
-        int lastMp = role.getMp();
-        if (lastMp < cost){
-            response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setType(MsgAttackCreepProto.RequestType.SPELL)
-                    .setContent(ContentType.ATTACK_SPELL_MP_NO_ENOUGH)
-                    .build();
-            channel.writeAndFlush(response);
-            return;
-        }
-
-        // 施放技能前，进行一次时间戳判断，判断是否在cd时间内
-        long last = 0L;
-        if (LocalAttackCreepMap.channelTimeStampMap.containsKey(channel)){
-            last = LocalAttackCreepMap.channelTimeStampMap.get(channel);
-        }
-        long now = System.currentTimeMillis();
-        if (last > 0){
-            long t = now - last;
-
-            // 还在cd中，通知用户等待时间点
-            if (t < cd * 1000){
-                double interval = Math.floor((cd * 1000 - t) / 1000);
-
-                response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                        .setResult(ResultCode.FAILED)
-                        .setType(MsgAttackCreepProto.RequestType.SPELL)
-                        .setContent(ContentType.ATTACK_SPELL_CD + interval + "秒\n")
-                        .build();
-
-                channel.writeAndFlush(response);
-                return;
-            }
-        }
-        // 记录下本次施放技能的时间戳
-        LocalAttackCreepMap.getChannelTimeStampMap().put(channel, now);
-
-
-
-        Creep c = LocalAttackCreepMap.getChannelCreepMap().get(channel);
-        // 获取野怪血量，技能伤害
-        int hp = c.getHp();
-        int damage = spell.getDamage();
-
-        if (c.getHp() > 0){
-            hp -= damage;
-        }
-        log.info("spell attack creep info: " + c.getHp());
-
-        // 更新野怪的生命值，同步到缓存中去
-        c.setHp(hp);
-        LocalAttackCreepMap.getChannelCreepMap().put(channel, c);
-        if (hp < 0){
-            deathCreepService.deathCreep(channel, startHp);
-        }
-
-        // 技能消耗mp，更新用户的mp值
-        long userId = role.getUserId();
-        role.setMp(lastMp - cost);
-
-        // 用户mp更新成功，更新role cache
-        LocalUserMap.userRoleMap.put(userId, role);
-
-        response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                .setType(MsgAttackCreepProto.RequestType.SPELL)
-                .setResult(ResultCode.SUCCESS)
-                .setContent(ContentType.ATTACK_SPELL_SUCCESS)
-                .setCreep(protoService.transToCreep(c))
-                .build();
-
-        channel.writeAndFlush(response);
-    }
-
 
     /**
      * 用户状态拦截器，检验参数

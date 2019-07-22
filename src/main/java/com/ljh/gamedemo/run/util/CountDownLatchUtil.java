@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.run.util;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,11 +27,14 @@ public class CountDownLatchUtil {
         countDownLatch.countDown();
     }
 
-    public static void await() throws Exception{
-        countDownLatch.await(2, TimeUnit.SECONDS);
-        if (aborted){
-            throw new Exception();
-
+    public static void await(){
+        try {
+            countDownLatch.await(2, TimeUnit.SECONDS);
+            if (aborted){
+                throw new RejectedExecutionException();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -33,10 +33,13 @@ public class ItemsHandler extends SimpleChannelInboundHandler<MsgItemProto.Reque
                 response = itemService.getAll(requestItem);
                 break;
             case USE:
-                response = itemService.useItem(requestItem);
+                response = itemService.useItem(requestItem, ctx.channel());
                 break;
 
         }
-        ctx.writeAndFlush(response);
+
+        if (response != null) {
+            ctx.writeAndFlush(response);
+        }
     }
 }

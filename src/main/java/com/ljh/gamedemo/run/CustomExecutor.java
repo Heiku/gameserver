@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.run;
 
 import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.RejectedExecutionHandler;
 import io.netty.util.concurrent.ScheduledFuture;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 
@@ -13,8 +14,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class CustomExecutor extends SingleThreadEventExecutor {
 
-    public CustomExecutor(EventExecutorGroup parent, ThreadFactory threadFactory, boolean addTaskWakesUp) {
-        super(parent, threadFactory, addTaskWakesUp);
+    public CustomExecutor(EventExecutorGroup parent, ThreadFactory threadFactory, boolean addTaskWakesUp, int maxPending, RejectedExecutionHandler rejectedHandler) {
+        super(parent, threadFactory, addTaskWakesUp, maxPending, rejectedHandler);
     }
 
     @Override

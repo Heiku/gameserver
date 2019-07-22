@@ -1,14 +1,9 @@
 package com.ljh.gamedemo.local;
 
 import com.google.common.collect.Maps;
-import com.ljh.gamedemo.dao.RoleSpellDao;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.User;
-import com.ljh.gamedemo.entity.dto.RoleSpell;
-import com.ljh.gamedemo.run.ExecutorManager;
-import com.ljh.gamedemo.run.RecoverUserStateRun;
 import com.ljh.gamedemo.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,9 +22,6 @@ public class LocalUserMap {
 
     // 存放当前在线的的玩家 (userId, User)
     public static Map<Long, User> userMap = Maps.newConcurrentMap();
-
-
-
 
     // 存放当前玩家的角色 (userId, role)
     public static Map<Long, Role> userRoleMap = Maps.newConcurrentMap();
@@ -59,11 +51,6 @@ public class LocalUserMap {
 
             idRoleMap.put(role.getRoleId(), role);
         }
-
-
-        // 完成数据读取后，加入角色状态恢复机制
-        ExecutorManager.getExecutors().execute(new RecoverUserStateRun());
-
     }
     public static Map<Long, Role> getIdRoleMap() {
         return idRoleMap;

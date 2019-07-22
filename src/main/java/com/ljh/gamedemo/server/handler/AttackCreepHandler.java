@@ -1,16 +1,14 @@
 package com.ljh.gamedemo.server.handler;
 
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
-import com.ljh.gamedemo.run.ExecutorManager;
 import com.ljh.gamedemo.service.AttackCreepService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.Callable;
-
-import static com.ljh.gamedemo.server.request.RequestAttackCreepType.*;
+import static com.ljh.gamedemo.server.request.RequestAttackCreepType.ATTACK;
+import static com.ljh.gamedemo.server.request.RequestAttackCreepType.SPELL;
 
 /**
  * @Author: Heiku

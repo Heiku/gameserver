@@ -15,6 +15,8 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.record.RecoverBuff;
+import com.ljh.gamedemo.run.user.RecoverUserRun;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class UserService {
@@ -31,7 +34,6 @@ public class UserService {
 
     @Autowired
     private UserRoleDao userRoleDao;
-
 
     /**
      * 用户登录后，并没有角色状态，需要通过 getState() 初始化玩家角色
@@ -65,6 +67,10 @@ public class UserService {
 
         // 分配用户的业务线程
         UserExecutorManager.bindUserExecutor(userId);
+
+        // 为每一个玩家添加自动恢复的task
+        UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(new RecoverUserRun(userId, null, null), 0, 2, TimeUnit.SECONDS);
+
 
         // 确定角色成功，返回角色信息
         RoleProto.Role roleMsg = RoleProto.Role.newBuilder()

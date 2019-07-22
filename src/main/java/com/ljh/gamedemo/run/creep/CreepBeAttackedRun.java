@@ -6,14 +6,13 @@ import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
-import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import com.ljh.gamedemo.service.ProtoService;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * @Author: Heiku
@@ -48,13 +47,12 @@ public class CreepBeAttackedRun implements Runnable {
         if (useLatch){
             try {
                 CountDownLatchUtil.await();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (RejectedExecutionException e) {
+                throw e;
             }
         }
 
-        log.info("countdownlatch 任务还没被取消！");
-
+        // 指定攻击的野怪
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
         int startHp = creep.getHp();
 

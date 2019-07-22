@@ -61,6 +61,7 @@ public class UserDeclineMpRun implements Runnable{
                     .setContent(ContentType.ATTACK_SPELL_MP_NO_ENOUGH)
                     .build();
             channel.writeAndFlush(response);
+            CountDownLatchUtil.abort();
             return;
         }
 
@@ -101,6 +102,7 @@ public class UserDeclineMpRun implements Runnable{
                         .build();
 
                 channel.writeAndFlush(response);
+                CountDownLatchUtil.abort();
                 return;
             }
         }
@@ -130,7 +132,9 @@ public class UserDeclineMpRun implements Runnable{
 
         // 更新map
         LocalUserMap.idRoleMap.put(roleId, role);
-        log.info("技能施放前的蓝为：" + role.getMp());
+        log.info("技能施放后的蓝为：" + role.getMp());
+
+        LocalUserMap.userRoleMap.put(role.getUserId(), role);
 
         // 更新siteRolesMap
         List<Role> siteRoleList = LocalUserMap.siteRolesMap.get(role.getSiteId());
@@ -142,7 +146,6 @@ public class UserDeclineMpRun implements Runnable{
             }
         }
 
-
         // 4. 构造返回
         MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep
                 .newBuilder()
@@ -153,8 +156,10 @@ public class UserDeclineMpRun implements Runnable{
                 .build();
         channel.writeAndFlush(response);
 
-        CountDownLatchUtil.abort();
-        //CountDownLatchUtil.countDownLatch.countDown();
+
+
+        // 用户蓝耗正常，可进行野怪其他任务
+        CountDownLatchUtil.countDownLatch.countDown();
     }
 
 }

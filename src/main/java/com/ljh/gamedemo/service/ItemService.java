@@ -8,11 +8,20 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
+import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.record.FutureMap;
+import com.ljh.gamedemo.run.record.RecoverBuff;
+import com.ljh.gamedemo.run.user.RecoverUserRun;
+import com.ljh.gamedemo.run.user.UseItemNowRun;
+import com.ljh.gamedemo.run.user.UseItemScheduledRun;
+import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.ljh.gamedemo.common.ItemsType.*;
 
@@ -85,7 +94,7 @@ public class ItemService {
      * @param requestItem
      * @return
      */
-    public MsgItemProto.ResponseItem useItem(MsgItemProto.RequestItem requestItem){
+    public MsgItemProto.ResponseItem useItem(MsgItemProto.RequestItem requestItem, Channel channel){
         // 用户状态判断
         response = userStateInterceptor(requestItem);
         if (response != null){
@@ -107,7 +116,9 @@ public class ItemService {
         Items items = LocalItemsMap.getIdItemsMap().get(itemsId);
 
         // 使用物品
-        return doUseItem(userId, items);
+        doUseItem(userId, items, channel);
+
+        return null;
     }
 
 
@@ -118,20 +129,16 @@ public class ItemService {
      * @param items
      * @return
      */
-    private MsgItemProto.ResponseItem doUseItem(long userId, Items items){
-        MsgItemProto.ResponseItem responseItem = MsgItemProto.ResponseItem.newBuilder().build();
-
+    private void doUseItem(long userId, Items items, Channel channel){
         int type = items.getType();
         switch (type){
             case BLOOD:
-                responseItem = recoverBlood(userId, items);
+                recoverBlood(userId, items, channel);
                 break;
             case BLUE:
-                responseItem = recoverBlue(userId, items);
+                recoverBlue(userId, items, channel);
                 break;
         }
-
-        return responseItem;
     }
 
 
@@ -142,69 +149,53 @@ public class ItemService {
      * @param items
      * @return
      */
-    private MsgItemProto.ResponseItem recoverBlood(long userId, Items items){
-        // 获取角色信息
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        int hp = role.getHp();
+    private void recoverBlood(long userId, Items items, Channel channel){
 
-        // 血量已经满格，无法使用
-        if (hp == BLOOD_MAX_VALUE){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setType(MsgItemProto.RequestType.USE)
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ITEM_USE_FAILED_FULL_BLOOD)
-                    .build();
+        RecoverBuff buff = new RecoverBuff();
+        buff.setHpBuf(items.getUp());
+        buff.setMpBuf(0);
+
+        // 直接恢复
+        if (items.getSec() == 0){
+
+            // 执行立即恢复的任务
+            UserExecutorManager.addUserTask(userId, new UseItemNowRun(userId, items.getItemsId(), channel, buff));
+        }else {
+            buff.setHpBuf(items.getUp() / items.getSec());
+            UseItemScheduledRun r = new UseItemScheduledRun(userId, items, channel, buff);
+
+            // 缓慢恢复，定期增加用户状态值
+            ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(r, 0, 1, TimeUnit.SECONDS);
+            FutureMap.futureMap.put(r.hashCode(), future);
         }
-
-        // 血量添加
-        if (hp < BLOOD_MAX_VALUE){
-            hp += items.getUp();
-            if (hp > BLOOD_MAX_VALUE){
-                hp = BLOOD_MAX_VALUE;
-            }
-        }
-
-        // 更血量信息
-        role.setHp(hp);
-        LocalUserMap.userRoleMap.put(userId, role);
-
-        return updateCacheRepsonse(role, items);
     }
 
 
     /**
      * 具体的回蓝操作
      *
-     * @param roleId
+     * @param userId
      * @param items
      * @return
      */
-    private MsgItemProto.ResponseItem recoverBlue(long roleId, Items items){
-        // 获取角色信息
-        Role role = LocalUserMap.userRoleMap.get(roleId);
-        int mp = role.getMp();
+    private void recoverBlue(long userId, Items items, Channel channel){
 
-        // 蓝量已经满格，无法使用
-        if (mp == BLUE_MAX_VALUE){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setType(MsgItemProto.RequestType.USE)
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ITEM_USE_FAILED_FULL_BLOOD)
-                    .build();
+        RecoverBuff buff = new RecoverBuff();
+        buff.setHpBuf(0);
+        buff.setMpBuf(items.getUp());
+        // 直接恢复
+        if (items.getSec() == 0){
+
+            // 执行立即恢复的任务
+            UserExecutorManager.addUserTask(userId, new UseItemNowRun(userId, items.getItemsId(), channel, buff));
+        }else {
+            buff.setMpBuf(items.getUp() / items.getSec() * 2);
+            UseItemScheduledRun r = new UseItemScheduledRun(userId, items,  channel, buff);
+
+            // 缓慢恢复，定期增加用户状态值
+            ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
+            FutureMap.futureMap.put(r.hashCode(), future);
         }
-
-        // 蓝量添加
-        if (mp < BLUE_MAX_VALUE){
-            mp += items.getUp();
-            if (mp > BLUE_MAX_VALUE){
-                mp = BLUE_MAX_VALUE;
-            }
-        }
-        role.setMp(mp);
-        LocalUserMap.userRoleMap.put(roleId, role);
-
-        // 更新缓存，构造response
-        return updateCacheRepsonse(role, items);
     }
 
 

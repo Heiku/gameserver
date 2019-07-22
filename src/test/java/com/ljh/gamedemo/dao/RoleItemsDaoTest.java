@@ -23,7 +23,7 @@ public class RoleItemsDaoTest {
 
     @Test
     public void testInsert(){
-        int n = roleItemsDao.insertRoleItems(10002, 10002, 1);
+        int n = roleItemsDao.insertRoleItems(10002, 10006, 2);
         System.out.println(n);
     }
 

@@ -88,6 +88,7 @@ public class ProtoService {
                 .setName(items.getName())
                 .setNum(items.getNum())
                 .setUp(items.getUp())
+                .setSec(items.getSec())
                 .setDesc(items.getDesc())
                 .build();
     }

@@ -2,6 +2,7 @@ package com.ljh.gamedemo.run;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import io.netty.util.concurrent.RejectedExecutionHandlers;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -35,7 +36,7 @@ public class UserExecutorManager {
     static {
         CustomExecutor executor;
         for (int i = 0; i < MAX_USER_THREAD; i++){
-            executors[i] = new CustomExecutor(null, threadFactory, true);
+            executors[i] = new CustomExecutor(null, threadFactory, true, Integer.MAX_VALUE, RejectedExecutionHandlers.reject());
             executor = executors[i];
             executors[i].submit(new ExecutorInit(executor));
         }
@@ -56,6 +57,7 @@ public class UserExecutorManager {
             if (idleArr[i] == 0) {
                 idleArr[i] = 1;
                 userExecutorMap.put(userId, executors[i]);
+
                 break;
             }
         }
@@ -112,6 +114,10 @@ public class UserExecutorManager {
         executor.removeTask(task);
 
         return true;
+    }
+
+    public static CustomExecutor getUserExecutor(long userId){
+        return userExecutorMap.get(userId);
     }
 
 }
