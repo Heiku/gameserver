@@ -11,6 +11,7 @@ option java_outer_classname = "MsgAttackCreepProto";
 enum RequestType{
     ATTACK = 0;
     SPELL = 1;
+    SAVE = 2;
 }
 
 message RequestAttackCreep{

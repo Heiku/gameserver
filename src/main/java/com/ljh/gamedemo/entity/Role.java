@@ -29,7 +29,6 @@ public class Role {
      */
     private Integer alive;
 
-
     /**
      * hp
      */

@@ -4,6 +4,8 @@ import com.ljh.gamedemo.entity.Creep;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class ByteTest {
             System.out.println();
         }*/
 
-        No no = new No(2, "nono");
+        /*No no = new No(2, "nono");
         List<No> noList = new ArrayList<>();
         noList.add(no);
 
@@ -44,7 +46,31 @@ public class ByteTest {
         no.setName("yesyes");
 
         System.out.println(noList);
+*/
 
+
+        /*LocalDateTime s = LocalDateTime.now();
+        long st = s.toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
+
+        Thread.sleep(3000);
+
+        LocalDateTime e = LocalDateTime.now();
+        long et = s.toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
+
+        System.out.println(et - st);*/
+
+        No n1 = new No(1,"nono");
+        No n2 = new No(2,"yesyes");
+        List<No> noList = new ArrayList<>();
+        noList.add(n1);
+        noList.add(n2);
+
+        No n3 = n1;
+        noList.remove(n3);
+
+        for (No no : noList) {
+            System.out.println(no);
+        }
     }
 }
 

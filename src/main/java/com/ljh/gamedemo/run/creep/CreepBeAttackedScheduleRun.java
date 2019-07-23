@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.RejectedExecutionException;
 
+
 /**
  * @Author: Heiku
  * @Date: 2019/7/22
@@ -32,10 +33,11 @@ public class CreepBeAttackedScheduleRun implements Runnable {
 
     private Integer allDamage;
 
-    private Integer sumDamage;
+    private Integer sumDamage = 0;
 
     private ProtoService protoService = ProtoService.getInstance();
 
+    private boolean firstLatch = true;
 
     public CreepBeAttackedScheduleRun(Spell spell, Integer creepId,
                                       Channel channel,boolean useLatch){
@@ -52,11 +54,14 @@ public class CreepBeAttackedScheduleRun implements Runnable {
     @Override
     public void run() {
         // 判断是否使用了CountDownLatch
-        if (useLatch){
-            try {
-                CountDownLatchUtil.await();
-            } catch (RejectedExecutionException e) {
-                throw e;
+        if (firstLatch) {
+            if (useLatch){
+                try {
+                    firstLatch = false;
+                    CountDownLatchUtil.await();
+                } catch (RejectedExecutionException e) {
+                    throw e;
+                }
             }
         }
 
@@ -65,7 +70,6 @@ public class CreepBeAttackedScheduleRun implements Runnable {
         int startUp = creep.getMaxHp();
         // 每秒造成的伤害值
         int damage = spell.getDamage() / spell.getSec();
-
 
         log.info("野怪持续掉血任务，野怪掉血前：" + creep.getHp());
         if (hp > 0){
@@ -89,12 +93,14 @@ public class CreepBeAttackedScheduleRun implements Runnable {
                         .setCreep(protoService.transToCreep(creep))
                         .build();
                 channel.writeAndFlush(response);
+                return;
             }
 
             // 判断掉血值
             if (sumDamage >= allDamage){
                 FutureMap.futureMap.get(this.hashCode()).cancel(true);
                 log.info("野怪持续掉血任务：达到最大掉血值，任务取消");
+                return;
             }
 
             // 扣血

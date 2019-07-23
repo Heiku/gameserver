@@ -30,5 +30,6 @@ message ResponseEquip{
 
     Role role = 4;
 
-    repeated Equip equip = 5;
+    repeated Equip own = 5;
+    repeated Equip equip = 6;
 }

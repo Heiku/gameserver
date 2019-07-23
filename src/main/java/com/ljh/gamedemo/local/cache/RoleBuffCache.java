@@ -10,11 +10,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * @Author: Heiku
  * @Date: 2019/7/22
+ *
+ * 存储玩家身上的buff
  */
 public class RoleBuffCache {
 
     private static Cache<Long, List<RoleBuff>> cache = CacheBuilder.newBuilder()
-            .expireAfterWrite(60, TimeUnit.SECONDS)
+            .expireAfterAccess(60, TimeUnit.SECONDS)
             .build();
 
     public static Cache<Long, List<RoleBuff>> getCache() {

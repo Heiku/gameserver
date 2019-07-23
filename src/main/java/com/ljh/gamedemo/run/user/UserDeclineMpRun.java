@@ -156,8 +156,6 @@ public class UserDeclineMpRun implements Runnable{
                 .build();
         channel.writeAndFlush(response);
 
-
-
         // 用户蓝耗正常，可进行野怪其他任务
         CountDownLatchUtil.countDownLatch.countDown();
     }

@@ -35,7 +35,10 @@ public enum MessageType {
 
     // items
     REQUEST_ITEMS(0xe, MsgItemProto.RequestItem.class),
-    RESPONSE_ITEMS(0xf, MsgItemProto.ResponseItem.class)
+    RESPONSE_ITEMS(0xf, MsgItemProto.ResponseItem.class),
+
+    REQUEST_EQUIPS(0x10, MsgEquipProto.RequestEquip.class),
+    RESPONSE_EQUIPS(0x11, MsgEquipProto.ResponseEquip.class)
     ;
 
 

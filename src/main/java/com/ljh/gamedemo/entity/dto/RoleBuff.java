@@ -16,6 +16,11 @@ public class RoleBuff {
     private Long roleId;
 
     /**
+     * buff 类别
+     */
+    private Integer type;
+
+    /**
      * 护盾值
      */
     private Integer shield;

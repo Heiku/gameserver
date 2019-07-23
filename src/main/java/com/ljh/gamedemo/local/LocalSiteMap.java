@@ -2,6 +2,7 @@ package com.ljh.gamedemo.local;
 
 import com.google.common.base.Strings;
 import com.ljh.gamedemo.entity.Site;
+import com.ljh.gamedemo.run.CustomExecutor;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -113,8 +114,8 @@ public class LocalSiteMap {
     public static void main(String[] args) {
         readExcel();
 
-        siteMap.forEach((k,v) -> {
-            System.out.println("k: " + k + "  v: " + v);
+        SiteCreepExecutorManager.siteCreepExecutorMap.forEach((k, v) -> {
+            System.out.println("k: " + k + " ,v: " + v);
         });
 
     }

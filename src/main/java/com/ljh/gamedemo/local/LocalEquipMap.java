@@ -28,7 +28,7 @@ public class LocalEquipMap {
     private static File equipFile = null;
 
     // equip idEquipMap: <Long, Equip>
-    private static Map<Integer, Equip> idEquipMap = Maps.newConcurrentMap();
+    private static Map<Long, Equip> idEquipMap = Maps.newConcurrentMap();
 
     // equip roleEquipMap: <Long, List<Equip>>
     private static Map<Long, List<Equip>> roleEquipMap = Maps.newConcurrentMap();
@@ -62,10 +62,30 @@ public class LocalEquipMap {
                     Equip equip = new Equip();
 
                     equip.setEquipId(Long.valueOf(getValue(row.getCell(0))));
+                    equip.setName(getValue(row.getCell(1)));
+                    equip.setType(Integer.valueOf(getValue(row.getCell(2))));
+                    equip.setPart(Integer.valueOf(getValue(row.getCell(3))));
+                    equip.setLevel(Integer.valueOf(getValue(row.getCell(4))));
+                    equip.setAUp(Integer.valueOf(getValue(row.getCell(5))));
+                    equip.setSpUp(Integer.valueOf(getValue(row.getCell(6))));
+                    equip.setHpUp(Integer.valueOf(getValue(row.getCell(7))));
+                    equip.setDurability(Integer.valueOf(getValue(row.getCell(8))));
+                    equip.setState(Integer.valueOf(getValue(row.getCell(9))));
+
+
+                    idEquipMap.put(equip.getEquipId(), equip);
                 }
 
             }
         }
+    }
+
+    public static void main(String[] args) {
+        readExcel();
+
+        idEquipMap.forEach((k, v) -> {
+            System.out.println("k: " + k + " ,value: " + v);
+        });
     }
 
 }

@@ -7,8 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ljh.gamedemo.server.request.RequestAttackCreepType.ATTACK;
-import static com.ljh.gamedemo.server.request.RequestAttackCreepType.SPELL;
+import static com.ljh.gamedemo.server.request.RequestAttackCreepType.*;
 
 /**
  * @Author: Heiku
@@ -35,6 +34,9 @@ public class AttackCreepHandler extends SimpleChannelInboundHandler<MsgAttackCre
                 break;
             case SPELL:
                 responseAttackCreep = attackCreepService.spellAttackCreep(requestAttackCreep, ctx.channel());
+                break;
+            case SAVE:
+                responseAttackCreep = attackCreepService.spellToSave(requestAttackCreep, ctx.channel());
                 break;
         }
 

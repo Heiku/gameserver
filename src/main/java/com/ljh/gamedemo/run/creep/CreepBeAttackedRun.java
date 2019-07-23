@@ -6,6 +6,7 @@ import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import com.ljh.gamedemo.service.ProtoService;
 import io.netty.channel.Channel;
@@ -98,6 +99,7 @@ public class CreepBeAttackedRun implements Runnable {
                     .setType(MsgAttackCreepProto.RequestType.ATTACK)
                     .setResult(ResultCode.SUCCESS)
                     .setContent(ContentType.ATTACK_CURRENT)
+                    .setRole(RoleProto.Role.getDefaultInstance())
                     .setCreep(protoService.transToCreep(creep))
                     .build();
             channel.writeAndFlush(response);

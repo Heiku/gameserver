@@ -810,25 +810,49 @@ public final class MsgEquipProto {
     com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getRoleOrBuilder();
 
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip own = 5;</code>
+     */
+    java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> 
+        getOwnList();
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.EquipProto.Equip getOwn(int index);
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    int getOwnCount();
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
+        getOwnOrBuilderList();
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getOwnOrBuilder(
+        int index);
+
+    /**
+     * <code>repeated .Equip equip = 6;</code>
      */
     java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> 
         getEquipList();
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip(int index);
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     int getEquipCount();
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
         getEquipOrBuilderList();
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder(
         int index);
@@ -848,6 +872,7 @@ public final class MsgEquipProto {
     private ResponseEquip() {
       content_ = "";
       type_ = 0;
+      own_ = java.util.Collections.emptyList();
       equip_ = java.util.Collections.emptyList();
     }
 
@@ -914,8 +939,17 @@ public final class MsgEquipProto {
             }
             case 42: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                equip_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>();
+                own_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>();
                 mutable_bitField0_ |= 0x00000001;
+              }
+              own_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.EquipProto.Equip.parser(), extensionRegistry));
+              break;
+            }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                equip_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>();
+                mutable_bitField0_ |= 0x00000002;
               }
               equip_.add(
                   input.readMessage(com.ljh.gamedemo.proto.protoc.EquipProto.Equip.parser(), extensionRegistry));
@@ -937,6 +971,9 @@ public final class MsgEquipProto {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          own_ = java.util.Collections.unmodifiableList(own_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
           equip_ = java.util.Collections.unmodifiableList(equip_);
         }
         this.unknownFields = unknownFields.build();
@@ -1037,35 +1074,70 @@ public final class MsgEquipProto {
       return getRole();
     }
 
-    public static final int EQUIP_FIELD_NUMBER = 5;
+    public static final int OWN_FIELD_NUMBER = 5;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> own_;
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> getOwnList() {
+      return own_;
+    }
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
+        getOwnOrBuilderList() {
+      return own_;
+    }
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    public int getOwnCount() {
+      return own_.size();
+    }
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getOwn(int index) {
+      return own_.get(index);
+    }
+    /**
+     * <code>repeated .Equip own = 5;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getOwnOrBuilder(
+        int index) {
+      return own_.get(index);
+    }
+
+    public static final int EQUIP_FIELD_NUMBER = 6;
     private java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> equip_;
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> getEquipList() {
       return equip_;
     }
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
         getEquipOrBuilderList() {
       return equip_;
     }
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     public int getEquipCount() {
       return equip_.size();
     }
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip(int index) {
       return equip_.get(index);
     }
     /**
-     * <code>repeated .Equip equip = 5;</code>
+     * <code>repeated .Equip equip = 6;</code>
      */
     public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder(
         int index) {
@@ -1098,8 +1170,11 @@ public final class MsgEquipProto {
       if (role_ != null) {
         output.writeMessage(4, getRole());
       }
+      for (int i = 0; i < own_.size(); i++) {
+        output.writeMessage(5, own_.get(i));
+      }
       for (int i = 0; i < equip_.size(); i++) {
-        output.writeMessage(5, equip_.get(i));
+        output.writeMessage(6, equip_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1125,9 +1200,13 @@ public final class MsgEquipProto {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, getRole());
       }
+      for (int i = 0; i < own_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, own_.get(i));
+      }
       for (int i = 0; i < equip_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, equip_.get(i));
+          .computeMessageSize(6, equip_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1154,6 +1233,8 @@ public final class MsgEquipProto {
         if (!getRole()
             .equals(other.getRole())) return false;
       }
+      if (!getOwnList()
+          .equals(other.getOwnList())) return false;
       if (!getEquipList()
           .equals(other.getEquipList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1176,6 +1257,10 @@ public final class MsgEquipProto {
       if (hasRole()) {
         hash = (37 * hash) + ROLE_FIELD_NUMBER;
         hash = (53 * hash) + getRole().hashCode();
+      }
+      if (getOwnCount() > 0) {
+        hash = (37 * hash) + OWN_FIELD_NUMBER;
+        hash = (53 * hash) + getOwnList().hashCode();
       }
       if (getEquipCount() > 0) {
         hash = (37 * hash) + EQUIP_FIELD_NUMBER;
@@ -1309,6 +1394,7 @@ public final class MsgEquipProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getOwnFieldBuilder();
           getEquipFieldBuilder();
         }
       }
@@ -1327,9 +1413,15 @@ public final class MsgEquipProto {
           role_ = null;
           roleBuilder_ = null;
         }
+        if (ownBuilder_ == null) {
+          own_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          ownBuilder_.clear();
+        }
         if (equipBuilder_ == null) {
           equip_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           equipBuilder_.clear();
         }
@@ -1368,10 +1460,19 @@ public final class MsgEquipProto {
         } else {
           result.role_ = roleBuilder_.build();
         }
-        if (equipBuilder_ == null) {
+        if (ownBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
-            equip_ = java.util.Collections.unmodifiableList(equip_);
+            own_ = java.util.Collections.unmodifiableList(own_);
             bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.own_ = own_;
+        } else {
+          result.own_ = ownBuilder_.build();
+        }
+        if (equipBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            equip_ = java.util.Collections.unmodifiableList(equip_);
+            bitField0_ = (bitField0_ & ~0x00000002);
           }
           result.equip_ = equip_;
         } else {
@@ -1438,11 +1539,37 @@ public final class MsgEquipProto {
         if (other.hasRole()) {
           mergeRole(other.getRole());
         }
+        if (ownBuilder_ == null) {
+          if (!other.own_.isEmpty()) {
+            if (own_.isEmpty()) {
+              own_ = other.own_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureOwnIsMutable();
+              own_.addAll(other.own_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.own_.isEmpty()) {
+            if (ownBuilder_.isEmpty()) {
+              ownBuilder_.dispose();
+              ownBuilder_ = null;
+              own_ = other.own_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              ownBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getOwnFieldBuilder() : null;
+            } else {
+              ownBuilder_.addAllMessages(other.own_);
+            }
+          }
+        }
         if (equipBuilder_ == null) {
           if (!other.equip_.isEmpty()) {
             if (equip_.isEmpty()) {
               equip_ = other.equip_;
-              bitField0_ = (bitField0_ & ~0x00000001);
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
               ensureEquipIsMutable();
               equip_.addAll(other.equip_);
@@ -1455,7 +1582,7 @@ public final class MsgEquipProto {
               equipBuilder_.dispose();
               equipBuilder_ = null;
               equip_ = other.equip_;
-              bitField0_ = (bitField0_ & ~0x00000001);
+              bitField0_ = (bitField0_ & ~0x00000002);
               equipBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getEquipFieldBuilder() : null;
@@ -1751,12 +1878,252 @@ public final class MsgEquipProto {
         return roleBuilder_;
       }
 
+      private java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> own_ =
+        java.util.Collections.emptyList();
+      private void ensureOwnIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          own_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>(own_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> ownBuilder_;
+
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> getOwnList() {
+        if (ownBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(own_);
+        } else {
+          return ownBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public int getOwnCount() {
+        if (ownBuilder_ == null) {
+          return own_.size();
+        } else {
+          return ownBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getOwn(int index) {
+        if (ownBuilder_ == null) {
+          return own_.get(index);
+        } else {
+          return ownBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder setOwn(
+          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
+        if (ownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOwnIsMutable();
+          own_.set(index, value);
+          onChanged();
+        } else {
+          ownBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder setOwn(
+          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          ownBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder addOwn(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
+        if (ownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOwnIsMutable();
+          own_.add(value);
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder addOwn(
+          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
+        if (ownBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureOwnIsMutable();
+          own_.add(index, value);
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder addOwn(
+          com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.add(builderForValue.build());
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder addOwn(
+          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          ownBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder addAllOwn(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.EquipProto.Equip> values) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, own_);
+          onChanged();
+        } else {
+          ownBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder clearOwn() {
+        if (ownBuilder_ == null) {
+          own_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          ownBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public Builder removeOwn(int index) {
+        if (ownBuilder_ == null) {
+          ensureOwnIsMutable();
+          own_.remove(index);
+          onChanged();
+        } else {
+          ownBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder getOwnBuilder(
+          int index) {
+        return getOwnFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getOwnOrBuilder(
+          int index) {
+        if (ownBuilder_ == null) {
+          return own_.get(index);  } else {
+          return ownBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
+           getOwnOrBuilderList() {
+        if (ownBuilder_ != null) {
+          return ownBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(own_);
+        }
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder addOwnBuilder() {
+        return getOwnFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder addOwnBuilder(
+          int index) {
+        return getOwnFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Equip own = 5;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder> 
+           getOwnBuilderList() {
+        return getOwnFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
+          getOwnFieldBuilder() {
+        if (ownBuilder_ == null) {
+          ownBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder>(
+                  own_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          own_ = null;
+        }
+        return ownBuilder_;
+      }
+
       private java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> equip_ =
         java.util.Collections.emptyList();
       private void ensureEquipIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
+        if (!((bitField0_ & 0x00000002) != 0)) {
           equip_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>(equip_);
-          bitField0_ |= 0x00000001;
+          bitField0_ |= 0x00000002;
          }
       }
 
@@ -1764,7 +2131,7 @@ public final class MsgEquipProto {
           com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> equipBuilder_;
 
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> getEquipList() {
         if (equipBuilder_ == null) {
@@ -1774,7 +2141,7 @@ public final class MsgEquipProto {
         }
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public int getEquipCount() {
         if (equipBuilder_ == null) {
@@ -1784,7 +2151,7 @@ public final class MsgEquipProto {
         }
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip(int index) {
         if (equipBuilder_ == null) {
@@ -1794,7 +2161,7 @@ public final class MsgEquipProto {
         }
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder setEquip(
           int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
@@ -1811,7 +2178,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder setEquip(
           int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
@@ -1825,7 +2192,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder addEquip(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
         if (equipBuilder_ == null) {
@@ -1841,7 +2208,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder addEquip(
           int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
@@ -1858,7 +2225,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder addEquip(
           com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
@@ -1872,7 +2239,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder addEquip(
           int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
@@ -1886,7 +2253,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder addAllEquip(
           java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.EquipProto.Equip> values) {
@@ -1901,12 +2268,12 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder clearEquip() {
         if (equipBuilder_ == null) {
           equip_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
           equipBuilder_.clear();
@@ -1914,7 +2281,7 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public Builder removeEquip(int index) {
         if (equipBuilder_ == null) {
@@ -1927,14 +2294,14 @@ public final class MsgEquipProto {
         return this;
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder getEquipBuilder(
           int index) {
         return getEquipFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder(
           int index) {
@@ -1944,7 +2311,7 @@ public final class MsgEquipProto {
         }
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
            getEquipOrBuilderList() {
@@ -1955,14 +2322,14 @@ public final class MsgEquipProto {
         }
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder addEquipBuilder() {
         return getEquipFieldBuilder().addBuilder(
             com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance());
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder addEquipBuilder(
           int index) {
@@ -1970,7 +2337,7 @@ public final class MsgEquipProto {
             index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance());
       }
       /**
-       * <code>repeated .Equip equip = 5;</code>
+       * <code>repeated .Equip equip = 6;</code>
        */
       public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder> 
            getEquipBuilderList() {
@@ -1983,7 +2350,7 @@ public final class MsgEquipProto {
           equipBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder>(
                   equip_,
-                  ((bitField0_ & 0x00000001) != 0),
+                  ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
                   isClean());
           equip_ = null;
@@ -2064,13 +2431,14 @@ public final class MsgEquipProto {
     java.lang.String[] descriptorData = {
       "\n\016MsgEquip.proto\032\013Equip.proto\032\nRole.prot" +
       "o\"K\n\014RequestEquip\022\016\n\006userId\030\001 \001(\003\022\017\n\007equ" +
-      "ipId\030\002 \001(\003\022\032\n\004type\030\003 \001(\0162\014.RequestType\"x" +
-      "\n\rResponseEquip\022\016\n\006result\030\001 \001(\005\022\017\n\007conte" +
-      "nt\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\023\n\004" +
-      "role\030\004 \001(\0132\005.Role\022\025\n\005equip\030\005 \003(\0132\006.Equip" +
-      "*7\n\013RequestType\022\t\n\005EQUIP\020\000\022\007\n\003PUT\020\001\022\013\n\007T" +
-      "AKEOFF\020\002\022\007\n\003FIX\020\003B.\n\035com.ljh.gamedemo.pr" +
-      "oto.protocB\rMsgEquipProtob\006proto3"
+      "ipId\030\002 \001(\003\022\032\n\004type\030\003 \001(\0162\014.RequestType\"\215" +
+      "\001\n\rResponseEquip\022\016\n\006result\030\001 \001(\005\022\017\n\007cont" +
+      "ent\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\023\n" +
+      "\004role\030\004 \001(\0132\005.Role\022\023\n\003own\030\005 \003(\0132\006.Equip\022" +
+      "\025\n\005equip\030\006 \003(\0132\006.Equip*7\n\013RequestType\022\t\n" +
+      "\005EQUIP\020\000\022\007\n\003PUT\020\001\022\013\n\007TAKEOFF\020\002\022\007\n\003FIX\020\003B" +
+      ".\n\035com.ljh.gamedemo.proto.protocB\rMsgEqu" +
+      "ipProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2089,7 +2457,7 @@ public final class MsgEquipProto {
     internal_static_ResponseEquip_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseEquip_descriptor,
-        new java.lang.String[] { "Result", "Content", "Type", "Role", "Equip", });
+        new java.lang.String[] { "Result", "Content", "Type", "Role", "Own", "Equip", });
     com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor();
     com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor();
   }

@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @Author: Heiku
  * @Date: 2019/7/19
+ *
+ * 存储用户玩家的cd时间间隔
  */
 public class SpellCdCache {
 

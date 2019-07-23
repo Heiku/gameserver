@@ -5,11 +5,14 @@ import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
+import com.ljh.gamedemo.entity.dto.RoleBuff;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.run.CustomExecutor;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.creep.CreepBeAttackedRun;
@@ -21,9 +24,11 @@ import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,12 +39,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class AttackCreepService {
-
-    @Autowired
-    private ProtoService protoService;
-
-    @Autowired
-    private DeathCreepService deathCreepService;
 
     private MsgAttackCreepProto.ResponseAttackCreep response;
 
@@ -142,7 +141,8 @@ public class AttackCreepService {
         // 判断是直接伤害还是持续伤害？
         if (spell.getSec() > 0){
             CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, true);
-            ScheduledFuture future = SiteCreepExecutorManager.getExecutor(role.getSiteId()).scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
+            CustomExecutor executors = SiteCreepExecutorManager.getExecutor(role.getSiteId());
+            ScheduledFuture future = executors.scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
             FutureMap.futureMap.put(r.hashCode(), future);
         }else {
             SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creepId, channel, true));
@@ -166,7 +166,7 @@ public class AttackCreepService {
         // 普通攻击技能
         Spell spell = spells.get(0);
 
-        // 加锁判断野怪的状态
+        // 加锁判断野怪野怪状态
         synchronized (this){
             if (creep.getNum() <= 0 || creep.getHp() <= 0){
                 response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
@@ -174,6 +174,7 @@ public class AttackCreepService {
                         .setContent(ContentType.ATTACK_DEATH_CREEP)
                         .build();
                 channel.writeAndFlush(channel);
+                return;
             }
         }
 
@@ -181,6 +182,58 @@ public class AttackCreepService {
         SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creep.getCreepId(), channel, false));
         UserExecutorManager.addUserTask(userId, new UserBeAttackedRun(userId, creep, channel));
     }
+
+
+    /**
+     * 用户主动技能，施放技能Buff
+     *
+     * @param request
+     * @param channel
+     * @return
+     */
+    public MsgAttackCreepProto.ResponseAttackCreep spellToSave(MsgAttackCreepProto.RequestAttackCreep request, Channel channel) {
+
+        // user.spell interceptor
+        response = userStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+        response = spellStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+
+        // gain base data
+        Role role = LocalUserMap.userRoleMap.get(request.getUserId());
+        Spell spell = LocalSpellMap.getIdSpellMap().get(request.getSpellId());
+
+        // transform bean entity
+        int shield = spell.getDamage();
+        int sec = spell.getSec();
+        RoleBuff buff = new RoleBuff();
+        buff.setRoleId(role.getRoleId());
+        buff.setShield(shield);
+        buff.setType(1);
+        buff.setSec(sec);
+        buff.setCreateTime(System.currentTimeMillis());
+
+        List<RoleBuff> buffList = RoleBuffCache.getCache().getIfPresent(role.getRoleId());
+        if (buffList == null || buffList.isEmpty()){
+            buffList = new ArrayList<>();
+        }
+        buffList.add(buff);
+
+        // update cache
+        RoleBuffCache.getCache().put(role.getRoleId(), buffList);
+
+        return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setContent(ContentType.ATTACK_SPELL_SUCCESS)
+                .setResult(ResultCode.FAILED)
+                .setType(MsgAttackCreepProto.RequestType.SAVE)
+                .build();
+    }
+
+
 
     /**
      * 用户状态拦截器，检验参数
@@ -268,5 +321,7 @@ public class AttackCreepService {
 
         return null;
     }
+
+
 }
 
