@@ -87,12 +87,31 @@ public class ContentType {
 
     public static final String ITEM_NOT_CONTAIN = "当前角色还没有该物品！\n";
 
-
     public static final String ITEM_USE_FAILED_FULL_BLOOD = "使用物品失败，因为当前角色的血量为满状态！\n";
 
     public static final String ITEM_USE_FAILED_FULL_BLUE = "使用物品失败，因为当前角色的蓝量为满状态！\n";
 
     public static final String ITEM_USE_SUCCESS = "物品使用成功！\n";
+
+
+    // Equip
+    public static final String EQUIP_NOT_FOUND = "未找到当前装备信息，请检查 equipId 是否有误！\n";
+
+    public static final String EQUIP_OWN_EMPTY = "当前玩家的装备栏为空，无法卸下任何道具！\n";
+
+    public static final String EQUIP_NOT_BELONG = "当前玩家为拥有该装备，无法卸下装别！\n";
+
+    public static final String EQUIP_WRONG_LEVEL = "当前玩家角色等级无法达到该装备的等级要求!\n";
+
+    public static final String EQUIP_WRONG_TPYE = "当前玩家角色不能佩戴其他职业的物品！\n";
+
+    public static final String EQUIP_PUT_SUCCESS = "装备穿戴成功！\n";
+
+    public static final String EQUIP_TAKEOFF_SUCCESS = "成功卸下装备！\n";
+
+    public static final String EQUIP_FIX_FAILED = "装备当前为可用状态，修理失败！\n";
+
+    public static final String EQUIP_FIX_SUCCESS = "装备修理成功，装备可正常使用！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

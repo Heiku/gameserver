@@ -47,6 +47,11 @@ public class Equip {
     private Integer hpUp;
 
     /**
+     * 护甲值
+     */
+    private Integer armor;
+
+    /**
      * 耐久
      */
     private Integer durability;

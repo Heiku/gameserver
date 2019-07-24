@@ -54,17 +54,27 @@ public final class EquipProto {
     int getDurability();
 
     /**
-     * <code>string up = 7;</code>
+     * <code>int32 aUp = 7;</code>
      */
-    java.lang.String getUp();
-    /**
-     * <code>string up = 7;</code>
-     */
-    com.google.protobuf.ByteString
-        getUpBytes();
+    int getAUp();
 
     /**
-     * <code>int32 state = 8;</code>
+     * <code>int32 spUp = 8;</code>
+     */
+    int getSpUp();
+
+    /**
+     * <code>int32 hpUp = 9;</code>
+     */
+    int getHpUp();
+
+    /**
+     * <code>int32 armor = 10;</code>
+     */
+    int getArmor();
+
+    /**
+     * <code>int32 state = 11;</code>
      */
     int getState();
   }
@@ -82,7 +92,6 @@ public final class EquipProto {
     }
     private Equip() {
       name_ = "";
-      up_ = "";
     }
 
     @java.lang.Override
@@ -146,13 +155,27 @@ public final class EquipProto {
               durability_ = input.readInt32();
               break;
             }
-            case 58: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 56: {
 
-              up_ = s;
+              aUp_ = input.readInt32();
               break;
             }
             case 64: {
+
+              spUp_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              hpUp_ = input.readInt32();
+              break;
+            }
+            case 80: {
+
+              armor_ = input.readInt32();
+              break;
+            }
+            case 88: {
 
               state_ = input.readInt32();
               break;
@@ -268,44 +291,46 @@ public final class EquipProto {
       return durability_;
     }
 
-    public static final int UP_FIELD_NUMBER = 7;
-    private volatile java.lang.Object up_;
+    public static final int AUP_FIELD_NUMBER = 7;
+    private int aUp_;
     /**
-     * <code>string up = 7;</code>
+     * <code>int32 aUp = 7;</code>
      */
-    public java.lang.String getUp() {
-      java.lang.Object ref = up_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        up_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string up = 7;</code>
-     */
-    public com.google.protobuf.ByteString
-        getUpBytes() {
-      java.lang.Object ref = up_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        up_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getAUp() {
+      return aUp_;
     }
 
-    public static final int STATE_FIELD_NUMBER = 8;
+    public static final int SPUP_FIELD_NUMBER = 8;
+    private int spUp_;
+    /**
+     * <code>int32 spUp = 8;</code>
+     */
+    public int getSpUp() {
+      return spUp_;
+    }
+
+    public static final int HPUP_FIELD_NUMBER = 9;
+    private int hpUp_;
+    /**
+     * <code>int32 hpUp = 9;</code>
+     */
+    public int getHpUp() {
+      return hpUp_;
+    }
+
+    public static final int ARMOR_FIELD_NUMBER = 10;
+    private int armor_;
+    /**
+     * <code>int32 armor = 10;</code>
+     */
+    public int getArmor() {
+      return armor_;
+    }
+
+    public static final int STATE_FIELD_NUMBER = 11;
     private int state_;
     /**
-     * <code>int32 state = 8;</code>
+     * <code>int32 state = 11;</code>
      */
     public int getState() {
       return state_;
@@ -343,11 +368,20 @@ public final class EquipProto {
       if (durability_ != 0) {
         output.writeInt32(6, durability_);
       }
-      if (!getUpBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, up_);
+      if (aUp_ != 0) {
+        output.writeInt32(7, aUp_);
+      }
+      if (spUp_ != 0) {
+        output.writeInt32(8, spUp_);
+      }
+      if (hpUp_ != 0) {
+        output.writeInt32(9, hpUp_);
+      }
+      if (armor_ != 0) {
+        output.writeInt32(10, armor_);
       }
       if (state_ != 0) {
-        output.writeInt32(8, state_);
+        output.writeInt32(11, state_);
       }
       unknownFields.writeTo(output);
     }
@@ -381,12 +415,25 @@ public final class EquipProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(6, durability_);
       }
-      if (!getUpBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, up_);
+      if (aUp_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(7, aUp_);
+      }
+      if (spUp_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, spUp_);
+      }
+      if (hpUp_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, hpUp_);
+      }
+      if (armor_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, armor_);
       }
       if (state_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, state_);
+          .computeInt32Size(11, state_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -415,8 +462,14 @@ public final class EquipProto {
           != other.getLevel()) return false;
       if (getDurability()
           != other.getDurability()) return false;
-      if (!getUp()
-          .equals(other.getUp())) return false;
+      if (getAUp()
+          != other.getAUp()) return false;
+      if (getSpUp()
+          != other.getSpUp()) return false;
+      if (getHpUp()
+          != other.getHpUp()) return false;
+      if (getArmor()
+          != other.getArmor()) return false;
       if (getState()
           != other.getState()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -443,8 +496,14 @@ public final class EquipProto {
       hash = (53 * hash) + getLevel();
       hash = (37 * hash) + DURABILITY_FIELD_NUMBER;
       hash = (53 * hash) + getDurability();
-      hash = (37 * hash) + UP_FIELD_NUMBER;
-      hash = (53 * hash) + getUp().hashCode();
+      hash = (37 * hash) + AUP_FIELD_NUMBER;
+      hash = (53 * hash) + getAUp();
+      hash = (37 * hash) + SPUP_FIELD_NUMBER;
+      hash = (53 * hash) + getSpUp();
+      hash = (37 * hash) + HPUP_FIELD_NUMBER;
+      hash = (53 * hash) + getHpUp();
+      hash = (37 * hash) + ARMOR_FIELD_NUMBER;
+      hash = (53 * hash) + getArmor();
       hash = (37 * hash) + STATE_FIELD_NUMBER;
       hash = (53 * hash) + getState();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -592,7 +651,13 @@ public final class EquipProto {
 
         durability_ = 0;
 
-        up_ = "";
+        aUp_ = 0;
+
+        spUp_ = 0;
+
+        hpUp_ = 0;
+
+        armor_ = 0;
 
         state_ = 0;
 
@@ -628,7 +693,10 @@ public final class EquipProto {
         result.part_ = part_;
         result.level_ = level_;
         result.durability_ = durability_;
-        result.up_ = up_;
+        result.aUp_ = aUp_;
+        result.spUp_ = spUp_;
+        result.hpUp_ = hpUp_;
+        result.armor_ = armor_;
         result.state_ = state_;
         onBuilt();
         return result;
@@ -697,9 +765,17 @@ public final class EquipProto {
         if (other.getDurability() != 0) {
           setDurability(other.getDurability());
         }
-        if (!other.getUp().isEmpty()) {
-          up_ = other.up_;
-          onChanged();
+        if (other.getAUp() != 0) {
+          setAUp(other.getAUp());
+        }
+        if (other.getSpUp() != 0) {
+          setSpUp(other.getSpUp());
+        }
+        if (other.getHpUp() != 0) {
+          setHpUp(other.getHpUp());
+        }
+        if (other.getArmor() != 0) {
+          setArmor(other.getArmor());
         }
         if (other.getState() != 0) {
           setState(other.getState());
@@ -932,84 +1008,119 @@ public final class EquipProto {
         return this;
       }
 
-      private java.lang.Object up_ = "";
+      private int aUp_ ;
       /**
-       * <code>string up = 7;</code>
+       * <code>int32 aUp = 7;</code>
        */
-      public java.lang.String getUp() {
-        java.lang.Object ref = up_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          up_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public int getAUp() {
+        return aUp_;
       }
       /**
-       * <code>string up = 7;</code>
+       * <code>int32 aUp = 7;</code>
        */
-      public com.google.protobuf.ByteString
-          getUpBytes() {
-        java.lang.Object ref = up_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          up_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string up = 7;</code>
-       */
-      public Builder setUp(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        up_ = value;
+      public Builder setAUp(int value) {
+        
+        aUp_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>string up = 7;</code>
+       * <code>int32 aUp = 7;</code>
        */
-      public Builder clearUp() {
+      public Builder clearAUp() {
         
-        up_ = getDefaultInstance().getUp();
+        aUp_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int spUp_ ;
+      /**
+       * <code>int32 spUp = 8;</code>
+       */
+      public int getSpUp() {
+        return spUp_;
+      }
+      /**
+       * <code>int32 spUp = 8;</code>
+       */
+      public Builder setSpUp(int value) {
+        
+        spUp_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>string up = 7;</code>
+       * <code>int32 spUp = 8;</code>
        */
-      public Builder setUpBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      public Builder clearSpUp() {
         
-        up_ = value;
+        spUp_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int hpUp_ ;
+      /**
+       * <code>int32 hpUp = 9;</code>
+       */
+      public int getHpUp() {
+        return hpUp_;
+      }
+      /**
+       * <code>int32 hpUp = 9;</code>
+       */
+      public Builder setHpUp(int value) {
+        
+        hpUp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 hpUp = 9;</code>
+       */
+      public Builder clearHpUp() {
+        
+        hpUp_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int armor_ ;
+      /**
+       * <code>int32 armor = 10;</code>
+       */
+      public int getArmor() {
+        return armor_;
+      }
+      /**
+       * <code>int32 armor = 10;</code>
+       */
+      public Builder setArmor(int value) {
+        
+        armor_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 armor = 10;</code>
+       */
+      public Builder clearArmor() {
+        
+        armor_ = 0;
         onChanged();
         return this;
       }
 
       private int state_ ;
       /**
-       * <code>int32 state = 8;</code>
+       * <code>int32 state = 11;</code>
        */
       public int getState() {
         return state_;
       }
       /**
-       * <code>int32 state = 8;</code>
+       * <code>int32 state = 11;</code>
        */
       public Builder setState(int value) {
         
@@ -1018,7 +1129,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 state = 8;</code>
+       * <code>int32 state = 11;</code>
        */
       public Builder clearState() {
         
@@ -1094,11 +1205,12 @@ public final class EquipProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/E" +
-      "quip.proto\"\200\001\n\005Equip\022\017\n\007equipId\030\001 \001(\003\022\014\n" +
+      "quip.proto\"\254\001\n\005Equip\022\017\n\007equipId\030\001 \001(\003\022\014\n" +
       "\004name\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\014\n\004part\030\004 \001(\005\022" +
-      "\r\n\005level\030\005 \001(\005\022\022\n\ndurability\030\006 \001(\005\022\n\n\002up" +
-      "\030\007 \001(\t\022\r\n\005state\030\010 \001(\005B+\n\035com.ljh.gamedem" +
-      "o.proto.protocB\nEquipProtob\006proto3"
+      "\r\n\005level\030\005 \001(\005\022\022\n\ndurability\030\006 \001(\005\022\013\n\003aU" +
+      "p\030\007 \001(\005\022\014\n\004spUp\030\010 \001(\005\022\014\n\004hpUp\030\t \001(\005\022\r\n\005a" +
+      "rmor\030\n \001(\005\022\r\n\005state\030\013 \001(\005B+\n\035com.ljh.gam" +
+      "edemo.proto.protocB\nEquipProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1109,7 +1221,7 @@ public final class EquipProto {
     internal_static_Equip_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Equip_descriptor,
-        new java.lang.String[] { "EquipId", "Name", "Type", "Part", "Level", "Durability", "Up", "State", });
+        new java.lang.String[] { "EquipId", "Name", "Type", "Part", "Level", "Durability", "AUp", "SpUp", "HpUp", "Armor", "State", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

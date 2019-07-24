@@ -1,10 +1,7 @@
 package com.ljh.gamedemo.dao;
 
 import com.ljh.gamedemo.entity.dto.RoleItems;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 

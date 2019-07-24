@@ -1,13 +1,7 @@
 package com.ljh.gamedemo.service;
 
-import com.ljh.gamedemo.entity.Creep;
-import com.ljh.gamedemo.entity.Items;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.entity.Spell;
-import com.ljh.gamedemo.proto.protoc.CreepProto;
-import com.ljh.gamedemo.proto.protoc.ItemsProto;
-import com.ljh.gamedemo.proto.protoc.RoleProto;
-import com.ljh.gamedemo.proto.protoc.SpellProto;
+import com.ljh.gamedemo.entity.*;
+import com.ljh.gamedemo.proto.protoc.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -99,6 +93,34 @@ public class ProtoService {
         List<ItemsProto.Items> list = new ArrayList<>();
         for (Items i : items){
             list.add(transToItem(i));
+        }
+        return list;
+    }
+
+
+    public EquipProto.Equip transToEquip(Equip equip){
+        return EquipProto.Equip.newBuilder()
+                .setEquipId(equip.getEquipId())
+                .setName(equip.getName())
+                .setType(equip.getType())
+                .setLevel(equip.getLevel())
+                .setPart(equip.getPart())
+                .setDurability(equip.getDurability())
+                .setState(equip.getState())
+                .setAUp(equip.getAUp())
+                .setSpUp(equip.getSpUp())
+                .setHpUp(equip.getHpUp())
+                .build();
+    }
+
+
+    public List<EquipProto.Equip> transToEquipList(List<Equip> equips){
+        List<EquipProto.Equip> list = new ArrayList<>();
+        if (equips == null){
+            return list;
+        }
+        for (Equip e : equips){
+            list.add(transToEquip(e));
         }
         return list;
     }

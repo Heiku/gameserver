@@ -1,7 +1,9 @@
 package com.ljh.gamedemo.local;
 
 import com.google.common.collect.Maps;
+import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Equip;
+import com.ljh.gamedemo.entity.dto.RoleEquip;
 import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,6 +13,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,15 +30,23 @@ public class LocalEquipMap {
 
     private static File equipFile = null;
 
+    private static RoleEquipDao roleEquipDao;
+
     // equip idEquipMap: <Long, Equip>
     private static Map<Long, Equip> idEquipMap = Maps.newConcurrentMap();
 
     // equip roleEquipMap: <Long, List<Equip>>
-    private static Map<Long, List<Equip>> roleEquipMap = Maps.newConcurrentMap();
+    private static Map<Long, List<Equip>> tmpRoleEquipMap = Maps.newConcurrentMap();
 
+    private static Map<Long, List<RoleEquip>> roleEquipMap = Maps.newConcurrentMap();
+
+    // 暂时用不着
+    // equip typeEquipMap: <Integer, ListM<Equip>>
+    private static Map<Integer, List<Equip>> typeEquipMap = Maps.newHashMap();
 
     static {
         try {
+            roleEquipDao = SpringUtil.getBean(RoleEquipDao.class);
             equipFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "csv/equip.xlsx");
         }catch (FileNotFoundException e){
             log.error("can not find creepFile,please check file location");
@@ -69,21 +80,65 @@ public class LocalEquipMap {
                     equip.setAUp(Integer.valueOf(getValue(row.getCell(5))));
                     equip.setSpUp(Integer.valueOf(getValue(row.getCell(6))));
                     equip.setHpUp(Integer.valueOf(getValue(row.getCell(7))));
-                    equip.setDurability(Integer.valueOf(getValue(row.getCell(8))));
-                    equip.setState(Integer.valueOf(getValue(row.getCell(9))));
-
+                    equip.setArmor(Integer.valueOf(getValue(row.getCell(8))));
+                    equip.setDurability(Integer.valueOf(getValue(row.getCell(9))));
+                    equip.setState(Integer.valueOf(getValue(row.getCell(10))));
 
                     idEquipMap.put(equip.getEquipId(), equip);
-                }
 
+                    // init typeEquipMap
+                    List<Equip> equipList;
+                    Integer type = equip.getType();
+                    equipList = typeEquipMap.get(type);
+                    if (equipList == null){
+                        equipList = new ArrayList<>();
+                    }
+                    equipList.add(equip);
+                    typeEquipMap.put(type, equipList);
+                }
             }
         }
+
+        readDB();
+    }
+
+
+    private static void readDB(){
+        // 读取数据库中的所有记录信息
+        List<RoleEquip> roleEquipList = roleEquipDao.selectAll();
+        for (RoleEquip re : roleEquipList){
+            long roleId = re.getRoleId();
+
+            List<RoleEquip> list = roleEquipMap.get(roleId);
+            if (list == null){
+                list = new ArrayList<>();
+            }
+            list.add(re);
+
+            roleEquipMap.put(roleId, list);
+        }
+    }
+
+    public static Map<Long, Equip> getIdEquipMap() {
+        return idEquipMap;
+    }
+
+    public static Map<Integer, List<Equip>> getTypeEquipMap() {
+        return typeEquipMap;
+    }
+
+    public static Map<Long, List<RoleEquip>> getRoleEquipMap() {
+        return roleEquipMap;
     }
 
     public static void main(String[] args) {
         readExcel();
 
         idEquipMap.forEach((k, v) -> {
+            System.out.println("k: " + k + " ,value: " + v);
+        });
+
+        typeEquipMap.forEach((k, v) -> {
             System.out.println("k: " + k + " ,value: " + v);
         });
     }

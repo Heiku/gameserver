@@ -14,4 +14,8 @@ public class RoleEquip {
     private Long roleId;
 
     private Long equipId;
+
+    private Integer durability;
+
+    private Integer state;
 }
