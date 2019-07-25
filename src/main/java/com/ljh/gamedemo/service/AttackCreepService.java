@@ -2,14 +2,14 @@ package com.ljh.gamedemo.service;
 
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.dao.RoleAttrDao;
+import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.dto.RoleBuff;
-import com.ljh.gamedemo.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.local.LocalCreepMap;
-import com.ljh.gamedemo.local.LocalSpellMap;
-import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.entity.dto.RoleEquip;
+import com.ljh.gamedemo.local.*;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.CustomExecutor;
@@ -24,10 +24,9 @@ import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +40,9 @@ import java.util.concurrent.TimeUnit;
 public class AttackCreepService {
 
     private MsgAttackCreepProto.ResponseAttackCreep response;
+
+    @Autowired
+    private RoleEquipDao equipDao;
 
     /**
      * 处理攻击野怪请求，默认采用普攻攻击的方式
@@ -76,6 +78,18 @@ public class AttackCreepService {
 
         // 初始化数据，关联角色和攻击的野怪
         LocalAttackCreepMap.channelCreepMap.put(channel, creep);
+
+        // 加锁判断野怪野怪状态
+        synchronized (this){
+            if (creep.getNum() <= 0 || creep.getHp() <= 0){
+                response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                        .setResult(ResultCode.FAILED)
+                        .setContent(ContentType.ATTACK_DEATH_CREEP)
+                        .build();
+                channel.writeAndFlush(channel);
+                return null;
+            }
+        }
 
         // 攻击野怪
         doAttack(userId, role, creep, channel);
@@ -140,12 +154,12 @@ public class AttackCreepService {
 
         // 判断是直接伤害还是持续伤害？
         if (spell.getSec() > 0){
-            CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, true);
+            CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, role, true);
             CustomExecutor executors = SiteCreepExecutorManager.getExecutor(role.getSiteId());
             ScheduledFuture future = executors.scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
             FutureMap.futureMap.put(r.hashCode(), future);
         }else {
-            SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creepId, channel, true));
+            SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role, spell, creepId, channel, false, true));
 
         }
         return null;
@@ -166,21 +180,13 @@ public class AttackCreepService {
         // 普通攻击技能
         Spell spell = spells.get(0);
 
-        // 加锁判断野怪野怪状态
-        synchronized (this){
-            if (creep.getNum() <= 0 || creep.getHp() <= 0){
-                response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                        .setResult(ResultCode.FAILED)
-                        .setContent(ContentType.ATTACK_DEATH_CREEP)
-                        .build();
-                channel.writeAndFlush(channel);
-                return;
-            }
-        }
-
         // 添加任务到用户线程
-        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role.getSiteId(), spell, creep.getCreepId(), channel, false));
+        // 野怪掉血任务
+        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role , spell, creep.getCreepId(), channel, true, false));
+        // 玩家掉血任务
         UserExecutorManager.addUserTask(userId, new UserBeAttackedRun(userId, creep, channel));
+        // 装备消耗耐久任务
+        synCutEquipDurability(role);
     }
 
 
@@ -231,6 +237,30 @@ public class AttackCreepService {
                 .setResult(ResultCode.FAILED)
                 .setType(MsgAttackCreepProto.RequestType.SAVE)
                 .build();
+    }
+
+
+    /**
+     * 加锁同步装备的耐久度信息
+     *
+     * @param role
+     */
+    private synchronized void synCutEquipDurability(Role role){
+        List<RoleEquip> roleEquipList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+
+        log.info("攻击野怪之前，装备栏的耐久度为：" + roleEquipList);
+        for (RoleEquip re : roleEquipList) {
+
+            re.setDurability(re.getDurability() - 2);
+            if (re.getDurability() < 10){
+                re.setState(0);
+            }
+
+            // 更新db
+            int n = equipDao.updateRoleEquip(re);
+            log.info("攻击野怪之后，装备栏中的更新的行数为：" + n);
+        }
+        log.info("攻击野怪之后，装备栏的耐久度为：" + roleEquipList);
     }
 
 
@@ -318,10 +348,7 @@ public class AttackCreepService {
                     .setContent(ContentType.ATTACK_SPELL_NOT_FOUND)
                     .build();
         }
-
         return null;
     }
-
-
 }
 

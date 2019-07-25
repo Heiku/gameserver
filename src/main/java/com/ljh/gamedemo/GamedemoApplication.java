@@ -1,6 +1,7 @@
 package com.ljh.gamedemo;
 
 import com.ljh.gamedemo.local.*;
+import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.run.SaveRoleItemManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.springframework.boot.SpringApplication;
@@ -35,6 +36,12 @@ public class GamedemoApplication {
 
         // 获取角色背包信息
         LocalItemsMap.readExcel();
+
+        // 获取所有的装备信息
+        LocalEquipMap.readExcel();
+
+        // 获取所有的玩家属性值
+        RoleAttrCache.readBDAttr();
 
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();

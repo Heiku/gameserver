@@ -25,6 +25,6 @@ public interface RoleAttrDao {
     @Select("select * from role_attr where role_id = #{roleId}")
     RoleAttr selectAttrById(long roleId);
 
-    @Update("update ")
+    @Update("update role_attr set damage = #{damage}, sp = #{sp}, hp = #{hp}, armor = #{armor} where role_id = #{roleId}")
     int updateRoleAttr(RoleAttr attr);
 }

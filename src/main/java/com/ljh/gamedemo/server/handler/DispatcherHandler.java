@@ -34,6 +34,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
         handlerMap.put(REQUEST_SPELL.protoCode, new SpellHandler());
         handlerMap.put(REQUEST_ATTACK_SPELL.protoCode, new AttackCreepHandler());
         handlerMap.put(REQUEST_ITEMS.protoCode, new ItemsHandler());
+        handlerMap.put(REQUEST_EQUIPS.protoCode, new EquipHandler());
     }
 
     @Override

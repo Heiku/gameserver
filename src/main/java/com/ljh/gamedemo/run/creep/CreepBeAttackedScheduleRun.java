@@ -3,8 +3,10 @@ package com.ljh.gamedemo.run.creep;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.Creep;
+import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.local.LocalCreepMap;
+import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
@@ -37,10 +39,14 @@ public class CreepBeAttackedScheduleRun implements Runnable {
 
     private ProtoService protoService = ProtoService.getInstance();
 
+    private Role role;
+
+    private Integer extra;
+
     private boolean firstLatch = true;
 
     public CreepBeAttackedScheduleRun(Spell spell, Integer creepId,
-                                      Channel channel,boolean useLatch){
+                                      Channel channel, Role role, boolean useLatch){
         this.spell = spell;
         this.creepId = creepId;
         this.channel = channel;
@@ -49,6 +55,7 @@ public class CreepBeAttackedScheduleRun implements Runnable {
         // 持续伤害的总伤害值
         this.allDamage = spell.getDamage();
 
+        this.role = role;
     }
 
     @Override
@@ -65,11 +72,14 @@ public class CreepBeAttackedScheduleRun implements Runnable {
             }
         }
 
+        // 获取技能增益效果
+        extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getSp();
+
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
         int hp = creep.getHp();
         int startUp = creep.getMaxHp();
         // 每秒造成的伤害值
-        int damage = spell.getDamage() / spell.getSec();
+        int damage = spell.getDamage() / spell.getSec() + extra;
 
         log.info("野怪持续掉血任务，野怪掉血前：" + creep.getHp());
         if (hp > 0){

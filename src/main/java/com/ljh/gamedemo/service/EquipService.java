@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: Heiku
@@ -68,25 +65,30 @@ public class EquipService {
 
         // TODO: 暂时查询所有的装备信息，后期将改为按照角色的类别划分
         // 获取所有的装备信息
+        // allList <Equip>  idEquipMap中获取
+        // hasList <RoleEquip> roleEquipMap中获取
+        // setMap <equipId, equip>
         List<Equip> allList = new ArrayList<>();
         LocalEquipMap.getIdEquipMap().forEach((k, v) -> {
             allList.add(v);
         });
         List<RoleEquip> hasPutOn = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        List<Equip> resHasList = new ArrayList<>();
 
         // 返回结果去除已经穿戴的装备
-        Map<Long, RoleEquip> setMap = new HashMap<>();
+        Map<Long, Equip> setMap = new HashMap<>();
         for (Equip equip : allList) {
             // equip -> roleEquip
-            RoleEquip t = new RoleEquip();
-            t.setEquipId(equip.getEquipId());
-            t.setDurability(equip.getDurability());
-            t.setState(equip.getState());
-
-            setMap.put(equip.getEquipId(), t);
+            setMap.put(equip.getEquipId(), equip);
         }
+        // 去重
         if (hasPutOn != null && !hasPutOn.isEmpty()){
             for (RoleEquip re : hasPutOn){
+                Equip equip = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+                equip.setDurability(re.getDurability());
+                equip.setState(re.getState());
+
+                resHasList.add(equip);
                 setMap.remove(re.getEquipId());
             }
         }
@@ -94,8 +96,6 @@ public class EquipService {
         // 剩下的map，即还未装备上的装备，返回的全部装备
         List<Equip> res = new ArrayList<>();
         setMap.forEach((k, v) -> {
-            Equip e = new Equip();
-
             res.add(v);
         });
 
@@ -106,7 +106,7 @@ public class EquipService {
                 .setRole(protoService.transToRole(role))
                 .setType(MsgEquipProto.RequestType.EQUIP)
                 .addAllEquip(protoService.transToEquipList(res))
-                .addAllOwn(protoService.transToEquipList(hasPutOn))
+                .addAllOwn(protoService.transToEquipList(resHasList))
                 .build();
         channel.writeAndFlush(response);
     }
@@ -144,28 +144,45 @@ public class EquipService {
             return;
         }
 
+        // 判断玩家是否已经穿戴过该装备 ， 判断玩家是否佩戴同一种类型的装备
+        synchronized (this){
+            List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+            if (ownList != null) {
+                for (RoleEquip re : ownList) {
+                    if (re.getEquipId() == equipId){
+                        response = MsgEquipProto.ResponseEquip.newBuilder()
+                                .setResult(ResultCode.FAILED)
+                                .setContent(ContentType.EQUIP_SAME)
+                                .build();
+                        channel.writeAndFlush(response);
+                        return;
+                    }
+                }
+            }
+            // 已经拥有的装备
+            if (ownList != null){
+                for (RoleEquip re : ownList){
+                    // 找到已有装备的具体类型
+                    Equip e = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+                    if (e.getPart().intValue() == equip.getPart()){
+                        synRemoveEquip(e, role);
+                        synAddRoleAttr(role, e, false);
+                        break;
+                    }
+                }
+            }
+        }
         // 玩家能够佩戴装备
         // 更新玩家的装备佩戴信息
         // 更新缓存及数据库
-        List<Equip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
-        if (ownList == null) {
-            ownList = new ArrayList<>();
-        }
-        ownList.add(equip);
-        LocalEquipMap.getRoleEquipMap().put(role.getRoleId(), ownList);
-
-        RoleEquip roleEquip = new RoleEquip();
-        roleEquip.setRoleId(role.getRoleId());
-        roleEquip.setEquipId(equipId);
-        roleEquip.setDurability(equip.getDurability());
-        roleEquip.setState(equip.getState());
-        int n = equipDao.insertRoleEquip(roleEquip);
-        log.info("插入 role_equip成功，插入的记录为：" + n + " ,主键id为：" + roleEquip.getId());
-
+        synAddRoleEquip(equip, role);
 
         // 接着更新玩家角色的属性值
         // 保证线程安全，因为你再更新属性值的同时，有可能其他线程在读取你的属性值进行野怪攻击
         synAddRoleAttr(role, equip, true);
+
+        // 获取玩家的装备信息
+        List<Equip> resList = getOwnEquipList(role);
 
         // 构造返回
         response = MsgEquipProto.ResponseEquip.newBuilder()
@@ -173,7 +190,7 @@ public class EquipService {
                 .setType(MsgEquipProto.RequestType.PUT)
                 .setContent(ContentType.EQUIP_PUT_SUCCESS)
                 .setRole(protoService.transToRole(role))
-                .addAllOwn(protoService.transToEquipList(LocalEquipMap.getRoleEquipMap().get(role.getRoleId())))
+                .addAllOwn(protoService.transToEquipList(resList))
                 .build();
         channel.writeAndFlush(response);
     }
@@ -212,23 +229,21 @@ public class EquipService {
         // 玩家存在装备信息
         // 更新玩家的装备栏（缓存 + db）
         Equip equip = LocalEquipMap.getIdEquipMap().get(equipId);
-        List<Equip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
-        log.info("卸下装备前，当前的装备栏为：" + ownList);
-        ownList.remove(equip);
-        log.info("卸下装备后，当前的装备栏为：" + ownList);
-        int n = equipDao.deleteRoleEquip(equipId, role.getRoleId());
-        log.info("卸下装备后，删除db中的装备记录：" + n);
+        synRemoveEquip(equip, role);
 
         // 线程安全修改角色的属性
         synAddRoleAttr(role, equip, false);
 
+        // 获取玩家的装备信息
+        List<Equip> resList = getOwnEquipList(role);
+
         // 构造返回
         response = MsgEquipProto.ResponseEquip.newBuilder()
                 .setResult(ResultCode.SUCCESS)
-                .setType(MsgEquipProto.RequestType.PUT)
+                .setType(MsgEquipProto.RequestType.TAKEOFF)
                 .setContent(ContentType.EQUIP_TAKEOFF_SUCCESS)
                 .setRole(protoService.transToRole(role))
-                .addAllOwn(protoService.transToEquipList(LocalEquipMap.getRoleEquipMap().get(role.getRoleId())))
+                .addAllOwn(protoService.transToEquipList(resList))
                 .build();
         channel.writeAndFlush(response);
     }
@@ -265,19 +280,82 @@ public class EquipService {
         }
 
         // 获取装备状态，进行修复
-        Equip equip = LocalEquipMap.getIdEquipMap().get(equipId);
+        RoleEquip fixEquip = new RoleEquip();
+        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        for (RoleEquip re : ownList) {
+            if (re.getEquipId() == equipId){
+                fixEquip = re;
+            }
+        }
 
         // 暂时设置：当装备的持久度 durability 小于 10，并且可用状态为0的时候，才可以修理
-        if (equip.getDurability() > 10 || equip.getState() == 1){
+        if (fixEquip.getDurability() > 10 || fixEquip.getState() == 1){
             response = MsgEquipProto.ResponseEquip.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.EQUIP_FIX_FAILED)
                     .build();
         }
 
-        synFixEquip(equip, role);
+        synFixEquip(fixEquip, role);
 
 
+        response = MsgEquipProto.ResponseEquip.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgEquipProto.RequestType.FIX)
+                .setContent(ContentType.EQUIP_FIX_SUCCESS)
+                .build();
+    }
+
+
+    /**
+     * 加锁同步玩家的装备数据
+     *
+     * @param equip
+     * @param role
+     */
+    private synchronized void synAddRoleEquip(Equip equip, Role role){
+        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        if (ownList == null) {
+            ownList = new ArrayList<>();
+        }
+
+        RoleEquip roleEquip = new RoleEquip();
+        roleEquip.setRoleId(role.getRoleId());
+        roleEquip.setEquipId(equip.getEquipId());
+        roleEquip.setDurability(equip.getDurability());
+        roleEquip.setState(equip.getState());
+        ownList.add(roleEquip);
+
+        LocalEquipMap.getRoleEquipMap().put(role.getRoleId(), ownList);
+
+        int n = equipDao.insertRoleEquip(roleEquip);
+        log.info("插入 role_equip成功，插入的记录为：" + n + " ,主键id为：" + roleEquip.getId());
+    }
+
+
+    /**
+     * 加锁卸下玩家的装备
+     *
+     * @param equip
+     * @param role
+     */
+    private synchronized void synRemoveEquip(Equip equip, Role role){
+        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        log.info("卸下装备前，当前的装备栏为：" + ownList);
+        if (ownList != null){
+            for (int i = 0; i < ownList.size(); i++){
+                RoleEquip re = ownList.get(i);
+
+                if (re.getEquipId().longValue() == equip.getEquipId() && re.getRoleId().longValue() == role.getRoleId()){
+                    ownList.remove(re);
+                    i--;
+                }
+            }
+        }
+
+        log.info("卸下装备后，当前的装备栏为：" + ownList);
+        int n = equipDao.deleteRoleEquip(equip.getEquipId(), role.getRoleId());
+        log.info("卸下装备后，删除db中的装备记录：" + n);
     }
 
 
@@ -308,10 +386,10 @@ public class EquipService {
         // 穿戴装备
         if (add) {
             attr.setRoleId(role.getRoleId());
-            attr.setDamage(attr.getDamage() + damage);
-            attr.setSp(attr.getSp() + sp);
-            attr.setHp(attr.getHp() + hp);
-            attr.setArmor(attr.getArmor() + armor);
+            attr.setDamage(Optional.ofNullable(attr.getDamage()).orElse(0) + damage);
+            attr.setSp(Optional.ofNullable(attr.getSp()).orElse(0)+ sp);
+            attr.setHp(Optional.ofNullable(attr.getHp()).orElse(0) + hp);
+            attr.setArmor(Optional.ofNullable(attr.getArmor()).orElse(0) + armor);
         } else {
             // 卸下装备
             attr.setRoleId(role.getRoleId());
@@ -324,21 +402,61 @@ public class EquipService {
         // 更新缓存和db
         RoleAttrCache.getRoleAttrMap().put(role.getRoleId(), attr);
 
-        int i = attrDao.updateRoleAttr(attr);
+
+        log.info("穿戴装备前，用户的血量为：" + role.getHp());
+        int i;
+        // 进行数据库的更新，同时更新玩家的最新血量信息
+        if (add){
+            // 装备替换，只需更新数据库中属性的增量
+            if (attrDao.selectAttrById(role.getRoleId()) != null){
+                i = attrDao.updateRoleAttr(attr);
+
+                // 替换装备，血量只加上增量
+                role.setHp((role.getHp() + attr.getHp()));
+
+            }else {
+                // 装备新添，进行装备数据的插入
+                i = attrDao.insertRoleAttr(attr);
+
+                // 装备增加后，用户的属性得到提升
+                role.setHp(role.getHp() + equip.getHpUp());
+            }
+        }else {
+            // 装备卸下，属性下降，更新玩家的属性信息
+            i = attrDao.updateRoleAttr(attr);
+
+            // 卸下装备，玩家的血量下降
+            role.setHp(role.getHp() - equip.getHpUp());
+        }
         log.info("更新用户属性成功，当前的更新记录为：" + i);
+
+
+        LocalUserMap.idRoleMap.put(role.getRoleId(), role);
+        for (Role r : LocalUserMap.siteRolesMap.get(role.getSiteId())){
+            if (r.getRoleId().longValue() == role.getRoleId()){
+                r.setHp(role.getHp());
+            }
+        }
+        log.info("穿戴装备后，用户的血量为：" + LocalUserMap.idRoleMap.get(role.getRoleId()).getHp());
     }
 
 
-    private synchronized void synFixEquip(Equip equip, Role role){
+    /**
+     * 加锁修复装备的耐久度
+     *
+     * @param re
+     * @param role
+     */
+    private synchronized void synFixEquip(RoleEquip re, Role role){
         log.info("修理前的装备为：" + LocalEquipMap.getRoleEquipMap().get(role.getRoleId()));
-        equip.setDurability(100);
-        equip.setState(1);
+        re.setDurability(100);
+        re.setState(1);
         log.info("修理后修改bean后装备为：" + LocalEquipMap.getRoleEquipMap().get(role.getRoleId()));
 
         // 更新db
-        RoleEquip roleEquip = equipDao.selectRoleEquip(role.getRoleId(), equip.getEquipId());
-        roleEquip.setDurability(equip.getDurability());
-        roleEquip.setState(equip.getState());
+        RoleEquip roleEquip = equipDao.selectRoleEquip(role.getRoleId(), re.getEquipId());
+        roleEquip.setDurability(re.getDurability());
+        roleEquip.setState(re.getState());
         int n = equipDao.updateRoleEquip(roleEquip);
         log.info("修理后，更新数据库中的数据，更新的记录为：" + n);
     }
@@ -362,7 +480,7 @@ public class EquipService {
         long roleId = role.getRoleId();
 
         // 查询当前的装备栏
-        List<Equip> ownList = LocalEquipMap.getRoleEquipMap().get(roleId);
+        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(roleId);
 
         // 装备栏为空
         if (ownList == null || ownList.isEmpty()){
@@ -371,14 +489,17 @@ public class EquipService {
                     .setContent(ContentType.EQUIP_OWN_EMPTY)
                     .build();
         }
+
         // 当前玩家并不持有该装备
-        if(!ownList.contains(equip)){
-            return MsgEquipProto.ResponseEquip.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.EQUIP_NOT_BELONG)
-                    .build();
+        for (RoleEquip re : ownList) {
+            if (re.getEquipId() == equipId){
+                return null;
+            }
         }
-        return null;
+        return MsgEquipProto.ResponseEquip.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(ContentType.EQUIP_NOT_BELONG)
+                .build();
     }
 
 
@@ -442,5 +563,25 @@ public class EquipService {
                     .build();
         }
         return null;
+    }
+
+
+    /**
+     * 返回当前玩家的所有已装备物品
+     *
+     * @param role
+     * @return
+     */
+    private List<Equip> getOwnEquipList(Role role){
+        List<Equip> resList = new ArrayList<>();
+        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        for (RoleEquip re : ownList) {
+            Equip e = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+            e.setDurability(re.getDurability());
+            e.setState(re.getState());
+            resList.add(e);
+        }
+
+        return resList;
     }
 }

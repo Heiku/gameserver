@@ -95,6 +95,8 @@ public class ContentType {
 
 
     // Equip
+    public static final String EQUIP_SAME = "穿戴失败！该装备已经在身上了！\n";
+
     public static final String EQUIP_NOT_FOUND = "未找到当前装备信息，请检查 equipId 是否有误！\n";
 
     public static final String EQUIP_OWN_EMPTY = "当前玩家的装备栏为空，无法卸下任何道具！\n";

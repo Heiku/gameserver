@@ -3,8 +3,10 @@ package com.ljh.gamedemo.run.creep;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.Creep;
+import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.local.LocalCreepMap;
+import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
@@ -35,12 +37,20 @@ public class CreepBeAttackedRun implements Runnable {
 
     private boolean useLatch;
 
-    public CreepBeAttackedRun(int siteId, Spell spell, Integer creepId, Channel channel, boolean useLatch){
+    private Integer extra;
+
+    private boolean attack;
+
+    private Role role;
+
+    public CreepBeAttackedRun(Role role, Spell spell, Integer creepId, Channel channel, boolean attack, boolean useLatch){
         this.spell = spell;
         this.creepId = creepId;
         this.channel = channel;
         this.useLatch = useLatch;
-        this.siteId = siteId;
+        this.siteId = role.getSiteId();
+        this.attack = attack;
+        this.role = role;
     }
 
     @Override
@@ -53,12 +63,19 @@ public class CreepBeAttackedRun implements Runnable {
             }
         }
 
+        // 判断攻击的类型，决定buff的增益效果
+        if (attack){
+            extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getDamage();
+        }else {
+            extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getSp();
+        }
+
         // 指定攻击的野怪
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
         int startHp = creep.getHp();
 
         int hp = creep.getHp();
-        int damage = spell.getDamage();
+        int damage = spell.getDamage() + extra;
 
         if (hp > 0){
             hp -= damage;

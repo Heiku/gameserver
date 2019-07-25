@@ -1,8 +1,11 @@
 package com.ljh.gamedemo.local.cache;
 
 import com.google.common.collect.Maps;
+import com.ljh.gamedemo.dao.RoleAttrDao;
 import com.ljh.gamedemo.entity.dto.RoleAttr;
+import com.ljh.gamedemo.util.SpringUtil;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,7 +18,20 @@ public class RoleAttrCache {
 
     private static Map<Long, RoleAttr> roleAttrMap = Maps.newConcurrentMap();
 
+    private static RoleAttrDao attrDao;
+
+    static {
+        attrDao = SpringUtil.getBean(RoleAttrDao.class);
+    }
+
     public static Map<Long, RoleAttr> getRoleAttrMap() {
         return roleAttrMap;
+    }
+
+    public static void readBDAttr(){
+        List<RoleAttr> attrList = attrDao.selectAllAttr();
+        for (RoleAttr attr : attrList) {
+            roleAttrMap.put(attr.getRoleId(), attr);
+        }
     }
 }
