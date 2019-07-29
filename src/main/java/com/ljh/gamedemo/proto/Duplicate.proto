@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "DuplicateProto";
+
+// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Duplicate.proto
+
+message Duplicate{
+
+    int64 id = 1;
+    string name = 2;
+    int64 goldReward = 3;
+    int64 limitTime = 4;
+    int64 progress = 5;
+}

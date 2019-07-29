@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GamedemoApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         SpringApplication.run(GamedemoApplication.class, args);
 
         // 载入协议信息

@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.dao;
 
 import com.ljh.gamedemo.entity.dto.RoleEquip;
+import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -31,4 +32,18 @@ public interface RoleEquipDao {
 
     @Select("select * from role_equip")
     List<RoleEquip> selectAll();
+
+
+
+
+    @Select("select * from role_equip_has where role_id = #{roleId}")
+    List<RoleEquipHas> selectHasEquips(long roleId);
+
+    @Select("select * from role_equip_has")
+    List<RoleEquipHas> selectAllHasEquip();
+
+    @Insert("insert into role_equip_has(role_id, equip_id) values(#{roleId}, #{equipId})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    int addHasEquips(RoleEquipHas roleEquipHas);
+
 }

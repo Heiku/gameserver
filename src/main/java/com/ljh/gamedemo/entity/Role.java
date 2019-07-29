@@ -40,5 +40,10 @@ public class Role {
     private Integer mp;
 
 
+    /**
+     * 玩家金币值
+     */
+    private Integer gold;
+
     private List<Spell> spellList = new ArrayList<>();
 }

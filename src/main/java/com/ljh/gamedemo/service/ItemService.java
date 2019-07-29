@@ -3,8 +3,12 @@ package com.ljh.gamedemo.service;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.RoleItemsDao;
+import com.ljh.gamedemo.entity.Equip;
 import com.ljh.gamedemo.entity.Items;
 import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.entity.dto.RoleEquip;
+import com.ljh.gamedemo.entity.dto.RoleEquipHas;
+import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
@@ -20,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -78,12 +83,16 @@ public class ItemService {
                     .build();
         }
 
+        // 获取所有的装备信息
+        List<Equip> roleEquipList = LocalEquipMap.getHasEquipMap().get(roleId);
+
         // 非空背包
         return MsgItemProto.ResponseItem.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.FIND_SUCCESS)
                 .setType(MsgItemProto.RequestType.ALL)
                 .addAllItem(protoService.transToItemsList(items))
+                .addAllEquip(protoService.transToEquipList(roleEquipList))
                 .build();
     }
 

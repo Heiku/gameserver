@@ -37,6 +37,7 @@ public class ProtoService {
                 .setAlive(role.getAlive())
                 .setHp(role.getHp())
                 .setMp(role.getMp())
+                .setGold(role.getGold())
                 .build();
     }
 

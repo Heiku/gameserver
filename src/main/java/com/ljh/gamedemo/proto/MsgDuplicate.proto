@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgDuplicate.proto
+
+import "Duplicate.proto";
+import "Equip.proto";
+import "Boss.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgDuplicateProto";
+
+enum RequestType{
+    duplicate = 0;
+    enter = 1;
+}
+
+message RequestDuplicate{
+    int64 userId = 1;
+    int64 dupId = 2;
+    int64 bossId = 3;
+}
+
+message ResponseDuplicate{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    // 返回副本信息
+    repeated Duplicate duplicate = 4;
+    // 返回boss信息
+    repeated Boss boss = 5;
+    // 返回装备信息
+    repeated Equip equip = 6;
+}

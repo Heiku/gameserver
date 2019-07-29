@@ -13,4 +13,5 @@ message Role{
     int32 alive = 5;
     int32 hp = 6;
     int32 mp = 7;
+    int32 gold = 8;
 }

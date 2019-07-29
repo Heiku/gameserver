@@ -4,11 +4,13 @@ import com.google.common.collect.Maps;
 import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Equip;
 import com.ljh.gamedemo.entity.dto.RoleEquip;
+import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -35,10 +37,10 @@ public class LocalEquipMap {
     // equip idEquipMap: <Long, Equip>
     private static Map<Long, Equip> idEquipMap = Maps.newConcurrentMap();
 
-    // equip roleEquipMap: <Long, List<Equip>>
-    private static Map<Long, List<Equip>> tmpRoleEquipMap = Maps.newConcurrentMap();
-
     private static Map<Long, List<RoleEquip>> roleEquipMap = Maps.newConcurrentMap();
+
+    private static Map<Long, List<Equip>> hasEquipMap = Maps.newConcurrentMap();
+
 
     // 暂时用不着
     // equip typeEquipMap: <Integer, ListM<Equip>>
@@ -54,7 +56,7 @@ public class LocalEquipMap {
         }
     }
 
-    public static void readExcel() {
+    public static void readExcel() throws Exception {
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(equipFile);
@@ -103,7 +105,7 @@ public class LocalEquipMap {
     }
 
 
-    private static void readDB(){
+    private static void readDB() throws Exception{
         // 读取数据库中的所有记录信息
         List<RoleEquip> roleEquipList = roleEquipDao.selectAll();
         for (RoleEquip re : roleEquipList){
@@ -117,28 +119,56 @@ public class LocalEquipMap {
 
             roleEquipMap.put(roleId, list);
         }
+
+
+        // 读取用户所拥有的全部装备信息
+        List<RoleEquipHas> hasList = roleEquipDao.selectAllHasEquip();
+        for (RoleEquipHas reh : hasList) {
+            long equipId = reh.getEquipId();
+            Equip equip = new Equip();
+            Equip data = idEquipMap.get(equipId);
+            BeanUtils.copyProperties(data, equip);
+
+
+            List<Equip> list;
+            list = hasEquipMap.get(reh.getRoleId());
+            if (list == null){
+                list = new ArrayList<>();
+            }
+            list.add(equip);
+            hasEquipMap.put(reh.getRoleId(), list);
+        }
     }
 
     public static Map<Long, Equip> getIdEquipMap() {
         return idEquipMap;
     }
 
-    public static Map<Integer, List<Equip>> getTypeEquipMap() {
-        return typeEquipMap;
-    }
 
     public static Map<Long, List<RoleEquip>> getRoleEquipMap() {
         return roleEquipMap;
     }
 
+    public static Map<Long, List<Equip>> getHasEquipMap() {
+        return hasEquipMap;
+    }
+
     public static void main(String[] args) {
-        readExcel();
+        try {
+            readExcel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         idEquipMap.forEach((k, v) -> {
             System.out.println("k: " + k + " ,value: " + v);
         });
 
         typeEquipMap.forEach((k, v) -> {
+            System.out.println("k: " + k + " ,value: " + v);
+        });
+
+        hasEquipMap.forEach((k, v) -> {
             System.out.println("k: " + k + " ,value: " + v);
         });
     }

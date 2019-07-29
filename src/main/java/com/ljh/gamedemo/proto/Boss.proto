@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "Spell.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "BossProto";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/  --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Boss.proto
+
+message Boss{
+    int64 id = 1;
+    string name = 2;
+    int64 hp = 3;
+
+    Spell spell = 4;
+}

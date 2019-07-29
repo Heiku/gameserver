@@ -15,6 +15,7 @@ import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.proto.protoc.MsgEquipProto;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,10 +69,9 @@ public class EquipService {
         // allList <Equip>  idEquipMap中获取
         // hasList <RoleEquip> roleEquipMap中获取
         // setMap <equipId, equip>
-        List<Equip> allList = new ArrayList<>();
-        LocalEquipMap.getIdEquipMap().forEach((k, v) -> {
-            allList.add(v);
-        });
+        List<Equip> allList;
+        allList = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
+
         List<RoleEquip> hasPutOn = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
         List<Equip> resHasList = new ArrayList<>();
 
@@ -84,7 +84,10 @@ public class EquipService {
         // 去重
         if (hasPutOn != null && !hasPutOn.isEmpty()){
             for (RoleEquip re : hasPutOn){
-                Equip equip = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+                Equip data = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+                Equip equip = new Equip();
+                BeanUtils.copyProperties(data, equip);
+
                 equip.setDurability(re.getDurability());
                 equip.setState(re.getState());
 
