@@ -10,14 +10,17 @@ option java_package = "com.ljh.gamedemo.proto.protoc";
 option java_outer_classname = "MsgDuplicateProto";
 
 enum RequestType{
-    duplicate = 0;
-    enter = 1;
+    DUPLICATE = 0;
+    ENTER = 1;
+    CHALLENGE = 2;
 }
 
 message RequestDuplicate{
     int64 userId = 1;
     int64 dupId = 2;
     int64 bossId = 3;
+
+    RequestType type = 4;
 }
 
 message ResponseDuplicate{

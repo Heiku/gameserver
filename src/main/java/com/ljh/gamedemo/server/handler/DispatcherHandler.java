@@ -30,11 +30,12 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
         handlerMap.put(REQUEST_USERINFO_PROTO.protoCode, new UserInfoHandler());
         handlerMap.put(REQUEST_SITE_PROTO.protoCode, new SiteInfoHandler());
         handlerMap.put(REQUEST_ENTITY_PROTO.protoCode, new EntityInfoHandler());
-        handlerMap.put(REQUEST_TALK_ENTITY.protoCode, new EntityInfoHandler());
+        handlerMap.put(REQUEST_TALK_ENTITY.protoCode, new TalkEntityHandler());
         handlerMap.put(REQUEST_SPELL.protoCode, new SpellHandler());
         handlerMap.put(REQUEST_ATTACK_SPELL.protoCode, new AttackCreepHandler());
         handlerMap.put(REQUEST_ITEMS.protoCode, new ItemsHandler());
         handlerMap.put(REQUEST_EQUIPS.protoCode, new EquipHandler());
+        handlerMap.put(REQUEST_DUPLICATE.protoCode, new DuplicateHandler());
     }
 
     @Override

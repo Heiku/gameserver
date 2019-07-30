@@ -5,6 +5,7 @@ import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
+import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
@@ -12,6 +13,7 @@ import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import com.ljh.gamedemo.service.ProtoService;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -85,6 +87,12 @@ public class CreepBeAttackedRun implements Runnable {
                 creep.setHp(startHp);
                 creep.setNum(creep.getNum() - 1);
                 LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
+
+                // 野怪死亡，取消玩家自动扣血task
+                ScheduledFuture future = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
+                future.cancel(true);
+                LocalAttackCreepMap.getUserBeAttackedMap().remove(role.getRoleId());
+
 
                 MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
                         .setType(MsgAttackCreepProto.RequestType.ATTACK)

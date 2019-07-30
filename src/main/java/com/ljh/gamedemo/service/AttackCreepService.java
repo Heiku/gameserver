@@ -183,8 +183,16 @@ public class AttackCreepService {
         // 添加任务到用户线程
         // 野怪掉血任务
         SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role , spell, creep.getCreepId(), channel, true, false));
-        // 玩家掉血任务
-        UserExecutorManager.addUserTask(userId, new UserBeAttackedRun(userId, creep, channel));
+        // 玩家掉血任务, 第一次攻击的时候，加入玩家自动扣血，第二次攻击的时候，直接跳过
+        // 掉血任务，当野怪死亡的时候 或 玩家死亡 停止
+        if (LocalAttackCreepMap.getUserBeAttackedMap().get(userId) == null) {
+            UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), channel);
+            ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
+                    0, spell.getCoolDown(), TimeUnit.SECONDS);
+            FutureMap.futureMap.put(task.hashCode(), future);
+            LocalAttackCreepMap.getUserBeAttackedMap().put(role.getRoleId(), future);
+        }
+
         // 装备消耗耐久任务
         synCutEquipDurability(role);
     }

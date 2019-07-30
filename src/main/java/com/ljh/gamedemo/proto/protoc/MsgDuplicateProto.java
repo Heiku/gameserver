@@ -20,24 +20,32 @@ public final class MsgDuplicateProto {
   public enum RequestType
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>duplicate = 0;</code>
+     * <code>DUPLICATE = 0;</code>
      */
-    duplicate(0),
+    DUPLICATE(0),
     /**
-     * <code>enter = 1;</code>
+     * <code>ENTER = 1;</code>
      */
-    enter(1),
+    ENTER(1),
+    /**
+     * <code>CHALLENGE = 2;</code>
+     */
+    CHALLENGE(2),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>duplicate = 0;</code>
+     * <code>DUPLICATE = 0;</code>
      */
-    public static final int duplicate_VALUE = 0;
+    public static final int DUPLICATE_VALUE = 0;
     /**
-     * <code>enter = 1;</code>
+     * <code>ENTER = 1;</code>
      */
-    public static final int enter_VALUE = 1;
+    public static final int ENTER_VALUE = 1;
+    /**
+     * <code>CHALLENGE = 2;</code>
+     */
+    public static final int CHALLENGE_VALUE = 2;
 
 
     public final int getNumber() {
@@ -58,8 +66,9 @@ public final class MsgDuplicateProto {
 
     public static RequestType forNumber(int value) {
       switch (value) {
-        case 0: return duplicate;
-        case 1: return enter;
+        case 0: return DUPLICATE;
+        case 1: return ENTER;
+        case 2: return CHALLENGE;
         default: return null;
       }
     }
@@ -130,6 +139,15 @@ public final class MsgDuplicateProto {
      * <code>int64 bossId = 3;</code>
      */
     long getBossId();
+
+    /**
+     * <code>.RequestType type = 4;</code>
+     */
+    int getTypeValue();
+    /**
+     * <code>.RequestType type = 4;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType getType();
   }
   /**
    * Protobuf type {@code RequestDuplicate}
@@ -144,6 +162,7 @@ public final class MsgDuplicateProto {
       super(builder);
     }
     private RequestDuplicate() {
+      type_ = 0;
     }
 
     @java.lang.Override
@@ -189,6 +208,12 @@ public final class MsgDuplicateProto {
             case 24: {
 
               bossId_ = input.readInt64();
+              break;
+            }
+            case 32: {
+              int rawValue = input.readEnum();
+
+              type_ = rawValue;
               break;
             }
             default: {
@@ -250,6 +275,23 @@ public final class MsgDuplicateProto {
       return bossId_;
     }
 
+    public static final int TYPE_FIELD_NUMBER = 4;
+    private int type_;
+    /**
+     * <code>.RequestType type = 4;</code>
+     */
+    public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <code>.RequestType type = 4;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType getType() {
+      @SuppressWarnings("deprecation")
+      com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType result = com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.valueOf(type_);
+      return result == null ? com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -273,6 +315,9 @@ public final class MsgDuplicateProto {
       if (bossId_ != 0L) {
         output.writeInt64(3, bossId_);
       }
+      if (type_ != com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.DUPLICATE.getNumber()) {
+        output.writeEnum(4, type_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -293,6 +338,10 @@ public final class MsgDuplicateProto {
       if (bossId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, bossId_);
+      }
+      if (type_ != com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.DUPLICATE.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -315,6 +364,7 @@ public final class MsgDuplicateProto {
           != other.getDupId()) return false;
       if (getBossId()
           != other.getBossId()) return false;
+      if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -335,6 +385,8 @@ public final class MsgDuplicateProto {
       hash = (37 * hash) + BOSSID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getBossId());
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -474,6 +526,8 @@ public final class MsgDuplicateProto {
 
         bossId_ = 0L;
 
+        type_ = 0;
+
         return this;
       }
 
@@ -503,6 +557,7 @@ public final class MsgDuplicateProto {
         result.userId_ = userId_;
         result.dupId_ = dupId_;
         result.bossId_ = bossId_;
+        result.type_ = type_;
         onBuilt();
         return result;
       }
@@ -559,6 +614,9 @@ public final class MsgDuplicateProto {
         }
         if (other.getBossId() != 0L) {
           setBossId(other.getBossId());
+        }
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -663,6 +721,51 @@ public final class MsgDuplicateProto {
       public Builder clearBossId() {
         
         bossId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int type_ = 0;
+      /**
+       * <code>.RequestType type = 4;</code>
+       */
+      public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <code>.RequestType type = 4;</code>
+       */
+      public Builder setTypeValue(int value) {
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RequestType type = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType getType() {
+        @SuppressWarnings("deprecation")
+        com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType result = com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.valueOf(type_);
+        return result == null ? com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.RequestType type = 4;</code>
+       */
+      public Builder setType(com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RequestType type = 4;</code>
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
         onChanged();
         return this;
       }
@@ -1260,7 +1363,7 @@ public final class MsgDuplicateProto {
       if (!getContentBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, content_);
       }
-      if (type_ != com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.duplicate.getNumber()) {
+      if (type_ != com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.DUPLICATE.getNumber()) {
         output.writeEnum(3, type_);
       }
       for (int i = 0; i < duplicate_.size(); i++) {
@@ -1288,7 +1391,7 @@ public final class MsgDuplicateProto {
       if (!getContentBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, content_);
       }
-      if (type_ != com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.duplicate.getNumber()) {
+      if (type_ != com.ljh.gamedemo.proto.protoc.MsgDuplicateProto.RequestType.DUPLICATE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, type_);
       }
@@ -2890,15 +2993,16 @@ public final class MsgDuplicateProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\022MsgDuplicate.proto\032\017Duplicate.proto\032\013E" +
-      "quip.proto\032\nBoss.proto\"A\n\020RequestDuplica" +
+      "quip.proto\032\nBoss.proto\"]\n\020RequestDuplica" +
       "te\022\016\n\006userId\030\001 \001(\003\022\r\n\005dupId\030\002 \001(\003\022\016\n\006bos" +
-      "sId\030\003 \001(\003\"\233\001\n\021ResponseDuplicate\022\016\n\006resul" +
-      "t\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014" +
-      ".RequestType\022\035\n\tduplicate\030\004 \003(\0132\n.Duplic" +
-      "ate\022\023\n\004boss\030\005 \003(\0132\005.Boss\022\025\n\005equip\030\006 \003(\0132" +
-      "\006.Equip*\'\n\013RequestType\022\r\n\tduplicate\020\000\022\t\n" +
-      "\005enter\020\001B2\n\035com.ljh.gamedemo.proto.proto" +
-      "cB\021MsgDuplicateProtob\006proto3"
+      "sId\030\003 \001(\003\022\032\n\004type\030\004 \001(\0162\014.RequestType\"\233\001" +
+      "\n\021ResponseDuplicate\022\016\n\006result\030\001 \001(\005\022\017\n\007c" +
+      "ontent\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType" +
+      "\022\035\n\tduplicate\030\004 \003(\0132\n.Duplicate\022\023\n\004boss\030" +
+      "\005 \003(\0132\005.Boss\022\025\n\005equip\030\006 \003(\0132\006.Equip*6\n\013R" +
+      "equestType\022\r\n\tDUPLICATE\020\000\022\t\n\005ENTER\020\001\022\r\n\t" +
+      "CHALLENGE\020\002B2\n\035com.ljh.gamedemo.proto.pr" +
+      "otocB\021MsgDuplicateProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2912,7 +3016,7 @@ public final class MsgDuplicateProto {
     internal_static_RequestDuplicate_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RequestDuplicate_descriptor,
-        new java.lang.String[] { "UserId", "DupId", "BossId", });
+        new java.lang.String[] { "UserId", "DupId", "BossId", "Type", });
     internal_static_ResponseDuplicate_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ResponseDuplicate_fieldAccessorTable = new

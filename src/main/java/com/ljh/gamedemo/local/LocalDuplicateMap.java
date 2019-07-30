@@ -49,7 +49,7 @@ public class LocalDuplicateMap {
         for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
             Sheet sheet = workbook.getSheetAt(0);
             if (sheet == null) {
-                log.error("excel sheet is null, please recheck the spellBoss file resolve");
+                log.error("excel sheet is null, please recheck the duplicate file resolve");
                 break;
             }
 

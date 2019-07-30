@@ -39,17 +39,28 @@ public final class BossProto {
     long getHp();
 
     /**
-     * <code>.Spell spell = 4;</code>
+     * <code>repeated .Spell spell = 4;</code>
      */
-    boolean hasSpell();
+    java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> 
+        getSpellList();
     /**
-     * <code>.Spell spell = 4;</code>
+     * <code>repeated .Spell spell = 4;</code>
      */
-    com.ljh.gamedemo.proto.protoc.SpellProto.Spell getSpell();
+    com.ljh.gamedemo.proto.protoc.SpellProto.Spell getSpell(int index);
     /**
-     * <code>.Spell spell = 4;</code>
+     * <code>repeated .Spell spell = 4;</code>
      */
-    com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder();
+    int getSpellCount();
+    /**
+     * <code>repeated .Spell spell = 4;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+        getSpellOrBuilderList();
+    /**
+     * <code>repeated .Spell spell = 4;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code Boss}
@@ -65,6 +76,7 @@ public final class BossProto {
     }
     private Boss() {
       name_ = "";
+      spell_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -87,6 +99,7 @@ public final class BossProto {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -114,16 +127,12 @@ public final class BossProto {
               break;
             }
             case 34: {
-              com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder subBuilder = null;
-              if (spell_ != null) {
-                subBuilder = spell_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                spell_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.SpellProto.Spell>();
+                mutable_bitField0_ |= 0x00000001;
               }
-              spell_ = input.readMessage(com.ljh.gamedemo.proto.protoc.SpellProto.Spell.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(spell_);
-                spell_ = subBuilder.buildPartial();
-              }
-
+              spell_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.SpellProto.Spell.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -141,6 +150,9 @@ public final class BossProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          spell_ = java.util.Collections.unmodifiableList(spell_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -211,24 +223,38 @@ public final class BossProto {
     }
 
     public static final int SPELL_FIELD_NUMBER = 4;
-    private com.ljh.gamedemo.proto.protoc.SpellProto.Spell spell_;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> spell_;
     /**
-     * <code>.Spell spell = 4;</code>
+     * <code>repeated .Spell spell = 4;</code>
      */
-    public boolean hasSpell() {
-      return spell_ != null;
+    public java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> getSpellList() {
+      return spell_;
     }
     /**
-     * <code>.Spell spell = 4;</code>
+     * <code>repeated .Spell spell = 4;</code>
      */
-    public com.ljh.gamedemo.proto.protoc.SpellProto.Spell getSpell() {
-      return spell_ == null ? com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance() : spell_;
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+        getSpellOrBuilderList() {
+      return spell_;
     }
     /**
-     * <code>.Spell spell = 4;</code>
+     * <code>repeated .Spell spell = 4;</code>
      */
-    public com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder() {
-      return getSpell();
+    public int getSpellCount() {
+      return spell_.size();
+    }
+    /**
+     * <code>repeated .Spell spell = 4;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.SpellProto.Spell getSpell(int index) {
+      return spell_.get(index);
+    }
+    /**
+     * <code>repeated .Spell spell = 4;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder(
+        int index) {
+      return spell_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -254,8 +280,8 @@ public final class BossProto {
       if (hp_ != 0L) {
         output.writeInt64(3, hp_);
       }
-      if (spell_ != null) {
-        output.writeMessage(4, getSpell());
+      for (int i = 0; i < spell_.size(); i++) {
+        output.writeMessage(4, spell_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -277,9 +303,9 @@ public final class BossProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, hp_);
       }
-      if (spell_ != null) {
+      for (int i = 0; i < spell_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getSpell());
+          .computeMessageSize(4, spell_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -302,11 +328,8 @@ public final class BossProto {
           .equals(other.getName())) return false;
       if (getHp()
           != other.getHp()) return false;
-      if (hasSpell() != other.hasSpell()) return false;
-      if (hasSpell()) {
-        if (!getSpell()
-            .equals(other.getSpell())) return false;
-      }
+      if (!getSpellList()
+          .equals(other.getSpellList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -326,9 +349,9 @@ public final class BossProto {
       hash = (37 * hash) + HP_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getHp());
-      if (hasSpell()) {
+      if (getSpellCount() > 0) {
         hash = (37 * hash) + SPELL_FIELD_NUMBER;
-        hash = (53 * hash) + getSpell().hashCode();
+        hash = (53 * hash) + getSpellList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -458,6 +481,7 @@ public final class BossProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getSpellFieldBuilder();
         }
       }
       @java.lang.Override
@@ -470,10 +494,10 @@ public final class BossProto {
         hp_ = 0L;
 
         if (spellBuilder_ == null) {
-          spell_ = null;
+          spell_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          spell_ = null;
-          spellBuilder_ = null;
+          spellBuilder_.clear();
         }
         return this;
       }
@@ -501,10 +525,15 @@ public final class BossProto {
       @java.lang.Override
       public com.ljh.gamedemo.proto.protoc.BossProto.Boss buildPartial() {
         com.ljh.gamedemo.proto.protoc.BossProto.Boss result = new com.ljh.gamedemo.proto.protoc.BossProto.Boss(this);
+        int from_bitField0_ = bitField0_;
         result.id_ = id_;
         result.name_ = name_;
         result.hp_ = hp_;
         if (spellBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            spell_ = java.util.Collections.unmodifiableList(spell_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
           result.spell_ = spell_;
         } else {
           result.spell_ = spellBuilder_.build();
@@ -567,8 +596,31 @@ public final class BossProto {
         if (other.getHp() != 0L) {
           setHp(other.getHp());
         }
-        if (other.hasSpell()) {
-          mergeSpell(other.getSpell());
+        if (spellBuilder_ == null) {
+          if (!other.spell_.isEmpty()) {
+            if (spell_.isEmpty()) {
+              spell_ = other.spell_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureSpellIsMutable();
+              spell_.addAll(other.spell_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.spell_.isEmpty()) {
+            if (spellBuilder_.isEmpty()) {
+              spellBuilder_.dispose();
+              spellBuilder_ = null;
+              spell_ = other.spell_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              spellBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getSpellFieldBuilder() : null;
+            } else {
+              spellBuilder_.addAllMessages(other.spell_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -598,6 +650,7 @@ public final class BossProto {
         }
         return this;
       }
+      private int bitField0_;
 
       private long id_ ;
       /**
@@ -720,116 +773,239 @@ public final class BossProto {
         return this;
       }
 
-      private com.ljh.gamedemo.proto.protoc.SpellProto.Spell spell_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> spellBuilder_;
-      /**
-       * <code>.Spell spell = 4;</code>
-       */
-      public boolean hasSpell() {
-        return spellBuilder_ != null || spell_ != null;
+      private java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> spell_ =
+        java.util.Collections.emptyList();
+      private void ensureSpellIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          spell_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.SpellProto.Spell>(spell_);
+          bitField0_ |= 0x00000001;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> spellBuilder_;
+
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell getSpell() {
+      public java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell> getSpellList() {
         if (spellBuilder_ == null) {
-          return spell_ == null ? com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance() : spell_;
+          return java.util.Collections.unmodifiableList(spell_);
         } else {
-          return spellBuilder_.getMessage();
+          return spellBuilder_.getMessageList();
         }
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
-      public Builder setSpell(com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+      public int getSpellCount() {
+        if (spellBuilder_ == null) {
+          return spell_.size();
+        } else {
+          return spellBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell getSpell(int index) {
+        if (spellBuilder_ == null) {
+          return spell_.get(index);
+        } else {
+          return spellBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public Builder setSpell(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
         if (spellBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          spell_ = value;
+          ensureSpellIsMutable();
+          spell_.set(index, value);
           onChanged();
         } else {
-          spellBuilder_.setMessage(value);
+          spellBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
       public Builder setSpell(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder builderForValue) {
+        if (spellBuilder_ == null) {
+          ensureSpellIsMutable();
+          spell_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          spellBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public Builder addSpell(com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+        if (spellBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSpellIsMutable();
+          spell_.add(value);
+          onChanged();
+        } else {
+          spellBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public Builder addSpell(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+        if (spellBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSpellIsMutable();
+          spell_.add(index, value);
+          onChanged();
+        } else {
+          spellBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public Builder addSpell(
           com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder builderForValue) {
         if (spellBuilder_ == null) {
-          spell_ = builderForValue.build();
+          ensureSpellIsMutable();
+          spell_.add(builderForValue.build());
           onChanged();
         } else {
-          spellBuilder_.setMessage(builderForValue.build());
+          spellBuilder_.addMessage(builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
-      public Builder mergeSpell(com.ljh.gamedemo.proto.protoc.SpellProto.Spell value) {
+      public Builder addSpell(
+          int index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder builderForValue) {
         if (spellBuilder_ == null) {
-          if (spell_ != null) {
-            spell_ =
-              com.ljh.gamedemo.proto.protoc.SpellProto.Spell.newBuilder(spell_).mergeFrom(value).buildPartial();
-          } else {
-            spell_ = value;
-          }
+          ensureSpellIsMutable();
+          spell_.add(index, builderForValue.build());
           onChanged();
         } else {
-          spellBuilder_.mergeFrom(value);
+          spellBuilder_.addMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public Builder addAllSpell(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.SpellProto.Spell> values) {
+        if (spellBuilder_ == null) {
+          ensureSpellIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, spell_);
+          onChanged();
+        } else {
+          spellBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
        */
       public Builder clearSpell() {
         if (spellBuilder_ == null) {
-          spell_ = null;
+          spell_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          spell_ = null;
-          spellBuilder_ = null;
+          spellBuilder_.clear();
         }
-
         return this;
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder getSpellBuilder() {
-        
-        onChanged();
-        return getSpellFieldBuilder().getBuilder();
+      public Builder removeSpell(int index) {
+        if (spellBuilder_ == null) {
+          ensureSpellIsMutable();
+          spell_.remove(index);
+          onChanged();
+        } else {
+          spellBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder() {
-        if (spellBuilder_ != null) {
-          return spellBuilder_.getMessageOrBuilder();
-        } else {
-          return spell_ == null ?
-              com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance() : spell_;
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder getSpellBuilder(
+          int index) {
+        return getSpellFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder getSpellOrBuilder(
+          int index) {
+        if (spellBuilder_ == null) {
+          return spell_.get(index);  } else {
+          return spellBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>.Spell spell = 4;</code>
+       * <code>repeated .Spell spell = 4;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
+           getSpellOrBuilderList() {
+        if (spellBuilder_ != null) {
+          return spellBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(spell_);
+        }
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder addSpellBuilder() {
+        return getSpellFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder addSpellBuilder(
+          int index) {
+        return getSpellFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Spell spell = 4;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder> 
+           getSpellBuilderList() {
+        return getSpellFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder> 
           getSpellFieldBuilder() {
         if (spellBuilder_ == null) {
-          spellBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          spellBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.ljh.gamedemo.proto.protoc.SpellProto.Spell, com.ljh.gamedemo.proto.protoc.SpellProto.Spell.Builder, com.ljh.gamedemo.proto.protoc.SpellProto.SpellOrBuilder>(
-                  getSpell(),
+                  spell_,
+                  ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
           spell_ = null;
@@ -905,7 +1081,7 @@ public final class BossProto {
     java.lang.String[] descriptorData = {
       "\n\nBoss.proto\032\013Spell.proto\"C\n\004Boss\022\n\n\002id\030" +
       "\001 \001(\003\022\014\n\004name\030\002 \001(\t\022\n\n\002hp\030\003 \001(\003\022\025\n\005spell" +
-      "\030\004 \001(\0132\006.SpellB*\n\035com.ljh.gamedemo.proto" +
+      "\030\004 \003(\0132\006.SpellB*\n\035com.ljh.gamedemo.proto" +
       ".protocB\tBossProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

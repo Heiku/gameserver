@@ -1,9 +1,12 @@
 syntax = "proto3";
 
+import "Boss.proto";
+import "Equip.proto";
+
 option java_package = "com.ljh.gamedemo.proto.protoc";
 option java_outer_classname = "DuplicateProto";
 
-// protoc --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Duplicate.proto
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Duplicate.proto
 
 message Duplicate{
 
@@ -12,4 +15,7 @@ message Duplicate{
     int64 goldReward = 3;
     int64 limitTime = 4;
     int64 progress = 5;
+
+    repeated Boss bosses = 6;
+    repeated Equip equips = 7;
 }

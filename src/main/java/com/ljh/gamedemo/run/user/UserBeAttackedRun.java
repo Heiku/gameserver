@@ -30,6 +30,9 @@ public class UserBeAttackedRun implements Runnable {
     // 这里只需要一个userId，在去map中读取最新的role
     private Long userId;
 
+    // 玩家收到的伤害值
+    private Integer damage;
+
     // 用于通知掉血
     private Channel channel;
 
@@ -37,9 +40,10 @@ public class UserBeAttackedRun implements Runnable {
 
     private ProtoService protoService = new ProtoService();
 
-    public UserBeAttackedRun(long userId, Creep creep, Channel channel){
+    public UserBeAttackedRun(long userId, Integer damage, Channel channel){
         this.userId = userId;
-        this.creep = creep;
+        //this.creep = creep;
+        this.damage = damage;
         this.channel = channel;
     }
 
@@ -56,8 +60,6 @@ public class UserBeAttackedRun implements Runnable {
      */
     @Override
     public void run() {
-        int damage = creep.getDamage();
-
         Role role = LocalUserMap.userRoleMap.get(userId);
         int hp = role.getHp();
         log.info("攻击前的 role 属性为："  + role);
@@ -139,7 +141,7 @@ public class UserBeAttackedRun implements Runnable {
                 .setType(MsgAttackCreepProto.RequestType.ATTACK)
                 .setContent(ContentType.ATTACK_CURRENT)
                 .setRole(protoService.transToRole(role))
-                .setCreep(protoService.transToCreep(creep))
+                //.setCreep(protoService.transToCreep(creep))
                 .build();
         channel.writeAndFlush(response);
     }

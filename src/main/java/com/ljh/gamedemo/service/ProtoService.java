@@ -126,4 +126,78 @@ public class ProtoService {
         return list;
     }
 
+
+
+    public List<DuplicateProto.Duplicate> transToDuplicateList(List<Duplicate> duplicates) {
+        List<DuplicateProto.Duplicate> list = new ArrayList<>();
+        if (duplicates == null){
+            return list;
+        }
+        for (Duplicate duplicate : duplicates) {
+            list.add(transToDuplicate(duplicate));
+        }
+        return list;
+    }
+
+
+    private DuplicateProto.Duplicate transToDuplicate(Duplicate duplicate) {
+        return DuplicateProto.Duplicate.newBuilder()
+                .setId(duplicate.getId())
+                .setName(duplicate.getName())
+                .setGoldReward(duplicate.getGoldReward())
+                .setProgress(duplicate.getProgress())
+                .setLimitTime(duplicate.getLimitTime())
+                .addAllBosses(transToBossList(duplicate.getBosses()))
+                .addAllEquips(transToEquipList(duplicate.getEquipReward()))
+                .build();
+    }
+
+
+    private List<BossProto.Boss> transToBossList(List<Boss> bosses){
+        List<BossProto.Boss> list = new ArrayList<>();
+        if (list == null){
+            return list;
+        }
+        bosses.forEach(boss -> list.add(transToBoss(boss)));
+
+        return list;
+    }
+
+    private BossProto.Boss transToBoss(Boss boss) {
+        return BossProto.Boss.newBuilder()
+                .setId(boss.getId())
+                .setName(boss.getName())
+                .setHp(boss.getHp())
+                .addAllSpell(transToBossSpellList(boss.getSpellList()))
+                .build();
+    }
+
+
+    private List<SpellProto.Spell> transToBossSpellList(List<BossSpell> bossSpells){
+        List<SpellProto.Spell> list = new ArrayList<>();
+        if (bossSpells == null){
+            return list;
+        }
+        bossSpells.forEach(bossSpell -> list.add(transToSpell(bossSpell)));
+        return list;
+    }
+
+
+    private SpellProto.Spell transToSpell(BossSpell bossSpell){
+        return SpellProto.Spell.newBuilder()
+                .setSpellId(bossSpell.getSpellId().intValue())
+                .setName(bossSpell.getName())
+                .setCoolDown(bossSpell.getCd())
+                .setDamage(bossSpell.getDamage())
+                .setRange(bossSpell.getRange())
+
+                // level -> school
+                .setLevel(bossSpell.getSchool())
+
+                // cost -> sec
+                .setCost(bossSpell.getSec())
+                .build();
+    }
+
+
 }

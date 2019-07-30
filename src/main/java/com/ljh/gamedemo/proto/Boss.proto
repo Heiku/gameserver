@@ -12,5 +12,5 @@ message Boss{
     string name = 2;
     int64 hp = 3;
 
-    Spell spell = 4;
+    repeated Spell spell = 4;
 }

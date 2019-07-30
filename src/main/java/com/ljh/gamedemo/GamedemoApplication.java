@@ -43,6 +43,12 @@ public class GamedemoApplication {
         // 获取所有的玩家属性值
         RoleAttrCache.readBDAttr();
 
+        // 载入boss信息
+        LocalBossMap.readExcel();
+
+        // 载入副本信息
+        LocalDuplicateMap.readExcel();
+
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();
     }

@@ -19,14 +19,14 @@ import java.util.concurrent.TimeUnit;
 public class SiteCreepExecutorManager {
 
     // 最大的场景线程池数，后期可拓展
-    private static final Integer MAX_SITE_CREEP_NUM =  20;
+    private static final Integer MAX_SITE_CREEP_NUM =  12;
 
     private static ThreadFactory threadFactory = new ThreadFactoryBuilder()
             .setNameFormat("creep-thread-%d")
             .build();
 
     // 每一个场景对应一个场景野怪集合
-    private static CustomExecutor[] executors = new CustomExecutor[20];
+    private static CustomExecutor[] executors = new CustomExecutor[12];
 
     // 用于记录用户与用户线程绑定 <userId, CustomExecutor>
     public static Map<Integer, CustomExecutor> siteCreepExecutorMap = Maps.newConcurrentMap();

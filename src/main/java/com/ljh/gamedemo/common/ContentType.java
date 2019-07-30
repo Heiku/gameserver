@@ -115,6 +115,15 @@ public class ContentType {
 
     public static final String EQUIP_FIX_SUCCESS = "装备修理成功，装备可正常使用！\n";
 
+
+
+    // Duplicate
+    public static final String DUPLICATE_ALL = "查找成功！\n";
+
+    public static final String DUPLICATE_EMPTY = "找不到对应的副本，请重新输入正确的副本id！\n";
+
+    public static final String DUPLICATE_ENTER_SUCCESS = "已经进入副本，boss正向你走来，请继续攻击！\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }
