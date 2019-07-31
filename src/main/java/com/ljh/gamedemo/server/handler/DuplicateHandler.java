@@ -33,6 +33,10 @@ public class DuplicateHandler extends SimpleChannelInboundHandler<MsgDuplicatePr
                 response = duplicateService.enterDuplicate(request, ctx.channel());
                 break;
             case CHALLENGE:
+                response = duplicateService.challengeDuplicate(request, ctx.channel());
+                break;
+            case STOP:
+                response = duplicateService.stopAttack(request, ctx.channel());
                 break;
         }
         if (response != null) {

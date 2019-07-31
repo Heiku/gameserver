@@ -140,7 +140,7 @@ public class ProtoService {
     }
 
 
-    private DuplicateProto.Duplicate transToDuplicate(Duplicate duplicate) {
+    public DuplicateProto.Duplicate transToDuplicate(Duplicate duplicate) {
         return DuplicateProto.Duplicate.newBuilder()
                 .setId(duplicate.getId())
                 .setName(duplicate.getName())
@@ -153,9 +153,9 @@ public class ProtoService {
     }
 
 
-    private List<BossProto.Boss> transToBossList(List<Boss> bosses){
+    public List<BossProto.Boss> transToBossList(List<Boss> bosses){
         List<BossProto.Boss> list = new ArrayList<>();
-        if (list == null){
+        if (bosses == null){
             return list;
         }
         bosses.forEach(boss -> list.add(transToBoss(boss)));
@@ -163,7 +163,7 @@ public class ProtoService {
         return list;
     }
 
-    private BossProto.Boss transToBoss(Boss boss) {
+    public BossProto.Boss transToBoss(Boss boss) {
         return BossProto.Boss.newBuilder()
                 .setId(boss.getId())
                 .setName(boss.getName())

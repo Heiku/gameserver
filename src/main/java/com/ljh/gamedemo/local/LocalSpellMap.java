@@ -134,7 +134,7 @@ public class LocalSpellMap {
             // 将数据封装到 map中
             List<Spell> spells;
             spells = roleSpellMap.get(role.getRoleId());
-            if (spells == null || spells.isEmpty()){
+            if (spells == null){
                 spells = new ArrayList<>();
             }
             spells.add(spell);

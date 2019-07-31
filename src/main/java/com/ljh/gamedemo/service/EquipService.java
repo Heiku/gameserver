@@ -9,6 +9,7 @@ import com.ljh.gamedemo.entity.Equip;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.dto.RoleAttr;
 import com.ljh.gamedemo.entity.dto.RoleEquip;
+import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
@@ -464,6 +465,7 @@ public class EquipService {
         log.info("修理后，更新数据库中的数据，更新的记录为：" + n);
     }
 
+
     /**
      * 判断装备的具体信息 （是否正确输入equipId, 当前用户是否持有该装备）
      *
@@ -586,5 +588,57 @@ public class EquipService {
         }
 
         return resList;
+    }
+
+
+    /**
+     * 在玩家的装备背包中新增装备 (缓存 + DB)
+     *
+     * @param role
+     * @param equips
+     */
+    public void addRoleEquips(Role role, List<Equip> equips){
+
+        // cahce
+        List<Equip> hasEquips = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
+        equips.forEach(e -> {
+            Equip tmp = LocalEquipMap.getIdEquipMap().get(e.getEquipId());
+            Equip des = new Equip();
+            BeanUtils.copyProperties(tmp, des);
+            hasEquips.add(des);
+
+
+            // db
+            RoleEquipHas has = new RoleEquipHas();
+            has.setEquipId(e.getEquipId());
+            has.setRoleId(role.getRoleId());
+
+            equipDao.addHasEquips(has);
+        });
+        LocalEquipMap.getHasEquipMap().put(role.getRoleId(), hasEquips);
+    }
+
+
+    /**
+     * 加锁同步装备的耐久度信息
+     *
+     * @param role
+     */
+    public synchronized void synCutEquipDurability(Role role){
+        List<RoleEquip> roleEquipList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+
+        log.info("攻击野怪之前，装备栏的耐久度为：" + roleEquipList);
+        for (RoleEquip re : roleEquipList) {
+
+            re.setDurability(re.getDurability() - 1);
+            if (re.getDurability() < 10){
+                re.setState(0);
+            }
+
+            // 更新db
+            int n = equipDao.updateRoleEquip(re);
+            log.info("攻击野怪之后，装备栏中的更新的行数为：" + n);
+        }
+        log.info("攻击野怪之后，装备栏的耐久度为：" + roleEquipList);
     }
 }

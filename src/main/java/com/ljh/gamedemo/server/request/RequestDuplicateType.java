@@ -11,4 +11,6 @@ public class RequestDuplicateType {
     public static final int ENTER = 1;
 
     public static final int CHALLENGE = 2;
+
+    public static final int STOP = 4;
 }

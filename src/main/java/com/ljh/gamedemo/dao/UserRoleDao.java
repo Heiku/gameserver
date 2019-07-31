@@ -27,6 +27,6 @@ public interface UserRoleDao {
     @Select("select * from role")
     List<Role> selectAllRole();
 
-    @Update("update role set site_id = #{siteId},level = #{level},hp = #{hp},mp = #{mp} where user_id = #{userId} and role_id = #{roleId}")
-    int updateRoleSiteInfo(long userId, long roleId, int siteId, int level, int hp, int mp);
+    @Update("update role set site_id = #{siteId},level = #{level},hp = #{hp},mp = #{mp},gold = #{gold} where user_id = #{userId} and role_id = #{roleId}")
+    int updateRoleSiteInfo(Role role);
 }

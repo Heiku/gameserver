@@ -13,6 +13,7 @@ enum RequestType{
     DUPLICATE = 0;
     ENTER = 1;
     CHALLENGE = 2;
+    STOP = 3;
 }
 
 message RequestDuplicate{

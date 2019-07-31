@@ -2,14 +2,15 @@ package com.ljh.gamedemo.service;
 
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.dao.RoleAttrDao;
 import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.dto.RoleBuff;
-import com.ljh.gamedemo.entity.dto.RoleEquip;
-import com.ljh.gamedemo.local.*;
+import com.ljh.gamedemo.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.local.LocalCreepMap;
+import com.ljh.gamedemo.local.LocalSpellMap;
+import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.CustomExecutor;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +45,9 @@ public class AttackCreepService {
 
     @Autowired
     private RoleEquipDao equipDao;
+
+    @Autowired
+    private EquipService equipService;
 
     /**
      * 处理攻击野怪请求，默认采用普攻攻击的方式
@@ -73,11 +78,21 @@ public class AttackCreepService {
         role.setSpellList(spells);
 
         // 获取野怪的基本信息
-        int creepId = request.getCreepId();
+        Integer creepId = request.getCreepId();
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
 
         // 初始化数据，关联角色和攻击的野怪
-        LocalAttackCreepMap.channelCreepMap.put(channel, creep);
+        LinkedList<Long> roleIdList = LocalAttackCreepMap.getCreeepAttackedMap().get(creepId.longValue());
+        if (roleIdList == null){
+            roleIdList = new LinkedList<>();
+            roleIdList.add(roleId);
+        }
+        if (!roleIdList.contains(roleId)){
+            roleIdList.add(roleId);
+        }
+        LocalAttackCreepMap.getCreeepAttackedMap().put(creepId.longValue(), roleIdList);
+
+        LocalAttackCreepMap.getCurrentCreepMap().put(roleId, creepId.longValue());
 
         // 加锁判断野怪野怪状态
         synchronized (this){
@@ -183,9 +198,14 @@ public class AttackCreepService {
         // 添加任务到用户线程
         // 野怪掉血任务
         SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role , spell, creep.getCreepId(), channel, true, false));
+
+
         // 玩家掉血任务, 第一次攻击的时候，加入玩家自动扣血，第二次攻击的时候，直接跳过
         // 掉血任务，当野怪死亡的时候 或 玩家死亡 停止
-        if (LocalAttackCreepMap.getUserBeAttackedMap().get(userId) == null) {
+        ScheduledFuture lastFuture = LocalAttackCreepMap.getUserBeAttackedMap().get(userId);
+
+        LinkedList<Long> roleAttackedList = LocalAttackCreepMap.getCreeepAttackedMap().get(creep.getCreepId().longValue());
+        if (lastFuture == null && roleAttackedList.peek() != userId) {
             UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), channel);
             ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
                     0, spell.getCoolDown(), TimeUnit.SECONDS);
@@ -194,7 +214,7 @@ public class AttackCreepService {
         }
 
         // 装备消耗耐久任务
-        synCutEquipDurability(role);
+        equipService.synCutEquipDurability(role);
     }
 
 
@@ -248,27 +268,43 @@ public class AttackCreepService {
     }
 
 
+
     /**
-     * 加锁同步装备的耐久度信息
+     * 玩家离开野怪攻击范围
      *
-     * @param role
+     * 1.移除玩家攻击野怪的状态
+     * 2.去除玩家收到攻击的任务
+     *
+     * @param requestAttackCreep
+     * @param channel
+     * @return
      */
-    private synchronized void synCutEquipDurability(Role role){
-        List<RoleEquip> roleEquipList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+    public MsgAttackCreepProto.ResponseAttackCreep stopAttack(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep, Channel channel) {
 
-        log.info("攻击野怪之前，装备栏的耐久度为：" + roleEquipList);
-        for (RoleEquip re : roleEquipList) {
+        // 获取玩家的基本信息
+        long userId = requestAttackCreep.getUserId();
+        Role role = LocalUserMap.userRoleMap.get(userId);
 
-            re.setDurability(re.getDurability() - 2);
-            if (re.getDurability() < 10){
-                re.setState(0);
-            }
+        // 获取退出攻击的野怪目标
+        Long creepId = LocalAttackCreepMap.getCurrentCreepMap().get(role.getRoleId());
 
-            // 更新db
-            int n = equipDao.updateRoleEquip(re);
-            log.info("攻击野怪之后，装备栏中的更新的行数为：" + n);
+        // 获取当前野怪的攻击队伍
+        LinkedList<Long> roleAttackedList = LocalAttackCreepMap.getCreeepAttackedMap().get(creepId);
+        if (roleAttackedList != null){
+            roleAttackedList.remove(role.getRoleId());
         }
-        log.info("攻击野怪之后，装备栏的耐久度为：" + roleEquipList);
+
+        // 取消玩家收到伤害的定时任务
+        ScheduledFuture future = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
+        if (future != null){
+            future.cancel(true);
+        }
+
+        return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgAttackCreepProto.RequestType.STOP)
+                .setContent(ContentType.ATTACK_STOP)
+                .build();
     }
 
 
@@ -358,5 +394,7 @@ public class AttackCreepService {
         }
         return null;
     }
+
+
 }
 

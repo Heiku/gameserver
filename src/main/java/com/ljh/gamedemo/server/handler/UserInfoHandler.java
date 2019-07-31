@@ -29,7 +29,6 @@ public class UserInfoHandler extends SimpleChannelInboundHandler<MsgUserInfoProt
 
         Channel channel = ctx.channel();
 
-        // TODO: 这里先暂时这样写，如果后期再再再细分协议的时候，就需要修改
         int requestType = requestUserInfo.getType().getNumber();
         switch (requestType){
             case LOGIN:

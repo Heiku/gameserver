@@ -105,7 +105,6 @@ public class DuplicateManager {
     }
 
 
-
     private static CustomExecutor startExecutor(CustomExecutor executor){
         CustomExecutor e = new CustomExecutor(null, threadFactory, true, Integer.MAX_VALUE, RejectedExecutionHandlers.reject());
         e.submit(new ExecutorInit(e));

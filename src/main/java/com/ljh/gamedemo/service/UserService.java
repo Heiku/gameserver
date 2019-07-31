@@ -8,17 +8,15 @@ import com.ljh.gamedemo.dao.UserDao;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.User;
-
 import com.ljh.gamedemo.entity.UserToken;
 import com.ljh.gamedemo.local.LocalUserMap;
-
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
-import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.run.user.RecoverUserRun;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -270,7 +269,7 @@ public class UserService {
         UserExecutorManager.unBindUserExecutor(userId);
 
         // 更新数据库role的site信息
-        int n = userRoleDao.updateRoleSiteInfo(userId, roleId, siteId, role.getLevel(), role.getHp(), role.getMp());
+        int n = userRoleDao.updateRoleSiteInfo(role);
         if (n <= 0){
             return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                     .setResult(ResultCode.FAILED)
@@ -284,5 +283,20 @@ public class UserService {
                 .setResult(ResultCode.FAILED)
                 .setContent(ContentType.EXIT_SUCCESS)
                 .build();
+    }
+
+
+    /**
+     * 更新玩家的信息 （缓存 + DB）
+     *
+     * @param role
+     */
+    public void updateRoleInfo(Role role){
+        // cahce
+        LocalUserMap.idRoleMap.put(role.getRoleId(), role);
+
+        // db
+        int n = userRoleDao.updateRoleSiteInfo(role);
+        log.info("Database update role where role name = " + role.getName() + " ,row = " + n);
     }
 }

@@ -31,6 +31,10 @@ public final class MsgAttackCreepProto {
      * <code>SAVE = 2;</code>
      */
     SAVE(2),
+    /**
+     * <code>STOP = 3;</code>
+     */
+    STOP(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -46,6 +50,10 @@ public final class MsgAttackCreepProto {
      * <code>SAVE = 2;</code>
      */
     public static final int SAVE_VALUE = 2;
+    /**
+     * <code>STOP = 3;</code>
+     */
+    public static final int STOP_VALUE = 3;
 
 
     public final int getNumber() {
@@ -69,6 +77,7 @@ public final class MsgAttackCreepProto {
         case 0: return ATTACK;
         case 1: return SPELL;
         case 2: return SAVE;
+        case 3: return STOP;
         default: return null;
       }
     }
@@ -1944,10 +1953,10 @@ public final class MsgAttackCreepProto {
       "\032\n\004type\030\004 \001(\0162\014.RequestType\"~\n\023ResponseA" +
       "ttackCreep\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 " +
       "\001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\025\n\005creep" +
-      "\030\004 \001(\0132\006.Creep\022\023\n\004role\030\005 \001(\0132\005.Role*.\n\013R" +
+      "\030\004 \001(\0132\006.Creep\022\023\n\004role\030\005 \001(\0132\005.Role*8\n\013R" +
       "equestType\022\n\n\006ATTACK\020\000\022\t\n\005SPELL\020\001\022\010\n\004SAV" +
-      "E\020\002B4\n\035com.ljh.gamedemo.proto.protocB\023Ms" +
-      "gAttackCreepProtob\006proto3"
+      "E\020\002\022\010\n\004STOP\020\003B4\n\035com.ljh.gamedemo.proto." +
+      "protocB\023MsgAttackCreepProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

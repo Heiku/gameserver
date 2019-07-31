@@ -79,6 +79,8 @@ public class ContentType {
 
     public static final String ATTACK_SPELL_MP_NO_ENOUGH = "当前mp值不足以施放技能，请等待或使用蓝药！\n";
 
+    public static final String ATTACK_STOP = "已经离开野怪的攻击范围，不再受到伤害！\n";
+
 
     // Item
     public static final String ITEM_PARAM_EMPTY = "输入的物品参数有误，请重新输入！\n";
@@ -123,6 +125,20 @@ public class ContentType {
     public static final String DUPLICATE_EMPTY = "找不到对应的副本，请重新输入正确的副本id！\n";
 
     public static final String DUPLICATE_ENTER_SUCCESS = "已经进入副本，boss正向你走来，请继续攻击！\n";
+
+    public static final String DUPLICATE_ENTER_NOT_FOUND = "尚未进入副本，挑战 Boss 失败！\n";
+
+    public static final String DUPLICATE_BOSS_NOT_FOUND = "找不到对应的 Boss 信息！\n";
+
+    public static final String DUPLICATE_BOSS_HAD_DEATH = "挑战的 Boss 已经死亡，请重新选择! \n";
+
+    public static final String DUPLICATE_BOSS_NOW_DEATH = "当前副本中的 Boss 已经全部死亡！\n";
+
+    public static final String DUPLICATE_BOSS_NEXT = "Boss 已经死亡，请继续攻击副本中的下一个 Boss！\n";
+
+    public static final String DUPLICATE_CHALLENGE_SUCCESS = "副本挑战成功，奖励如下：\n";
+
+    public static final String DUPLICATE_ATTACKED_SUCCESS = "攻击 Boss 成功！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

@@ -12,6 +12,7 @@ enum RequestType{
     ATTACK = 0;
     SPELL = 1;
     SAVE = 2;
+    STOP = 3;
 }
 
 message RequestAttackCreep{

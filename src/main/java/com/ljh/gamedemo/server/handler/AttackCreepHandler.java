@@ -38,6 +38,10 @@ public class AttackCreepHandler extends SimpleChannelInboundHandler<MsgAttackCre
             case SAVE:
                 responseAttackCreep = attackCreepService.spellToSave(requestAttackCreep, ctx.channel());
                 break;
+            case STOP:
+                responseAttackCreep = attackCreepService.stopAttack(requestAttackCreep, ctx.channel());
+                break;
+
         }
 
         if (responseAttackCreep != null) {

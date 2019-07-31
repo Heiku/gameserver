@@ -31,6 +31,10 @@ public final class MsgDuplicateProto {
      * <code>CHALLENGE = 2;</code>
      */
     CHALLENGE(2),
+    /**
+     * <code>STOP = 3;</code>
+     */
+    STOP(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -46,6 +50,10 @@ public final class MsgDuplicateProto {
      * <code>CHALLENGE = 2;</code>
      */
     public static final int CHALLENGE_VALUE = 2;
+    /**
+     * <code>STOP = 3;</code>
+     */
+    public static final int STOP_VALUE = 3;
 
 
     public final int getNumber() {
@@ -69,6 +77,7 @@ public final class MsgDuplicateProto {
         case 0: return DUPLICATE;
         case 1: return ENTER;
         case 2: return CHALLENGE;
+        case 3: return STOP;
         default: return null;
       }
     }
@@ -2999,10 +3008,11 @@ public final class MsgDuplicateProto {
       "\n\021ResponseDuplicate\022\016\n\006result\030\001 \001(\005\022\017\n\007c" +
       "ontent\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType" +
       "\022\035\n\tduplicate\030\004 \003(\0132\n.Duplicate\022\023\n\004boss\030" +
-      "\005 \003(\0132\005.Boss\022\025\n\005equip\030\006 \003(\0132\006.Equip*6\n\013R" +
+      "\005 \003(\0132\005.Boss\022\025\n\005equip\030\006 \003(\0132\006.Equip*@\n\013R" +
       "equestType\022\r\n\tDUPLICATE\020\000\022\t\n\005ENTER\020\001\022\r\n\t" +
-      "CHALLENGE\020\002B2\n\035com.ljh.gamedemo.proto.pr" +
-      "otocB\021MsgDuplicateProtob\006proto3"
+      "CHALLENGE\020\002\022\010\n\004STOP\020\003B2\n\035com.ljh.gamedem" +
+      "o.proto.protocB\021MsgDuplicateProtob\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
