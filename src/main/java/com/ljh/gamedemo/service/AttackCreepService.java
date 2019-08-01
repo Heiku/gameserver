@@ -23,6 +23,7 @@ import com.ljh.gamedemo.run.user.UserBeAttackedRun;
 import com.ljh.gamedemo.run.user.UserDeclineMpRun;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -82,15 +84,15 @@ public class AttackCreepService {
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
 
         // 初始化数据，关联角色和攻击的野怪
-        LinkedList<Long> roleIdList = LocalAttackCreepMap.getCreeepAttackedMap().get(creepId.longValue());
+        Queue<Long> roleIdList = LocalAttackCreepMap.getCreepAttackedMap().get(creepId.longValue());
         if (roleIdList == null){
             roleIdList = new LinkedList<>();
-            roleIdList.add(roleId);
+            roleIdList.offer(roleId);
         }
         if (!roleIdList.contains(roleId)){
-            roleIdList.add(roleId);
+            roleIdList.offer(roleId);
         }
-        LocalAttackCreepMap.getCreeepAttackedMap().put(creepId.longValue(), roleIdList);
+        LocalAttackCreepMap.getCreepAttackedMap().put(creepId.longValue(), roleIdList);
 
         LocalAttackCreepMap.getCurrentCreepMap().put(roleId, creepId.longValue());
 
@@ -164,18 +166,21 @@ public class AttackCreepService {
         }
 
         // countDownLatch 保证用户的状态先进行操作
-        CountDownLatchUtil.newLatch(1);
-        UserExecutorManager.addUserTask(userId, new UserDeclineMpRun(roleId, spell, channel));
+        // CountDownLatchUtil.newLatch(1);
+        UserDeclineMpRun task = new UserDeclineMpRun(roleId, spell, channel);
+        Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(userId, task);
 
-        // 判断是直接伤害还是持续伤害？
-        if (spell.getSec() > 0){
-            CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, role, true);
-            CustomExecutor executors = SiteCreepExecutorManager.getExecutor(role.getSiteId());
-            ScheduledFuture future = executors.scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
-            FutureMap.futureMap.put(r.hashCode(), future);
-        }else {
-            SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role, spell, creepId, channel, false, true));
+        if (mpFuture != null && mpFuture.isSuccess()) {
+            // 判断是直接伤害还是持续伤害？
+            if (spell.getSec() > 0) {
+                CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, role);
+                CustomExecutor executors = SiteCreepExecutorManager.getExecutor(role.getSiteId());
+                ScheduledFuture future = executors.scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
+                FutureMap.futureMap.put(r.hashCode(), future);
+            } else {
+                SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role, spell, creepId, channel, false, true));
 
+            }
         }
         return null;
     }
@@ -204,7 +209,7 @@ public class AttackCreepService {
         // 掉血任务，当野怪死亡的时候 或 玩家死亡 停止
         ScheduledFuture lastFuture = LocalAttackCreepMap.getUserBeAttackedMap().get(userId);
 
-        LinkedList<Long> roleAttackedList = LocalAttackCreepMap.getCreeepAttackedMap().get(creep.getCreepId().longValue());
+        Queue<Long> roleAttackedList = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId().longValue());
         if (lastFuture == null && roleAttackedList.peek() != userId) {
             UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), channel);
             ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
@@ -289,7 +294,7 @@ public class AttackCreepService {
         Long creepId = LocalAttackCreepMap.getCurrentCreepMap().get(role.getRoleId());
 
         // 获取当前野怪的攻击队伍
-        LinkedList<Long> roleAttackedList = LocalAttackCreepMap.getCreeepAttackedMap().get(creepId);
+        Queue<Long> roleAttackedList = LocalAttackCreepMap.getCreepAttackedMap().get(creepId);
         if (roleAttackedList != null){
             roleAttackedList.remove(role.getRoleId());
         }

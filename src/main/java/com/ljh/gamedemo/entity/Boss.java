@@ -20,6 +20,8 @@ public class Boss {
 
     private Integer hp;
 
+    private Integer maxHp;
+
     /**
      * boss的技能
      */

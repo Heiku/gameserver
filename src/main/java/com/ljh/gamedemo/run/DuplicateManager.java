@@ -51,11 +51,11 @@ public class DuplicateManager {
     }
 
     /**
-     * 绑定线程池
+     * 为临时副本绑定线程池
      *
      * @param id
      */
-    public static void bindDupExecutor(long id) {
+    public synchronized static void bindDupExecutor(long id) {
         if (dupExecutorMap.containsKey(id)){
             return;
         }
@@ -77,15 +77,20 @@ public class DuplicateManager {
 
 
     /**
-     * 接触绑定线程池
+     * 解除绑定线程池
      *
      * @param id
      */
-    public static void unBindDupExecutor(long id){
+    public synchronized static void unBindDupExecutor(long id){
         CustomExecutor executor = dupExecutorMap.get(id);
         if (executor != null){
             for (int i = 0; i < executors.length; i++){
                 if (executors[i] == executor){
+
+                    // 停止任务
+                    executor.shutdownGracefully();
+                    executor = null;
+
                     idleArr[i] = 0;
                     dupExecutorMap.remove(id);
                 }

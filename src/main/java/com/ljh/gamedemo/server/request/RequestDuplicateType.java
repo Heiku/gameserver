@@ -12,5 +12,9 @@ public class RequestDuplicateType {
 
     public static final int CHALLENGE = 2;
 
+    public static final int SPELL = 3;
+
     public static final int STOP = 4;
+
+    public static final int LEAVE = 5;
 }

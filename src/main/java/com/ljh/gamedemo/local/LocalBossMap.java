@@ -94,8 +94,9 @@ public class LocalBossMap {
                     boss.setId(Long.valueOf(getValue(row.getCell(0))));
                     boss.setName(getValue(row.getCell(1)));
                     boss.setHp(Integer.valueOf(getValue(row.getCell(2))));
+                    boss.setMaxHp(Integer.valueOf(getValue(row.getCell(3))));
 
-                    String spellStr = getValue(row.getCell(3));
+                    String spellStr = getValue(row.getCell(4));
                     String[] spellArr = spellStr.split("\\|");
                     List<BossSpell> spellList = new ArrayList<>();
                     for (String s : spellArr) {

@@ -1,10 +1,8 @@
 package com.ljh.gamedemo.run;
 
-import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.RejectedExecutionHandler;
-import io.netty.util.concurrent.ScheduledFuture;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
+import io.netty.util.concurrent.*;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +29,11 @@ public class CustomExecutor extends SingleThreadEventExecutor {
     @Override
     protected void addTask(Runnable task) {
         super.addTask(task);
+    }
+
+    @Override
+    public <T> Future<T> submit(Callable<T> task) {
+        return super.submit(task);
     }
 
     @Override

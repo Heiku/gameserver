@@ -140,6 +140,10 @@ public class ContentType {
 
     public static final String DUPLICATE_ATTACKED_SUCCESS = "攻击 Boss 成功！\n";
 
+    public static final String DUPLICATE_TIME_OUT = "挑战失败，已经超出副本的挑战时间！\n";
+
+    public static final String DUPLICATE_LEAVE_SUCCESS = "成功离开副本！\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }

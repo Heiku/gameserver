@@ -5,6 +5,7 @@ import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalDuplicateMap;
+import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.DuplicateProto;
 import com.ljh.gamedemo.proto.protoc.MsgDuplicateProto;
@@ -12,17 +13,23 @@ import com.ljh.gamedemo.run.CustomExecutor;
 import com.ljh.gamedemo.run.DuplicateManager;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.boss.BossBeAttackedRun;
+import com.ljh.gamedemo.run.boss.BossBeAttackedScheduleRun;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.UserBeAttackedRun;
+import com.ljh.gamedemo.run.user.UserDeclineMpRun;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,7 +78,6 @@ public class DuplicateService {
                 .build();
     }
 
-
     /**
      * 用户进入副本内
      *
@@ -105,17 +111,17 @@ public class DuplicateService {
         // 当前副本线程池
         CustomExecutor executor = DuplicateManager.getExecutor(role.getRoleId());
 
-        // 记录下挑战boss的时间点
-        long now = System.currentTimeMillis();
-        LocalAttackCreepMap.getDupTimeStampMap().put(role.getRoleId(), now);
+        // 先判断是否时队伍
+        // 这里如果时组队的话，那么在进入场景的时候，就先根据队伍中角色的类别，进行排序进入队列
+        // 记录 Boss的攻击目标队列
+        recordRoleAttacked(role, tmpDup);
 
         // Boss开始主动攻击玩家
         // 根据Boss的普攻攻击间隔，玩家自动扣血
-        // TODO: 副本组队优化
-        // 这里暂时是一个玩家进来副本，那么就对玩家进行攻击吗？
-        // 还有，这里到时如果是组队的话，那该怎么办呢？
-        // 再进入副本的时候，判断玩家队伍的角色分配，优先攻打战士等职业
-        userBeAttackedByBoss(role, tmpDup, channel);
+        // TODO: 副本组队优化，同时Boss的技能释放
+        // 到这里，已经有 Boss的攻击队列
+        // 那么在进入地图的时候，Boss 就回从目标队列头中找到攻击目标，并开始执行攻击掉血任务
+        userBeAttackedByBoss(tmpDup, channel);
 
 
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
@@ -139,19 +145,22 @@ public class DuplicateService {
      */
     public MsgDuplicateProto.ResponseDuplicate challengeDuplicate(MsgDuplicateProto.RequestDuplicate request, Channel channel) {
         response = userStateInterceptor(request);
-        if (response == null){
-            return response;
-        }
-        response = bossStateInterceptor(request);
-        if (response == null){
+        if (response != null){
             return response;
         }
         // 获取基本信息
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
+        role.setSpellList(LocalSpellMap.getRoleSpellMap().get(role.getRoleId()));
+
+        response = bossStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+
         Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
 
         // 判断boss的血量信息
-        response = syngetBossInfo(dup);
+        response = synGetBossInfo(dup);
         if (response != null){
             return response;
         }
@@ -163,6 +172,74 @@ public class DuplicateService {
         doAttackBoss(role, boss, channel);
 
         return null;
+    }
+
+    /**
+     * 使用技能攻击 Boss
+     *
+     * @param request
+     * @param channel
+     * @return
+     */
+    public MsgDuplicateProto.ResponseDuplicate spellBoss(MsgDuplicateProto.RequestDuplicate request, Channel channel){
+        // 用户状态判断
+        response = userStateInterceptor(request);
+        if (response != null) {
+            return response;
+        }
+        Role role = LocalUserMap.userRoleMap.get(request.getUserId());
+
+        // 技能判断
+        response = spellStateInterceptor(request);
+        if (response != null) {
+            return response;
+        }
+        Spell spell = LocalSpellMap.getIdSpellMap().get(request.getSpellId());
+
+        // 副本判断
+        Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
+        response = synGetBossInfo(dup);
+        if (response != null){
+            return response;
+        }
+
+        // 具体攻击 Boss 操作
+        doSpellAttack(role, spell, dup, channel);
+
+        return null;
+    }
+
+    /**
+     * 玩家技能对 Boss 造成伤害
+     *
+     * @param role
+     * @param spell
+     * @param channel
+     */
+    private void  doSpellAttack(Role role, Spell spell, Duplicate dup, Channel channel) {
+        Boss boss = dup.getBosses().get(0);
+
+        // 先进行扣蓝操作
+        UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell, channel);
+        Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(role.getUserId(), mpTask);
+
+        // 判断是否扣蓝成功
+        if (mpFuture != null && mpFuture.isSuccess()){
+            // 判断持续伤害?
+            if(spell.getSec() > 0){
+                // 新建掉血任务，任务提交
+                BossBeAttackedScheduleRun scheduleTask = new BossBeAttackedScheduleRun(role, spell, boss, channel);
+                CustomExecutor executor = DuplicateManager.getExecutor(role.getRoleId());
+
+                // 记录任务，等待取消
+                ScheduledFuture future = executor.scheduleAtFixedRate(scheduleTask, 0,  2, TimeUnit.SECONDS);
+                FutureMap.futureMap.put(scheduleTask.hashCode(), future);
+            }else {
+                // 直接伤害技能
+                BossBeAttackedRun bossTask = new BossBeAttackedRun(role, spell, boss, false, channel);
+                DuplicateManager.addDupTask(role.getRoleId(), bossTask);
+            }
+        }
     }
 
     /**
@@ -193,7 +270,7 @@ public class DuplicateService {
      * @param dup
      * @return
      */
-    private synchronized MsgDuplicateProto.ResponseDuplicate  syngetBossInfo(Duplicate dup) {
+    private synchronized MsgDuplicateProto.ResponseDuplicate  synGetBossInfo(Duplicate dup) {
         // 判断存活的boss，因为死亡的boss 会被移除 duplicate 的 bossList
         Boss boss = dup.getBosses().get(0);
         if (boss == null){
@@ -205,38 +282,128 @@ public class DuplicateService {
         return null;
     }
 
+    /**
+     * 玩家离开boss的攻击范围，停止受到伤害
+     *
+     * @param request
+     * @param channel
+     * @return
+     */
     public MsgDuplicateProto.ResponseDuplicate stopAttack(MsgDuplicateProto.RequestDuplicate request, Channel channel) {
+        // 获取请求的基本信息
+        Role role = LocalUserMap.userRoleMap.get(request.getUserId());
+
+        Duplicate nowDup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
+
+        // 将当前玩家移除 Boss的目标队列
+        removeAttackedQueue(role);
+
+        // 移除玩家的被 Boss攻击的掉血任务
+        ScheduledFuture future = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
+        future.cancel(true);
+
+        // 重新选取目标
+        userBeAttackedByBoss(nowDup, channel);
+
         return null;
+    }
+
+
+    /**
+     * 玩家离开当前副本，退出
+     *
+     * @param request
+     * @param channel
+     * @return
+     */
+    public MsgDuplicateProto.ResponseDuplicate leaveDuplicate(MsgDuplicateProto.RequestDuplicate request, Channel channel){
+        // 玩家信息判断
+        response = userStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+
+        // 副本信息判断
+        response = duplicateStateInterceptor(request);
+        if (response != null){
+            return response;
+        }
+
+        // 获取基本信息
+        long userId = request.getUserId();
+        Role role = LocalUserMap.userRoleMap.get(userId);
+        Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
+
+        // TODO：后续组队的时候，进行重新判断
+        // 移除目标队列
+        removeAttackedQueue(role);
+
+        // 移除挑战时间
+        LocalAttackCreepMap.getDupTimeStampMap().remove(role.getRoleId());
+
+        // 移除玩家的掉血任务
+        ScheduledFuture future = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
+        future.cancel(true);
+
+        // 移除副本-玩家关联
+        LocalAttackCreepMap.getCurDupMap().remove(role.getRoleId());
+
+        // 副本移除
+        // 后续判断队伍中是否还有玩家，如果没有玩家的话，释放资源
+        // 如果有的话，野怪重选目标进行攻击
+        // 暂时单人刷副本的话，直接销毁副本信息，回收资源
+        LocalAttackCreepMap.getBossAttackedMap().remove(dup);
+        dup = null;
+
+        // 最后释放暂用的副本线程池
+        DuplicateManager.unBindDupExecutor(role.getRoleId());
+
+        response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setContent(ContentType.DUPLICATE_LEAVE_SUCCESS)
+                .build();
+
+        return response;
     }
 
 
     /**
      * 玩家开始被boss自动攻击，开始收到伤害
      *
-     * @param role
      * @param dup
      * @param channel
      */
-    public void userBeAttackedByBoss(Role role, Duplicate dup, Channel channel){
-        // 获取副本中的 Boss 普攻技能
-        // 取出boss，准备执行boss的自动攻击技能
-        Boss boss = dup.getBosses().get(0);
-        List<BossSpell> spells = boss.getSpellList();
-        log.info("boss: " + boss.getName() + " 的技能列表为：" + spells);
-        BossSpell aSpell = boss.getSpellList().get(0);
+    public void userBeAttackedByBoss(Duplicate dup, Channel channel){
+        Role role = null;
 
-        // 新建任务
-        UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), aSpell.getDamage(), channel);
+        // 取出 Boss 的攻击目标
+        Queue<Long> aimedQueue = LocalAttackCreepMap.getBossAttackedMap().get(dup);
+        if (aimedQueue != null && !aimedQueue.isEmpty()){
+            long aimed = aimedQueue.peek();
+            role = LocalUserMap.idRoleMap.get(aimed);
+        }
 
-        // 取出用户线程池
-        CustomExecutor userExecutor = UserExecutorManager.getUserExecutor(role.getUserId());
+        if (role != null) {
+            // 获取副本中的 Boss 普攻技能
+            // 取出boss，准备执行boss的自动攻击技能
+            Boss boss = dup.getBosses().get(0);
+            List<BossSpell> spells = boss.getSpellList();
+            log.info("boss: " + boss.getName() + " 的技能列表为：" + spells);
+            BossSpell aSpell = boss.getSpellList().get(0);
 
-        // 运行
-        ScheduledFuture future = userExecutor.scheduleAtFixedRate(task, 0, aSpell.getCd(), TimeUnit.SECONDS);
+            // 新建任务
+            UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), aSpell.getDamage(), channel);
 
-        // 存放 Boss 自动攻击的任务信息
-        LocalAttackCreepMap.getUserBeAttackedMap().put(role.getRoleId(), future);
-        FutureMap.futureMap.put(task.hashCode(), future);
+            // 取出用户线程池
+            CustomExecutor userExecutor = UserExecutorManager.getUserExecutor(role.getUserId());
+
+            // 运行
+            ScheduledFuture future = userExecutor.scheduleAtFixedRate(task, 0, aSpell.getCd(), TimeUnit.SECONDS);
+
+            // 存放 Boss 自动攻击的任务信息
+            LocalAttackCreepMap.getUserBeAttackedMap().put(role.getRoleId(), future);
+            FutureMap.futureMap.put(task.hashCode(), future);
+        }
     }
 
 
@@ -260,7 +427,46 @@ public class DuplicateService {
         DuplicateManager.bindDupExecutor(role.getRoleId());
         LocalAttackCreepMap.getCurDupMap().put(role.getRoleId(), tmp);
 
+        // 记录下挑战boss的时间点
+        long now = System.currentTimeMillis();
+        LocalAttackCreepMap.getDupTimeStampMap().put(role.getRoleId(), now);
+
         return tmp;
+    }
+
+
+    /**
+     * 用于记录Boss 的攻击目标队列
+     *
+     * @param role
+     * @param dup
+     */
+    private void recordRoleAttacked(Role role, Duplicate dup){
+        // 记录下进入Boss的次序
+        // 后续在这里修改 组队的时候 Boss 的攻击判断
+        Queue<Long> roldIdList = LocalAttackCreepMap.getBossAttackedMap().get(dup);
+        if (roldIdList == null){
+            roldIdList = new LinkedList<>();
+            roldIdList.offer(role.getRoleId());
+        }
+        if (!roldIdList.contains(role.getRoleId())){
+            roldIdList.offer(role.getRoleId());
+        }
+        LocalAttackCreepMap.getBossAttackedMap().put(dup, roldIdList);
+    }
+
+    /**
+     * 将当前玩家移除 Boss 的目标队列
+     *
+     * @param role
+     */
+    private void removeAttackedQueue(Role role){
+        Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
+        // 移除目标队列
+        Queue<Long> queue = LocalAttackCreepMap.getBossAttackedMap().get(dup);
+        if (queue != null){
+            queue.remove(role.getRoleId());
+        }
     }
 
 
@@ -276,11 +482,13 @@ public class DuplicateService {
                 .setContent(ContentType.DUPLICATE_EMPTY)
                 .build();
 
+        // 副本 id 参数有误
         long dupId = request.getDupId();
         if (dupId <= 0){
            return response;
         }
 
+        // 找不到该副本
         Duplicate d = LocalDuplicateMap.getDuplicateMap().get(dupId);
         return d == null ? response : null;
     }
@@ -326,6 +534,7 @@ public class DuplicateService {
                     .build();
         }
 
+        // 找不到该 boss
         Boss boss = null;
         for (Boss b : dup.getBosses()) {
             if (b.getId() == request.getBossId()){
@@ -343,5 +552,32 @@ public class DuplicateService {
         return null;
     }
 
+
+    /**
+     * 技能信息查询拦截
+     */
+    private MsgDuplicateProto.ResponseDuplicate spellStateInterceptor(MsgDuplicateProto.RequestDuplicate requestAttackCreep){
+
+        // 判断技能信息是否存在的问题
+        int spellId = requestAttackCreep.getSpellId();
+        if (spellId <= 0){
+            return MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setType(MsgDuplicateProto.RequestType.SPELL)
+                    .setContent(ContentType.ATTACK_SPELL_EMPTY)
+                    .build();
+        }
+
+        // 找不到该技能
+        Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
+        if (spell == null){
+            return MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setType(MsgDuplicateProto.RequestType.SPELL)
+                    .setContent(ContentType.ATTACK_SPELL_NOT_FOUND)
+                    .build();
+        }
+        return null;
+    }
 
 }

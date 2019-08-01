@@ -55,6 +55,12 @@ public class BossBeAttackedRun implements Runnable {
     // 引入 DuplicateService
     private DuplicateService duplicateService = SpringUtil.getBean(DuplicateService.class);
 
+    private static BossBeAttackedRun run = new BossBeAttackedRun();
+
+
+    public BossBeAttackedRun(){
+
+    }
 
     public BossBeAttackedRun(Role role, Spell spell, Boss boss, boolean attack, Channel channel){
         this.role = role;
@@ -62,6 +68,13 @@ public class BossBeAttackedRun implements Runnable {
         this.boss = boss;
         this.attack = attack;
         this.channel = channel;
+    }
+
+    public static BossBeAttackedRun getInstance(){
+        if (run != null){
+            return run;
+        }
+        return new BossBeAttackedRun();
     }
 
     @Override
@@ -103,19 +116,9 @@ public class BossBeAttackedRun implements Runnable {
                 sendBossKilledMsg(boss, channel, empty);
                 boss = null;
 
-                // 如果该副本中已经不存在 Boss 信息，那么开始为队伍发放奖励
-                // 同时清空副本信息
-                if (empty){
-                    sendReward(role, dup, channel);
 
-                    // 副本资源释放，等待回收
-                    LocalAttackCreepMap.getCurDupMap().remove(role.getRoleId());
-                    dup = null;
-                }else {
-                    // 如果存在第二个Boss的话，那么 Second Boss 会重新根据队伍中的角色进行血量扣除
-                    boss = nowBosses.get(0);
-                    duplicateService.userBeAttackedByBoss(role, dup, channel);
-                }
+                // 打 Boss的时间判断
+                attackTime(empty, role, dup, nowBosses);
             }
 
             log.info("Boss: " + boss.getName() + " 的血量为：" + boss.getHp());
@@ -147,10 +150,11 @@ public class BossBeAttackedRun implements Runnable {
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.DUPLICATE_CHALLENGE_SUCCESS)
-                .setType(MsgDuplicateProto.RequestType.CHALLENGE)
+                .setType(MsgDuplicateProto.RequestType.ENTER)
                 .addDuplicate(protoService.transToDuplicate(dup))
                 .addAllEquip(protoService.transToEquipList(equips))
                 .build();
+
         channel.writeAndFlush(response);
     }
 
@@ -161,7 +165,7 @@ public class BossBeAttackedRun implements Runnable {
      * @param channel
      * @param empty
      */
-    private void sendBossKilledMsg(Boss boss, Channel channel, boolean empty) {
+    public void sendBossKilledMsg(Boss boss, Channel channel, boolean empty) {
         String content;
 
         // 判断是否还有其他 Boss
@@ -172,6 +176,7 @@ public class BossBeAttackedRun implements Runnable {
         }
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
                 .setResult(ResultCode.SUCCESS)
+                .setType(MsgDuplicateProto.RequestType.CHALLENGE)
                 .setContent(content)
                 .addBoss(protoService.transToBoss(boss))
                 .build();
@@ -186,13 +191,60 @@ public class BossBeAttackedRun implements Runnable {
      * @param boss
      * @param channel
      */
-    private void sendBossAttackedMsg(Boss boss, Channel channel){
+    public void sendBossAttackedMsg(Boss boss, Channel channel){
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
                 .setResult(ResultCode.SUCCESS)
+                .setType(MsgDuplicateProto.RequestType.CHALLENGE)
                 .setContent(ContentType.DUPLICATE_ATTACKED_SUCCESS)
                 .addBoss(protoService.transToBoss(boss))
                 .build();
 
         channel.writeAndFlush(response);
+    }
+
+
+    /**
+     * 返回副本挑战失败的消息
+     *
+     * @param channel
+     * @param content
+     */
+    private void sendDuplicateFailed(Channel channel, String content){
+        response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(content)
+                .build();
+        channel.writeAndFlush(response);
+    }
+
+
+    public void attackTime(boolean empty, Role role, Duplicate dup, List<Boss> nowBosses){
+        // 如果该副本中已经不存在 Boss 信息，那么开始为队伍发放奖励
+        // 同时清空副本信息
+        if (empty){
+            // 通过时间的判断
+            long now = System.currentTimeMillis();
+            long last = LocalAttackCreepMap.getDupTimeStampMap().get(role.getRoleId());
+            long duration = dup.getLimitTime() * 1000;
+            if (now - last <= duration){
+
+                // 副本挑战成功
+                sendReward(role, dup, channel);
+            }else {
+                // 超过时间，挑战失败
+                sendDuplicateFailed(channel, ContentType.DUPLICATE_TIME_OUT);
+            }
+
+            // 副本资源释放，等待回收
+            LocalAttackCreepMap.getDupTimeStampMap().remove(role.getRoleId());
+            LocalAttackCreepMap.getCurDupMap().remove(role.getRoleId());
+            dup = null;
+
+            return;
+        }else {
+            // 如果存在第二个Boss的话，那么 Second Boss 会重新根据队伍中的角色进行血量扣除
+            boss = nowBosses.get(0);
+            duplicateService.userBeAttackedByBoss(dup, channel);
+        }
     }
 }

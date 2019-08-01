@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import com.ljh.gamedemo.entity.Duplicate;
 import io.netty.util.concurrent.ScheduledFuture;
 
-import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * @Author: Heiku
@@ -19,7 +19,11 @@ public class LocalAttackCreepMap {
     private static Map<Long, Long> currentCreepMap = Maps.newConcurrentMap();
 
     // 野怪与玩家攻击相关联  <creepId, List<RoleId>>
-    private static Map<Long, LinkedList<Long>> creeepAttackedMap = Maps.newConcurrentMap();
+    private static Map<Long, Queue<Long>> creepAttackedMap = Maps.newConcurrentMap();
+
+    // Boss 与玩家攻击相关联 <Duplicate, List<RoleId>>
+    private static Map<Duplicate, Queue<Long>> bossAttackedMap = Maps.newConcurrentMap();
+
 
     // 玩家攻击副本boss关联
     // 单人打boss：<roleId, duplicate>
@@ -37,8 +41,8 @@ public class LocalAttackCreepMap {
         return userBeAttackedMap;
     }
 
-    public static Map<Long, LinkedList<Long>> getCreeepAttackedMap() {
-        return creeepAttackedMap;
+    public static Map<Long, Queue<Long>> getCreepAttackedMap() {
+        return creepAttackedMap;
     }
 
     public static Map<Long, Long> getCurrentCreepMap() {
@@ -47,5 +51,9 @@ public class LocalAttackCreepMap {
 
     public static Map<Long, Long> getDupTimeStampMap() {
         return dupTimeStampMap;
+    }
+
+    public static Map<Duplicate, Queue<Long>> getBossAttackedMap() {
+        return bossAttackedMap;
     }
 }

@@ -2,10 +2,12 @@ package com.ljh.gamedemo.run;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.RejectedExecutionHandlers;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -96,6 +98,22 @@ public class UserExecutorManager {
         executor.addTask(task);
 
         return true;
+    }
+
+    /**
+     * 添加返回的任务
+     *
+     * @param userId
+     * @param task
+     * @return
+     */
+    public static <T> Future<T> addUserCallableTask(long userId, Callable<T> task){
+        if (!userExecutorMap.containsKey(userId)){
+            return null;
+        }
+        CustomExecutor executor = userExecutorMap.get(userId);
+        Future<T> future = executor.submit(task);
+        return future;
     }
 
 

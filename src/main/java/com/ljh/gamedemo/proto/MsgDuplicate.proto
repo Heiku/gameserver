@@ -13,15 +13,18 @@ enum RequestType{
     DUPLICATE = 0;
     ENTER = 1;
     CHALLENGE = 2;
-    STOP = 3;
+    SPELL = 3;
+    STOP = 4;
+    LEAVE = 5;
 }
 
 message RequestDuplicate{
     int64 userId = 1;
     int64 dupId = 2;
     int64 bossId = 3;
+    int32 spellId = 4;
 
-    RequestType type = 4;
+    RequestType type = 5;
 }
 
 message ResponseDuplicate{
