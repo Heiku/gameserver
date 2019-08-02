@@ -144,6 +144,8 @@ public class ContentType {
 
     public static final String DUPLICATE_LEAVE_SUCCESS = "成功离开副本！\n";
 
+    public static final String DUPLICATE_SPELL_FAILED = "施放技能失败！\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }

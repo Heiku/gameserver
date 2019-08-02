@@ -35,6 +35,11 @@ public class Role {
     private Integer hp;
 
     /**
+     * maxHp
+     */
+    private Integer maxHp;
+
+    /**
      * mp
      */
     private Integer mp;

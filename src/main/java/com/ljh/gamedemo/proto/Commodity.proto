@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "CommodityProto";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/  --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Commodity.proto
+
+message Commodity{
+    int64 id = 1;
+    int32 type = 2;
+    int32 price = 3;
+    int32 limit = 4;
+}

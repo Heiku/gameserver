@@ -3,6 +3,7 @@ package com.ljh.gamedemo;
 import com.ljh.gamedemo.entity.Creep;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -61,7 +62,7 @@ public class ByteTest {
 
         No n1 = new No(1,"nono");
         No n2 = new No(2,"yesyes");
-        List<No> noList = new ArrayList<>();
+       /* List<No> noList = new ArrayList<>();
         noList.add(n1);
         noList.add(n2);
 
@@ -70,7 +71,13 @@ public class ByteTest {
 
         for (No no : noList) {
             System.out.println(no);
-        }
+        }*/
+        /*System.out.println(n1.hashCode());
+        n1.setName("nonono");
+        System.out.println(n1.hashCode());*/
+
+
+        System.out.println( (int) (0.9 * 10));
     }
 }
 
@@ -79,6 +86,8 @@ public class ByteTest {
 class No{
 
     private Integer id;
+
+    @EqualsAndHashCode.Exclude
     private String name;
 
 }

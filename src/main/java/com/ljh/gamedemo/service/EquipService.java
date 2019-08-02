@@ -417,6 +417,7 @@ public class EquipService {
 
                 // 替换装备，血量只加上增量
                 role.setHp((role.getHp() + attr.getHp()));
+                role.setMaxHp(role.getMaxHp() + attr.getHp());
 
             }else {
                 // 装备新添，进行装备数据的插入
@@ -424,6 +425,7 @@ public class EquipService {
 
                 // 装备增加后，用户的属性得到提升
                 role.setHp(role.getHp() + equip.getHpUp());
+                role.setMaxHp(role.getMaxHp() + equip.getHpUp());
             }
         }else {
             // 装备卸下，属性下降，更新玩家的属性信息
@@ -431,6 +433,7 @@ public class EquipService {
 
             // 卸下装备，玩家的血量下降
             role.setHp(role.getHp() - equip.getHpUp());
+            role.setMaxHp(role.getMaxHp() - equip.getHpUp());
         }
         log.info("更新用户属性成功，当前的更新记录为：" + i);
 

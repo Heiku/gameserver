@@ -36,6 +36,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
         handlerMap.put(REQUEST_ITEMS.protoCode, new ItemsHandler());
         handlerMap.put(REQUEST_EQUIPS.protoCode, new EquipHandler());
         handlerMap.put(REQUEST_DUPLICATE.protoCode, new DuplicateHandler());
+        handlerMap.put(REQUEST_MALL.protoCode, new MallHandler());
     }
 
     @Override

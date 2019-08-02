@@ -79,6 +79,7 @@ public class BossBeAttackedRun implements Runnable {
 
     @Override
     public void run() {
+
         // 获取攻击的方式
         if (attack){
             extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getDamage();
@@ -100,6 +101,7 @@ public class BossBeAttackedRun implements Runnable {
                 // 将 Boss移除副本信息
                 Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
                 dup.getBosses().remove(boss);
+                LocalAttackCreepMap.getCurDupMap().put(role.getRoleId(), dup);
 
                 // Boss GG，消除 Boss的自动攻击任务
                 // 组队的话，那么一个副本应该对应多个玩家 duplicate, List<RoleId>
@@ -116,16 +118,21 @@ public class BossBeAttackedRun implements Runnable {
                 sendBossKilledMsg(boss, channel, empty);
                 boss = null;
 
-
                 // 打 Boss的时间判断
-                attackTime(empty, role, dup, nowBosses);
+                Boss next = attackTime(empty, role, dup, nowBosses);
+                return;
+                /*if (next == null){
+                    return;
+                }*/
             }
 
             log.info("Boss: " + boss.getName() + " 的血量为：" + boss.getHp());
             boss.setHp(hp);
             log.info("Boss: " + boss.getName() + " 受到伤害后，血量为：" + boss.getHp());
 
-            sendBossAttackedMsg(boss, channel);
+            if (boss != null) {
+                sendBossAttackedMsg(boss, channel);
+            }
         }
     }
 
@@ -150,7 +157,7 @@ public class BossBeAttackedRun implements Runnable {
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.DUPLICATE_CHALLENGE_SUCCESS)
-                .setType(MsgDuplicateProto.RequestType.ENTER)
+                .setType(MsgDuplicateProto.RequestType.DUPLICATE)
                 .addDuplicate(protoService.transToDuplicate(dup))
                 .addAllEquip(protoService.transToEquipList(equips))
                 .build();
@@ -218,7 +225,15 @@ public class BossBeAttackedRun implements Runnable {
     }
 
 
-    public void attackTime(boolean empty, Role role, Duplicate dup, List<Boss> nowBosses){
+    /**
+     * 攻击时间判断
+     *
+     * @param empty
+     * @param role
+     * @param dup
+     * @param nowBosses
+     */
+    public Boss attackTime(boolean empty, Role role, Duplicate dup, List<Boss> nowBosses){
         // 如果该副本中已经不存在 Boss 信息，那么开始为队伍发放奖励
         // 同时清空副本信息
         if (empty){
@@ -240,11 +255,13 @@ public class BossBeAttackedRun implements Runnable {
             LocalAttackCreepMap.getCurDupMap().remove(role.getRoleId());
             dup = null;
 
-            return;
+            return null;
         }else {
             // 如果存在第二个Boss的话，那么 Second Boss 会重新根据队伍中的角色进行血量扣除
             boss = nowBosses.get(0);
             duplicateService.userBeAttackedByBoss(dup, channel);
+
+            return boss;
         }
     }
 }

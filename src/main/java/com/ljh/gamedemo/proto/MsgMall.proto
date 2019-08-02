@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgMall.proto
+
+import "Items.proto";
+import "Equip.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgMallProto";
+
+enum RequestType{
+    MALL = 0;
+    BUY = 1;
+}
+
+message RequestMall{
+    int64 userId = 1;
+    int64 cId = 2;
+
+    RequestType type = 3;
+}
+
+message ResponseMall{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    repeated Items items = 4;
+    repeated Equip equip = 5;
+}

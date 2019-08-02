@@ -49,6 +49,9 @@ public class GamedemoApplication {
         // 载入副本信息
         LocalDuplicateMap.readExcel();
 
+        // 载入上商店信息
+        LocalCommodityMap.readExcel();
+
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();
     }

@@ -17,7 +17,7 @@ import java.util.List;
 public class RecoverUserRun implements Runnable {
 
     // 玩家的最大生命值
-    public static final int MAX_HP = 1000;
+    public static  int MAX_HP = 1000;
 
     // 玩家的最大蓝量值
     public static final int MAX_MP = 300;
@@ -56,6 +56,7 @@ public class RecoverUserRun implements Runnable {
 
 
         // 血量恢复
+        MAX_HP = role.getMaxHp();
         int hp = role.getHp();
         if (hp >= MAX_HP){
             log.info("玩家：" + role.getName() + " 当前血量已经满格，无法自动恢复生命值");
@@ -73,7 +74,6 @@ public class RecoverUserRun implements Runnable {
         int mp = role.getMp();
         if (mp >= MAX_MP){
             log.info("玩家：" + role.getName() + " 当前蓝量已经满格，无法自动恢复蓝量值");
-            return;
         }else {
             int mpSec = buff.getMpBuf();
             mp += mpSec;
@@ -99,7 +99,7 @@ public class RecoverUserRun implements Runnable {
         }
 
         for (Role role1 : siteRoleList) {
-            if (role1.getRoleId().intValue() == role.getRoleId().intValue()) {
+            if (role1.getRoleId()== role.getRoleId().intValue()) {
                 log.info("用户自动恢复任务更新后：hp=" + role1.getHp() + " mp=" + role1.getMp());
                 break;
             }

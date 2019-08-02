@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -188,6 +189,7 @@ public class DuplicateService {
             return response;
         }
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
+        role.setSpellList(LocalSpellMap.getRoleSpellMap().get(role.getRoleId()));
 
         // 技能判断
         response = spellStateInterceptor(request);
@@ -216,31 +218,49 @@ public class DuplicateService {
      * @param spell
      * @param channel
      */
-    private void  doSpellAttack(Role role, Spell spell, Duplicate dup, Channel channel) {
+    private void doSpellAttack(Role role, Spell spell, Duplicate dup, Channel channel) {
         Boss boss = dup.getBosses().get(0);
 
         // 先进行扣蓝操作
         UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell, channel);
         Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(role.getUserId(), mpTask);
 
-        // 判断是否扣蓝成功
-        if (mpFuture != null && mpFuture.isSuccess()){
-            // 判断持续伤害?
-            if(spell.getSec() > 0){
-                // 新建掉血任务，任务提交
-                BossBeAttackedScheduleRun scheduleTask = new BossBeAttackedScheduleRun(role, spell, boss, channel);
-                CustomExecutor executor = DuplicateManager.getExecutor(role.getRoleId());
+        // 异步转同步，等待扣蓝任务完成
+        try {
+            mpFuture.sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-                // 记录任务，等待取消
-                ScheduledFuture future = executor.scheduleAtFixedRate(scheduleTask, 0,  2, TimeUnit.SECONDS);
-                FutureMap.futureMap.put(scheduleTask.hashCode(), future);
-            }else {
-                // 直接伤害技能
-                BossBeAttackedRun bossTask = new BossBeAttackedRun(role, spell, boss, false, channel);
-                DuplicateManager.addDupTask(role.getRoleId(), bossTask);
+        // 判断是否扣蓝成功
+        try {
+            // 只有当用户扣蓝成功，再继续进行
+            if (mpFuture.get()) {
+                // 判断持续伤害?
+                if (spell.getSec() > 0) {
+                    // 新建掉血任务，任务提交
+                    BossBeAttackedScheduleRun scheduleTask = new BossBeAttackedScheduleRun(role, spell, boss, channel);
+                    CustomExecutor executor = DuplicateManager.getExecutor(role.getRoleId());
+
+                    // 记录任务，等待取消
+                    ScheduledFuture future = executor.scheduleAtFixedRate(scheduleTask, 0, 2, TimeUnit.SECONDS);
+                    FutureMap.futureMap.put(scheduleTask.hashCode(), future);
+                } else {
+                    // 直接伤害技能
+                    BossBeAttackedRun bossTask = new BossBeAttackedRun(role, spell, boss, false, channel);
+                    DuplicateManager.addDupTask(role.getRoleId(), bossTask);
+                }
+            } else {
+                sendFailedMsg(ContentType.DUPLICATE_SPELL_FAILED, channel);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
+
+
 
     /**
      * 玩家普通攻击对 Boss 造成伤害
@@ -578,6 +598,20 @@ public class DuplicateService {
                     .build();
         }
         return null;
+    }
+
+    /**
+     * 返回失败的消息
+     *
+     * @param content
+     * @param channel
+     */
+    private void sendFailedMsg(String content, Channel channel) {
+        response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(content)
+                .build();
+        channel.writeAndFlush(response);
     }
 
 }

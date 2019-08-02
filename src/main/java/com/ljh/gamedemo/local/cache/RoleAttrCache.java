@@ -2,7 +2,9 @@ package com.ljh.gamedemo.local.cache;
 
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.dao.RoleAttrDao;
+import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.dto.RoleAttr;
+import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.util.SpringUtil;
 
 import java.util.List;
@@ -32,6 +34,11 @@ public class RoleAttrCache {
         List<RoleAttr> attrList = attrDao.selectAllAttr();
         for (RoleAttr attr : attrList) {
             roleAttrMap.put(attr.getRoleId(), attr);
+
+            Role role = LocalUserMap.idRoleMap.get(attr.getRoleId());
+            role.setHp(role.getMaxHp() + attr.getHp());
+            LocalUserMap.idRoleMap.put(role.getRoleId(), role);
+            LocalUserMap.userRoleMap.put(role.getUserId(), role);
         }
     }
 }
