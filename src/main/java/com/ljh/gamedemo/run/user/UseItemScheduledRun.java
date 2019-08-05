@@ -52,6 +52,8 @@ public class UseItemScheduledRun implements Runnable {
 
     private boolean decline = true;
 
+    private UseItemNowRun itemsRun = UseItemNowRun.getInstance();
+
     public UseItemScheduledRun(long userId, Items items,  Channel channel, RecoverBuff buff){
         this.userId = userId;
         this.itemId = items.getItemsId();
@@ -88,7 +90,7 @@ public class UseItemScheduledRun implements Runnable {
             }else {
                 // 用户的物品数量只减少一次
                 if (decline) {
-                    updateRoleItem(itemsList, role);
+                    itemsRun.updateRoleItem(itemsList, role);
                     decline = false;
                 }
 
@@ -128,7 +130,7 @@ public class UseItemScheduledRun implements Runnable {
             }else {
                 // 用户的物品数量只减少一次
                 if (decline) {
-                    updateRoleItem(itemsList, role);
+                    itemsRun.updateRoleItem(itemsList, role);
                     decline = false;
                 }
 
@@ -170,7 +172,7 @@ public class UseItemScheduledRun implements Runnable {
     }
 
 
-    public void updateRoleItem(List<Items> itemsList, Role role){
+    /*public void updateRoleItem(List<Items> itemsList, Role role){
         Items items = new Items();
 
         // 缓存更新
@@ -188,5 +190,5 @@ public class UseItemScheduledRun implements Runnable {
         // 同步更新数据库
         SaveRoleItemRun run = new SaveRoleItemRun(items, role);
         SaveRoleItemManager.addQueue(run);
-    }
+    }*/
 }

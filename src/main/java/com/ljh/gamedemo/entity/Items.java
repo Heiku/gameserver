@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @Author: Heiku
@@ -19,6 +20,7 @@ public class Items {
 
     private Integer type;
 
+    @EqualsAndHashCode.Exclude
     private Integer num;
 
     private Integer sec;

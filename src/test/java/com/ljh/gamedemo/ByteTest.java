@@ -77,7 +77,16 @@ public class ByteTest {
         System.out.println(n1.hashCode());*/
 
 
-        System.out.println( (int) (0.9 * 10));
+        //System.out.println( (int) (0.9 * 10));
+
+
+        int[] a = new int[]{1,2};
+        int[] b = a;
+
+        a[0] = 2;
+        for (int i : b) {
+            System.out.println(i);
+        }
     }
 }
 

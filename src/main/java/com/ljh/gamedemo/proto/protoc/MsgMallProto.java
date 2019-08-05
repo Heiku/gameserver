@@ -779,51 +779,27 @@ public final class MsgMallProto {
     com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType getType();
 
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    java.util.List<com.ljh.gamedemo.proto.protoc.ItemsProto.Items> 
-        getItemsList();
+    java.util.List<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity> 
+        getCommodityList();
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItems(int index);
+    com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity getCommodity(int index);
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    int getItemsCount();
+    int getCommodityCount();
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    java.util.List<? extends com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> 
-        getItemsOrBuilderList();
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder> 
+        getCommodityOrBuilderList();
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemsOrBuilder(
-        int index);
-
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> 
-        getEquipList();
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip(int index);
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    int getEquipCount();
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
-        getEquipOrBuilderList();
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder(
+    com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder getCommodityOrBuilder(
         int index);
   }
   /**
@@ -841,8 +817,7 @@ public final class MsgMallProto {
     private ResponseMall() {
       content_ = "";
       type_ = 0;
-      items_ = java.util.Collections.emptyList();
-      equip_ = java.util.Collections.emptyList();
+      commodity_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -895,20 +870,11 @@ public final class MsgMallProto {
             }
             case 34: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                items_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.ItemsProto.Items>();
+                commodity_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              items_.add(
-                  input.readMessage(com.ljh.gamedemo.proto.protoc.ItemsProto.Items.parser(), extensionRegistry));
-              break;
-            }
-            case 42: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                equip_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              equip_.add(
-                  input.readMessage(com.ljh.gamedemo.proto.protoc.EquipProto.Equip.parser(), extensionRegistry));
+              commodity_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -927,10 +893,7 @@ public final class MsgMallProto {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          items_ = java.util.Collections.unmodifiableList(items_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          equip_ = java.util.Collections.unmodifiableList(equip_);
+          commodity_ = java.util.Collections.unmodifiableList(commodity_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1009,74 +972,39 @@ public final class MsgMallProto {
       return result == null ? com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType.UNRECOGNIZED : result;
     }
 
-    public static final int ITEMS_FIELD_NUMBER = 4;
-    private java.util.List<com.ljh.gamedemo.proto.protoc.ItemsProto.Items> items_;
+    public static final int COMMODITY_FIELD_NUMBER = 4;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity> commodity_;
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    public java.util.List<com.ljh.gamedemo.proto.protoc.ItemsProto.Items> getItemsList() {
-      return items_;
+    public java.util.List<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity> getCommodityList() {
+      return commodity_;
     }
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> 
-        getItemsOrBuilderList() {
-      return items_;
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder> 
+        getCommodityOrBuilderList() {
+      return commodity_;
     }
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    public int getItemsCount() {
-      return items_.size();
+    public int getCommodityCount() {
+      return commodity_.size();
     }
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    public com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItems(int index) {
-      return items_.get(index);
+    public com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity getCommodity(int index) {
+      return commodity_.get(index);
     }
     /**
-     * <code>repeated .Items items = 4;</code>
+     * <code>repeated .Commodity commodity = 4;</code>
      */
-    public com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemsOrBuilder(
+    public com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder getCommodityOrBuilder(
         int index) {
-      return items_.get(index);
-    }
-
-    public static final int EQUIP_FIELD_NUMBER = 5;
-    private java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> equip_;
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> getEquipList() {
-      return equip_;
-    }
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
-        getEquipOrBuilderList() {
-      return equip_;
-    }
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    public int getEquipCount() {
-      return equip_.size();
-    }
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip(int index) {
-      return equip_.get(index);
-    }
-    /**
-     * <code>repeated .Equip equip = 5;</code>
-     */
-    public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder(
-        int index) {
-      return equip_.get(index);
+      return commodity_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1102,11 +1030,8 @@ public final class MsgMallProto {
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType.MALL.getNumber()) {
         output.writeEnum(3, type_);
       }
-      for (int i = 0; i < items_.size(); i++) {
-        output.writeMessage(4, items_.get(i));
-      }
-      for (int i = 0; i < equip_.size(); i++) {
-        output.writeMessage(5, equip_.get(i));
+      for (int i = 0; i < commodity_.size(); i++) {
+        output.writeMessage(4, commodity_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1128,13 +1053,9 @@ public final class MsgMallProto {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, type_);
       }
-      for (int i = 0; i < items_.size(); i++) {
+      for (int i = 0; i < commodity_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, items_.get(i));
-      }
-      for (int i = 0; i < equip_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, equip_.get(i));
+          .computeMessageSize(4, commodity_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1156,10 +1077,8 @@ public final class MsgMallProto {
       if (!getContent()
           .equals(other.getContent())) return false;
       if (type_ != other.type_) return false;
-      if (!getItemsList()
-          .equals(other.getItemsList())) return false;
-      if (!getEquipList()
-          .equals(other.getEquipList())) return false;
+      if (!getCommodityList()
+          .equals(other.getCommodityList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1177,13 +1096,9 @@ public final class MsgMallProto {
       hash = (53 * hash) + getContent().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
-      if (getItemsCount() > 0) {
-        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
-        hash = (53 * hash) + getItemsList().hashCode();
-      }
-      if (getEquipCount() > 0) {
-        hash = (37 * hash) + EQUIP_FIELD_NUMBER;
-        hash = (53 * hash) + getEquipList().hashCode();
+      if (getCommodityCount() > 0) {
+        hash = (37 * hash) + COMMODITY_FIELD_NUMBER;
+        hash = (53 * hash) + getCommodityList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1313,8 +1228,7 @@ public final class MsgMallProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getItemsFieldBuilder();
-          getEquipFieldBuilder();
+          getCommodityFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1326,17 +1240,11 @@ public final class MsgMallProto {
 
         type_ = 0;
 
-        if (itemsBuilder_ == null) {
-          items_ = java.util.Collections.emptyList();
+        if (commodityBuilder_ == null) {
+          commodity_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          itemsBuilder_.clear();
-        }
-        if (equipBuilder_ == null) {
-          equip_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        } else {
-          equipBuilder_.clear();
+          commodityBuilder_.clear();
         }
         return this;
       }
@@ -1368,23 +1276,14 @@ public final class MsgMallProto {
         result.result_ = result_;
         result.content_ = content_;
         result.type_ = type_;
-        if (itemsBuilder_ == null) {
+        if (commodityBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
-            items_ = java.util.Collections.unmodifiableList(items_);
+            commodity_ = java.util.Collections.unmodifiableList(commodity_);
             bitField0_ = (bitField0_ & ~0x00000001);
           }
-          result.items_ = items_;
+          result.commodity_ = commodity_;
         } else {
-          result.items_ = itemsBuilder_.build();
-        }
-        if (equipBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0)) {
-            equip_ = java.util.Collections.unmodifiableList(equip_);
-            bitField0_ = (bitField0_ & ~0x00000002);
-          }
-          result.equip_ = equip_;
-        } else {
-          result.equip_ = equipBuilder_.build();
+          result.commodity_ = commodityBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1444,55 +1343,29 @@ public final class MsgMallProto {
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
         }
-        if (itemsBuilder_ == null) {
-          if (!other.items_.isEmpty()) {
-            if (items_.isEmpty()) {
-              items_ = other.items_;
+        if (commodityBuilder_ == null) {
+          if (!other.commodity_.isEmpty()) {
+            if (commodity_.isEmpty()) {
+              commodity_ = other.commodity_;
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
-              ensureItemsIsMutable();
-              items_.addAll(other.items_);
+              ensureCommodityIsMutable();
+              commodity_.addAll(other.commodity_);
             }
             onChanged();
           }
         } else {
-          if (!other.items_.isEmpty()) {
-            if (itemsBuilder_.isEmpty()) {
-              itemsBuilder_.dispose();
-              itemsBuilder_ = null;
-              items_ = other.items_;
+          if (!other.commodity_.isEmpty()) {
+            if (commodityBuilder_.isEmpty()) {
+              commodityBuilder_.dispose();
+              commodityBuilder_ = null;
+              commodity_ = other.commodity_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              itemsBuilder_ = 
+              commodityBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getItemsFieldBuilder() : null;
+                   getCommodityFieldBuilder() : null;
             } else {
-              itemsBuilder_.addAllMessages(other.items_);
-            }
-          }
-        }
-        if (equipBuilder_ == null) {
-          if (!other.equip_.isEmpty()) {
-            if (equip_.isEmpty()) {
-              equip_ = other.equip_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-            } else {
-              ensureEquipIsMutable();
-              equip_.addAll(other.equip_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.equip_.isEmpty()) {
-            if (equipBuilder_.isEmpty()) {
-              equipBuilder_.dispose();
-              equipBuilder_ = null;
-              equip_ = other.equip_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-              equipBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getEquipFieldBuilder() : null;
-            } else {
-              equipBuilder_.addAllMessages(other.equip_);
+              commodityBuilder_.addAllMessages(other.commodity_);
             }
           }
         }
@@ -1666,484 +1539,244 @@ public final class MsgMallProto {
         return this;
       }
 
-      private java.util.List<com.ljh.gamedemo.proto.protoc.ItemsProto.Items> items_ =
+      private java.util.List<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity> commodity_ =
         java.util.Collections.emptyList();
-      private void ensureItemsIsMutable() {
+      private void ensureCommodityIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          items_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.ItemsProto.Items>(items_);
+          commodity_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity>(commodity_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> itemsBuilder_;
+          com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder, com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder> commodityBuilder_;
 
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public java.util.List<com.ljh.gamedemo.proto.protoc.ItemsProto.Items> getItemsList() {
-        if (itemsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(items_);
+      public java.util.List<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity> getCommodityList() {
+        if (commodityBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(commodity_);
         } else {
-          return itemsBuilder_.getMessageList();
+          return commodityBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public int getItemsCount() {
-        if (itemsBuilder_ == null) {
-          return items_.size();
+      public int getCommodityCount() {
+        if (commodityBuilder_ == null) {
+          return commodity_.size();
         } else {
-          return itemsBuilder_.getCount();
+          return commodityBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItems(int index) {
-        if (itemsBuilder_ == null) {
-          return items_.get(index);
+      public com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity getCommodity(int index) {
+        if (commodityBuilder_ == null) {
+          return commodity_.get(index);
         } else {
-          return itemsBuilder_.getMessage(index);
+          return commodityBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder setItems(
-          int index, com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
-        if (itemsBuilder_ == null) {
+      public Builder setCommodity(
+          int index, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity value) {
+        if (commodityBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureItemsIsMutable();
-          items_.set(index, value);
+          ensureCommodityIsMutable();
+          commodity_.set(index, value);
           onChanged();
         } else {
-          itemsBuilder_.setMessage(index, value);
+          commodityBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder setItems(
-          int index, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder builderForValue) {
-        if (itemsBuilder_ == null) {
-          ensureItemsIsMutable();
-          items_.set(index, builderForValue.build());
+      public Builder setCommodity(
+          int index, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder builderForValue) {
+        if (commodityBuilder_ == null) {
+          ensureCommodityIsMutable();
+          commodity_.set(index, builderForValue.build());
           onChanged();
         } else {
-          itemsBuilder_.setMessage(index, builderForValue.build());
+          commodityBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder addItems(com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
-        if (itemsBuilder_ == null) {
+      public Builder addCommodity(com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity value) {
+        if (commodityBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureItemsIsMutable();
-          items_.add(value);
+          ensureCommodityIsMutable();
+          commodity_.add(value);
           onChanged();
         } else {
-          itemsBuilder_.addMessage(value);
+          commodityBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder addItems(
-          int index, com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
-        if (itemsBuilder_ == null) {
+      public Builder addCommodity(
+          int index, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity value) {
+        if (commodityBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureItemsIsMutable();
-          items_.add(index, value);
+          ensureCommodityIsMutable();
+          commodity_.add(index, value);
           onChanged();
         } else {
-          itemsBuilder_.addMessage(index, value);
+          commodityBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder addItems(
-          com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder builderForValue) {
-        if (itemsBuilder_ == null) {
-          ensureItemsIsMutable();
-          items_.add(builderForValue.build());
+      public Builder addCommodity(
+          com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder builderForValue) {
+        if (commodityBuilder_ == null) {
+          ensureCommodityIsMutable();
+          commodity_.add(builderForValue.build());
           onChanged();
         } else {
-          itemsBuilder_.addMessage(builderForValue.build());
+          commodityBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder addItems(
-          int index, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder builderForValue) {
-        if (itemsBuilder_ == null) {
-          ensureItemsIsMutable();
-          items_.add(index, builderForValue.build());
+      public Builder addCommodity(
+          int index, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder builderForValue) {
+        if (commodityBuilder_ == null) {
+          ensureCommodityIsMutable();
+          commodity_.add(index, builderForValue.build());
           onChanged();
         } else {
-          itemsBuilder_.addMessage(index, builderForValue.build());
+          commodityBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder addAllItems(
-          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.ItemsProto.Items> values) {
-        if (itemsBuilder_ == null) {
-          ensureItemsIsMutable();
+      public Builder addAllCommodity(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity> values) {
+        if (commodityBuilder_ == null) {
+          ensureCommodityIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, items_);
+              values, commodity_);
           onChanged();
         } else {
-          itemsBuilder_.addAllMessages(values);
+          commodityBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder clearItems() {
-        if (itemsBuilder_ == null) {
-          items_ = java.util.Collections.emptyList();
+      public Builder clearCommodity() {
+        if (commodityBuilder_ == null) {
+          commodity_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          itemsBuilder_.clear();
+          commodityBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public Builder removeItems(int index) {
-        if (itemsBuilder_ == null) {
-          ensureItemsIsMutable();
-          items_.remove(index);
+      public Builder removeCommodity(int index) {
+        if (commodityBuilder_ == null) {
+          ensureCommodityIsMutable();
+          commodity_.remove(index);
           onChanged();
         } else {
-          itemsBuilder_.remove(index);
+          commodityBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder getItemsBuilder(
+      public com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder getCommodityBuilder(
           int index) {
-        return getItemsFieldBuilder().getBuilder(index);
+        return getCommodityFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemsOrBuilder(
+      public com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder getCommodityOrBuilder(
           int index) {
-        if (itemsBuilder_ == null) {
-          return items_.get(index);  } else {
-          return itemsBuilder_.getMessageOrBuilder(index);
+        if (commodityBuilder_ == null) {
+          return commodity_.get(index);  } else {
+          return commodityBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> 
-           getItemsOrBuilderList() {
-        if (itemsBuilder_ != null) {
-          return itemsBuilder_.getMessageOrBuilderList();
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder> 
+           getCommodityOrBuilderList() {
+        if (commodityBuilder_ != null) {
+          return commodityBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(items_);
+          return java.util.Collections.unmodifiableList(commodity_);
         }
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder addItemsBuilder() {
-        return getItemsFieldBuilder().addBuilder(
-            com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance());
+      public com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder addCommodityBuilder() {
+        return getCommodityFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.getDefaultInstance());
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder addItemsBuilder(
+      public com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder addCommodityBuilder(
           int index) {
-        return getItemsFieldBuilder().addBuilder(
-            index, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance());
+        return getCommodityFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.getDefaultInstance());
       }
       /**
-       * <code>repeated .Items items = 4;</code>
+       * <code>repeated .Commodity commodity = 4;</code>
        */
-      public java.util.List<com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder> 
-           getItemsBuilderList() {
-        return getItemsFieldBuilder().getBuilderList();
+      public java.util.List<com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder> 
+           getCommodityBuilderList() {
+        return getCommodityFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> 
-          getItemsFieldBuilder() {
-        if (itemsBuilder_ == null) {
-          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder>(
-                  items_,
+          com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder, com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder> 
+          getCommodityFieldBuilder() {
+        if (commodityBuilder_ == null) {
+          commodityBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity, com.ljh.gamedemo.proto.protoc.CommodityProto.Commodity.Builder, com.ljh.gamedemo.proto.protoc.CommodityProto.CommodityOrBuilder>(
+                  commodity_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
-          items_ = null;
+          commodity_ = null;
         }
-        return itemsBuilder_;
-      }
-
-      private java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> equip_ =
-        java.util.Collections.emptyList();
-      private void ensureEquipIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          equip_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EquipProto.Equip>(equip_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> equipBuilder_;
-
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip> getEquipList() {
-        if (equipBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(equip_);
-        } else {
-          return equipBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public int getEquipCount() {
-        if (equipBuilder_ == null) {
-          return equip_.size();
-        } else {
-          return equipBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip(int index) {
-        if (equipBuilder_ == null) {
-          return equip_.get(index);
-        } else {
-          return equipBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder setEquip(
-          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
-        if (equipBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureEquipIsMutable();
-          equip_.set(index, value);
-          onChanged();
-        } else {
-          equipBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder setEquip(
-          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
-        if (equipBuilder_ == null) {
-          ensureEquipIsMutable();
-          equip_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          equipBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder addEquip(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
-        if (equipBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureEquipIsMutable();
-          equip_.add(value);
-          onChanged();
-        } else {
-          equipBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder addEquip(
-          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
-        if (equipBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureEquipIsMutable();
-          equip_.add(index, value);
-          onChanged();
-        } else {
-          equipBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder addEquip(
-          com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
-        if (equipBuilder_ == null) {
-          ensureEquipIsMutable();
-          equip_.add(builderForValue.build());
-          onChanged();
-        } else {
-          equipBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder addEquip(
-          int index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
-        if (equipBuilder_ == null) {
-          ensureEquipIsMutable();
-          equip_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          equipBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder addAllEquip(
-          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.EquipProto.Equip> values) {
-        if (equipBuilder_ == null) {
-          ensureEquipIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, equip_);
-          onChanged();
-        } else {
-          equipBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder clearEquip() {
-        if (equipBuilder_ == null) {
-          equip_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-          onChanged();
-        } else {
-          equipBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public Builder removeEquip(int index) {
-        if (equipBuilder_ == null) {
-          ensureEquipIsMutable();
-          equip_.remove(index);
-          onChanged();
-        } else {
-          equipBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder getEquipBuilder(
-          int index) {
-        return getEquipFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder(
-          int index) {
-        if (equipBuilder_ == null) {
-          return equip_.get(index);  } else {
-          return equipBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
-           getEquipOrBuilderList() {
-        if (equipBuilder_ != null) {
-          return equipBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(equip_);
-        }
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder addEquipBuilder() {
-        return getEquipFieldBuilder().addBuilder(
-            com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder addEquipBuilder(
-          int index) {
-        return getEquipFieldBuilder().addBuilder(
-            index, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .Equip equip = 5;</code>
-       */
-      public java.util.List<com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder> 
-           getEquipBuilderList() {
-        return getEquipFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
-          getEquipFieldBuilder() {
-        if (equipBuilder_ == null) {
-          equipBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder>(
-                  equip_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
-          equip_ = null;
-        }
-        return equipBuilder_;
+        return commodityBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2217,21 +1850,19 @@ public final class MsgMallProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rMsgMall.proto\032\013Items.proto\032\013Equip.prot" +
-      "o\"F\n\013RequestMall\022\016\n\006userId\030\001 \001(\003\022\013\n\003cId\030" +
-      "\002 \001(\003\022\032\n\004type\030\003 \001(\0162\014.RequestType\"y\n\014Res" +
-      "ponseMall\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001" +
-      "(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\025\n\005items\030" +
-      "\004 \003(\0132\006.Items\022\025\n\005equip\030\005 \003(\0132\006.Equip* \n\013" +
-      "RequestType\022\010\n\004MALL\020\000\022\007\n\003BUY\020\001B-\n\035com.lj" +
-      "h.gamedemo.proto.protocB\014MsgMallProtob\006p" +
-      "roto3"
+      "\n\rMsgMall.proto\032\017Commodity.proto\"F\n\013Requ" +
+      "estMall\022\016\n\006userId\030\001 \001(\003\022\013\n\003cId\030\002 \001(\003\022\032\n\004" +
+      "type\030\003 \001(\0162\014.RequestType\"j\n\014ResponseMall" +
+      "\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004typ" +
+      "e\030\003 \001(\0162\014.RequestType\022\035\n\tcommodity\030\004 \003(\013" +
+      "2\n.Commodity* \n\013RequestType\022\010\n\004MALL\020\000\022\007\n" +
+      "\003BUY\020\001B-\n\035com.ljh.gamedemo.proto.protocB" +
+      "\014MsgMallProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.ljh.gamedemo.proto.protoc.ItemsProto.getDescriptor(),
-          com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor(),
+          com.ljh.gamedemo.proto.protoc.CommodityProto.getDescriptor(),
         });
     internal_static_RequestMall_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2244,9 +1875,8 @@ public final class MsgMallProto {
     internal_static_ResponseMall_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseMall_descriptor,
-        new java.lang.String[] { "Result", "Content", "Type", "Items", "Equip", });
-    com.ljh.gamedemo.proto.protoc.ItemsProto.getDescriptor();
-    com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor();
+        new java.lang.String[] { "Result", "Content", "Type", "Commodity", });
+    com.ljh.gamedemo.proto.protoc.CommodityProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

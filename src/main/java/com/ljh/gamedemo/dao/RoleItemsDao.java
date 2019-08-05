@@ -24,4 +24,7 @@ public interface RoleItemsDao {
 
     @Update("update role_objects set num = #{num} where role_id = #{roleId} and objects_id = #{itemId}")
     int updateItem(int num, long roleId, long itemId);
+
+    @Delete("delete role_objects where role_id = #{roleId} and objects_id = #{itemId}")
+    int deleteItem(long roleId, long itemId);
 }

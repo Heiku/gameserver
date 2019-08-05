@@ -2,7 +2,7 @@ package com.ljh.gamedemo.local.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.ljh.gamedemo.entity.SpellTimeStamp;
+import com.ljh.gamedemo.entity.tmp.SpellTimeStamp;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

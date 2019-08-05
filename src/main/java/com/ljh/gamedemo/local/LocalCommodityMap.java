@@ -13,10 +13,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static com.ljh.gamedemo.common.CommodityType.EQUIP;
 import static com.ljh.gamedemo.common.CommodityType.ITEM;
@@ -49,7 +46,9 @@ public class LocalCommodityMap {
     private static long[] items;
 
     // 存放概率装备
-    private static long[] equips;
+    // private static long[] equips;
+
+    private static List<Long> equips;
 
     private static File mallFile = null;
 
@@ -128,7 +127,7 @@ public class LocalCommodityMap {
 
         // 初始化刷新数组
         items = new long[MAX_ITEMS];
-        equips = new long[MAX_EQUIPS];
+        equips = new ArrayList<>();
 
         int idx = 0;
         List<Commodity> itemList = typeCommodityMaps.get(ITEM.getCode());
@@ -146,12 +145,15 @@ public class LocalCommodityMap {
             int num = (int) (c.getProbability() * 10);
             int max = idx + num;
             while (idx < max){
-                equips[idx++] = c.getId();
+                // equips[idx++] = c.getId();
+                equips.add(c.getId());
+                idx++;
             }
         }
     }
 
 
+    // 随机刷新物品信息
     public static List<Items> getItemsList(){
         List<Items> list = new ArrayList<>();
 
@@ -162,19 +164,30 @@ public class LocalCommodityMap {
             Items data = new Items();
             Items tmp = LocalItemsMap.getIdItemsMap().get(itemId);
             BeanUtils.copyProperties(tmp, data);
+            data.setNum(1);
 
             list.add(data);
         }
-
         return list;
     }
 
-    public static List<Equip> getEquipsList(){
-        List<Equip> list = new ArrayList<>();
+    // 随机刷新装备
+    public static List<Equip> getEquipsList(long roleId){
 
+        // 去除用户已经拥有的装备信息
+        List<Equip> list = new ArrayList<>();
+        List<Long> out = new ArrayList<>(equips);
+        if (roleId != 0) {
+            List<Equip> hasList = LocalEquipMap.getHasEquipMap().get(roleId);
+            hasList.forEach(e -> {
+                out.remove(e.getEquipId());
+            });
+        }
+
+        // 随机获取
         for (int i = 0; i < EQUIP_NUM; i++){
-            int r = new Random().nextInt(MAX_EQUIPS);
-            long equipId = equips[r];
+            int r = new Random().nextInt(out.size());
+            long equipId = out.get(r);
 
             Equip data = new Equip();
             Equip tmp = LocalEquipMap.getIdEquipMap().get(equipId);
@@ -215,7 +228,7 @@ public class LocalCommodityMap {
             System.out.print(equip + " ");
         }
 
-        System.out.println(LocalCommodityMap.getEquipsList());
+        System.out.println(LocalCommodityMap.getEquipsList(1002L));
         System.out.println(LocalCommodityMap.getItemsList());
     }
 }

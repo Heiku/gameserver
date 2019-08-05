@@ -2,8 +2,7 @@ syntax = "proto3";
 
 // protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgMall.proto
 
-import "Items.proto";
-import "Equip.proto";
+import "Commodity.proto";
 
 option java_package = "com.ljh.gamedemo.proto.protoc";
 option java_outer_classname = "MsgMallProto";
@@ -25,6 +24,5 @@ message ResponseMall{
     string content = 2;
     RequestType type = 3;
 
-    repeated Items items = 4;
-    repeated Equip equip = 5;
+    repeated Commodity commodity = 4;
 }

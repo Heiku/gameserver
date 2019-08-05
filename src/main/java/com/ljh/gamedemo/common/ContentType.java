@@ -146,6 +146,18 @@ public class ContentType {
 
     public static final String DUPLICATE_SPELL_FAILED = "施放技能失败！\n";
 
+
+    // Mall
+    public static final String MALL_FIND_SUCCESS = "查找成功！\n";
+
+    public static final String MALL_FIND_FAILED = "查找成功！\n";
+
+    public static final String MALL_MONEY_NOT_ENOUGH = "当前金币不足以购买该物品，请尝试刷副本获得更多金币！\n";
+
+    public static final String MALL_BUY_SUCCESS = "购买成功，物品已经发送到你的背包中！\n";
+
+    public static final String MALL_BUY_OUT_OF_LIMIT = "超过今日购买数量限制，请明天再来!\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }

@@ -78,6 +78,9 @@ public class ProtoService {
 
 
     public ItemsProto.Items transToItem(Items items){
+        if (items == null){
+            return ItemsProto.Items.newBuilder().build();
+        }
         return ItemsProto.Items.newBuilder()
                 .setItemsId(items.getItemsId())
                 .setType(items.getType())
@@ -100,6 +103,9 @@ public class ProtoService {
 
 
     public EquipProto.Equip transToEquip(Equip equip){
+        if (equip == null){
+            return EquipProto.Equip.newBuilder().build();
+        }
         return EquipProto.Equip.newBuilder()
                 .setEquipId(equip.getEquipId())
                 .setName(equip.getName())
@@ -197,6 +203,31 @@ public class ProtoService {
                 // cost -> sec
                 .setCost(bossSpell.getSec())
                 .build();
+    }
+
+
+    public List<CommodityProto.Commodity> transToCommodityList(List<Commodity> list) {
+        List<CommodityProto.Commodity> res = new ArrayList<>();
+
+        list.forEach(e -> {
+            CommodityProto.Commodity c = transToCommodity(e);
+            res.add(c);
+        });
+
+        return res;
+    }
+
+    private CommodityProto.Commodity transToCommodity(Commodity e) {
+        CommodityProto.Commodity c = CommodityProto.Commodity.newBuilder()
+                .setId(e.getId())
+                .setType(e.getType())
+                .setLimit(e.getLimit())
+                .setPrice(e.getPrice())
+                .setItem(transToItem(e.getItems()))
+                .setEquip(transToEquip(e.getEquip()))
+                .build();
+
+        return c;
     }
 
 

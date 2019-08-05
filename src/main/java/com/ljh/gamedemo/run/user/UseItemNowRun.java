@@ -43,6 +43,16 @@ public class UseItemNowRun implements Runnable {
 
     private RoleItemsDao itemsDao = SpringUtil.getBean(RoleItemsDao.class);
 
+    private static UseItemNowRun run = new UseItemNowRun();
+
+    public static UseItemNowRun getInstance(){
+        return run;
+    }
+
+    public UseItemNowRun(){
+
+    }
+
     public UseItemNowRun(long userId, long itemId, Channel channel, RecoverBuff buff){
         this.userId = userId;
         this.itemId = itemId;
@@ -125,6 +135,11 @@ public class UseItemNowRun implements Runnable {
             if (i.getItemsId() == itemId){
                 items = i;
                 i.setNum(i.getNum() - 1);
+
+                if (i.getNum() == 0){
+                    // 移除记录
+                    removeRoleItem(i, role);
+                }
             }
         }
         LocalItemsMap.getRoleItemsMap().put(role.getRoleId(), itemsList);
@@ -135,4 +150,19 @@ public class UseItemNowRun implements Runnable {
         SaveRoleItemRun run = new SaveRoleItemRun(items, role);
         SaveRoleItemManager.addQueue(run);
     }
+
+
+    private void removeRoleItem(Items items, Role role){
+        // 更新缓存
+        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(role.getRoleId());
+        itemsList.forEach(i -> {
+            if (i.getItemsId().intValue() == items.getItemsId()){
+                itemsList.remove(i);
+            }
+        });
+
+        // 更新db
+        itemsDao.deleteItem(role.getRoleId(), items.getItemsId());
+    }
 }
+

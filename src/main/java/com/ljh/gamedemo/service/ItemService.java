@@ -215,7 +215,7 @@ public class ItemService {
      * @param items
      * @return
      */
-    private MsgItemProto.ResponseItem updateCacheRepsonse(Role role, Items items){
+    private MsgItemProto.ResponseItem updateCacheResponse(Role role, Items items){
         // 更新items的数量
         items.setNum(items.getNum() - 1);
         LocalItemsMap.getIdItemsMap().put(items.getItemsId(), items);

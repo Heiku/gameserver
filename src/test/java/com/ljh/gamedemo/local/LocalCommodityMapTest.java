@@ -23,7 +23,7 @@ public class LocalCommodityMapTest {
         LocalCommodityMap.readExcel();
 
         System.out.println(LocalCommodityMap.getItemsList());
-        System.out.println(LocalCommodityMap.getEquipsList());
+        System.out.println(LocalCommodityMap.getEquipsList(10002L));
 
     }
 }

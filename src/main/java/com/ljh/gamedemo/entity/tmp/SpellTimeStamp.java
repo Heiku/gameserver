@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.entity;
+package com.ljh.gamedemo.entity.tmp;
 
 import lombok.Data;
 

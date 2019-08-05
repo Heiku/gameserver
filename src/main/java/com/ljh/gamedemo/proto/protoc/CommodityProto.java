@@ -37,6 +37,32 @@ public final class CommodityProto {
      * <code>int32 limit = 4;</code>
      */
     int getLimit();
+
+    /**
+     * <code>.Equip equip = 5;</code>
+     */
+    boolean hasEquip();
+    /**
+     * <code>.Equip equip = 5;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip();
+    /**
+     * <code>.Equip equip = 5;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder();
+
+    /**
+     * <code>.Items item = 6;</code>
+     */
+    boolean hasItem();
+    /**
+     * <code>.Items item = 6;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItem();
+    /**
+     * <code>.Items item = 6;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemOrBuilder();
   }
   /**
    * Protobuf type {@code Commodity}
@@ -101,6 +127,32 @@ public final class CommodityProto {
             case 32: {
 
               limit_ = input.readInt32();
+              break;
+            }
+            case 42: {
+              com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder subBuilder = null;
+              if (equip_ != null) {
+                subBuilder = equip_.toBuilder();
+              }
+              equip_ = input.readMessage(com.ljh.gamedemo.proto.protoc.EquipProto.Equip.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(equip_);
+                equip_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 50: {
+              com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder subBuilder = null;
+              if (item_ != null) {
+                subBuilder = item_.toBuilder();
+              }
+              item_ = input.readMessage(com.ljh.gamedemo.proto.protoc.ItemsProto.Items.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(item_);
+                item_ = subBuilder.buildPartial();
+              }
+
               break;
             }
             default: {
@@ -171,6 +223,48 @@ public final class CommodityProto {
       return limit_;
     }
 
+    public static final int EQUIP_FIELD_NUMBER = 5;
+    private com.ljh.gamedemo.proto.protoc.EquipProto.Equip equip_;
+    /**
+     * <code>.Equip equip = 5;</code>
+     */
+    public boolean hasEquip() {
+      return equip_ != null;
+    }
+    /**
+     * <code>.Equip equip = 5;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip() {
+      return equip_ == null ? com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance() : equip_;
+    }
+    /**
+     * <code>.Equip equip = 5;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder() {
+      return getEquip();
+    }
+
+    public static final int ITEM_FIELD_NUMBER = 6;
+    private com.ljh.gamedemo.proto.protoc.ItemsProto.Items item_;
+    /**
+     * <code>.Items item = 6;</code>
+     */
+    public boolean hasItem() {
+      return item_ != null;
+    }
+    /**
+     * <code>.Items item = 6;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItem() {
+      return item_ == null ? com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance() : item_;
+    }
+    /**
+     * <code>.Items item = 6;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemOrBuilder() {
+      return getItem();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -197,6 +291,12 @@ public final class CommodityProto {
       if (limit_ != 0) {
         output.writeInt32(4, limit_);
       }
+      if (equip_ != null) {
+        output.writeMessage(5, getEquip());
+      }
+      if (item_ != null) {
+        output.writeMessage(6, getItem());
+      }
       unknownFields.writeTo(output);
     }
 
@@ -222,6 +322,14 @@ public final class CommodityProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, limit_);
       }
+      if (equip_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getEquip());
+      }
+      if (item_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, getItem());
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -245,6 +353,16 @@ public final class CommodityProto {
           != other.getPrice()) return false;
       if (getLimit()
           != other.getLimit()) return false;
+      if (hasEquip() != other.hasEquip()) return false;
+      if (hasEquip()) {
+        if (!getEquip()
+            .equals(other.getEquip())) return false;
+      }
+      if (hasItem() != other.hasItem()) return false;
+      if (hasItem()) {
+        if (!getItem()
+            .equals(other.getItem())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -265,6 +383,14 @@ public final class CommodityProto {
       hash = (53 * hash) + getPrice();
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
+      if (hasEquip()) {
+        hash = (37 * hash) + EQUIP_FIELD_NUMBER;
+        hash = (53 * hash) + getEquip().hashCode();
+      }
+      if (hasItem()) {
+        hash = (37 * hash) + ITEM_FIELD_NUMBER;
+        hash = (53 * hash) + getItem().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -406,6 +532,18 @@ public final class CommodityProto {
 
         limit_ = 0;
 
+        if (equipBuilder_ == null) {
+          equip_ = null;
+        } else {
+          equip_ = null;
+          equipBuilder_ = null;
+        }
+        if (itemBuilder_ == null) {
+          item_ = null;
+        } else {
+          item_ = null;
+          itemBuilder_ = null;
+        }
         return this;
       }
 
@@ -436,6 +574,16 @@ public final class CommodityProto {
         result.type_ = type_;
         result.price_ = price_;
         result.limit_ = limit_;
+        if (equipBuilder_ == null) {
+          result.equip_ = equip_;
+        } else {
+          result.equip_ = equipBuilder_.build();
+        }
+        if (itemBuilder_ == null) {
+          result.item_ = item_;
+        } else {
+          result.item_ = itemBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -495,6 +643,12 @@ public final class CommodityProto {
         }
         if (other.getLimit() != 0) {
           setLimit(other.getLimit());
+        }
+        if (other.hasEquip()) {
+          mergeEquip(other.getEquip());
+        }
+        if (other.hasItem()) {
+          mergeItem(other.getItem());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -628,6 +782,240 @@ public final class CommodityProto {
         onChanged();
         return this;
       }
+
+      private com.ljh.gamedemo.proto.protoc.EquipProto.Equip equip_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> equipBuilder_;
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public boolean hasEquip() {
+        return equipBuilder_ != null || equip_ != null;
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip() {
+        if (equipBuilder_ == null) {
+          return equip_ == null ? com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance() : equip_;
+        } else {
+          return equipBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public Builder setEquip(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
+        if (equipBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          equip_ = value;
+          onChanged();
+        } else {
+          equipBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public Builder setEquip(
+          com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
+        if (equipBuilder_ == null) {
+          equip_ = builderForValue.build();
+          onChanged();
+        } else {
+          equipBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public Builder mergeEquip(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
+        if (equipBuilder_ == null) {
+          if (equip_ != null) {
+            equip_ =
+              com.ljh.gamedemo.proto.protoc.EquipProto.Equip.newBuilder(equip_).mergeFrom(value).buildPartial();
+          } else {
+            equip_ = value;
+          }
+          onChanged();
+        } else {
+          equipBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public Builder clearEquip() {
+        if (equipBuilder_ == null) {
+          equip_ = null;
+          onChanged();
+        } else {
+          equip_ = null;
+          equipBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder getEquipBuilder() {
+        
+        onChanged();
+        return getEquipFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder() {
+        if (equipBuilder_ != null) {
+          return equipBuilder_.getMessageOrBuilder();
+        } else {
+          return equip_ == null ?
+              com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance() : equip_;
+        }
+      }
+      /**
+       * <code>.Equip equip = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
+          getEquipFieldBuilder() {
+        if (equipBuilder_ == null) {
+          equipBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder>(
+                  getEquip(),
+                  getParentForChildren(),
+                  isClean());
+          equip_ = null;
+        }
+        return equipBuilder_;
+      }
+
+      private com.ljh.gamedemo.proto.protoc.ItemsProto.Items item_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> itemBuilder_;
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public boolean hasItem() {
+        return itemBuilder_ != null || item_ != null;
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItem() {
+        if (itemBuilder_ == null) {
+          return item_ == null ? com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance() : item_;
+        } else {
+          return itemBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public Builder setItem(com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
+        if (itemBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          item_ = value;
+          onChanged();
+        } else {
+          itemBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public Builder setItem(
+          com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder builderForValue) {
+        if (itemBuilder_ == null) {
+          item_ = builderForValue.build();
+          onChanged();
+        } else {
+          itemBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public Builder mergeItem(com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
+        if (itemBuilder_ == null) {
+          if (item_ != null) {
+            item_ =
+              com.ljh.gamedemo.proto.protoc.ItemsProto.Items.newBuilder(item_).mergeFrom(value).buildPartial();
+          } else {
+            item_ = value;
+          }
+          onChanged();
+        } else {
+          itemBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public Builder clearItem() {
+        if (itemBuilder_ == null) {
+          item_ = null;
+          onChanged();
+        } else {
+          item_ = null;
+          itemBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder getItemBuilder() {
+        
+        onChanged();
+        return getItemFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemOrBuilder() {
+        if (itemBuilder_ != null) {
+          return itemBuilder_.getMessageOrBuilder();
+        } else {
+          return item_ == null ?
+              com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance() : item_;
+        }
+      }
+      /**
+       * <code>.Items item = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> 
+          getItemFieldBuilder() {
+        if (itemBuilder_ == null) {
+          itemBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder>(
+                  getItem(),
+                  getParentForChildren(),
+                  isClean());
+          item_ = null;
+        }
+        return itemBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -695,21 +1083,27 @@ public final class CommodityProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017Commodity.proto\"C\n\tCommodity\022\n\n\002id\030\001 \001" +
-      "(\003\022\014\n\004type\030\002 \001(\005\022\r\n\005price\030\003 \001(\005\022\r\n\005limit" +
-      "\030\004 \001(\005B/\n\035com.ljh.gamedemo.proto.protocB" +
-      "\016CommodityProtob\006proto3"
+      "\n\017Commodity.proto\032\013Equip.proto\032\013Items.pr" +
+      "oto\"p\n\tCommodity\022\n\n\002id\030\001 \001(\003\022\014\n\004type\030\002 \001" +
+      "(\005\022\r\n\005price\030\003 \001(\005\022\r\n\005limit\030\004 \001(\005\022\025\n\005equi" +
+      "p\030\005 \001(\0132\006.Equip\022\024\n\004item\030\006 \001(\0132\006.ItemsB/\n" +
+      "\035com.ljh.gamedemo.proto.protocB\016Commodit" +
+      "yProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor(),
+          com.ljh.gamedemo.proto.protoc.ItemsProto.getDescriptor(),
         });
     internal_static_Commodity_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_Commodity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Commodity_descriptor,
-        new java.lang.String[] { "Id", "Type", "Price", "Limit", });
+        new java.lang.String[] { "Id", "Type", "Price", "Limit", "Equip", "Item", });
+    com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor();
+    com.ljh.gamedemo.proto.protoc.ItemsProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

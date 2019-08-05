@@ -91,7 +91,7 @@ public class LocalItemsMap {
             long roleId = roleItems.getRoleId();
 
             list = roleItemsMap.get(roleId);
-            if (list == null || list.isEmpty()){
+            if (list == null){
                 list = new ArrayList<>();
             }
 

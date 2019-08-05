@@ -36,4 +36,12 @@ public class Commodity {
      * 限制购买数量
      */
     private Integer limit;
+
+
+    /**
+     * 装备
+     */
+    private Equip equip;
+
+    private Items items;
 }
