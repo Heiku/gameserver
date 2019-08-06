@@ -27,7 +27,7 @@ public class NettyServer {
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup worker = new NioEventLoopGroup();
 
-    private final EventExecutorGroup businessGroup = new DefaultEventExecutorGroup(8);
+    private  EventExecutorGroup businessGroup = new DefaultEventExecutorGroup(2);
 
     @Value("${netty.port}")
     private Integer port;

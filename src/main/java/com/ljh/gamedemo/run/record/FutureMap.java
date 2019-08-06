@@ -14,4 +14,10 @@ import java.util.Map;
 public class FutureMap {
 
     public static Map<Integer, ScheduledFuture> futureMap = Maps.newConcurrentMap();
+
+    private static Map<Long, ScheduledFuture> recoverFutureMap = Maps.newConcurrentMap();
+
+    public static Map<Long, ScheduledFuture> getRecoverFutureMap() {
+        return recoverFutureMap;
+    }
 }

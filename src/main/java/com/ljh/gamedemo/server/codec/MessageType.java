@@ -46,7 +46,11 @@ public enum MessageType {
 
     // mall
     REQUEST_MALL(0x14, MsgMallProto.RequestMall.class),
-    RESPONSE_MALL(0x15, MsgMallProto.ResponseMall.class)
+    RESPONSE_MALL(0x15, MsgMallProto.ResponseMall.class),
+
+    // chat
+    REQUEST_CHAT(0x16, MsgChatProto.RequestChat.class),
+    RESPONSE_CHAT(0x17, MsgChatProto.ResponseChat.class)
     ;
 
 

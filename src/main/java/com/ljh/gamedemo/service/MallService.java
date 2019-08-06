@@ -19,7 +19,7 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.MallBuyCache;
 import com.ljh.gamedemo.proto.protoc.CommodityProto;
 import com.ljh.gamedemo.proto.protoc.MsgMallProto;
-import com.ljh.gamedemo.run.SaveRoleItemManager;
+import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.db.SaveRoleItemRun;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;

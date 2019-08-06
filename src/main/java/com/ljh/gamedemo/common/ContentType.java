@@ -158,6 +158,20 @@ public class ContentType {
 
     public static final String MALL_BUY_OUT_OF_LIMIT = "超过今日购买数量限制，请明天再来!\n";
 
+
+    // Chat
+    public static final String CHAT_NOT_CONTENT = "未输入聊天内容，请重新输入！\n";
+
+    public static final String CHAT_NEW_MSG_FROM_ROLE = "来自玩家私聊的新消息！\n";
+
+    public static final String CHAT_NEW_MSG_FROM_WORLD = "来自全服的消息！\n";
+
+    public static final String CHAT_SEND_SUCCESS = "发送成功！\n";
+
+    public static final String CHAT_SEND_UN_LINE_SUCCESS = "发送离线消息成功！\n";
+
+    public static final String CHAT_ROLE_NOT_LINE = "玩家不在线，暂时无法发送消息! \n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }

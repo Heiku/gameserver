@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.run;
+package com.ljh.gamedemo.run.manager;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ljh.gamedemo.run.db.SaveRoleItemRun;

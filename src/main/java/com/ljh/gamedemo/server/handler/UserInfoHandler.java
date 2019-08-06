@@ -38,7 +38,7 @@ public class UserInfoHandler extends SimpleChannelInboundHandler<MsgUserInfoProt
                 responseUserInfo = userService.register(channel, requestUserInfo);
                 break;
             case STATE:
-                responseUserInfo = userService.getState(requestUserInfo);
+                responseUserInfo = userService.getState(channel, requestUserInfo);
                 break;
             case EXIT:
                 responseUserInfo = userService.exit(channel, requestUserInfo);

@@ -2,12 +2,14 @@ package com.ljh.gamedemo;
 
 import com.ljh.gamedemo.local.*;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
-import com.ljh.gamedemo.run.SaveRoleItemManager;
+import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@MapperScan("com.ljh.gamedemo.dao")
 public class GamedemoApplication {
 
     public static void main(String[] args) throws Exception{

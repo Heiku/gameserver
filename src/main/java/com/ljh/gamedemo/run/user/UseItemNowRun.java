@@ -8,13 +8,12 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
-import com.ljh.gamedemo.run.SaveRoleItemManager;
+import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.db.SaveRoleItemRun;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 

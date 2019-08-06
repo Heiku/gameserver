@@ -21,7 +21,6 @@ public class ServerIdleStateHandler extends IdleStateHandler {
 
     private static final int READER_IDLE_TIME = 60 * 5;
 
-    @Autowired
     private static SaveDataService saveDataService;
 
     static {
@@ -32,9 +31,6 @@ public class ServerIdleStateHandler extends IdleStateHandler {
         super(READER_IDLE_TIME, 0, 0, TimeUnit.SECONDS);
     }
 
-    @Override
-    protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception {
-    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

@@ -11,11 +11,12 @@ import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.UserToken;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.proto.protoc.RoleProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.RecoverUserRun;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,13 +35,15 @@ public class UserService {
     @Autowired
     private UserRoleDao userRoleDao;
 
+    private ProtoService protoService = ProtoService.getInstance();
+
     /**
      * 用户登录后，并没有角色状态，需要通过 getState() 初始化玩家角色
      *
      * @param requestUserInfo
      * @return
      */
-    public MsgUserInfoProto.ResponseUserInfo getState(MsgUserInfoProto.RequestUserInfo requestUserInfo){
+    public MsgUserInfoProto.ResponseUserInfo getState(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析得到userId
         long userId = requestUserInfo.getUserId();
         Role role = null;
@@ -61,37 +64,45 @@ public class UserService {
             role = roles.get(0);
         }
 
+        initUserState(userId, role, channel);
+
+
+        // 为每一个玩家添加自动恢复的task
+        RecoverUserRun task = new RecoverUserRun(userId, null, null);
+        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS);
+        FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
+
+        // 确定角色成功，返回角色信息
+        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setType(MsgUserInfoProto.RequestType.STATE)
+                .setUserId(userId)
+                .setContent(ContentType.ROLE_CHOOSE)
+                .setResult(ResultCode.SUCCESS)
+                // 设置role对象
+                .setRole(protoService.transToRole(role))
+                .build();
+    }
+
+
+    /**
+     * 初始化玩家数据
+     *
+     *
+     * @param userId
+     * @param role
+     * @param channel
+     */
+    private void initUserState(long userId, Role role, Channel channel) {
+
         // 本地保存
         LocalUserMap.userRoleMap.put(userId, role);
 
         // 分配用户的业务线程
         UserExecutorManager.bindUserExecutor(userId);
 
-        // 为每一个玩家添加自动恢复的task
-        UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(new RecoverUserRun(userId, null, null), 0, 2, TimeUnit.SECONDS);
+        // 绑定 channel
+        SessionUtil.bindSession(userId, channel);
 
-
-        // 确定角色成功，返回角色信息
-        RoleProto.Role roleMsg = RoleProto.Role.newBuilder()
-                .setRoleId(role.getRoleId())
-                .setName(role.getName())
-                .setType(role.getType())
-                .setLevel(role.getLevel())
-                .setAlive(role.getAlive())
-                .setHp(role.getHp())
-                .setMp(role.getMp())
-                .build();
-
-        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                .setType(MsgUserInfoProto.RequestType.STATE)
-                .setUserId(userId)
-                .setContent(ContentType.ROLE_CHOOSE)
-                .setResult(ResultCode.SUCCESS)
-
-                // 设置role对象
-                .setRole(roleMsg)
-
-                .build();
     }
 
 

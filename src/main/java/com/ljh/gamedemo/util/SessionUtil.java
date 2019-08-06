@@ -1,18 +1,10 @@
 package com.ljh.gamedemo.util;
 
-import com.google.common.collect.Maps;
 import com.ljh.gamedemo.attribute.Attributes;
+import com.ljh.gamedemo.local.channel.ChannelCache;
 import io.netty.channel.Channel;
-import io.netty.channel.group.ChannelGroup;
-
-import java.util.Map;
 
 public class SessionUtil {
-
-    private static final Map<Long, Channel> userIdChannelMap = Maps.newConcurrentMap();
-
-    // 用于以后的广播通知
-    private static final Map<Long, ChannelGroup> groupIdChannelGroupMap = Maps.newConcurrentMap();
 
     /**
      * userId 绑定channel
@@ -21,8 +13,15 @@ public class SessionUtil {
      * @param channel
      */
     public static void bindSession(Long userId, Channel channel){
-        userIdChannelMap.put(userId, channel);
+        if (ChannelCache.getUserIdChannelMap().containsKey(userId)){
+            return;
+        }
+        // 绑定用户channel
+        ChannelCache.getUserIdChannelMap().put(userId, channel);
         channel.attr(Attributes.USER_ID).set(userId);
+
+        // 添加到玩家 group 中
+        ChannelCache.getAllRoleGroup().add(channel);
     }
 
     /**
@@ -31,10 +30,14 @@ public class SessionUtil {
      * @param channel
      */
     public static void unBindSession(Channel channel){
+        // 移除玩家映射channel
         long userId = getUserId(channel);
+        ChannelCache.getUserIdChannelMap().remove(userId);
 
-        userIdChannelMap.remove(userId);
+        // 移除channelGroup
+        ChannelCache.getAllRoleGroup().remove(channel);
 
+        // 清空玩家attr
         channel.attr(Attributes.USER_ID).set(0L);
     }
 
@@ -44,15 +47,5 @@ public class SessionUtil {
             return 0;
         }
         return channel.attr(Attributes.USER_ID).get();
-    }
-
-    /**
-     * 获取userId 绑定的 channel
-     *
-     * @param userId
-     * @return
-     */
-    public static Channel getChannel(long userId){
-        return userIdChannelMap.get(userId);
     }
 }
