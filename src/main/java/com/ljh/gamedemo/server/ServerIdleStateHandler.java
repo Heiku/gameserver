@@ -10,6 +10,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -51,5 +52,12 @@ public class ServerIdleStateHandler extends IdleStateHandler {
         saveDataService.leaveSaveUserData(channel);
 
         SessionUtil.unBindSession(channel);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        Channel channel = ctx.channel();
+
+        log.warn(channel.toString() + "连接断开! ");
     }
 }

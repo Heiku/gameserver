@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "Items.proto";
+import "Equip.proto";
+import "Role.proto";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Email.proto
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "EmailProto";
+
+message Email{
+    int64 id = 1;       // 邮件id
+    int64 gid = 2;      // 物品id
+    int32 type = 3;     // 物品类型
+    int32 num = 4;
+
+    Items item = 5;
+    Equip equip = 6;
+
+    Role role = 7;
+}

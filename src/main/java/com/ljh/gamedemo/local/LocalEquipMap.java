@@ -1,8 +1,10 @@
 package com.ljh.gamedemo.local;
 
 import com.google.common.collect.Maps;
+import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Equip;
+import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.dto.RoleEquip;
 import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import com.ljh.gamedemo.util.SpringUtil;
@@ -97,6 +99,10 @@ public class LocalEquipMap {
                     }
                     equipList.add(equip);
                     typeEquipMap.put(type, equipList);
+
+                    // 背包物品基类
+                    Goods goods = new Goods(equip.getEquipId(), CommodityType.EQUIP.getCode());
+                    LocalGoodsMap.getIdGoodsMap().put(goods.getGid(), goods);
                 }
             }
         }

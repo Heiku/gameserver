@@ -148,7 +148,7 @@ public class EquipService {
             return;
         }
 
-        // 判断玩家是否已经穿戴过该装备 ， 判断玩家是否佩戴同一种类型的装备
+        // 判断玩家是否已经穿戴过该装备 ，判断玩家是否佩戴同一种类型的装备
         synchronized (this){
             List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
             if (ownList != null) {

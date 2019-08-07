@@ -241,6 +241,7 @@ public class MallService {
 
 
             // 物品判断
+            // TODO： 待优化！
             if (items != null){
                 boolean contain = false;
                 // 判断是否包含 item
@@ -274,6 +275,8 @@ public class MallService {
 
             log.info("玩家：" + role.getName() + " 购买物品后，物品列表为：" + items);
 
+
+        // 属于装备类型
         }else if (c.getType().intValue() == CommodityType.EQUIP.getCode()){
             log.info("玩家：" + role.getName() + " 购买装备！");
             // 获取购买得装备信息
@@ -303,6 +306,13 @@ public class MallService {
     }
 
 
+    /**
+     * 新增玩家的物品信息
+     *
+     * @param data
+     * @param items
+     * @param role
+     */
     private void insertItemInfo(Items data, List<Items> items, Role role){
         Items tmp = new Items();
         BeanUtils.copyProperties(data, tmp);
@@ -386,6 +396,14 @@ public class MallService {
     }
 
 
+
+
+
+
+
+
+
+
     /**
      * 用户状态拦截器
      *
@@ -433,6 +451,12 @@ public class MallService {
     }
 
 
+    /**
+     * 公共消息拦截器
+     *
+     * @param request
+     * @return
+     */
     private MsgMallProto.ResponseMall commonInterceptor(MsgMallProto.RequestMall request){
         // 用户状态判断
         response = userStateInterceptor(request);

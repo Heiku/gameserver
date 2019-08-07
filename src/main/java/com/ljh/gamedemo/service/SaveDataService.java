@@ -23,6 +23,9 @@ public class SaveDataService {
     private UserRoleDao userRoleDao;
 
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 用于用户掉线时，保存用户的数据
      *
@@ -45,5 +48,8 @@ public class SaveDataService {
         // 同时，取消玩家的自动恢复任务
         ScheduledFuture future = FutureMap.getRecoverFutureMap().get(role.getRoleId());
         future.cancel(true);
+
+        // 下线信息记录
+        userService.updateRoleState(role, false);
     }
 }

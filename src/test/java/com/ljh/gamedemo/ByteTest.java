@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class ByteTest {
 
@@ -80,13 +82,16 @@ public class ByteTest {
         //System.out.println( (int) (0.9 * 10));
 
 
-        int[] a = new int[]{1,2};
+     /*   int[] a = new int[]{1,2};
         int[] b = a;
 
         a[0] = 2;
         for (int i : b) {
             System.out.println(i);
-        }
+        }*/
+
+
+        System.out.println(UUID.randomUUID().toString());
     }
 }
 

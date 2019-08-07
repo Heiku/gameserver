@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "Email.proto";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgEmail.proto
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgEmailProto";
+
+enum RequestType{
+    READ = 0;           // 取得邮件信息
+    RECEIVE = 1;        // 接收邮件物品
+}
+
+message RequestEmail{
+    int64 userId = 1;
+    int64 eid = 2;      // email Id
+
+    RequestType type = 3;
+}
+
+message ResponseEmail{
+    int32 result = 1;
+    string content = 2;
+
+    RequestType type = 3;
+
+    Email email = 4;
+}

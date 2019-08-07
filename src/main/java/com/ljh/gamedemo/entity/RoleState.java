@@ -16,7 +16,7 @@ public class RoleState {
 
     private Long roleId;
 
-    private Data online_time;
+    private Date onlineTime;
 
-    private Date offline_time;
+    private Date offlineTime;
 }

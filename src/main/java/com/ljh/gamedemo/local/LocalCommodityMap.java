@@ -3,6 +3,7 @@ package com.ljh.gamedemo.local;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.entity.Commodity;
 import com.ljh.gamedemo.entity.Equip;
+import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.Items;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -36,7 +37,6 @@ public class LocalCommodityMap {
     // 装备的刷新量
     private static final int EQUIP_NUM = 2;
 
-
     // 刷新数组长度
     private static int MAX_ITEMS = 0;
 
@@ -45,16 +45,20 @@ public class LocalCommodityMap {
     // 用于存放概率物品
     private static long[] items;
 
-    // 存放概率装备
-    // private static long[] equips;
-
     private static List<Long> equips;
 
+    // 本地文件
     private static File mallFile = null;
 
+
+    // 本本地缓存
     private static Map<Long, Commodity> idCommodityMaps = Maps.newConcurrentMap();
 
     private static Map<Integer, List<Commodity>> typeCommodityMaps = Maps.newConcurrentMap();
+
+
+    // 存放公共背包物品信息
+    private static Map<Long, Goods> idGoodsMap = Maps.newConcurrentMap();
 
     static {
         try {
@@ -145,7 +149,6 @@ public class LocalCommodityMap {
             int num = (int) (c.getProbability() * 10);
             int max = idx + num;
             while (idx < max){
-                // equips[idx++] = c.getId();
                 equips.add(c.getId());
                 idx++;
             }

@@ -6,7 +6,9 @@ import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.ChatRecordDao;
 import com.ljh.gamedemo.entity.ChatRecord;
 import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.entity.RoleState;
 import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.local.cache.RoleStateCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgChatProto;
 import io.netty.channel.Channel;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Heiku
@@ -109,18 +112,20 @@ public class ChatService  {
         Role toRole = LocalUserMap.getIdRoleMap().get(roleId);
         Channel toChannel = ChannelCache.getUserIdChannelMap().get(toRole.getUserId());
 
-        // 发送私聊消息
-        if (toChannel != null) {
-            response = combineMsg(fromRole, content, true);
-            toChannel.writeAndFlush(response);
+        if (toChannel != null){
 
+            // 向接收人发送消息
+            sendMsg(toChannel, fromRole, content);
+
+            // 返回写信人在线发送成功结果
             sendResponse(channel, true);
+        }else {
+            // 返回写信人在线发送失败结果
+            sendResponse(channel, false);
         }
 
         // 聊天记录持久化
         saveRecordData(fromRole.getRoleId(), roleId, content);
-
-        sendResponse(channel, false);
     }
 
 
@@ -240,5 +245,49 @@ public class ChatService  {
                 .setContent(content)
                 .build();
         channel.writeAndFlush(response);
+    }
+
+
+    /**
+     * 向玩家发送离线消息
+     *
+     * @param role
+     */
+    public void receiveOfflineMsg(Role role) {
+
+        // 消息的基本信息
+        long toRoleId = role.getRoleId();
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+
+        // 获取玩家在线信息
+        RoleState state = RoleStateCache.getCache().getIfPresent(toRoleId);
+        if (state == null){
+            state = recordDao.selectUserOffline(toRoleId);
+        }
+
+        // 查询历史消息
+        List<ChatRecord> recordList = recordDao.selectOfflineMsg(toRoleId, state.getOfflineTime());
+        if (recordList == null || recordList.isEmpty()){
+            return;
+        }
+
+        // 发送离线消息
+       recordList.forEach(r -> {
+           Role fromRole = LocalUserMap.idRoleMap.get(r.getFromRole());
+           sendMsg(channel, fromRole, r.getContent());
+       });
+    }
+
+
+    /**
+     * 向接收方发送消息
+     *
+     * @param channel
+     * @param fromRole
+     * @param msg
+     */
+    private void sendMsg(Channel channel, Role fromRole, String msg){
+        response = combineMsg(fromRole, msg, true);
+            channel.writeAndFlush(response);
     }
 }

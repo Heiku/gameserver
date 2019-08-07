@@ -1,7 +1,9 @@
 package com.ljh.gamedemo;
 
+import com.ljh.gamedemo.dao.ChatRecordDao;
 import com.ljh.gamedemo.local.*;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
+import com.ljh.gamedemo.local.cache.RoleStateCache;
 import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.mybatis.spring.annotation.MapperScan;
@@ -11,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @MapperScan("com.ljh.gamedemo.dao")
 public class GamedemoApplication {
+
 
     public static void main(String[] args) throws Exception{
         SpringApplication.run(GamedemoApplication.class, args);
@@ -44,6 +47,9 @@ public class GamedemoApplication {
 
         // 获取所有的玩家属性值
         RoleAttrCache.readBDAttr();
+
+        // 获取玩家的在线信息
+        RoleStateCache.postConstructReadDb();
 
         // 载入boss信息
         LocalBossMap.readExcel();
