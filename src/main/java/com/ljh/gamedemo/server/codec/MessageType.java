@@ -50,7 +50,11 @@ public enum MessageType {
 
     // chat
     REQUEST_CHAT(0x16, MsgChatProto.RequestChat.class),
-    RESPONSE_CHAT(0x17, MsgChatProto.ResponseChat.class)
+    RESPONSE_CHAT(0x17, MsgChatProto.ResponseChat.class),
+
+    // email
+    REQUEST_EMAIL(0x18, MsgEmailProto.RequestEmail.class),
+    RESPONSE_EAMIL(0x19, MsgEmailProto.ResponseEmail.class)
     ;
 
 

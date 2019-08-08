@@ -156,6 +156,8 @@ public class ContentType {
 
     public static final String MALL_BUY_SUCCESS = "购买成功，物品已经发送到你的背包中！\n";
 
+    public static final String MALL_BUY_NUM_GT_LIMIT = "超过最大购买额度，请重新选择购买数量！";
+
     public static final String MALL_BUY_OUT_OF_LIMIT = "超过今日购买数量限制，请明天再来!\n";
 
 
@@ -171,6 +173,7 @@ public class ContentType {
     public static final String CHAT_SEND_UN_LINE_SUCCESS = "发送离线消息成功！\n";
 
     public static final String CHAT_ROLE_NOT_LINE = "玩家不在线，暂时无法发送消息! \n";
+
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

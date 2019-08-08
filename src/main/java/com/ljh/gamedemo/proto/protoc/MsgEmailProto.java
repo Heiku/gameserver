@@ -35,6 +35,14 @@ public final class MsgEmailProto {
      * <code>RECEIVE = 1;</code>
      */
     RECEIVE(1),
+    /**
+     * <pre>
+     * 获取所有邮件信息
+     * </pre>
+     *
+     * <code>EMAIL = 2;</code>
+     */
+    EMAIL(2),
     UNRECOGNIZED(-1),
     ;
 
@@ -54,6 +62,14 @@ public final class MsgEmailProto {
      * <code>RECEIVE = 1;</code>
      */
     public static final int RECEIVE_VALUE = 1;
+    /**
+     * <pre>
+     * 获取所有邮件信息
+     * </pre>
+     *
+     * <code>EMAIL = 2;</code>
+     */
+    public static final int EMAIL_VALUE = 2;
 
 
     public final int getNumber() {
@@ -76,6 +92,7 @@ public final class MsgEmailProto {
       switch (value) {
         case 0: return READ;
         case 1: return RECEIVE;
+        case 2: return EMAIL;
         default: return null;
       }
     }
@@ -815,17 +832,28 @@ public final class MsgEmailProto {
     com.ljh.gamedemo.proto.protoc.MsgEmailProto.RequestType getType();
 
     /**
-     * <code>.Email email = 4;</code>
+     * <code>repeated .Email email = 4;</code>
      */
-    boolean hasEmail();
+    java.util.List<com.ljh.gamedemo.proto.protoc.EmailProto.Email> 
+        getEmailList();
     /**
-     * <code>.Email email = 4;</code>
+     * <code>repeated .Email email = 4;</code>
      */
-    com.ljh.gamedemo.proto.protoc.EmailProto.Email getEmail();
+    com.ljh.gamedemo.proto.protoc.EmailProto.Email getEmail(int index);
     /**
-     * <code>.Email email = 4;</code>
+     * <code>repeated .Email email = 4;</code>
      */
-    com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder getEmailOrBuilder();
+    int getEmailCount();
+    /**
+     * <code>repeated .Email email = 4;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder> 
+        getEmailOrBuilderList();
+    /**
+     * <code>repeated .Email email = 4;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder getEmailOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code ResponseEmail}
@@ -842,6 +870,7 @@ public final class MsgEmailProto {
     private ResponseEmail() {
       content_ = "";
       type_ = 0;
+      email_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -864,6 +893,7 @@ public final class MsgEmailProto {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -892,16 +922,12 @@ public final class MsgEmailProto {
               break;
             }
             case 34: {
-              com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder subBuilder = null;
-              if (email_ != null) {
-                subBuilder = email_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                email_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EmailProto.Email>();
+                mutable_bitField0_ |= 0x00000001;
               }
-              email_ = input.readMessage(com.ljh.gamedemo.proto.protoc.EmailProto.Email.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(email_);
-                email_ = subBuilder.buildPartial();
-              }
-
+              email_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.EmailProto.Email.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -919,6 +945,9 @@ public final class MsgEmailProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          email_ = java.util.Collections.unmodifiableList(email_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -997,24 +1026,38 @@ public final class MsgEmailProto {
     }
 
     public static final int EMAIL_FIELD_NUMBER = 4;
-    private com.ljh.gamedemo.proto.protoc.EmailProto.Email email_;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.EmailProto.Email> email_;
     /**
-     * <code>.Email email = 4;</code>
+     * <code>repeated .Email email = 4;</code>
      */
-    public boolean hasEmail() {
-      return email_ != null;
+    public java.util.List<com.ljh.gamedemo.proto.protoc.EmailProto.Email> getEmailList() {
+      return email_;
     }
     /**
-     * <code>.Email email = 4;</code>
+     * <code>repeated .Email email = 4;</code>
      */
-    public com.ljh.gamedemo.proto.protoc.EmailProto.Email getEmail() {
-      return email_ == null ? com.ljh.gamedemo.proto.protoc.EmailProto.Email.getDefaultInstance() : email_;
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder> 
+        getEmailOrBuilderList() {
+      return email_;
     }
     /**
-     * <code>.Email email = 4;</code>
+     * <code>repeated .Email email = 4;</code>
      */
-    public com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder getEmailOrBuilder() {
-      return getEmail();
+    public int getEmailCount() {
+      return email_.size();
+    }
+    /**
+     * <code>repeated .Email email = 4;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.EmailProto.Email getEmail(int index) {
+      return email_.get(index);
+    }
+    /**
+     * <code>repeated .Email email = 4;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder getEmailOrBuilder(
+        int index) {
+      return email_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1040,8 +1083,8 @@ public final class MsgEmailProto {
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgEmailProto.RequestType.READ.getNumber()) {
         output.writeEnum(3, type_);
       }
-      if (email_ != null) {
-        output.writeMessage(4, getEmail());
+      for (int i = 0; i < email_.size(); i++) {
+        output.writeMessage(4, email_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1063,9 +1106,9 @@ public final class MsgEmailProto {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, type_);
       }
-      if (email_ != null) {
+      for (int i = 0; i < email_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getEmail());
+          .computeMessageSize(4, email_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1087,11 +1130,8 @@ public final class MsgEmailProto {
       if (!getContent()
           .equals(other.getContent())) return false;
       if (type_ != other.type_) return false;
-      if (hasEmail() != other.hasEmail()) return false;
-      if (hasEmail()) {
-        if (!getEmail()
-            .equals(other.getEmail())) return false;
-      }
+      if (!getEmailList()
+          .equals(other.getEmailList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1109,9 +1149,9 @@ public final class MsgEmailProto {
       hash = (53 * hash) + getContent().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
-      if (hasEmail()) {
+      if (getEmailCount() > 0) {
         hash = (37 * hash) + EMAIL_FIELD_NUMBER;
-        hash = (53 * hash) + getEmail().hashCode();
+        hash = (53 * hash) + getEmailList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1241,6 +1281,7 @@ public final class MsgEmailProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getEmailFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1253,10 +1294,10 @@ public final class MsgEmailProto {
         type_ = 0;
 
         if (emailBuilder_ == null) {
-          email_ = null;
+          email_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          email_ = null;
-          emailBuilder_ = null;
+          emailBuilder_.clear();
         }
         return this;
       }
@@ -1284,10 +1325,15 @@ public final class MsgEmailProto {
       @java.lang.Override
       public com.ljh.gamedemo.proto.protoc.MsgEmailProto.ResponseEmail buildPartial() {
         com.ljh.gamedemo.proto.protoc.MsgEmailProto.ResponseEmail result = new com.ljh.gamedemo.proto.protoc.MsgEmailProto.ResponseEmail(this);
+        int from_bitField0_ = bitField0_;
         result.result_ = result_;
         result.content_ = content_;
         result.type_ = type_;
         if (emailBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            email_ = java.util.Collections.unmodifiableList(email_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
           result.email_ = email_;
         } else {
           result.email_ = emailBuilder_.build();
@@ -1350,8 +1396,31 @@ public final class MsgEmailProto {
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
         }
-        if (other.hasEmail()) {
-          mergeEmail(other.getEmail());
+        if (emailBuilder_ == null) {
+          if (!other.email_.isEmpty()) {
+            if (email_.isEmpty()) {
+              email_ = other.email_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureEmailIsMutable();
+              email_.addAll(other.email_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.email_.isEmpty()) {
+            if (emailBuilder_.isEmpty()) {
+              emailBuilder_.dispose();
+              emailBuilder_ = null;
+              email_ = other.email_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              emailBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getEmailFieldBuilder() : null;
+            } else {
+              emailBuilder_.addAllMessages(other.email_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1381,6 +1450,7 @@ public final class MsgEmailProto {
         }
         return this;
       }
+      private int bitField0_;
 
       private int result_ ;
       /**
@@ -1522,116 +1592,239 @@ public final class MsgEmailProto {
         return this;
       }
 
-      private com.ljh.gamedemo.proto.protoc.EmailProto.Email email_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.EmailProto.Email, com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder, com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder> emailBuilder_;
-      /**
-       * <code>.Email email = 4;</code>
-       */
-      public boolean hasEmail() {
-        return emailBuilder_ != null || email_ != null;
+      private java.util.List<com.ljh.gamedemo.proto.protoc.EmailProto.Email> email_ =
+        java.util.Collections.emptyList();
+      private void ensureEmailIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          email_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.EmailProto.Email>(email_);
+          bitField0_ |= 0x00000001;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.EmailProto.Email, com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder, com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder> emailBuilder_;
+
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.EmailProto.Email getEmail() {
+      public java.util.List<com.ljh.gamedemo.proto.protoc.EmailProto.Email> getEmailList() {
         if (emailBuilder_ == null) {
-          return email_ == null ? com.ljh.gamedemo.proto.protoc.EmailProto.Email.getDefaultInstance() : email_;
+          return java.util.Collections.unmodifiableList(email_);
         } else {
-          return emailBuilder_.getMessage();
+          return emailBuilder_.getMessageList();
         }
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
-      public Builder setEmail(com.ljh.gamedemo.proto.protoc.EmailProto.Email value) {
+      public int getEmailCount() {
+        if (emailBuilder_ == null) {
+          return email_.size();
+        } else {
+          return emailBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EmailProto.Email getEmail(int index) {
+        if (emailBuilder_ == null) {
+          return email_.get(index);
+        } else {
+          return emailBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public Builder setEmail(
+          int index, com.ljh.gamedemo.proto.protoc.EmailProto.Email value) {
         if (emailBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          email_ = value;
+          ensureEmailIsMutable();
+          email_.set(index, value);
           onChanged();
         } else {
-          emailBuilder_.setMessage(value);
+          emailBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
       public Builder setEmail(
+          int index, com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder builderForValue) {
+        if (emailBuilder_ == null) {
+          ensureEmailIsMutable();
+          email_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          emailBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public Builder addEmail(com.ljh.gamedemo.proto.protoc.EmailProto.Email value) {
+        if (emailBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEmailIsMutable();
+          email_.add(value);
+          onChanged();
+        } else {
+          emailBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public Builder addEmail(
+          int index, com.ljh.gamedemo.proto.protoc.EmailProto.Email value) {
+        if (emailBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEmailIsMutable();
+          email_.add(index, value);
+          onChanged();
+        } else {
+          emailBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public Builder addEmail(
           com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder builderForValue) {
         if (emailBuilder_ == null) {
-          email_ = builderForValue.build();
+          ensureEmailIsMutable();
+          email_.add(builderForValue.build());
           onChanged();
         } else {
-          emailBuilder_.setMessage(builderForValue.build());
+          emailBuilder_.addMessage(builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
-      public Builder mergeEmail(com.ljh.gamedemo.proto.protoc.EmailProto.Email value) {
+      public Builder addEmail(
+          int index, com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder builderForValue) {
         if (emailBuilder_ == null) {
-          if (email_ != null) {
-            email_ =
-              com.ljh.gamedemo.proto.protoc.EmailProto.Email.newBuilder(email_).mergeFrom(value).buildPartial();
-          } else {
-            email_ = value;
-          }
+          ensureEmailIsMutable();
+          email_.add(index, builderForValue.build());
           onChanged();
         } else {
-          emailBuilder_.mergeFrom(value);
+          emailBuilder_.addMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
+       */
+      public Builder addAllEmail(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.EmailProto.Email> values) {
+        if (emailBuilder_ == null) {
+          ensureEmailIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, email_);
+          onChanged();
+        } else {
+          emailBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
        */
       public Builder clearEmail() {
         if (emailBuilder_ == null) {
-          email_ = null;
+          email_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          email_ = null;
-          emailBuilder_ = null;
+          emailBuilder_.clear();
         }
-
         return this;
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder getEmailBuilder() {
-        
-        onChanged();
-        return getEmailFieldBuilder().getBuilder();
+      public Builder removeEmail(int index) {
+        if (emailBuilder_ == null) {
+          ensureEmailIsMutable();
+          email_.remove(index);
+          onChanged();
+        } else {
+          emailBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder getEmailOrBuilder() {
-        if (emailBuilder_ != null) {
-          return emailBuilder_.getMessageOrBuilder();
-        } else {
-          return email_ == null ?
-              com.ljh.gamedemo.proto.protoc.EmailProto.Email.getDefaultInstance() : email_;
+      public com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder getEmailBuilder(
+          int index) {
+        return getEmailFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder getEmailOrBuilder(
+          int index) {
+        if (emailBuilder_ == null) {
+          return email_.get(index);  } else {
+          return emailBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>.Email email = 4;</code>
+       * <code>repeated .Email email = 4;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder> 
+           getEmailOrBuilderList() {
+        if (emailBuilder_ != null) {
+          return emailBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(email_);
+        }
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder addEmailBuilder() {
+        return getEmailFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.EmailProto.Email.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder addEmailBuilder(
+          int index) {
+        return getEmailFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.EmailProto.Email.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Email email = 4;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder> 
+           getEmailBuilderList() {
+        return getEmailFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           com.ljh.gamedemo.proto.protoc.EmailProto.Email, com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder, com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder> 
           getEmailFieldBuilder() {
         if (emailBuilder_ == null) {
-          emailBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          emailBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.ljh.gamedemo.proto.protoc.EmailProto.Email, com.ljh.gamedemo.proto.protoc.EmailProto.Email.Builder, com.ljh.gamedemo.proto.protoc.EmailProto.EmailOrBuilder>(
-                  getEmail(),
+                  email_,
+                  ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
           email_ = null;
@@ -1714,10 +1907,10 @@ public final class MsgEmailProto {
       "Email\022\016\n\006userId\030\001 \001(\003\022\013\n\003eid\030\002 \001(\003\022\032\n\004ty" +
       "pe\030\003 \001(\0162\014.RequestType\"c\n\rResponseEmail\022" +
       "\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004type" +
-      "\030\003 \001(\0162\014.RequestType\022\025\n\005email\030\004 \001(\0132\006.Em" +
-      "ail*$\n\013RequestType\022\010\n\004READ\020\000\022\013\n\007RECEIVE\020" +
-      "\001B.\n\035com.ljh.gamedemo.proto.protocB\rMsgE" +
-      "mailProtob\006proto3"
+      "\030\003 \001(\0162\014.RequestType\022\025\n\005email\030\004 \003(\0132\006.Em" +
+      "ail*/\n\013RequestType\022\010\n\004READ\020\000\022\013\n\007RECEIVE\020" +
+      "\001\022\t\n\005EMAIL\020\002B.\n\035com.ljh.gamedemo.proto.p" +
+      "rotocB\rMsgEmailProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -1,6 +1,11 @@
 package com.ljh.gamedemo.service;
 
+import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.entity.*;
+import com.ljh.gamedemo.local.LocalEquipMap;
+import com.ljh.gamedemo.local.LocalGoodsMap;
+import com.ljh.gamedemo.local.LocalItemsMap;
+import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.*;
 import org.springframework.stereotype.Service;
 
@@ -231,4 +236,43 @@ public class ProtoService {
     }
 
 
+    /*public List<EmailProto.Email> transToEmailList(List<Email> emailList) {
+        List<EmailProto.Email> res = new ArrayList<>();
+
+        if (emailList == null || emailList.isEmpty()){
+            return null;
+        }
+
+        emailList.forEach(e -> {
+            EmailProto.Email email = transToEmail(e);
+            res.add(email);
+        });
+
+        return res;
+    }
+
+    private EmailProto.Email transToEmail(Email e) {
+        Role role = LocalUserMap.getIdRoleMap().get(e.getToRoleId());
+
+        Goods goods = LocalGoodsMap.getIdGoodsMap().get(gid);
+
+        EmailProto.Email email = EmailProto.Email.newBuilder()
+                .setId(e.getId())
+                .setTheme(e.getTheme())
+                .setContent(e.getContent())
+                .setFromId(e.getFromId())
+                .setRole(transToRole(role))
+                .build();
+
+        // 设置邮件的物品信息
+        if (goods.getType().intValue() == CommodityType.ITEM.getCode()){
+            Items items = LocalItemsMap.getIdItemsMap().get(goods.getGid());
+            email.toBuilder().setItem(transToItem(items)).build();
+
+        }else if(goods.getType().intValue() == CommodityType.EQUIP.getCode()) {
+            Equip equip = LocalEquipMap.getIdEquipMap().get(gid);
+            email.toBuilder().setEquip(transToEquip(equip)).build();
+        }
+        return email;
+    }*/
 }

@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.ljh.gamedemo.dao")
 public class GamedemoApplication {
 
-
     public static void main(String[] args) throws Exception{
         SpringApplication.run(GamedemoApplication.class, args);
 

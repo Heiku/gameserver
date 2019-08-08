@@ -127,11 +127,16 @@ public final class MsgMallProto {
     long getCId();
 
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>int32 num = 3;</code>
+     */
+    int getNum();
+
+    /**
+     * <code>.RequestType type = 4;</code>
      */
     int getTypeValue();
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>.RequestType type = 4;</code>
      */
     com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType getType();
   }
@@ -192,6 +197,11 @@ public final class MsgMallProto {
               break;
             }
             case 24: {
+
+              num_ = input.readInt32();
+              break;
+            }
+            case 32: {
               int rawValue = input.readEnum();
 
               type_ = rawValue;
@@ -247,16 +257,25 @@ public final class MsgMallProto {
       return cId_;
     }
 
-    public static final int TYPE_FIELD_NUMBER = 3;
+    public static final int NUM_FIELD_NUMBER = 3;
+    private int num_;
+    /**
+     * <code>int32 num = 3;</code>
+     */
+    public int getNum() {
+      return num_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 4;
     private int type_;
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>.RequestType type = 4;</code>
      */
     public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.RequestType type = 3;</code>
+     * <code>.RequestType type = 4;</code>
      */
     public com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType getType() {
       @SuppressWarnings("deprecation")
@@ -284,8 +303,11 @@ public final class MsgMallProto {
       if (cId_ != 0L) {
         output.writeInt64(2, cId_);
       }
+      if (num_ != 0) {
+        output.writeInt32(3, num_);
+      }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType.MALL.getNumber()) {
-        output.writeEnum(3, type_);
+        output.writeEnum(4, type_);
       }
       unknownFields.writeTo(output);
     }
@@ -304,9 +326,13 @@ public final class MsgMallProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, cId_);
       }
+      if (num_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, num_);
+      }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType.MALL.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, type_);
+          .computeEnumSize(4, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -327,6 +353,8 @@ public final class MsgMallProto {
           != other.getUserId()) return false;
       if (getCId()
           != other.getCId()) return false;
+      if (getNum()
+          != other.getNum()) return false;
       if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -345,6 +373,8 @@ public final class MsgMallProto {
       hash = (37 * hash) + CID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCId());
+      hash = (37 * hash) + NUM_FIELD_NUMBER;
+      hash = (53 * hash) + getNum();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -484,6 +514,8 @@ public final class MsgMallProto {
 
         cId_ = 0L;
 
+        num_ = 0;
+
         type_ = 0;
 
         return this;
@@ -514,6 +546,7 @@ public final class MsgMallProto {
         com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestMall result = new com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestMall(this);
         result.userId_ = userId_;
         result.cId_ = cId_;
+        result.num_ = num_;
         result.type_ = type_;
         onBuilt();
         return result;
@@ -568,6 +601,9 @@ public final class MsgMallProto {
         }
         if (other.getCId() != 0L) {
           setCId(other.getCId());
+        }
+        if (other.getNum() != 0) {
+          setNum(other.getNum());
         }
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
@@ -653,15 +689,41 @@ public final class MsgMallProto {
         return this;
       }
 
+      private int num_ ;
+      /**
+       * <code>int32 num = 3;</code>
+       */
+      public int getNum() {
+        return num_;
+      }
+      /**
+       * <code>int32 num = 3;</code>
+       */
+      public Builder setNum(int value) {
+        
+        num_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 num = 3;</code>
+       */
+      public Builder clearNum() {
+        
+        num_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int type_ = 0;
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public Builder setTypeValue(int value) {
         type_ = value;
@@ -669,7 +731,7 @@ public final class MsgMallProto {
         return this;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType getType() {
         @SuppressWarnings("deprecation")
@@ -677,7 +739,7 @@ public final class MsgMallProto {
         return result == null ? com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public Builder setType(com.ljh.gamedemo.proto.protoc.MsgMallProto.RequestType value) {
         if (value == null) {
@@ -689,7 +751,7 @@ public final class MsgMallProto {
         return this;
       }
       /**
-       * <code>.RequestType type = 3;</code>
+       * <code>.RequestType type = 4;</code>
        */
       public Builder clearType() {
         
@@ -1850,14 +1912,14 @@ public final class MsgMallProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rMsgMall.proto\032\017Commodity.proto\"F\n\013Requ" +
-      "estMall\022\016\n\006userId\030\001 \001(\003\022\013\n\003cId\030\002 \001(\003\022\032\n\004" +
-      "type\030\003 \001(\0162\014.RequestType\"j\n\014ResponseMall" +
-      "\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004typ" +
-      "e\030\003 \001(\0162\014.RequestType\022\035\n\tcommodity\030\004 \003(\013" +
-      "2\n.Commodity* \n\013RequestType\022\010\n\004MALL\020\000\022\007\n" +
-      "\003BUY\020\001B-\n\035com.ljh.gamedemo.proto.protocB" +
-      "\014MsgMallProtob\006proto3"
+      "\n\rMsgMall.proto\032\017Commodity.proto\"S\n\013Requ" +
+      "estMall\022\016\n\006userId\030\001 \001(\003\022\013\n\003cId\030\002 \001(\003\022\013\n\003" +
+      "num\030\003 \001(\005\022\032\n\004type\030\004 \001(\0162\014.RequestType\"j\n" +
+      "\014ResponseMall\022\016\n\006result\030\001 \001(\005\022\017\n\007content" +
+      "\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\035\n\tco" +
+      "mmodity\030\004 \003(\0132\n.Commodity* \n\013RequestType" +
+      "\022\010\n\004MALL\020\000\022\007\n\003BUY\020\001B-\n\035com.ljh.gamedemo." +
+      "proto.protocB\014MsgMallProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1869,7 +1931,7 @@ public final class MsgMallProto {
     internal_static_RequestMall_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RequestMall_descriptor,
-        new java.lang.String[] { "UserId", "CId", "Type", });
+        new java.lang.String[] { "UserId", "CId", "Num", "Type", });
     internal_static_ResponseMall_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ResponseMall_fieldAccessorTable = new

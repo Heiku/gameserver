@@ -2,14 +2,13 @@ package com.ljh.gamedemo.service;
 
 import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.common.ContentType;
+import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.dao.MallOrderDao;
 import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.dao.RoleItemsDao;
 import com.ljh.gamedemo.dao.UserRoleDao;
-import com.ljh.gamedemo.entity.Commodity;
-import com.ljh.gamedemo.entity.Equip;
-import com.ljh.gamedemo.entity.Items;
-import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import com.ljh.gamedemo.entity.tmp.MallBuyTimes;
 import com.ljh.gamedemo.local.LocalCommodityMap;
@@ -28,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,11 +40,6 @@ import java.util.List;
 public class MallService {
 
     @Autowired
-    private ProtoService protoService;
-
-    private MsgMallProto.ResponseMall response;
-
-    @Autowired
     private UserRoleDao roleDao;
 
     @Autowired
@@ -53,6 +48,18 @@ public class MallService {
     @Autowired
     private RoleEquipDao equipDao;
 
+    @Autowired
+    private MallOrderDao orderDao;
+
+
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ProtoService protoService;
+
+    private MsgMallProto.ResponseMall response;
 
     /**
      * 获取商店的刷新列表
@@ -97,8 +104,11 @@ public class MallService {
         long cid = request.getCId();
         Commodity c = LocalCommodityMap.getIdCommodityMaps().get(cid);
 
+        // 购买数量
+        int num = request.getNum();
+
         // 同步购买
-        synDoBuySelect(userId, c, channel);
+        synDoBuySelect(userId, c, num, channel);
 
         return null;
     }
@@ -111,7 +121,7 @@ public class MallService {
      * @param c
      * @param channel
      */
-    private synchronized void synDoBuySelect(long userId, Commodity c, Channel channel) {
+    private synchronized void synDoBuySelect(long userId, Commodity c, int num, Channel channel) {
         // 获取玩家信息
         Role role = LocalUserMap.userRoleMap.get(userId);
 
@@ -119,7 +129,7 @@ public class MallService {
         int price = c.getPrice();
 
         // 金钱不足，购买失败
-        if (ownGold < price){
+        if (ownGold < price * num){
             responseFailed(channel, ContentType.MALL_MONEY_NOT_ENOUGH);
             return;
         }
@@ -135,10 +145,10 @@ public class MallService {
                 if (t.getCId().intValue() == c.getId()){
 
                     // 可进行购买
-                    if (t.getTimes() <= maxLimit){
+                    if (t.getTimes() + num <= maxLimit){
 
                         // 具体的购买操作
-                        doBuy(role, c, channel);
+                        doBuy(role, c, num, channel);
 
                         // 更新缓存
                         t.setTimes(t.getTimes() + 1);
@@ -154,18 +164,18 @@ public class MallService {
         timesList = new ArrayList<>();
         MallBuyTimes times = new MallBuyTimes();
         times.setCId(c.getId());
-        times.setTimes(times.getTimes() + 1);
+        times.setTimes(times.getTimes() + num);
         timesList.add(times);
         MallBuyCache.getBuyTimesCache().put(role.getRoleId(), timesList);
 
         log.info("玩家：" + role.getName() + " 更新后的最大购买记录为：" + timesList);
 
-        doBuy(role, c, channel);
+        doBuy(role, c, num, channel);
     }
 
 
     /**
-     * 具体的购买操作
+     * 玩家可以购买，具体的购买操作
      *
      * 1.玩家扣除金币
      * 2.玩家获得物品
@@ -175,13 +185,20 @@ public class MallService {
      * @param c
      * @param channel
      */
-    private void doBuy(Role role, Commodity c, Channel channel) {
+    private void doBuy(Role role, Commodity c, int num, Channel channel) {
 
         // 更新玩家金币值
-        updateRoleGold(role, c);
+        updateRoleGold(role, c, num);
+
+        // 生成订单，并存入Db 中
+        MallOrder order = generateOrder(role, c, num);
+        orderDao.insertMallOrder(order);
+
+        // 异步发送邮件通知
+        sendCommodityEmail(role, order, EmailType.BUY);
 
         // 发放物品
-        sendRoleCommodity(role, c);
+        // sendRoleCommodity(role, c);
 
         response = MsgMallProto.ResponseMall.newBuilder()
                 .setResult(ResultCode.SUCCESS)
@@ -192,6 +209,46 @@ public class MallService {
         channel.writeAndFlush(response);
     }
 
+    /**
+     * 填充邮件物品信息，调用 emailService 发送邮件
+     *
+     * @param role
+     * @param order
+     * @param type
+     */
+    private void sendCommodityEmail(Role role, MallOrder order, EmailType type) {
+        List<EmailGoods> edList = new ArrayList<>();
+
+        // 构建邮件物品实体
+        EmailGoods ed = new EmailGoods();
+        ed.setGid(order.getCid());
+        ed.setNum(order.getNum());
+
+        edList.add(ed);
+
+        // 发送邮件
+        emailService.sendEmail(role, edList, EmailType.BUY);
+    }
+
+
+    /**
+     * 生成订单实体类
+     *
+     * @param role
+     * @param c
+     * @param num
+     * @return
+     */
+    private MallOrder generateOrder(Role role, Commodity c, int num) {
+        MallOrder mallOrder = new MallOrder();
+        mallOrder.setRoleId(role.getRoleId());
+        mallOrder.setCid(c.getId());
+        mallOrder.setCost(c.getPrice() * num);
+        mallOrder.setCreateTime(new Date());
+
+        return mallOrder;
+    }
+
 
     /**
      * 缓存，Db 更新玩家的金币值
@@ -199,10 +256,10 @@ public class MallService {
      * @param role
      * @param c
      */
-    private void updateRoleGold(Role role, Commodity c){
+    private void updateRoleGold(Role role, Commodity c, int num){
         log.info("玩家：" + role.getName() + " 购买商品前，金币为：" + role.getGold());
 
-        role.setGold(role.getGold() - c.getPrice());
+        role.setGold(role.getGold() - c.getPrice() * num);
 
         // 更新 role 信息
         // cache
@@ -446,7 +503,27 @@ public class MallService {
                     .setContent(ContentType.MALL_FIND_FAILED)
                     .build();
         }
+        return null;
+    }
 
+    /**
+     * 购买数量判断
+     *
+     * @param request
+     * @return
+     */
+    private MsgMallProto.ResponseMall numInterceptor(MsgMallProto.RequestMall request) {
+        int num = request.getNum();
+
+        long cid = request.getCId();
+        Commodity c = LocalCommodityMap.getIdCommodityMaps().get(cid);
+
+        if (num > c.getLimit()){
+            return MsgMallProto.ResponseMall.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.MALL_BUY_NUM_GT_LIMIT)
+                    .build();
+        }
         return null;
     }
 
@@ -470,6 +547,11 @@ public class MallService {
             return response;
         }
 
+        // 购买商品的判断
+        response = numInterceptor(request);
+        if (response != null){
+            return response;
+        }
         return null;
     }
 }

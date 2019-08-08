@@ -1,5 +1,9 @@
 package com.ljh.gamedemo.common;
 
+/**
+ *
+ * 通用的实体类型
+ */
 public enum  EntityType {
     Knight(100, "骑士"),
     Warrior(101, "战士"),

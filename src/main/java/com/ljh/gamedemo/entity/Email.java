@@ -7,6 +7,8 @@ import java.util.Date;
 /**
  * @Author: Heiku
  * @Date: 2019/8/7
+ *
+ * 邮件信息实体类
  */
 
 @Data
@@ -18,9 +20,9 @@ public class Email {
     private long id;
 
     /**
-     * 背包物品id
+     * 发件人
      */
-    private long gid;
+    private long fromId;
 
     /**
      * 接收人
@@ -28,9 +30,15 @@ public class Email {
     private long toRoleId;
 
     /**
-     * 邮件
+     * 主题
      */
-    private Integer num;
+    private String theme;
+
+    /**
+     * 文本
+     */
+    private String content;
+
 
     /**
      * 邮件装备：0：未领取， 1：领取
@@ -41,7 +49,6 @@ public class Email {
      * 创建时间
      */
     private Date createTime;
-
 
     /**
      * 领取时间

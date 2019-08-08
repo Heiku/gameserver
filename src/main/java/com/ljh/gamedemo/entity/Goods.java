@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
  * @Author: Heiku
  * @Date: 2019/8/7
  *
- * 背包中的物品
+ * 背包中的物品，通用类
  */
 
 @Data

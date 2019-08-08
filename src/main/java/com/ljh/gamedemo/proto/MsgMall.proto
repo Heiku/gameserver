@@ -15,8 +15,9 @@ enum RequestType{
 message RequestMall{
     int64 userId = 1;
     int64 cId = 2;
+    int32 num = 3;
 
-    RequestType type = 3;
+    RequestType type = 4;
 }
 
 message ResponseMall{

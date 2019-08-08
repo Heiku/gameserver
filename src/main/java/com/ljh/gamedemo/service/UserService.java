@@ -13,6 +13,7 @@ import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.UserToken;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleStateCache;
+import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.record.FutureMap;
@@ -383,5 +384,32 @@ public class UserService {
         // db
         int n = userRoleDao.updateRoleSiteInfo(role);
         log.info("Database update role where role name = " + role.getName() + " ,row = " + n);
+    }
+
+
+    /**
+     * 用户状态判断拦截器
+     *
+     * @param userId
+     * @return
+     */
+    public MsgUserInfoProto.ResponseUserInfo userStateInterceptor(long userId){
+        // 判断玩家账号
+        if (userId <= 0){
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.USER_EMPTY_DATA)
+                    .build();
+        }
+
+        // 判断角色信息
+        Role role = LocalUserMap.userRoleMap.get(userId);
+        if (role == null){
+            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.ROLE_EMPTY)
+                    .build();
+        }
+        return null;
     }
 }

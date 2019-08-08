@@ -29,65 +29,97 @@ public final class EmailProto {
 
     /**
      * <pre>
-     * 物品id
+     * 发送方
      * </pre>
      *
-     * <code>int64 gid = 2;</code>
+     * <code>int64 fromId = 2;</code>
      */
-    long getGid();
+    long getFromId();
 
     /**
      * <pre>
-     * 物品类型
+     * 邮件主题
      * </pre>
      *
-     * <code>int32 type = 3;</code>
+     * <code>string theme = 3;</code>
      */
-    int getType();
+    java.lang.String getTheme();
+    /**
+     * <pre>
+     * 邮件主题
+     * </pre>
+     *
+     * <code>string theme = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getThemeBytes();
 
     /**
-     * <code>int32 num = 4;</code>
+     * <pre>
+     * 文本
+     * </pre>
+     *
+     * <code>string content = 4;</code>
      */
-    int getNum();
+    java.lang.String getContent();
+    /**
+     * <pre>
+     * 文本
+     * </pre>
+     *
+     * <code>string content = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getContentBytes();
 
     /**
-     * <code>.Items item = 5;</code>
-     */
-    boolean hasItem();
-    /**
-     * <code>.Items item = 5;</code>
-     */
-    com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItem();
-    /**
-     * <code>.Items item = 5;</code>
-     */
-    com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemOrBuilder();
-
-    /**
-     * <code>.Equip equip = 6;</code>
-     */
-    boolean hasEquip();
-    /**
-     * <code>.Equip equip = 6;</code>
-     */
-    com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip();
-    /**
-     * <code>.Equip equip = 6;</code>
-     */
-    com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder();
-
-    /**
-     * <code>.Role role = 7;</code>
+     * <pre>
+     * 接收人信息
+     * </pre>
+     *
+     * <code>.Role role = 6;</code>
      */
     boolean hasRole();
     /**
-     * <code>.Role role = 7;</code>
+     * <pre>
+     * 接收人信息
+     * </pre>
+     *
+     * <code>.Role role = 6;</code>
      */
     com.ljh.gamedemo.proto.protoc.RoleProto.Role getRole();
     /**
-     * <code>.Role role = 7;</code>
+     * <pre>
+     * 接收人信息
+     * </pre>
+     *
+     * <code>.Role role = 6;</code>
      */
     com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getRoleOrBuilder();
+
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> 
+        getGoodsList();
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.GoodsProto.Goods getGoods(int index);
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    int getGoodsCount();
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+        getGoodsOrBuilderList();
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder getGoodsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code Email}
@@ -102,6 +134,9 @@ public final class EmailProto {
       super(builder);
     }
     private Email() {
+      theme_ = "";
+      content_ = "";
+      goods_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -124,6 +159,7 @@ public final class EmailProto {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -141,46 +177,22 @@ public final class EmailProto {
             }
             case 16: {
 
-              gid_ = input.readInt64();
+              fromId_ = input.readInt64();
               break;
             }
-            case 24: {
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              type_ = input.readInt32();
+              theme_ = s;
               break;
             }
-            case 32: {
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              num_ = input.readInt32();
-              break;
-            }
-            case 42: {
-              com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder subBuilder = null;
-              if (item_ != null) {
-                subBuilder = item_.toBuilder();
-              }
-              item_ = input.readMessage(com.ljh.gamedemo.proto.protoc.ItemsProto.Items.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(item_);
-                item_ = subBuilder.buildPartial();
-              }
-
+              content_ = s;
               break;
             }
             case 50: {
-              com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder subBuilder = null;
-              if (equip_ != null) {
-                subBuilder = equip_.toBuilder();
-              }
-              equip_ = input.readMessage(com.ljh.gamedemo.proto.protoc.EquipProto.Equip.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(equip_);
-                equip_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 58: {
               com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder subBuilder = null;
               if (role_ != null) {
                 subBuilder = role_.toBuilder();
@@ -191,6 +203,15 @@ public final class EmailProto {
                 role_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 58: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                goods_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              goods_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -208,6 +229,9 @@ public final class EmailProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          goods_ = java.util.Collections.unmodifiableList(goods_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -238,102 +262,169 @@ public final class EmailProto {
       return id_;
     }
 
-    public static final int GID_FIELD_NUMBER = 2;
-    private long gid_;
+    public static final int FROMID_FIELD_NUMBER = 2;
+    private long fromId_;
     /**
      * <pre>
-     * 物品id
+     * 发送方
      * </pre>
      *
-     * <code>int64 gid = 2;</code>
+     * <code>int64 fromId = 2;</code>
      */
-    public long getGid() {
-      return gid_;
+    public long getFromId() {
+      return fromId_;
     }
 
-    public static final int TYPE_FIELD_NUMBER = 3;
-    private int type_;
+    public static final int THEME_FIELD_NUMBER = 3;
+    private volatile java.lang.Object theme_;
     /**
      * <pre>
-     * 物品类型
+     * 邮件主题
      * </pre>
      *
-     * <code>int32 type = 3;</code>
+     * <code>string theme = 3;</code>
      */
-    public int getType() {
-      return type_;
+    public java.lang.String getTheme() {
+      java.lang.Object ref = theme_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        theme_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 邮件主题
+     * </pre>
+     *
+     * <code>string theme = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getThemeBytes() {
+      java.lang.Object ref = theme_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        theme_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
-    public static final int NUM_FIELD_NUMBER = 4;
-    private int num_;
+    public static final int CONTENT_FIELD_NUMBER = 4;
+    private volatile java.lang.Object content_;
     /**
-     * <code>int32 num = 4;</code>
+     * <pre>
+     * 文本
+     * </pre>
+     *
+     * <code>string content = 4;</code>
      */
-    public int getNum() {
-      return num_;
+    public java.lang.String getContent() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        content_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 文本
+     * </pre>
+     *
+     * <code>string content = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getContentBytes() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        content_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
-    public static final int ITEM_FIELD_NUMBER = 5;
-    private com.ljh.gamedemo.proto.protoc.ItemsProto.Items item_;
-    /**
-     * <code>.Items item = 5;</code>
-     */
-    public boolean hasItem() {
-      return item_ != null;
-    }
-    /**
-     * <code>.Items item = 5;</code>
-     */
-    public com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItem() {
-      return item_ == null ? com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance() : item_;
-    }
-    /**
-     * <code>.Items item = 5;</code>
-     */
-    public com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemOrBuilder() {
-      return getItem();
-    }
-
-    public static final int EQUIP_FIELD_NUMBER = 6;
-    private com.ljh.gamedemo.proto.protoc.EquipProto.Equip equip_;
-    /**
-     * <code>.Equip equip = 6;</code>
-     */
-    public boolean hasEquip() {
-      return equip_ != null;
-    }
-    /**
-     * <code>.Equip equip = 6;</code>
-     */
-    public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip() {
-      return equip_ == null ? com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance() : equip_;
-    }
-    /**
-     * <code>.Equip equip = 6;</code>
-     */
-    public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder() {
-      return getEquip();
-    }
-
-    public static final int ROLE_FIELD_NUMBER = 7;
+    public static final int ROLE_FIELD_NUMBER = 6;
     private com.ljh.gamedemo.proto.protoc.RoleProto.Role role_;
     /**
-     * <code>.Role role = 7;</code>
+     * <pre>
+     * 接收人信息
+     * </pre>
+     *
+     * <code>.Role role = 6;</code>
      */
     public boolean hasRole() {
       return role_ != null;
     }
     /**
-     * <code>.Role role = 7;</code>
+     * <pre>
+     * 接收人信息
+     * </pre>
+     *
+     * <code>.Role role = 6;</code>
      */
     public com.ljh.gamedemo.proto.protoc.RoleProto.Role getRole() {
       return role_ == null ? com.ljh.gamedemo.proto.protoc.RoleProto.Role.getDefaultInstance() : role_;
     }
     /**
-     * <code>.Role role = 7;</code>
+     * <pre>
+     * 接收人信息
+     * </pre>
+     *
+     * <code>.Role role = 6;</code>
      */
     public com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getRoleOrBuilder() {
       return getRole();
+    }
+
+    public static final int GOODS_FIELD_NUMBER = 7;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> goods_;
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    public java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> getGoodsList() {
+      return goods_;
+    }
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+        getGoodsOrBuilderList() {
+      return goods_;
+    }
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    public int getGoodsCount() {
+      return goods_.size();
+    }
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods getGoods(int index) {
+      return goods_.get(index);
+    }
+    /**
+     * <code>repeated .Goods goods = 7;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder getGoodsOrBuilder(
+        int index) {
+      return goods_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -353,23 +444,20 @@ public final class EmailProto {
       if (id_ != 0L) {
         output.writeInt64(1, id_);
       }
-      if (gid_ != 0L) {
-        output.writeInt64(2, gid_);
+      if (fromId_ != 0L) {
+        output.writeInt64(2, fromId_);
       }
-      if (type_ != 0) {
-        output.writeInt32(3, type_);
+      if (!getThemeBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, theme_);
       }
-      if (num_ != 0) {
-        output.writeInt32(4, num_);
-      }
-      if (item_ != null) {
-        output.writeMessage(5, getItem());
-      }
-      if (equip_ != null) {
-        output.writeMessage(6, getEquip());
+      if (!getContentBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, content_);
       }
       if (role_ != null) {
-        output.writeMessage(7, getRole());
+        output.writeMessage(6, getRole());
+      }
+      for (int i = 0; i < goods_.size(); i++) {
+        output.writeMessage(7, goods_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -384,29 +472,23 @@ public final class EmailProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, id_);
       }
-      if (gid_ != 0L) {
+      if (fromId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, gid_);
+          .computeInt64Size(2, fromId_);
       }
-      if (type_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, type_);
+      if (!getThemeBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, theme_);
       }
-      if (num_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, num_);
-      }
-      if (item_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getItem());
-      }
-      if (equip_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getEquip());
+      if (!getContentBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, content_);
       }
       if (role_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getRole());
+          .computeMessageSize(6, getRole());
+      }
+      for (int i = 0; i < goods_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, goods_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -425,27 +507,19 @@ public final class EmailProto {
 
       if (getId()
           != other.getId()) return false;
-      if (getGid()
-          != other.getGid()) return false;
-      if (getType()
-          != other.getType()) return false;
-      if (getNum()
-          != other.getNum()) return false;
-      if (hasItem() != other.hasItem()) return false;
-      if (hasItem()) {
-        if (!getItem()
-            .equals(other.getItem())) return false;
-      }
-      if (hasEquip() != other.hasEquip()) return false;
-      if (hasEquip()) {
-        if (!getEquip()
-            .equals(other.getEquip())) return false;
-      }
+      if (getFromId()
+          != other.getFromId()) return false;
+      if (!getTheme()
+          .equals(other.getTheme())) return false;
+      if (!getContent()
+          .equals(other.getContent())) return false;
       if (hasRole() != other.hasRole()) return false;
       if (hasRole()) {
         if (!getRole()
             .equals(other.getRole())) return false;
       }
+      if (!getGoodsList()
+          .equals(other.getGoodsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -460,24 +534,20 @@ public final class EmailProto {
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getId());
-      hash = (37 * hash) + GID_FIELD_NUMBER;
+      hash = (37 * hash) + FROMID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getGid());
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + getType();
-      hash = (37 * hash) + NUM_FIELD_NUMBER;
-      hash = (53 * hash) + getNum();
-      if (hasItem()) {
-        hash = (37 * hash) + ITEM_FIELD_NUMBER;
-        hash = (53 * hash) + getItem().hashCode();
-      }
-      if (hasEquip()) {
-        hash = (37 * hash) + EQUIP_FIELD_NUMBER;
-        hash = (53 * hash) + getEquip().hashCode();
-      }
+          getFromId());
+      hash = (37 * hash) + THEME_FIELD_NUMBER;
+      hash = (53 * hash) + getTheme().hashCode();
+      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getContent().hashCode();
       if (hasRole()) {
         hash = (37 * hash) + ROLE_FIELD_NUMBER;
         hash = (53 * hash) + getRole().hashCode();
+      }
+      if (getGoodsCount() > 0) {
+        hash = (37 * hash) + GOODS_FIELD_NUMBER;
+        hash = (53 * hash) + getGoodsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -607,6 +677,7 @@ public final class EmailProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getGoodsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -614,29 +685,23 @@ public final class EmailProto {
         super.clear();
         id_ = 0L;
 
-        gid_ = 0L;
+        fromId_ = 0L;
 
-        type_ = 0;
+        theme_ = "";
 
-        num_ = 0;
+        content_ = "";
 
-        if (itemBuilder_ == null) {
-          item_ = null;
-        } else {
-          item_ = null;
-          itemBuilder_ = null;
-        }
-        if (equipBuilder_ == null) {
-          equip_ = null;
-        } else {
-          equip_ = null;
-          equipBuilder_ = null;
-        }
         if (roleBuilder_ == null) {
           role_ = null;
         } else {
           role_ = null;
           roleBuilder_ = null;
+        }
+        if (goodsBuilder_ == null) {
+          goods_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          goodsBuilder_.clear();
         }
         return this;
       }
@@ -664,24 +729,24 @@ public final class EmailProto {
       @java.lang.Override
       public com.ljh.gamedemo.proto.protoc.EmailProto.Email buildPartial() {
         com.ljh.gamedemo.proto.protoc.EmailProto.Email result = new com.ljh.gamedemo.proto.protoc.EmailProto.Email(this);
+        int from_bitField0_ = bitField0_;
         result.id_ = id_;
-        result.gid_ = gid_;
-        result.type_ = type_;
-        result.num_ = num_;
-        if (itemBuilder_ == null) {
-          result.item_ = item_;
-        } else {
-          result.item_ = itemBuilder_.build();
-        }
-        if (equipBuilder_ == null) {
-          result.equip_ = equip_;
-        } else {
-          result.equip_ = equipBuilder_.build();
-        }
+        result.fromId_ = fromId_;
+        result.theme_ = theme_;
+        result.content_ = content_;
         if (roleBuilder_ == null) {
           result.role_ = role_;
         } else {
           result.role_ = roleBuilder_.build();
+        }
+        if (goodsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            goods_ = java.util.Collections.unmodifiableList(goods_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.goods_ = goods_;
+        } else {
+          result.goods_ = goodsBuilder_.build();
         }
         onBuilt();
         return result;
@@ -734,23 +799,45 @@ public final class EmailProto {
         if (other.getId() != 0L) {
           setId(other.getId());
         }
-        if (other.getGid() != 0L) {
-          setGid(other.getGid());
+        if (other.getFromId() != 0L) {
+          setFromId(other.getFromId());
         }
-        if (other.getType() != 0) {
-          setType(other.getType());
+        if (!other.getTheme().isEmpty()) {
+          theme_ = other.theme_;
+          onChanged();
         }
-        if (other.getNum() != 0) {
-          setNum(other.getNum());
-        }
-        if (other.hasItem()) {
-          mergeItem(other.getItem());
-        }
-        if (other.hasEquip()) {
-          mergeEquip(other.getEquip());
+        if (!other.getContent().isEmpty()) {
+          content_ = other.content_;
+          onChanged();
         }
         if (other.hasRole()) {
           mergeRole(other.getRole());
+        }
+        if (goodsBuilder_ == null) {
+          if (!other.goods_.isEmpty()) {
+            if (goods_.isEmpty()) {
+              goods_ = other.goods_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureGoodsIsMutable();
+              goods_.addAll(other.goods_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.goods_.isEmpty()) {
+            if (goodsBuilder_.isEmpty()) {
+              goodsBuilder_.dispose();
+              goodsBuilder_ = null;
+              goods_ = other.goods_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              goodsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getGoodsFieldBuilder() : null;
+            } else {
+              goodsBuilder_.addAllMessages(other.goods_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -780,6 +867,7 @@ public final class EmailProto {
         }
         return this;
       }
+      private int bitField0_;
 
       private long id_ ;
       /**
@@ -819,353 +907,241 @@ public final class EmailProto {
         return this;
       }
 
-      private long gid_ ;
+      private long fromId_ ;
       /**
        * <pre>
-       * 物品id
+       * 发送方
        * </pre>
        *
-       * <code>int64 gid = 2;</code>
+       * <code>int64 fromId = 2;</code>
        */
-      public long getGid() {
-        return gid_;
+      public long getFromId() {
+        return fromId_;
       }
       /**
        * <pre>
-       * 物品id
+       * 发送方
        * </pre>
        *
-       * <code>int64 gid = 2;</code>
+       * <code>int64 fromId = 2;</code>
        */
-      public Builder setGid(long value) {
+      public Builder setFromId(long value) {
         
-        gid_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 物品id
-       * </pre>
-       *
-       * <code>int64 gid = 2;</code>
-       */
-      public Builder clearGid() {
-        
-        gid_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int type_ ;
-      /**
-       * <pre>
-       * 物品类型
-       * </pre>
-       *
-       * <code>int32 type = 3;</code>
-       */
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <pre>
-       * 物品类型
-       * </pre>
-       *
-       * <code>int32 type = 3;</code>
-       */
-      public Builder setType(int value) {
-        
-        type_ = value;
+        fromId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 物品类型
+       * 发送方
        * </pre>
        *
-       * <code>int32 type = 3;</code>
+       * <code>int64 fromId = 2;</code>
        */
-      public Builder clearType() {
+      public Builder clearFromId() {
         
-        type_ = 0;
+        fromId_ = 0L;
         onChanged();
         return this;
       }
 
-      private int num_ ;
+      private java.lang.Object theme_ = "";
       /**
-       * <code>int32 num = 4;</code>
+       * <pre>
+       * 邮件主题
+       * </pre>
+       *
+       * <code>string theme = 3;</code>
        */
-      public int getNum() {
-        return num_;
+      public java.lang.String getTheme() {
+        java.lang.Object ref = theme_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          theme_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>int32 num = 4;</code>
+       * <pre>
+       * 邮件主题
+       * </pre>
+       *
+       * <code>string theme = 3;</code>
        */
-      public Builder setNum(int value) {
-        
-        num_ = value;
+      public com.google.protobuf.ByteString
+          getThemeBytes() {
+        java.lang.Object ref = theme_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          theme_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 邮件主题
+       * </pre>
+       *
+       * <code>string theme = 3;</code>
+       */
+      public Builder setTheme(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        theme_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 num = 4;</code>
+       * <pre>
+       * 邮件主题
+       * </pre>
+       *
+       * <code>string theme = 3;</code>
        */
-      public Builder clearNum() {
+      public Builder clearTheme() {
         
-        num_ = 0;
+        theme_ = getDefaultInstance().getTheme();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 邮件主题
+       * </pre>
+       *
+       * <code>string theme = 3;</code>
+       */
+      public Builder setThemeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        theme_ = value;
         onChanged();
         return this;
       }
 
-      private com.ljh.gamedemo.proto.protoc.ItemsProto.Items item_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> itemBuilder_;
+      private java.lang.Object content_ = "";
       /**
-       * <code>.Items item = 5;</code>
+       * <pre>
+       * 文本
+       * </pre>
+       *
+       * <code>string content = 4;</code>
        */
-      public boolean hasItem() {
-        return itemBuilder_ != null || item_ != null;
-      }
-      /**
-       * <code>.Items item = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items getItem() {
-        if (itemBuilder_ == null) {
-          return item_ == null ? com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance() : item_;
+      public java.lang.String getContent() {
+        java.lang.Object ref = content_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          content_ = s;
+          return s;
         } else {
-          return itemBuilder_.getMessage();
+          return (java.lang.String) ref;
         }
       }
       /**
-       * <code>.Items item = 5;</code>
+       * <pre>
+       * 文本
+       * </pre>
+       *
+       * <code>string content = 4;</code>
        */
-      public Builder setItem(com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
-        if (itemBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          item_ = value;
-          onChanged();
+      public com.google.protobuf.ByteString
+          getContentBytes() {
+        java.lang.Object ref = content_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          content_ = b;
+          return b;
         } else {
-          itemBuilder_.setMessage(value);
+          return (com.google.protobuf.ByteString) ref;
         }
-
-        return this;
       }
       /**
-       * <code>.Items item = 5;</code>
+       * <pre>
+       * 文本
+       * </pre>
+       *
+       * <code>string content = 4;</code>
        */
-      public Builder setItem(
-          com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder builderForValue) {
-        if (itemBuilder_ == null) {
-          item_ = builderForValue.build();
-          onChanged();
-        } else {
-          itemBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Items item = 5;</code>
-       */
-      public Builder mergeItem(com.ljh.gamedemo.proto.protoc.ItemsProto.Items value) {
-        if (itemBuilder_ == null) {
-          if (item_ != null) {
-            item_ =
-              com.ljh.gamedemo.proto.protoc.ItemsProto.Items.newBuilder(item_).mergeFrom(value).buildPartial();
-          } else {
-            item_ = value;
-          }
-          onChanged();
-        } else {
-          itemBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Items item = 5;</code>
-       */
-      public Builder clearItem() {
-        if (itemBuilder_ == null) {
-          item_ = null;
-          onChanged();
-        } else {
-          item_ = null;
-          itemBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Items item = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder getItemBuilder() {
-        
+      public Builder setContent(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        content_ = value;
         onChanged();
-        return getItemFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.Items item = 5;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder getItemOrBuilder() {
-        if (itemBuilder_ != null) {
-          return itemBuilder_.getMessageOrBuilder();
-        } else {
-          return item_ == null ?
-              com.ljh.gamedemo.proto.protoc.ItemsProto.Items.getDefaultInstance() : item_;
-        }
-      }
-      /**
-       * <code>.Items item = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder> 
-          getItemFieldBuilder() {
-        if (itemBuilder_ == null) {
-          itemBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.ljh.gamedemo.proto.protoc.ItemsProto.Items, com.ljh.gamedemo.proto.protoc.ItemsProto.Items.Builder, com.ljh.gamedemo.proto.protoc.ItemsProto.ItemsOrBuilder>(
-                  getItem(),
-                  getParentForChildren(),
-                  isClean());
-          item_ = null;
-        }
-        return itemBuilder_;
-      }
-
-      private com.ljh.gamedemo.proto.protoc.EquipProto.Equip equip_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> equipBuilder_;
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      public boolean hasEquip() {
-        return equipBuilder_ != null || equip_ != null;
-      }
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip getEquip() {
-        if (equipBuilder_ == null) {
-          return equip_ == null ? com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance() : equip_;
-        } else {
-          return equipBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      public Builder setEquip(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
-        if (equipBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          equip_ = value;
-          onChanged();
-        } else {
-          equipBuilder_.setMessage(value);
-        }
-
         return this;
       }
       /**
-       * <code>.Equip equip = 6;</code>
+       * <pre>
+       * 文本
+       * </pre>
+       *
+       * <code>string content = 4;</code>
        */
-      public Builder setEquip(
-          com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder builderForValue) {
-        if (equipBuilder_ == null) {
-          equip_ = builderForValue.build();
-          onChanged();
-        } else {
-          equipBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      public Builder mergeEquip(com.ljh.gamedemo.proto.protoc.EquipProto.Equip value) {
-        if (equipBuilder_ == null) {
-          if (equip_ != null) {
-            equip_ =
-              com.ljh.gamedemo.proto.protoc.EquipProto.Equip.newBuilder(equip_).mergeFrom(value).buildPartial();
-          } else {
-            equip_ = value;
-          }
-          onChanged();
-        } else {
-          equipBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      public Builder clearEquip() {
-        if (equipBuilder_ == null) {
-          equip_ = null;
-          onChanged();
-        } else {
-          equip_ = null;
-          equipBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder getEquipBuilder() {
+      public Builder clearContent() {
         
+        content_ = getDefaultInstance().getContent();
         onChanged();
-        return getEquipFieldBuilder().getBuilder();
+        return this;
       }
       /**
-       * <code>.Equip equip = 6;</code>
+       * <pre>
+       * 文本
+       * </pre>
+       *
+       * <code>string content = 4;</code>
        */
-      public com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder getEquipOrBuilder() {
-        if (equipBuilder_ != null) {
-          return equipBuilder_.getMessageOrBuilder();
-        } else {
-          return equip_ == null ?
-              com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance() : equip_;
-        }
-      }
-      /**
-       * <code>.Equip equip = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder> 
-          getEquipFieldBuilder() {
-        if (equipBuilder_ == null) {
-          equipBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.ljh.gamedemo.proto.protoc.EquipProto.Equip, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder, com.ljh.gamedemo.proto.protoc.EquipProto.EquipOrBuilder>(
-                  getEquip(),
-                  getParentForChildren(),
-                  isClean());
-          equip_ = null;
-        }
-        return equipBuilder_;
+      public Builder setContentBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        content_ = value;
+        onChanged();
+        return this;
       }
 
       private com.ljh.gamedemo.proto.protoc.RoleProto.Role role_;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.ljh.gamedemo.proto.protoc.RoleProto.Role, com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder, com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder> roleBuilder_;
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public boolean hasRole() {
         return roleBuilder_ != null || role_ != null;
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.RoleProto.Role getRole() {
         if (roleBuilder_ == null) {
@@ -1175,7 +1151,11 @@ public final class EmailProto {
         }
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public Builder setRole(com.ljh.gamedemo.proto.protoc.RoleProto.Role value) {
         if (roleBuilder_ == null) {
@@ -1191,7 +1171,11 @@ public final class EmailProto {
         return this;
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public Builder setRole(
           com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder builderForValue) {
@@ -1205,7 +1189,11 @@ public final class EmailProto {
         return this;
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public Builder mergeRole(com.ljh.gamedemo.proto.protoc.RoleProto.Role value) {
         if (roleBuilder_ == null) {
@@ -1223,7 +1211,11 @@ public final class EmailProto {
         return this;
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public Builder clearRole() {
         if (roleBuilder_ == null) {
@@ -1237,7 +1229,11 @@ public final class EmailProto {
         return this;
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder getRoleBuilder() {
         
@@ -1245,7 +1241,11 @@ public final class EmailProto {
         return getRoleFieldBuilder().getBuilder();
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       public com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getRoleOrBuilder() {
         if (roleBuilder_ != null) {
@@ -1256,7 +1256,11 @@ public final class EmailProto {
         }
       }
       /**
-       * <code>.Role role = 7;</code>
+       * <pre>
+       * 接收人信息
+       * </pre>
+       *
+       * <code>.Role role = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.ljh.gamedemo.proto.protoc.RoleProto.Role, com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder, com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder> 
@@ -1270,6 +1274,246 @@ public final class EmailProto {
           role_ = null;
         }
         return roleBuilder_;
+      }
+
+      private java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> goods_ =
+        java.util.Collections.emptyList();
+      private void ensureGoodsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          goods_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods>(goods_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.GoodsProto.Goods, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder, com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> goodsBuilder_;
+
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> getGoodsList() {
+        if (goodsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(goods_);
+        } else {
+          return goodsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public int getGoodsCount() {
+        if (goodsBuilder_ == null) {
+          return goods_.size();
+        } else {
+          return goodsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods getGoods(int index) {
+        if (goodsBuilder_ == null) {
+          return goods_.get(index);
+        } else {
+          return goodsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder setGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods value) {
+        if (goodsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGoodsIsMutable();
+          goods_.set(index, value);
+          onChanged();
+        } else {
+          goodsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder setGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder builderForValue) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          goodsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder addGoods(com.ljh.gamedemo.proto.protoc.GoodsProto.Goods value) {
+        if (goodsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGoodsIsMutable();
+          goods_.add(value);
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder addGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods value) {
+        if (goodsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGoodsIsMutable();
+          goods_.add(index, value);
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder addGoods(
+          com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder builderForValue) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.add(builderForValue.build());
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder addGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder builderForValue) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder addAllGoods(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> values) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, goods_);
+          onChanged();
+        } else {
+          goodsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder clearGoods() {
+        if (goodsBuilder_ == null) {
+          goods_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          goodsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public Builder removeGoods(int index) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.remove(index);
+          onChanged();
+        } else {
+          goodsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder getGoodsBuilder(
+          int index) {
+        return getGoodsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder getGoodsOrBuilder(
+          int index) {
+        if (goodsBuilder_ == null) {
+          return goods_.get(index);  } else {
+          return goodsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+           getGoodsOrBuilderList() {
+        if (goodsBuilder_ != null) {
+          return goodsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(goods_);
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder addGoodsBuilder() {
+        return getGoodsFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder addGoodsBuilder(
+          int index) {
+        return getGoodsFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Goods goods = 7;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder> 
+           getGoodsBuilderList() {
+        return getGoodsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.GoodsProto.Goods, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder, com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+          getGoodsFieldBuilder() {
+        if (goodsBuilder_ == null) {
+          goodsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.GoodsProto.Goods, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder, com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder>(
+                  goods_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          goods_ = null;
+        }
+        return goodsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -1338,29 +1582,27 @@ public final class EmailProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013Email.proto\032\013Items.proto\032\013Equip.proto\032" +
-      "\nRole.proto\"}\n\005Email\022\n\n\002id\030\001 \001(\003\022\013\n\003gid\030" +
-      "\002 \001(\003\022\014\n\004type\030\003 \001(\005\022\013\n\003num\030\004 \001(\005\022\024\n\004item" +
-      "\030\005 \001(\0132\006.Items\022\025\n\005equip\030\006 \001(\0132\006.Equip\022\023\n" +
-      "\004role\030\007 \001(\0132\005.RoleB+\n\035com.ljh.gamedemo.p" +
-      "roto.protocB\nEmailProtob\006proto3"
+      "\n\013Email.proto\032\nRole.proto\032\013Goods.proto\"o" +
+      "\n\005Email\022\n\n\002id\030\001 \001(\003\022\016\n\006fromId\030\002 \001(\003\022\r\n\005t" +
+      "heme\030\003 \001(\t\022\017\n\007content\030\004 \001(\t\022\023\n\004role\030\006 \001(" +
+      "\0132\005.Role\022\025\n\005goods\030\007 \003(\0132\006.GoodsB+\n\035com.l" +
+      "jh.gamedemo.proto.protocB\nEmailProtob\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.ljh.gamedemo.proto.protoc.ItemsProto.getDescriptor(),
-          com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor(),
           com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor(),
+          com.ljh.gamedemo.proto.protoc.GoodsProto.getDescriptor(),
         });
     internal_static_Email_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_Email_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Email_descriptor,
-        new java.lang.String[] { "Id", "Gid", "Type", "Num", "Item", "Equip", "Role", });
-    com.ljh.gamedemo.proto.protoc.ItemsProto.getDescriptor();
-    com.ljh.gamedemo.proto.protoc.EquipProto.getDescriptor();
+        new java.lang.String[] { "Id", "FromId", "Theme", "Content", "Role", "Goods", });
     com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor();
+    com.ljh.gamedemo.proto.protoc.GoodsProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -10,6 +10,7 @@ option java_outer_classname = "MsgEmailProto";
 enum RequestType{
     READ = 0;           // 取得邮件信息
     RECEIVE = 1;        // 接收邮件物品
+    EMAIL = 2;          // 获取所有邮件信息
 }
 
 message RequestEmail{
@@ -25,5 +26,5 @@ message ResponseEmail{
 
     RequestType type = 3;
 
-    Email email = 4;
+    repeated Email email = 4;
 }
