@@ -41,6 +41,9 @@ public class LocalItemsMap {
     // roleItemsMap <roleId, List<Items>>
     private static Map<Long, List<Items>> roleItemsMap = Maps.newConcurrentMap();
 
+    // roleItemsMap <roleId, List<ItemsId>>
+    private static Map<Long, List<Long>> roleItemsIdMap = Maps.newConcurrentMap();
+
     // idItemsMap <itemsId, Items>
     private static Map<Long, Items> idItemsMap = Maps.newConcurrentMap();
 
@@ -88,13 +91,22 @@ public class LocalItemsMap {
                 }
             }
         }
+        readRoleItems();
+    }
+
+
+    private static void readRoleItems(){
 
         // 存入 roleItemsMap
         List<RoleItems> itemsList = roleItemsDao.selectAllRoleItems();
 
         List<Items> list;
+        List<Long> itemsIdList;
+
         // <roleId, items>
         for (RoleItems roleItems : itemsList){
+
+            // 具体的items实体
             long roleId = roleItems.getRoleId();
 
             list = roleItemsMap.get(roleId);
@@ -107,6 +119,15 @@ public class LocalItemsMap {
             list.add(items);
 
             roleItemsMap.put(roleId, list);
+
+
+            // itemsId role 关联
+            itemsIdList = roleItemsIdMap.get(roleId);
+            if (itemsIdList == null){
+                itemsIdList = new ArrayList<>();
+            }
+            itemsIdList.add(roleItems.getObjectsId());
+            roleItemsIdMap.put(roleId, itemsIdList);
         }
     }
 
@@ -124,5 +145,9 @@ public class LocalItemsMap {
 
     public static void setIdItemsMap(Map<Long, Items> idItemsMap) {
         LocalItemsMap.idItemsMap = idItemsMap;
+    }
+
+    public static Map<Long, List<Long>> getRoleItemsIdMap() {
+        return roleItemsIdMap;
     }
 }

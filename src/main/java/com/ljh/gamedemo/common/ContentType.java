@@ -175,6 +175,16 @@ public class ContentType {
     public static final String CHAT_ROLE_NOT_LINE = "玩家不在线，暂时无法发送消息! \n";
 
 
+    // Email
+    public static final String EMAIL_NEW_MSG = "你有一条新邮件信息！\n";
+
+    public static final String EMAIL_EMPTY_GOODS = "该邮件内没有物品可以领取！\n";
+
+    public static final String EMAIL_RECEIVE_SUCCESS = "领取成功，物品已经发放到背包中！\n";
+
+    public static final String EMAIL_RECEIVE_FAILED = "领取失败，邮件物品已经被领取过了！\n";
+
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 }

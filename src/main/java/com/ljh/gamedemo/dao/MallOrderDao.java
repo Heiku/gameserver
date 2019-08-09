@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface MallOrderDao {
 
-    @Insert("insert into mall_order (role_id, cid, num, cost, create_time) values (#{roleId}, #{cid}, #{num}, {cost}, #{createTime})")
+    @Insert("insert into mall_order (role_id, cid, num, cost, create_time) values (#{roleId}, #{cid}, #{num}, #{cost}, #{createTime})")
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     int insertMallOrder(MallOrder mallOrder);
 

@@ -378,13 +378,26 @@ public class UserService {
      * @param role
      */
     public void updateRoleInfo(Role role){
-        // cahce
+        // cache
+        // update idRoleMap
         LocalUserMap.idRoleMap.put(role.getRoleId(), role);
+
+        // update siteRoleMap
+        List<Role> siteRoleList = LocalUserMap.siteRolesMap.get(role.getSiteId());
+        for (Role r : siteRoleList) {
+            if (r.getRoleId().longValue() == role.getRoleId()){
+                r = role;
+                break;
+            }
+        }
+        LocalUserMap.siteRolesMap.put(role.getSiteId(), siteRoleList);
 
         // db
         int n = userRoleDao.updateRoleSiteInfo(role);
         log.info("Database update role where role name = " + role.getName() + " ,row = " + n);
     }
+
+
 
 
     /**

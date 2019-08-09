@@ -5,12 +5,12 @@ import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
-import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 实体类型 -> proto type
@@ -100,6 +100,9 @@ public class ProtoService {
 
     public List<ItemsProto.Items> transToItemsList(List<Items> items){
         List<ItemsProto.Items> list = new ArrayList<>();
+        if (items == null || items.isEmpty()){
+            return list;
+        }
         for (Items i : items){
             list.add(transToItem(i));
         }
@@ -128,7 +131,7 @@ public class ProtoService {
 
     public List<EquipProto.Equip> transToEquipList(List<Equip> equips){
         List<EquipProto.Equip> list = new ArrayList<>();
-        if (equips == null){
+        if (equips == null || equips.isEmpty()){
             return list;
         }
         for (Equip e : equips){
@@ -236,43 +239,66 @@ public class ProtoService {
     }
 
 
-    /*public List<EmailProto.Email> transToEmailList(List<Email> emailList) {
-        List<EmailProto.Email> res = new ArrayList<>();
 
-        if (emailList == null || emailList.isEmpty()){
+    public List<GoodsProto.Goods> transToGoodsList(List<EmailGoods> egList) {
+        List<GoodsProto.Goods> res = new ArrayList<>();
+
+        if (egList == null || egList.isEmpty()){
             return null;
         }
 
-        emailList.forEach(e -> {
-            EmailProto.Email email = transToEmail(e);
-            res.add(email);
+        egList.forEach( e -> {
+            GoodsProto.Goods g = transToGoods(e);
+            res.add(g);
         });
 
         return res;
     }
 
-    private EmailProto.Email transToEmail(Email e) {
-        Role role = LocalUserMap.getIdRoleMap().get(e.getToRoleId());
+    private GoodsProto.Goods transToGoods(EmailGoods e) {
 
-        Goods goods = LocalGoodsMap.getIdGoodsMap().get(gid);
 
-        EmailProto.Email email = EmailProto.Email.newBuilder()
-                .setId(e.getId())
-                .setTheme(e.getTheme())
-                .setContent(e.getContent())
-                .setFromId(e.getFromId())
-                .setRole(transToRole(role))
-                .build();
-
-        // 设置邮件的物品信息
+        Goods goods = LocalGoodsMap.getIdGoodsMap().get(e.getGid());
         if (goods.getType().intValue() == CommodityType.ITEM.getCode()){
-            Items items = LocalItemsMap.getIdItemsMap().get(goods.getGid());
-            email.toBuilder().setItem(transToItem(items)).build();
+            Items i = LocalItemsMap.getIdItemsMap().get(goods.getGid());
+            return GoodsProto.Goods.newBuilder()
+                    .setNum(e.getNum())
+                    .setItem(transToItem(i))
+                    .build();
 
-        }else if(goods.getType().intValue() == CommodityType.EQUIP.getCode()) {
-            Equip equip = LocalEquipMap.getIdEquipMap().get(gid);
-            email.toBuilder().setEquip(transToEquip(equip)).build();
+        }else if (goods.getType().intValue() == CommodityType.EQUIP.getCode()){
+           Equip eq = LocalEquipMap.getIdEquipMap().get(goods.getGid());
+            return GoodsProto.Goods.newBuilder()
+                    .setNum(e.getNum())
+                    .setEquip(transToEquip(eq))
+                    .build();
         }
-        return email;
-    }*/
+        return null;
+    }
+
+
+
+    public EmailProto.Email transToEmail(Role r, Email email, List<GoodsProto.Goods> goodsList) {
+        return EmailProto.Email.newBuilder()
+                .setId(email.getId())
+                .setFromId(email.getFromId())
+                .setTheme(email.getTheme())
+                .setContent(email.getContent())
+                .setRole(transToRole(r))
+                .addAllGoods(goodsList)
+                .build();
+    }
+
+
+
+    public List<EmailProto.Email> transToEmailList(Map<Email, List<EmailGoods>> emailGoodsMap, Role role) {
+        List<EmailProto.Email> resList = new ArrayList<>();
+
+        emailGoodsMap.forEach((e, egList) -> {
+            EmailProto.Email emailProto = transToEmail(role, e, transToGoodsList(egList));
+            resList.add(emailProto);
+        });
+
+        return resList;
+    }
 }

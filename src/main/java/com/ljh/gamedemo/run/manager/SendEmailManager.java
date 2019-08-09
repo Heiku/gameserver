@@ -9,15 +9,16 @@ import java.util.concurrent.*;
 /**
  * @Author: Heiku
  * @Date: 2019/8/8
+ *
+ * 邮件发送线程池
  */
 
 @Slf4j
 public class SendEmailManager {
 
-
     private static Integer MAX_TASK = 100;
 
-    private static Integer DELAY_SEC = 5;
+    private static Integer DELAY_SEC = 1;
 
     private static BlockingQueue<SendEmailRun> queue = new LinkedBlockingQueue<>(MAX_TASK);
 
@@ -40,12 +41,14 @@ public class SendEmailManager {
 
 
     public static void run(){
-        while (true){
-            task = queue.poll();
-            if (task != null){
-                executorService.schedule(task, DELAY_SEC, TimeUnit.SECONDS);
-                log.info("完成更新role_objects表数据");
+        new Thread(() -> {
+            while (true){
+                task = queue.poll();
+                if (task != null) {
+                    executorService.schedule(task, DELAY_SEC, TimeUnit.SECONDS);
+                    log.info("成功发送邮件数据");
+                }
             }
-        }
+        }).start();
     }
 }

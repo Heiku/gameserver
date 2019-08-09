@@ -23,4 +23,11 @@ public interface RoleEmailDao {
 
     @Select("select * from role_email where to_role_id = #{roleId} and state = 0")
     List<Email> selectUnReceiveEmail(long roleId);
+
+    @Select("select * from role_email where to_role_id = #{roleId} order by state asc")
+    List<Email> selectAllEmail(long roleId);
+
+
+    @Select("select * from role_email where id = #{eid}")
+    Email selectEmailById(long eid);
 }

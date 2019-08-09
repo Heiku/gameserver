@@ -1,14 +1,21 @@
 syntax = "proto3";
 
-// protoc  --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Goods.proto
+import "Equip.proto";
+import "Items.proto";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Goods.proto
 
 option java_package = "com.ljh.gamedemo.proto.protoc";
 option java_outer_classname = "GoodsProto";
 
 // 物品适配类，用于展示物品信息
 message Goods{
-    int64 gid = 1;
+/*  int64 gid = 1;
     string name = 2;
     int32 type = 3;
-    int32 num = 4;
+    int32 num = 4;*/
+
+    int32 num = 1;
+    Equip equip = 2;
+    Items item = 3;
 }

@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @Author: Heiku
  * @Date: 2019/7/22
+ *
+ * 通过任务更新数据库中的 玩家物品信息，减轻玩家频繁使用物品对数据库的写压力
  */
 
 @Slf4j

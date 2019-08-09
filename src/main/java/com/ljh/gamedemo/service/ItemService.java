@@ -12,7 +12,10 @@ import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.db.SaveRoleItemRun;
+import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.run.user.RecoverUserRun;
@@ -21,6 +24,7 @@ import com.ljh.gamedemo.run.user.UseItemScheduledRun;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,18 +43,21 @@ import static com.ljh.gamedemo.common.ItemsType.*;
 @Service
 public class ItemService {
 
-    private static final int BLOOD_MAX_VALUE = 1000;
-
-    private static final int BLUE_MAX_VALUE = 300;
+    @Autowired
+    private RoleItemsDao roleItemsDao;
 
 
     @Autowired
-    private RoleItemsDao roleItemsDao;
+    private UserService userService;
 
     @Autowired
     private ProtoService protoService;
 
-    private MsgItemProto.ResponseItem response;
+
+
+    private MsgUserInfoProto.ResponseUserInfo userResp;
+
+    private MsgItemProto.ResponseItem itemResp;
 
 
     /**
@@ -59,12 +66,13 @@ public class ItemService {
      * @param request
      * @return
      */
-    public MsgItemProto.ResponseItem getAll(MsgItemProto.RequestItem request){
+    public void getAll(MsgItemProto.RequestItem request, Channel channel){
 
         // 用户状态判断
-        response = userStateInterceptor(request);
-        if (response != null){
-            return response;
+        userResp = userService.userStateInterceptor(request.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
+            return;
         }
 
         long userId = request.getUserId();
@@ -72,28 +80,19 @@ public class ItemService {
 
         // 获取当前用户的背包物品
         List<Items> items = LocalItemsMap.getRoleItemsMap().get(roleId);
-       // System.out.println(items);
-
-        // 空背包，构造response
-        if (items == null || items.isEmpty()){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setResult(ResultCode.SUCCESS)
-                    .setContent(ContentType.ITEM_EMPTY)
-                    .setType(MsgItemProto.RequestType.ALL)
-                    .build();
-        }
 
         // 获取所有的装备信息
         List<Equip> roleEquipList = LocalEquipMap.getHasEquipMap().get(roleId);
 
         // 非空背包
-        return MsgItemProto.ResponseItem.newBuilder()
+        itemResp = MsgItemProto.ResponseItem.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.FIND_SUCCESS)
                 .setType(MsgItemProto.RequestType.ALL)
                 .addAllItem(protoService.transToItemsList(items))
                 .addAllEquip(protoService.transToEquipList(roleEquipList))
                 .build();
+        channel.writeAndFlush(itemResp);
     }
 
 
@@ -103,22 +102,22 @@ public class ItemService {
      * @param requestItem
      * @return
      */
-    public MsgItemProto.ResponseItem useItem(MsgItemProto.RequestItem requestItem, Channel channel){
+    public void useItem(MsgItemProto.RequestItem requestItem, Channel channel){
         // 用户状态判断
-        response = userStateInterceptor(requestItem);
-        if (response != null){
-            return response;
+        userResp = userService.userStateInterceptor(requestItem.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
+            return;
         }
 
         // 物品状态判断
-        response = itemStateInterceptor(requestItem);
-        if (response != null){
-            return response;
+        itemResp = itemStateInterceptor(requestItem);
+        if (itemResp != null){
+            channel.writeAndFlush(itemResp);
+            return;
         }
 
-
         long userId = requestItem.getUserId();
-        long roleId = LocalUserMap.userRoleMap.get(userId).getRoleId();
         long itemsId = requestItem.getItemsId();
 
         // 获取物品
@@ -126,8 +125,6 @@ public class ItemService {
 
         // 使用物品
         doUseItem(userId, items, channel);
-
-        return null;
     }
 
 
@@ -149,6 +146,7 @@ public class ItemService {
                 break;
         }
     }
+
 
 
     /**
@@ -209,58 +207,158 @@ public class ItemService {
 
 
     /**
-     * 更新缓存信息，返回消息
+     * 为玩家添加物品
      *
-     * @param role
-     * @param items
-     * @return
+     * @param r         玩家
+     * @param gid       物品id
+     * @param num       物品数量
      */
-    private MsgItemProto.ResponseItem updateCacheResponse(Role role, Items items){
-        // 更新items的数量
-        items.setNum(items.getNum() - 1);
-        LocalItemsMap.getIdItemsMap().put(items.getItemsId(), items);
+    public void addRoleItems(Role r, long gid, int num){
 
-        // 数据库更新
-        roleItemsDao.updateItem(items.getNum(), role.getRoleId(), items.getItemsId());
+        Items items = LocalItemsMap.getIdItemsMap().get(gid);
 
+        // 当前玩家所拥有的物品数量
+        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(r.getRoleId());
+        // 玩家拥有的物品id
+        List<Long> itemsIdList = LocalItemsMap.getRoleItemsIdMap().get(r.getRoleId());
 
-        // TODO: 暂时不更新 siteRolesMap
-        // 直接返回消息
-        return MsgItemProto.ResponseItem.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(ContentType.ITEM_USE_SUCCESS)
-                .setType(MsgItemProto.RequestType.USE)
-                .setRole(protoService.transToRole(role))
-                .build();
+        // 空背包物品
+        if (itemsList == null){
+            itemsList = new ArrayList<>();
+            itemsIdList = new ArrayList<>();
+        }
+
+        // 添加的物品是新物品
+        if (itemsIdList.isEmpty() || !itemsIdList.contains(gid)){
+
+            // 插入物品信息
+            insertItemInfo(r, itemsList, itemsIdList, items, num);
+
+        // 已经拥有的物品
+        }else {
+
+            // 更新物品信息
+            updateItemInfo(r, itemsList, items, num);
+        }
+
+        // 更新缓存信息
+        LocalItemsMap.getRoleItemsMap().put(r.getRoleId(), itemsList);
+        LocalItemsMap.getRoleItemsIdMap().put(r.getRoleId(), itemsIdList);
+
+        log.info("玩家：" + r.getName() + " 购买物品后，物品列表为：" + items);
     }
+
+
+    /**
+     * 更新玩家物品
+     *
+     * @param r
+     * @param gid
+     * @param num
+     */
+    public void updateRoleItems(Role r, long gid, int num){
+        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(r.getRoleId());
+        if (itemsList == null){
+            return;
+        }
+
+        Items items = new Items();
+        // 更新缓存中的物品数量
+        for (Items i : itemsList) {
+            if (i.getItemsId() == gid){
+                i.setNum(i.getNum() + num);
+                items = i;
+
+                // 物品为 0，删除玩家的物品记录
+                if (i.getNum() == 0){
+                    removeRoleItem(r, i);
+                }
+                break;
+            }
+        }
+        LocalItemsMap.getRoleItemsMap().put(r.getRoleId(), itemsList);
+        log.info("更新RoleItemList后，数量为：" + itemsList);
+
+
+        // 同步更新数据库
+        SaveRoleItemRun run = new SaveRoleItemRun(items, r);
+        SaveRoleItemManager.addQueue(run);
+    }
+
 
 
 
     /**
-     * 用户状态拦截器，检验参数
+     * 加入背包的物品是新物品（玩家未拥有的）， 直接新增玩家的物品信息
      *
-     * @param requestItem
-     * @return
+     * @param r             玩家信息
+     * @param itemsList     拥有的物品列表
+     * @param idList        拥有的物品id列表
+     * @param items         物品信息
+     * @param num           数量
      */
-    private MsgItemProto.ResponseItem userStateInterceptor(MsgItemProto.RequestItem requestItem){
-        // 用户id标识判断
-        long userId = requestItem.getUserId();
-        if (userId <= 0){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_TOKEN_DATA_EMPTY)
-                    .build();
-        }
-        // 找不到对应的角色信息
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        if (role == null){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
-        }
-        return null;
+    private void insertItemInfo(Role r, List<Items> itemsList, List<Long> idList, Items items, int num){
+
+        // 复制一份物品信息到玩家下
+        Items tmp = new Items();
+        BeanUtils.copyProperties(items, tmp);
+
+        // 设置数量信息
+        tmp.setNum(num);
+        itemsList.add(tmp);
+        idList.add(tmp.getItemsId());
+
+        // insert into db
+        int n = roleItemsDao.insertRoleItems(r.getRoleId(), tmp.getItemsId(), tmp.getNum());
+        log.info("玩家新增加物品信息：更新玩家表 role_items 成功，影响的表中记录为：" + n);
     }
+
+
+    /**
+     * 更新玩家的物品数量
+     *
+     * @param r
+     * @param itemsList
+     * @param items
+     * @param num
+     */
+    private void updateItemInfo(Role r, List<Items> itemsList, Items items, int num) {
+
+        itemsList.forEach(i -> {
+            if (i.getItemsId().longValue() == items.getItemsId()) {
+                i.setNum(i.getNum() + num);
+
+                // manager update db
+                SaveRoleItemManager.addQueue(new SaveRoleItemRun(i, r));
+            }
+        });
+    }
+
+
+    /**
+     * 删除玩家的物品记录
+     *
+     * @param r     玩家信息
+     * @param i     物品信息
+     */
+    private void removeRoleItem(Role r, Items i){
+        // 更新缓存信息
+        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(r.getRoleId());
+        itemsList.forEach(it -> {
+            if (it.getItemsId().intValue() == i.getItemsId()){
+                itemsList.remove(i);
+            }
+        });
+
+        // 移除id集合
+        LocalItemsMap.getRoleItemsIdMap().get(r.getRoleId()).remove(i.getItemsId());
+
+        // 更新db
+        int n = roleItemsDao.deleteItem(r.getRoleId(), i.getItemsId());
+        log.info("删除玩家物品记录，role: " + r.getRoleId() + " items: " + i.getItemsId() + " 影响条数：" + n);
+    }
+
+
 
     /**
      * 物品状态拦截器
@@ -281,22 +379,17 @@ public class ItemService {
 
 
         // 判断用户是否存有该物品
-        Items sign = null;
         long userId = requestItem.getUserId();
         long roleId = LocalUserMap.userRoleMap.get(userId).getRoleId();
-        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(roleId);
-        for (Items i : itemsList){
-            if (i.getItemsId() == itemId){
-                sign = i;
-            }
-        }
-        if (sign == null){
+
+        // 读取玩家的物品id列表，判断玩家是否拥有该物品
+        List<Long> itemsIdList = LocalItemsMap.getRoleItemsIdMap().get(roleId);
+        if (itemsIdList.contains(itemId)){
             return MsgItemProto.ResponseItem.newBuilder()
                     .setResult(ResultCode.FAILED)
                     .setContent(ContentType.ITEM_NOT_CONTAIN)
                     .build();
         }
-
 
         // 判断物品是否存在
         Items items = LocalItemsMap.getIdItemsMap().get(itemId);

@@ -14,6 +14,7 @@ import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -143,15 +144,26 @@ public class BossBeAttackedRun implements Runnable {
      * @param dup
      */
     private void sendReward(Role role, Duplicate dup, Channel channel) {
+
+        // 奖励副本通关信息
         int gold = dup.getGoldReward();
         List<Equip> equips = dup.getEquipReward();
+
+        // 构造物品列表
+        List<Goods> gList = new ArrayList<>();
+        equips.forEach( e -> {
+            Goods goods = new Goods();
+            goods.setGid(e.getEquipId());
+            gList.add(goods);
+        });
+
 
         // 更新玩家的金币信息
         role.setGold(role.getGold() + gold);
         userService.updateRoleInfo(role);
 
         // 更新玩家的装备信息
-        equipService.addRoleEquips(role, equips);
+        equipService.addRoleEquips(role, gList);
 
         // 同时返回给玩家奖励信息
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()

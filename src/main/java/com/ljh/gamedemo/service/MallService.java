@@ -18,8 +18,6 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.MallBuyCache;
 import com.ljh.gamedemo.proto.protoc.CommodityProto;
 import com.ljh.gamedemo.proto.protoc.MsgMallProto;
-import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
-import com.ljh.gamedemo.run.db.SaveRoleItemRun;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -33,6 +31,9 @@ import java.util.List;
 /**
  * @Author: Heiku
  * @Date: 2019/8/2
+ *
+ *
+ *  商城操作
  */
 
 @Service
@@ -55,6 +56,12 @@ public class MallService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private ItemService itemService;
+
+    @Autowired
+    private EquipService equipService;
 
     @Autowired
     private ProtoService protoService;
@@ -197,9 +204,6 @@ public class MallService {
         // 异步发送邮件通知
         sendCommodityEmail(role, order, EmailType.BUY);
 
-        // 发放物品
-        // sendRoleCommodity(role, c);
-
         response = MsgMallProto.ResponseMall.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setType(MsgMallProto.RequestType.BUY)
@@ -243,6 +247,7 @@ public class MallService {
         MallOrder mallOrder = new MallOrder();
         mallOrder.setRoleId(role.getRoleId());
         mallOrder.setCid(c.getId());
+        mallOrder.setNum(num);
         mallOrder.setCost(c.getPrice() * num);
         mallOrder.setCreateTime(new Date());
 
@@ -279,108 +284,30 @@ public class MallService {
 
 
     /**
-     * 发放物品奖励
+     * 向玩家发放物品
      *
-     * @param role
-     * @param c
+     * @param r         玩家
+     * @param goods     物品
+     * @param num       数量
      */
-    private void sendRoleCommodity(Role role, Commodity c){
-        // 根据商品的类型发放物品
-        if (c.getType().intValue() == CommodityType.ITEM.getCode()){
-            log.info("玩家：" + role.getName() + " 购买物品！");
+    public void sendRoleGoods(Role r, Goods goods, int num){
+        // 获取发放物品的状态
+        int type = goods.getType();
+        if (type == CommodityType.ITEM.getCode()){
 
-            // 获取物品信息
-            Items item = LocalItemsMap.getIdItemsMap().get(c.getId());
+            // 添加玩家的物品数量
+            itemService.addRoleItems(r, goods.getGid(), num);
+        }
 
-            List<Items> items = LocalItemsMap.getRoleItemsMap().get(role.getRoleId());
+        else if (type == CommodityType.EQUIP.getCode()){
 
-            log.info("玩家：" + role.getName() + " 购买物品前，物品列表为：" + items);
-
-
-            // 物品判断
-            // TODO： 待优化！
-            if (items != null){
-                boolean contain = false;
-                // 判断是否包含 item
-                for (Items i : items) {
-                    if (i.getItemsId().longValue() == c.getId()){
-                        contain = true;
-                        break;
-                    }
-                }
-                // 新购入该物品
-                if (!contain){
-                    insertItemInfo(item, items, role);
-
-                // 之前已经拥有该物品，只需更新数量
-                }else {
-                    items.forEach(i -> {
-                        if (i.getItemsId().longValue() == item.getItemsId()) {
-                            i.setNum(i.getNum() + 1);
-
-                            // manager update db
-                            SaveRoleItemManager.addQueue(new SaveRoleItemRun(i, role));
-                        }
-                    });
-                }
-            }else {
-                items = new ArrayList<>();
-                insertItemInfo(item, items, role);
-            }
-            // update item
-            LocalItemsMap.getRoleItemsMap().put(role.getRoleId(), items);
-
-            log.info("玩家：" + role.getName() + " 购买物品后，物品列表为：" + items);
-
-
-        // 属于装备类型
-        }else if (c.getType().intValue() == CommodityType.EQUIP.getCode()){
-            log.info("玩家：" + role.getName() + " 购买装备！");
-            // 获取购买得装备信息
-            Equip equip = LocalEquipMap.getIdEquipMap().get(c.getId());
-
-            List<Equip> hasList = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
-            log.info("玩家：" + role.getName() + " 购买装备前，装备列表为：" + hasList);
-
-
-            // 构造新的装备信息
-            Equip tmp = new Equip();
-            BeanUtils.copyProperties(equip, tmp);
-
-            // update
-            // cache
-            hasList.add(equip);
-            LocalEquipMap.getHasEquipMap().put(role.getRoleId(), hasList);
-
-            // db
-            RoleEquipHas has = new RoleEquipHas();
-            has.setRoleId(role.getRoleId());
-            has.setEquipId(tmp.getEquipId());
-            equipDao.addHasEquips(has);
-
-            log.info("玩家：" + role.getName() + " 购买装备后，装备列表为：" + hasList);
+            // 添加玩家的装备数量
+            List<Goods> gList = new ArrayList<>();
+            gList.add(goods);
+            equipService.addRoleEquips(r, gList);
         }
     }
 
-
-    /**
-     * 新增玩家的物品信息
-     *
-     * @param data
-     * @param items
-     * @param role
-     */
-    private void insertItemInfo(Items data, List<Items> items, Role role){
-        Items tmp = new Items();
-        BeanUtils.copyProperties(data, tmp);
-
-        // add one
-        tmp.setNum(1);
-        items.add(tmp);
-
-        // db
-        itemsDao.insertRoleItems(role.getRoleId(), tmp.getItemsId(), tmp.getNum());
-    }
 
     /**
      * 组合商品列表

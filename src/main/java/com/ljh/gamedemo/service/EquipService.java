@@ -6,6 +6,7 @@ import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.RoleAttrDao;
 import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Equip;
+import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.dto.RoleAttr;
 import com.ljh.gamedemo.entity.dto.RoleEquip;
@@ -14,6 +15,7 @@ import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.proto.protoc.MsgEquipProto;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +41,13 @@ public class EquipService {
     @Autowired
     private RoleAttrDao attrDao;
 
+
+    @Autowired
+    private UserService userService;
+
+
+    private MsgUserInfoProto.ResponseUserInfo userResp;
+
     private MsgEquipProto.ResponseEquip response;
 
     private ProtoService protoService = ProtoService.getInstance();
@@ -55,9 +64,9 @@ public class EquipService {
      */
     public void getEquip(MsgEquipProto.RequestEquip request, Channel channel) {
         // 用户状态判断
-        response = userStateInterceptor(request);
-        if (response != null){
-            channel.writeAndFlush(response);
+        userResp = userService.userStateInterceptor(request.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
             return;
         }
 
@@ -128,9 +137,9 @@ public class EquipService {
      */
     public void putEquip(MsgEquipProto.RequestEquip request, Channel channel) {
         // 用户的状态判断
-        response = userStateInterceptor(request);
-        if (response != null){
-            channel.writeAndFlush(response);
+        userResp = userService.userStateInterceptor(request.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
             return;
         }
 
@@ -213,9 +222,9 @@ public class EquipService {
      */
     public void takeOffEquip(MsgEquipProto.RequestEquip request, Channel channel) {
         // 用户的状态判断
-        response = userStateInterceptor(request);
-        if (response != null){
-            channel.writeAndFlush(response);
+        userResp = userService.userStateInterceptor(request.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
             return;
         }
 
@@ -265,9 +274,9 @@ public class EquipService {
      */
     public void fixEquip(MsgEquipProto.RequestEquip request, Channel channel) {
         // 用户状态判断
-        response = userStateInterceptor(request);
-        if (response != null){
-            channel.writeAndFlush(response);
+        userResp = userService.userStateInterceptor(request.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
             return;
         }
 
@@ -469,6 +478,125 @@ public class EquipService {
     }
 
 
+
+
+
+    /**
+     * 返回当前玩家的所有已装备物品
+     *
+     * @param role
+     * @return
+     */
+    private List<Equip> getOwnEquipList(Role role){
+        List<Equip> resList = new ArrayList<>();
+        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        for (RoleEquip re : ownList) {
+            Equip e = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+            e.setDurability(re.getDurability());
+            e.setState(re.getState());
+            resList.add(e);
+        }
+
+        return resList;
+    }
+
+
+    /**
+     * 在玩家的装备背包中新增装备 (缓存 + DB)
+     *
+     * @param role      玩家信息
+     * @param goods     装备物品
+     */
+    public void addRoleEquips(Role role, List<Goods> goods){
+
+        // cahce
+        List<Equip> hasEquips = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
+        goods.forEach(g -> {
+            Equip tmp = LocalEquipMap.getIdEquipMap().get(g.getGid());
+            Equip des = new Equip();
+            BeanUtils.copyProperties(tmp, des);
+            hasEquips.add(des);
+
+
+            // db
+            RoleEquipHas has = new RoleEquipHas();
+            has.setEquipId(des.getEquipId());
+            has.setRoleId(role.getRoleId());
+
+            // 添加玩啊及装备信息
+            equipDao.addHasEquips(has);
+        });
+        LocalEquipMap.getHasEquipMap().put(role.getRoleId(), hasEquips);
+    }
+
+
+    /**
+     * 加锁同步装备的耐久度信息
+     *
+     * @param role
+     */
+    public synchronized void synCutEquipDurability(Role role){
+        List<RoleEquip> roleEquipList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+
+        log.info("攻击野怪之前，装备栏的耐久度为：" + roleEquipList);
+        for (RoleEquip re : roleEquipList) {
+
+            re.setDurability(re.getDurability() - 1);
+            if (re.getDurability() < 10){
+                re.setState(0);
+            }
+
+            // 更新db
+            int n = equipDao.updateRoleEquip(re);
+            log.info("攻击野怪之后，装备栏中的更新的行数为：" + n);
+        }
+        log.info("攻击野怪之后，装备栏的耐久度为：" + roleEquipList);
+    }
+
+
+
+
+
+
+
+    /**
+     * 判断用户是否属于佩戴装备的类别 及 判断玩家等级是否能够佩戴
+     *
+     * @param equip
+     * @param role
+     * @return
+     */
+    public MsgEquipProto.ResponseEquip equipPutInterceptor(Equip equip, Role role){
+        if (equip == null){
+            return MsgEquipProto.ResponseEquip.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.EQUIP_NOT_FOUND)
+                    .build();
+        }
+
+        int type = equip.getType();
+        int level = equip.getLevel();
+
+        // 进行玩家的角色类别 及 玩家的角色等级判断
+        if (type != role.getType() && type != EntityType.COMMON.getCode()){
+            return MsgEquipProto.ResponseEquip.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.EQUIP_WRONG_TPYE)
+                    .build();
+        }
+
+        if (level > role.getLevel()){
+            return MsgEquipProto.ResponseEquip.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.EQUIP_WRONG_LEVEL)
+                    .build();
+        }
+        return null;
+    }
+
+
+
+
     /**
      * 判断装备的具体信息 （是否正确输入equipId, 当前用户是否持有该装备）
      *
@@ -508,140 +636,5 @@ public class EquipService {
                 .setResult(ResultCode.FAILED)
                 .setContent(ContentType.EQUIP_NOT_BELONG)
                 .build();
-    }
-
-
-    /**
-     * 判断用户是否属于佩戴装备的类别 及 判断玩家等级是否能够佩戴
-     *
-     * @param equip
-     * @param role
-     * @return
-     */
-    public MsgEquipProto.ResponseEquip equipPutInterceptor(Equip equip, Role role){
-        if (equip == null){
-            return MsgEquipProto.ResponseEquip.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.EQUIP_NOT_FOUND)
-                    .build();
-        }
-
-        int type = equip.getType();
-        int level = equip.getLevel();
-
-        // 进行玩家的角色类别 及 玩家的角色等级判断
-        if (type != role.getType() && type != EntityType.COMMON.getCode()){
-            return MsgEquipProto.ResponseEquip.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.EQUIP_WRONG_TPYE)
-                    .build();
-        }
-
-        if (level > role.getLevel()){
-            return MsgEquipProto.ResponseEquip.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.EQUIP_WRONG_LEVEL)
-                    .build();
-        }
-        return null;
-    }
-
-
-    /**
-     * 用户状态拦截器，检验参数
-     *
-     * @param requestEquip
-     * @return
-     */
-    private MsgEquipProto.ResponseEquip userStateInterceptor(MsgEquipProto.RequestEquip requestEquip){
-        // 用户id标识判断
-        long userId = requestEquip.getUserId();
-        if (userId <= 0){
-            return MsgEquipProto.ResponseEquip.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_TOKEN_DATA_EMPTY)
-                    .build();
-        }
-        // 找不到对应的角色信息
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        if (role == null){
-            return MsgEquipProto.ResponseEquip.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
-        }
-        return null;
-    }
-
-
-    /**
-     * 返回当前玩家的所有已装备物品
-     *
-     * @param role
-     * @return
-     */
-    private List<Equip> getOwnEquipList(Role role){
-        List<Equip> resList = new ArrayList<>();
-        List<RoleEquip> ownList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
-        for (RoleEquip re : ownList) {
-            Equip e = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
-            e.setDurability(re.getDurability());
-            e.setState(re.getState());
-            resList.add(e);
-        }
-
-        return resList;
-    }
-
-
-    /**
-     * 在玩家的装备背包中新增装备 (缓存 + DB)
-     *
-     * @param role
-     * @param equips
-     */
-    public void addRoleEquips(Role role, List<Equip> equips){
-
-        // cahce
-        List<Equip> hasEquips = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
-        equips.forEach(e -> {
-            Equip tmp = LocalEquipMap.getIdEquipMap().get(e.getEquipId());
-            Equip des = new Equip();
-            BeanUtils.copyProperties(tmp, des);
-            hasEquips.add(des);
-
-
-            // db
-            RoleEquipHas has = new RoleEquipHas();
-            has.setEquipId(e.getEquipId());
-            has.setRoleId(role.getRoleId());
-
-            equipDao.addHasEquips(has);
-        });
-        LocalEquipMap.getHasEquipMap().put(role.getRoleId(), hasEquips);
-    }
-
-
-    /**
-     * 加锁同步装备的耐久度信息
-     *
-     * @param role
-     */
-    public synchronized void synCutEquipDurability(Role role){
-        List<RoleEquip> roleEquipList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
-
-        log.info("攻击野怪之前，装备栏的耐久度为：" + roleEquipList);
-        for (RoleEquip re : roleEquipList) {
-
-            re.setDurability(re.getDurability() - 1);
-            if (re.getDurability() < 10){
-                re.setState(0);
-            }
-
-            // 更新db
-            int n = equipDao.updateRoleEquip(re);
-            log.info("攻击野怪之后，装备栏中的更新的行数为：" + n);
-        }
-        log.info("攻击野怪之后，装备栏的耐久度为：" + roleEquipList);
     }
 }

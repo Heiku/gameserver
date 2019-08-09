@@ -10,6 +10,8 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.record.RecoverBuff;
+import com.ljh.gamedemo.service.ItemService;
+import com.ljh.gamedemo.service.UserService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +25,16 @@ import static com.ljh.gamedemo.run.user.RecoverUserRun.MAX_MP;
  * @Author: Heiku
  * @Date: 2019/7/22
  *
- * 用户使用物品缓慢恢复
+ * 用户使用物品缓慢恢复血量或是蓝量
  */
 
 @Slf4j
 public class UseItemScheduledRun implements Runnable {
 
+    // 玩家id
     private long userId;
 
+    // 物品id
     private long itemId;
 
     // 恢复的最大值
@@ -39,17 +43,24 @@ public class UseItemScheduledRun implements Runnable {
     // 累加恢复值
     private int up;
 
+    // 恢复buff
     private RecoverBuff buff;
 
+    // 通信channel
     private Channel channel;
+
+    // 是否已经更新物品信息
+    private boolean decline = true;
+
 
     private MsgItemProto.ResponseItem response;
 
-    private RoleItemsDao itemsDao = SpringUtil.getBean(RoleItemsDao.class);
+    // 调用userService
+    private UserService userService = SpringUtil.getBean(UserService.class);
 
-    private boolean decline = true;
+    // 调用itemsService
+    private ItemService itemService = SpringUtil.getBean(ItemService.class);
 
-    private UseItemNowRun itemsRun = UseItemNowRun.getInstance();
 
     public UseItemScheduledRun(long userId, Items items,  Channel channel, RecoverBuff buff){
         this.userId = userId;
@@ -68,10 +79,6 @@ public class UseItemScheduledRun implements Runnable {
         int hp = role.getHp();
         int mp = role.getMp();
 
-        // 背包中的所有物品
-        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(role.getRoleId());
-
-
         if (hpBuf > 0){
             if (hp == MAX_HP){
                 response = MsgItemProto.ResponseItem.newBuilder()
@@ -87,7 +94,7 @@ public class UseItemScheduledRun implements Runnable {
             }else {
                 // 用户的物品数量只减少一次
                 if (decline) {
-                    itemsRun.updateRoleItem(itemsList, role);
+                    itemService.updateRoleItems(role, itemId, -1);
                     decline = false;
                 }
 
@@ -127,7 +134,7 @@ public class UseItemScheduledRun implements Runnable {
             }else {
                 // 用户的物品数量只减少一次
                 if (decline) {
-                    itemsRun.updateRoleItem(itemsList, role);
+                    itemService.updateRoleItems(role, itemId, -1);
                     decline = false;
                 }
 
@@ -155,37 +162,8 @@ public class UseItemScheduledRun implements Runnable {
         }
 
         // 更新缓存
-        LocalUserMap.idRoleMap.put(role.getRoleId(), role);
-
-        List<Role> siteRoleList = LocalUserMap.siteRolesMap.get(role.getSiteId());
-        for (Role role1 : siteRoleList) {
-            if (role1.getRoleId().intValue() == role.getRoleId().intValue()){
-                role1.setHp(role.getHp());
-                role1.setMp(role.getMp());
-                break;
-            }
-        }
+        userService.updateRoleInfo(role);
         log.info("用户使用物品，状态缓慢恢复，已成功更新用户缓存");
     }
 
-
-    /*public void updateRoleItem(List<Items> itemsList, Role role){
-        Items items = new Items();
-
-        // 缓存更新
-        log.info("更新RoleItemList前，数量为：" + itemsList);
-        for (Items i : itemsList) {
-            if (i.getItemsId() == itemId){
-                items = i;
-                i.setNum(i.getNum() - 1);
-            }
-        }
-        LocalItemsMap.getRoleItemsMap().put(role.getRoleId(), itemsList);
-        log.info("更新RoleItemList后，数量为：" + itemsList);
-
-
-        // 同步更新数据库
-        SaveRoleItemRun run = new SaveRoleItemRun(items, role);
-        SaveRoleItemManager.addQueue(run);
-    }*/
 }

@@ -12,6 +12,8 @@ import static com.ljh.gamedemo.server.request.RequestEmailType.RECEIVE;
 /**
  * @Author: Heiku
  * @Date: 2019/8/8
+ *
+ * 邮件相关 Handler
  */
 public class EmailHandler extends SimpleChannelInboundHandler<MsgEmailProto.RequestEmail> {
 

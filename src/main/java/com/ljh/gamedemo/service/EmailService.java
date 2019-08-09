@@ -1,32 +1,41 @@
 package com.ljh.gamedemo.service;
 
+import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EmailType;
+import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.EmailGoodsDao;
 import com.ljh.gamedemo.dao.RoleEmailDao;
 import com.ljh.gamedemo.entity.Email;
 import com.ljh.gamedemo.entity.EmailGoods;
+import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.proto.protoc.EmailProto;
 import com.ljh.gamedemo.proto.protoc.MsgEmailProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.db.SendEmailRun;
+import com.ljh.gamedemo.run.manager.SendEmailManager;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Heiku
  * @Date: 2019/8/8
+ *
+ * 邮件操作
  */
 
 @Service
 @Slf4j
 public class EmailService {
-
 
     @Autowired
     private RoleEmailDao emailDao;
@@ -37,6 +46,9 @@ public class EmailService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MallService mallService;
 
     @Autowired
     private ProtoService protoService;
@@ -63,10 +75,10 @@ public class EmailService {
         Role role = LocalUserMap.userRoleMap.get(userId);
 
         // 获取该玩家的所有邮件信息
-        List<Email> emailList = emailDao.selectUnReceiveEmail(role.getRoleId());
+        List<Email> emailList = emailDao.selectAllEmail(role.getRoleId());
 
         // response msg
-        emailResp = combineEmailList(emailList);
+        emailResp = combineEmailList(emailList, role);
         channel.writeAndFlush(emailResp);
     }
 
@@ -85,23 +97,60 @@ public class EmailService {
         // 构造邮件信息
         Email email = combineEmail(role, type);
 
-        // 插入邮件记录
-        int n = emailDao.insertEmail(email);
-        log.info("插入邮件记录成功，插入的条数为：" + n + " 插入的id为；" + email.getId());
-
-        // 设置物品的邮件 id
-        egList.forEach(e -> {
-            e.setEid(email.getId());
-
-            // 再插入到数据库中
-            emailGoodsDao.insertEmailGoods(e);
-        });
-
-        SendEmailRun run = new SendEmailRun();
+        // 构造发送邮件的任务，加入发送的队列中
+        SendEmailRun emailTask = new SendEmailRun(email, egList, type);
+        SendEmailManager.addQueue(emailTask);
     }
 
 
+    /**
+     * 接收邮件道具
+     *
+     * @param request
+     * @param channel
+     */
     public void receiveEmail(MsgEmailProto.RequestEmail request, Channel channel) {
+        // 玩家状态判断
+        userResp = userService.userStateInterceptor(request.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
+        }
+
+        // 获取基本信息
+        long eid = request.getEid();
+        Role role = LocalUserMap.userRoleMap.get(request.getUserId());
+
+        // 判断邮件是否已经被领取
+        Email email = emailDao.selectEmailById(eid);
+        if (email.getState() == 1){
+            responseFailed(channel, ContentType.EMAIL_RECEIVE_FAILED);
+            return;
+        }
+
+        // 查询邮件内的相关物品
+        List<EmailGoods> emailGoods = emailGoodsDao.selectAllEmailGoods(eid);
+        if (emailGoods == null || emailGoods.isEmpty()){
+            // 邮件内无物品
+            responseFailed(channel, ContentType.EMAIL_EMPTY_GOODS);
+            return;
+        }
+
+        // 存在物品，将物品存入玩家的背包信息中
+        emailGoods.forEach( eg -> {
+            Goods goods = LocalGoodsMap.getIdGoodsMap().get(eg.getGid());
+
+            // 直接发放到背包中
+            mallService.sendRoleGoods(role, goods, eg.getNum());
+        });
+
+
+        // 更新邮件表的领取状态
+        email = emailDao.selectEmailById(eid);
+        email.setState(1);
+        email.setModifyTime(new Date());
+        emailDao.updateEmail(email);
+
+        responseSuccess(channel, ContentType.EMAIL_RECEIVE_SUCCESS);
     }
 
 
@@ -130,16 +179,27 @@ public class EmailService {
         return email;
     }
 
+
+
     /**
-     * 组合邮件列表消息返回
+     * 组合邮件列表消息返回  <email, List<EmailGoods>>
      *
      * @param emailList
      * @return
      */
-    private MsgEmailProto.ResponseEmail combineEmailList(List<Email> emailList) {
+    private MsgEmailProto.ResponseEmail combineEmailList(List<Email> emailList, Role role) {
+        Map<Email, List<EmailGoods>> emailGoodsMap = new HashMap<>();
 
-        /*// 获取 Email proto List
-        List<EmailProto.Email> resList = protoService.transToEmailList(emailList);
+        if (emailList == null || emailList.isEmpty()){
+            return null;
+        }
+        emailList.forEach( e -> {
+            List<EmailGoods> emailGoods = emailGoodsDao.selectAllEmailGoods(e.getId());
+            emailGoodsMap.put(e, emailGoods);
+        });
+
+        // 获取 Email proto List
+        List<EmailProto.Email> resList = protoService.transToEmailList(emailGoodsMap, role);
 
         emailResp = MsgEmailProto.ResponseEmail.newBuilder()
                 .setResult(ResultCode.SUCCESS)
@@ -147,8 +207,39 @@ public class EmailService {
                 .setType(MsgEmailProto.RequestType.EMAIL)
                 .addAllEmail(resList)
                 .build();
-        return emailResp;*/
+        return emailResp;
+    }
 
-        return null;
+
+    /**
+     * 成功消息返回
+     *
+     * @param channel
+     * @param content
+     */
+    private void responseSuccess(Channel channel, String content) {
+        emailResp = MsgEmailProto.ResponseEmail.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgEmailProto.RequestType.RECEIVE)
+                .setContent(content)
+                .build();
+        channel.writeAndFlush(emailResp);
+    }
+
+
+
+    /**
+     * 失败消息返回
+     *
+     * @param channel
+     * @param content
+     */
+    private void responseFailed(Channel channel, String content) {
+        emailResp = MsgEmailProto.ResponseEmail.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(content)
+                .build();
+
+        channel.writeAndFlush(emailResp);
     }
 }

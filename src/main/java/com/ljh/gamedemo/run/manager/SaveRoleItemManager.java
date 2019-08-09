@@ -40,13 +40,15 @@ public class SaveRoleItemManager {
    }
 
 
-   public static void run(){
-        while (true){
-            task = queue.poll();
-            if (task != null){
-                executorService.schedule(task, DELAY_SEC, TimeUnit.SECONDS);
-                log.info("完成更新role_objects表数据");
+    public static void run() {
+        new Thread(() -> {
+            while (true){
+                task = queue.poll();
+                if (task != null) {
+                    executorService.schedule(task, DELAY_SEC, TimeUnit.SECONDS);
+                    log.info("完成更新role_objects表数据");
+                }
             }
-        }
-   }
+        }).start();
+    }
 }
