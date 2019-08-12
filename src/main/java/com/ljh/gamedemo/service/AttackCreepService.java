@@ -165,9 +165,7 @@ public class AttackCreepService {
            }
         }
 
-        // countDownLatch 保证用户的状态先进行操作
-        // CountDownLatchUtil.newLatch(1);
-        UserDeclineMpRun task = new UserDeclineMpRun(roleId, spell, channel);
+        UserDeclineMpRun task = new UserDeclineMpRun(roleId, spell);
         Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(userId, task);
 
         if (mpFuture != null && mpFuture.isSuccess()) {
@@ -211,7 +209,7 @@ public class AttackCreepService {
 
         Queue<Long> roleAttackedList = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId().longValue());
         if (lastFuture == null && roleAttackedList.peek() != userId) {
-            UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), channel);
+            UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage());
             ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
                     0, spell.getCoolDown(), TimeUnit.SECONDS);
             FutureMap.futureMap.put(task.hashCode(), future);

@@ -1,15 +1,9 @@
 package com.ljh.gamedemo;
 
-import com.ljh.gamedemo.entity.Creep;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class ByteTest {

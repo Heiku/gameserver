@@ -171,4 +171,29 @@ public class SpellService {
         return null;
     }
 
+
+    /**
+     * 技能信息查询拦截
+     */
+    public MsgSpellProto.ResponseSpell spellStateInterceptor(int spellId){
+
+        // 判断技能信息是否存在的问题
+        if (spellId <= 0){
+            return MsgSpellProto.ResponseSpell.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.ATTACK_SPELL_EMPTY)
+                    .build();
+        }
+
+        // 找不到该技能
+        Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
+        if (spell == null){
+            return MsgSpellProto.ResponseSpell.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.ATTACK_SPELL_NOT_FOUND)
+                    .build();
+        }
+        return null;
+    }
+
 }

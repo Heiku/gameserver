@@ -59,6 +59,9 @@ public class GamedemoApplication {
         // 载入上商店信息
         LocalCommodityMap.readExcel();
 
+        // 载入玩家pk挑战的奖励信息
+        LocalPKRewardMap.readExcel();
+
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();
 

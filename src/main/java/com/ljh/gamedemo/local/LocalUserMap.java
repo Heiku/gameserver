@@ -56,6 +56,10 @@ public class LocalUserMap {
         return idRoleMap;
     }
 
+    public static Map<Long, Role> getUserRoleMap() {
+        return userRoleMap;
+    }
+
     public static void setIdRoleMap(Map<Long, Role> idRoleMap) {
         LocalUserMap.idRoleMap = idRoleMap;
     }

@@ -12,17 +12,30 @@ import java.util.List;
 @Data
 public class Role {
 
-    private Long roleId;
-
+    /**
+     * 玩家id
+     */
     private Long userId;
 
+    /**
+     * 账号id
+     */
+    private Long roleId;
+
+    /**
+     * 位置id
+     */
     private Integer siteId;
 
-    private Integer type;
-
+    /**
+     * 角色名称
+     */
     private String name;
 
-    private Integer level;
+    /**
+     * 角色类型
+     */
+    private Integer type;
 
     /**
      * 是否或者 1：存活，0：死亡
@@ -30,25 +43,38 @@ public class Role {
     private Integer alive;
 
     /**
-     * hp
+     * 蓝量
      */
     private Integer hp;
 
     /**
-     * maxHp
+     * 蓝量上限
      */
     private Integer maxHp;
 
     /**
-     * mp
+     * 当前生命值
      */
     private Integer mp;
-
 
     /**
      * 玩家金币值
      */
     private Integer gold;
 
+    /**
+     * 角色等级
+     */
+    private Integer level;
+
+
+    /**
+     * 荣誉值
+     */
+    private Integer honor;
+
+    /**
+     * 玩家技能列表
+     */
     private List<Spell> spellList = new ArrayList<>();
 }

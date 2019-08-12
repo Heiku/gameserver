@@ -13,7 +13,7 @@ public interface UserRoleDao {
 
     @Insert("insert into role(user_id, role_id, site_id, type, name, level, alive) values(#{userId}, #{roleId}, " +
             "#{siteId}, #{type}, #{name}, #{level}, #{alive})")
-    int insertUserRole(long userId, long roleId, int siteId, int type, String name, int level, int alive);
+    int insertUserRole(Role role);
 
     @Select("select * from role where user_id = #{userId}")
     List<Role> selectUserRole(long userId);
@@ -27,6 +27,6 @@ public interface UserRoleDao {
     @Select("select * from role")
     List<Role> selectAllRole();
 
-    @Update("update role set site_id = #{siteId},level = #{level},hp = #{hp},mp = #{mp},gold = #{gold} where user_id = #{userId} and role_id = #{roleId}")
+    @Update("update role set site_id = #{siteId},level = #{level},hp = #{hp},mp = #{mp},gold = #{gold},honor = #{honor} where user_id = #{userId} and role_id = #{roleId}")
     int updateRoleSiteInfo(Role role);
 }

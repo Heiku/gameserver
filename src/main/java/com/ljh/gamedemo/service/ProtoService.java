@@ -33,6 +33,9 @@ public class ProtoService {
 
 
     public RoleProto.Role transToRole(Role role){
+        if (role == null){
+            return null;
+        }
 
         return RoleProto.Role.newBuilder()
                 .setRoleId(role.getRoleId())

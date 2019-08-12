@@ -54,7 +54,11 @@ public enum MessageType {
 
     // email
     REQUEST_EMAIL(0x18, MsgEmailProto.RequestEmail.class),
-    RESPONSE_EAMIL(0x19, MsgEmailProto.ResponseEmail.class)
+    RESPONSE_EAMIL(0x19, MsgEmailProto.ResponseEmail.class),
+
+    // pk
+    REQUEST_PK(0x1a, MsgPKProto.RequestPK.class),
+    RESPONSE_PK(0x1b, MsgPKProto.ResponsePK.class)
     ;
 
 

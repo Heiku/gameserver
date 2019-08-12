@@ -139,6 +139,10 @@ public class LocalSpellMap {
             }
             spells.add(spell);
 
+
+            Role r = LocalUserMap.getIdRoleMap().get(role.getRoleId());
+            r.setSpellList(spells);
+            LocalUserMap.getIdRoleMap().put(r.getRoleId(), r);
             roleSpellMap.put(role.getRoleId(), spells);
         }
     }

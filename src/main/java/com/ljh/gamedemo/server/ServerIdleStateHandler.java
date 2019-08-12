@@ -57,7 +57,6 @@ public class ServerIdleStateHandler extends IdleStateHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-
         log.warn(channel.toString() + "连接断开! ");
     }
 }

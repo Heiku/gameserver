@@ -44,8 +44,6 @@ public class BossBeAttackedScheduleRun implements Runnable {
 
     private BossBeAttackedRun attackedRun = BossBeAttackedRun.getInstance();
 
-    private ProtoService protoService = ProtoService.getInstance();
-
     public BossBeAttackedScheduleRun(Role role, Spell spell, Boss boss, Channel channel){
         this.role = role;
         this.spell = spell;

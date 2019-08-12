@@ -222,7 +222,7 @@ public class DuplicateService {
         Boss boss = dup.getBosses().get(0);
 
         // 先进行扣蓝操作
-        UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell, channel);
+        UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell);
         Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(role.getUserId(), mpTask);
 
         // 异步转同步，等待扣蓝任务完成
@@ -412,7 +412,7 @@ public class DuplicateService {
             BossSpell aSpell = boss.getSpellList().get(0);
 
             // 新建任务
-            UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), aSpell.getDamage(), channel);
+            UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), aSpell.getDamage());
 
             // 取出用户线程池
             CustomExecutor userExecutor = UserExecutorManager.getUserExecutor(role.getUserId());

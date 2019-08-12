@@ -67,7 +67,7 @@ public class ContentType {
     // Attack
     public static final String ATTACK_DEATH_CREEP = "你攻击的野怪已经死亡！\n";
 
-    public static final String ATTACK_CURRENT = "正在攻击野怪！\n";
+    public static final String ATTACK_CURRENT = "正在受到攻击！\n";
 
     public static final String ATTACK_SPELL_EMPTY = "请输入正确的技能id！\n";
 
@@ -184,6 +184,19 @@ public class ContentType {
 
     public static final String EMAIL_RECEIVE_FAILED = "领取失败，邮件物品已经被领取过了！\n";
 
+
+    // pk
+    public static final String PK_SITE_NOT_IN_ARENA = "发起挑战失败，双方为同时在竞技场上！\n";
+
+    public static final String PK_INVITE_SEND_SUCCESS =  "发起挑战成功，请等待对方接受挑战！\n";
+
+    public static final String PK_SEND_MSG = "玩家：ID: 【%d】 名称：【%s】 向你发送挑战邀请，输入指令【ac】可接受挑战！\n";
+
+    public static final String PK_INVITE_ACCEPT_SUCCESS = "成功接受 pk 邀请，正在进入 pk 竞技场！\n";
+
+    public static final String PK_ENTER_PK_STATE_SUCCESS = "当前双方玩家已经在擂台上，可以开始进行 PK 挑战！\n";
+
+    public static final String PK_STATE_WRONG = "PK 状态错误！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
