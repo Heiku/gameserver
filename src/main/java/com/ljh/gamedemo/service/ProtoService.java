@@ -5,6 +5,7 @@ import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
+import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.*;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class ProtoService {
                 .setHp(role.getHp())
                 .setMp(role.getMp())
                 .setGold(role.getGold())
+                .setHonor(role.getHonor())
                 .build();
     }
 
@@ -303,5 +305,20 @@ public class ProtoService {
         });
 
         return resList;
+    }
+
+
+    public PKProto.PKRecord transToPkRecord(PKRecord record) {
+        if (record == null){
+            return null;
+        }
+
+        return PKProto.PKRecord.newBuilder()
+                .setId(record.getId())
+                .setWinner(transToRole(LocalUserMap.getIdRoleMap().get(record.getWinner())))
+                .setLoser(transToRole(LocalUserMap.getIdRoleMap().get(record.getLoser())))
+                .setWinHonor(record.getWinHonor())
+                .setLoseHonor(record.getLoseHonor())
+                .build();
     }
 }

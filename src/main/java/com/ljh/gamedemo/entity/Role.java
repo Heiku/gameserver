@@ -48,7 +48,7 @@ public class Role {
     private Integer hp;
 
     /**
-     * 蓝量上限
+     * 血量上限
      */
     private Integer maxHp;
 

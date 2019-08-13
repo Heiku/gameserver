@@ -23,6 +23,8 @@ public class ContentType {
 
     public static final String USER_TOKEN_DATA_EMPTY = "数据库中暂无当前token记录，请重新登录\n";
 
+    public static final String USER_RELIVE_SUCCESS = "复活成功！\n";
+
 
 
     // Role
@@ -197,6 +199,12 @@ public class ContentType {
     public static final String PK_ENTER_PK_STATE_SUCCESS = "当前双方玩家已经在擂台上，可以开始进行 PK 挑战！\n";
 
     public static final String PK_STATE_WRONG = "PK 状态错误！\n";
+
+    public static final String PK_END = "PK 战斗结束!\n";
+
+    public static final String PK_ESCAPE_SUCCESS = "成功离开 PK 战斗！\n";
+
+
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

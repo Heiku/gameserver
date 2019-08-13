@@ -20,4 +20,8 @@ public class FutureMap {
     public static Map<Long, ScheduledFuture> getRecoverFutureMap() {
         return recoverFutureMap;
     }
+
+    public static Map<Integer, ScheduledFuture> getFutureMap() {
+        return futureMap;
+    }
 }

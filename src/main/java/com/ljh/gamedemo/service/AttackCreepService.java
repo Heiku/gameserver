@@ -209,7 +209,7 @@ public class AttackCreepService {
 
         Queue<Long> roleAttackedList = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId().longValue());
         if (lastFuture == null && roleAttackedList.peek() != userId) {
-            UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage());
+            UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), false);
             ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
                     0, spell.getCoolDown(), TimeUnit.SECONDS);
             FutureMap.futureMap.put(task.hashCode(), future);

@@ -48,6 +48,11 @@ public class UserBeAttackedRun implements Runnable {
     // 引入protoService工具类
     private ProtoService protoService = ProtoService.getInstance();
 
+
+    public UserBeAttackedRun(){
+
+    }
+
     public UserBeAttackedRun(long userId, Integer damage, boolean pk){
         this.userId = userId;
         this.damage = damage;
@@ -69,7 +74,6 @@ public class UserBeAttackedRun implements Runnable {
     public void run() {
         // 获取基础信息
         Role role = LocalUserMap.userRoleMap.get(userId);
-        channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
 
         int hp = role.getHp();
         log.info("攻击前的 role 属性为："  + role);
@@ -82,6 +86,9 @@ public class UserBeAttackedRun implements Runnable {
             // 没有buff，也直接扣血
             hp -= damage;
         }
+        if (hp < 0){
+            hp = 0;
+        }
         role.setHp(hp);
 
         // 更新map
@@ -93,8 +100,8 @@ public class UserBeAttackedRun implements Runnable {
         // pk 对决
         // 判断玩家的hp，生成pk 结果
         if (pk){
-            if (role.getHp() < 0){
-                pkService.generatePkRecord(role);
+            if (role.getHp() <= 0) {
+                pkEnd(role);
             }
         }
     }
@@ -169,6 +176,8 @@ public class UserBeAttackedRun implements Runnable {
      * @param role
      */
     public void responseAttacked(Role role){
+        channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+
         MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep
                 .newBuilder()
                 .setResult(ResultCode.SUCCESS)
@@ -177,5 +186,13 @@ public class UserBeAttackedRun implements Runnable {
                 .setRole(protoService.transToRole(role))
                 .build();
         channel.writeAndFlush(response);
+    }
+
+    /**
+     * pk 结束
+     */
+    public void pkEnd(Role role){
+        pkService.generatePkRecord(role);
+        userService.reliveRole(role);
     }
 }

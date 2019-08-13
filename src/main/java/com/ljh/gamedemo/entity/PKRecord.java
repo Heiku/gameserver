@@ -35,6 +35,11 @@ public class PKRecord {
     private Long winner;
 
     /**
+     * 战败方id
+     */
+    private Long loser;
+
+    /**
      * 胜者奖励的荣誉值
      */
     private Integer winHonor;

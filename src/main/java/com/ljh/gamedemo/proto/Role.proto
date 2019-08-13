@@ -14,4 +14,5 @@ message Role{
     int32 hp = 6;
     int32 mp = 7;
     int32 gold = 8;
+    int32 honor = 9;
 }

@@ -412,7 +412,7 @@ public class DuplicateService {
             BossSpell aSpell = boss.getSpellList().get(0);
 
             // 新建任务
-            UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), aSpell.getDamage());
+            UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), aSpell.getDamage(), false);
 
             // 取出用户线程池
             CustomExecutor userExecutor = UserExecutorManager.getUserExecutor(role.getUserId());

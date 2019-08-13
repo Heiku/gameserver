@@ -18,10 +18,10 @@ public class UserRoleDaoTest {
 
     @Test
     public void insertUserRole(){
-        int m = userRoleDao.insertUserRole(1004, 10003, 2, 103, "我是小菜鸡", 20, 1);
-        int n = userRoleDao.insertUserRole(1005, 10004, 3, 111, "哈哈哈哈哈哈哈", 90, 1);
+        //int m = userRoleDao.insertUserRole(1004, 10003, 2, 103, "我是小菜鸡", 20, 1);
+        //int n = userRoleDao.insertUserRole(1005, 10004, 3, 111, "哈哈哈哈哈哈哈", 90, 1);
 
-        System.out.println(m + " " + n);
+        //System.out.println(m + " " + n);
     }
 
 

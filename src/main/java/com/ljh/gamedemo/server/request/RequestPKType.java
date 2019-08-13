@@ -10,11 +10,9 @@ public class RequestPKType {
 
     public static final int PK = 0;
 
-    public static final int AR = 1;
+    public static final int SPR = 1;
 
-    public static final int SPR = 2;
+    public static final int ESCAPE = 2;
 
-    public static final int ESCAPE = 3;
-
-    public static final int AC = 5;
+    public static final int AC = 4;
 }

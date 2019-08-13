@@ -19,14 +19,14 @@ import java.util.concurrent.ThreadFactory;
 public class UserExecutorManager {
 
     // 最大的用户线程池数，后期可拓展
-    private static final Integer MAX_USER_THREAD =  20;
+    private static final Integer MAX_USER_THREAD =  10;
 
     private static ThreadFactory threadFactory = new ThreadFactoryBuilder()
             .setNameFormat("user-thread-%d")
             .build();
 
     // 每一个用户对应一个UserSingleExecutor
-    private static CustomExecutor[] executors = new CustomExecutor[20];
+    private static CustomExecutor[] executors = new CustomExecutor[10];
 
     // 用于记录用户与用户线程绑定 <userId, CustomExecutor>
     private static Map<Long, CustomExecutor> userExecutorMap = Maps.newConcurrentMap();

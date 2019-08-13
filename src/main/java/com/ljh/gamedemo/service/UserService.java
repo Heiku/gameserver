@@ -16,6 +16,7 @@ import com.ljh.gamedemo.local.cache.RoleStateCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.RecoverUserRun;
 import com.ljh.gamedemo.util.SessionUtil;
@@ -47,6 +48,8 @@ public class UserService {
     private ChatService chatService;
 
     private ProtoService protoService = ProtoService.getInstance();
+
+    private MsgUserInfoProto.ResponseUserInfo userResp;
 
     /**
      * 用户登录后，并没有角色状态，需要通过 getState() 初始化玩家角色
@@ -378,23 +381,31 @@ public class UserService {
      * @param role
      */
     public void updateRoleInfo(Role role){
-        // cache
-        // update idRoleMap
-        LocalUserMap.idRoleMap.put(role.getRoleId(), role);
+        UpdateRoleInfoRun task = new UpdateRoleInfoRun(role);
+        UserExecutorManager.addUserTask(role.getUserId(), task);
+    }
 
-        // update siteRoleMap
-        List<Role> siteRoleList = LocalUserMap.siteRolesMap.get(role.getSiteId());
-        for (Role r : siteRoleList) {
-            if (r.getRoleId().longValue() == role.getRoleId()){
-                r = role;
-                break;
-            }
-        }
-        LocalUserMap.siteRolesMap.put(role.getSiteId(), siteRoleList);
 
-        // db
-        int n = userRoleDao.updateRoleSiteInfo(role);
-        log.info("Database update role where role name = " + role.getName() + " ,row = " + n);
+    /**
+     * 玩家复活
+     *
+     * @param role
+     */
+    public void reliveRole(Role role){
+        role.setHp(role.getMaxHp());
+
+        // 更新玩家信息
+        updateRoleInfo(role);
+
+        // 消息通知
+        userResp = MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgUserInfoProto.RequestType.RELIVE)
+                .setContent(ContentType.USER_RELIVE_SUCCESS)
+                .setRole(protoService.transToRole(role))
+                .build();
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+        channel.writeAndFlush(userResp);
     }
 
 

@@ -122,9 +122,7 @@ public class BossBeAttackedRun implements Runnable {
                 // 打 Boss的时间判断
                 Boss next = attackTime(empty, role, dup, nowBosses);
                 return;
-                /*if (next == null){
-                    return;
-                }*/
+
             }
 
             log.info("Boss: " + boss.getName() + " 的血量为：" + boss.getHp());

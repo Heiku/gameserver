@@ -62,6 +62,11 @@ public final class RoleProto {
      * <code>int32 gold = 8;</code>
      */
     int getGold();
+
+    /**
+     * <code>int32 honor = 9;</code>
+     */
+    int getHonor();
   }
   /**
    * Protobuf type {@code Role}
@@ -148,6 +153,11 @@ public final class RoleProto {
             case 64: {
 
               gold_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              honor_ = input.readInt32();
               break;
             }
             default: {
@@ -279,6 +289,15 @@ public final class RoleProto {
       return gold_;
     }
 
+    public static final int HONOR_FIELD_NUMBER = 9;
+    private int honor_;
+    /**
+     * <code>int32 honor = 9;</code>
+     */
+    public int getHonor() {
+      return honor_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -316,6 +335,9 @@ public final class RoleProto {
       }
       if (gold_ != 0) {
         output.writeInt32(8, gold_);
+      }
+      if (honor_ != 0) {
+        output.writeInt32(9, honor_);
       }
       unknownFields.writeTo(output);
     }
@@ -357,6 +379,10 @@ public final class RoleProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, gold_);
       }
+      if (honor_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, honor_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -388,6 +414,8 @@ public final class RoleProto {
           != other.getMp()) return false;
       if (getGold()
           != other.getGold()) return false;
+      if (getHonor()
+          != other.getHonor()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -416,6 +444,8 @@ public final class RoleProto {
       hash = (53 * hash) + getMp();
       hash = (37 * hash) + GOLD_FIELD_NUMBER;
       hash = (53 * hash) + getGold();
+      hash = (37 * hash) + HONOR_FIELD_NUMBER;
+      hash = (53 * hash) + getHonor();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -565,6 +595,8 @@ public final class RoleProto {
 
         gold_ = 0;
 
+        honor_ = 0;
+
         return this;
       }
 
@@ -599,6 +631,7 @@ public final class RoleProto {
         result.hp_ = hp_;
         result.mp_ = mp_;
         result.gold_ = gold_;
+        result.honor_ = honor_;
         onBuilt();
         return result;
       }
@@ -671,6 +704,9 @@ public final class RoleProto {
         }
         if (other.getGold() != 0) {
           setGold(other.getGold());
+        }
+        if (other.getHonor() != 0) {
+          setHonor(other.getHonor());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -951,6 +987,32 @@ public final class RoleProto {
         onChanged();
         return this;
       }
+
+      private int honor_ ;
+      /**
+       * <code>int32 honor = 9;</code>
+       */
+      public int getHonor() {
+        return honor_;
+      }
+      /**
+       * <code>int32 honor = 9;</code>
+       */
+      public Builder setHonor(int value) {
+        
+        honor_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 honor = 9;</code>
+       */
+      public Builder clearHonor() {
+        
+        honor_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1019,11 +1081,11 @@ public final class RoleProto {
   static {
     java.lang.String[] descriptorData = {
       "\n/src/main/java/com/ljh/gamedemo/proto/R" +
-      "ole.proto\"v\n\004Role\022\016\n\006roleId\030\001 \001(\003\022\014\n\004nam" +
-      "e\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\r\n\005level\030\004 \001(\005\022\r\n\005" +
-      "alive\030\005 \001(\005\022\n\n\002hp\030\006 \001(\005\022\n\n\002mp\030\007 \001(\005\022\014\n\004g" +
-      "old\030\010 \001(\005B*\n\035com.ljh.gamedemo.proto.prot" +
-      "ocB\tRoleProtob\006proto3"
+      "ole.proto\"\205\001\n\004Role\022\016\n\006roleId\030\001 \001(\003\022\014\n\004na" +
+      "me\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\r\n\005level\030\004 \001(\005\022\r\n" +
+      "\005alive\030\005 \001(\005\022\n\n\002hp\030\006 \001(\005\022\n\n\002mp\030\007 \001(\005\022\014\n\004" +
+      "gold\030\010 \001(\005\022\r\n\005honor\030\t \001(\005B*\n\035com.ljh.gam" +
+      "edemo.proto.protocB\tRoleProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1034,7 +1096,7 @@ public final class RoleProto {
     internal_static_Role_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Role_descriptor,
-        new java.lang.String[] { "RoleId", "Name", "Type", "Level", "Alive", "Hp", "Mp", "Gold", });
+        new java.lang.String[] { "RoleId", "Name", "Type", "Level", "Alive", "Hp", "Mp", "Gold", "Honor", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

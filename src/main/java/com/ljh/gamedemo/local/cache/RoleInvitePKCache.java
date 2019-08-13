@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.entity.PKRecord;
+import io.netty.util.concurrent.ScheduledFuture;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -30,11 +31,22 @@ public class RoleInvitePKCache {
      */
     private static Map<Long, PKRecord> pkRecordMap = Maps.newConcurrentMap();
 
+    /**
+     * 记录pk 过程中技能的任务
+     */
+    private static Map<Long, ScheduledFuture> pkFutureMap = Maps.newConcurrentMap();
+
+
+
     public static Cache<Long, Long> getPkInviteCache() {
         return pkInviteCache;
     }
 
     public static Map<Long, PKRecord> getPkRecordMap() {
         return pkRecordMap;
+    }
+
+    public static Map<Long, ScheduledFuture> getPkFutureMap() {
+        return pkFutureMap;
     }
 }

@@ -13,6 +13,8 @@ enum RequestType{
     REGISTER = 1;
     STATE = 2;
     EXIT = 3;
+
+    RELIVE = 4;
 }
 
 message RequestUserInfo{
