@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Group.proto
+
+import "Role.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "GroupProto";
+
+message Group{
+    int64 groupId = 1;
+
+    Role leader = 2;
+    repeated Role members = 3;
+}
+

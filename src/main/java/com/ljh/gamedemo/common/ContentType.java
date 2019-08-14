@@ -205,7 +205,30 @@ public class ContentType {
     public static final String PK_ESCAPE_SUCCESS = "成功离开 PK 战斗！\n";
 
 
+    // group
+    public static final String GROUP_INVITE_MSG = "玩家：【%s】向你发送组队邀请，队伍 ID：【%d】 \n输入指令【join】 + groupId 可加入队伍！\n";
+
+    public static final String GROUP_INVITE_SEND_SUCCESS = "组对消息发送成功！\n";
+
+    public static final String GROUP_ROLE_HAS_IN_OTHER_GROUP = "当前玩家已在队伍中，想加入其它队伍先进行退队操作\n";
+
+    public static final String GROUP_ROLE_HAS_IN_GROUP = "当前玩家已在申请的队伍中\n";
+
+    public static final String GROUP_NOT_IN_SAME_SITE = "组队双方不在同一地点上，请移动到相同地点进行组队邀请！\n";
+
+    public static final String GROUP_JOIN_SUCCESS = "加入队伍成功！\n";
+
+    public static final String GROUP_WRONG_GROUP_ID = "找不到队伍信息，请输入正确的 groupId !\n";
+
+    public static final String GROUP_NOT_IN_ANY_GROUP = "当前不在任何队伍中，无法退出队伍！\n";
+
+    public static final String GROUP_EXIT_SUCCESS = "退出队伍成功！\n";
+
+    public static final String GROUP_NOT_IN_GROUP = "当前玩家没有加入任何队伍！\n";
+
+    public static final String GROUP_STATE_SUCCESS = "查找队伍信息成功！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
+
 }

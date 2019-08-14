@@ -27,22 +27,19 @@ public class DuplicateHandler extends SimpleChannelInboundHandler<MsgDuplicatePr
         int type = request.getType().getNumber();
         switch (type){
             case DUPLICATE:
-                response = duplicateService.getDuplicate(request);
+                duplicateService.getDuplicate(request, ctx.channel());
                 break;
             case ENTER:
-                response = duplicateService.enterDuplicate(request, ctx.channel());
-                break;
-            case CHALLENGE:
-                response = duplicateService.challengeDuplicate(request, ctx.channel());
+                duplicateService.enterDuplicate(request, ctx.channel());
                 break;
             case SPELL:
-                response = duplicateService.spellBoss(request, ctx.channel());
+                duplicateService.spellBoss(request, ctx.channel());
                 break;
             case STOP:
-                response = duplicateService.stopAttack(request, ctx.channel());
+                duplicateService.stopAttack(request, ctx.channel());
                 break;
             case LEAVE:
-                response = duplicateService.leaveDuplicate(request, ctx.channel());
+                duplicateService.leaveDuplicate(request, ctx.channel());
                 break;
         }
         if (response != null) {

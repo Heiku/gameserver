@@ -61,7 +61,6 @@ public class UseItemNowRun implements Runnable {
     @Override
     public void run() {
         Role role = LocalUserMap.userRoleMap.get(userId);
-        List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(role.getRoleId());
 
         int hp = role.getHp();
         int mp = role.getMp();

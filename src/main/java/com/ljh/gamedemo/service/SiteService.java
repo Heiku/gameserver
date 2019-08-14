@@ -9,17 +9,32 @@ import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.entity.Site;
 import com.ljh.gamedemo.proto.protoc.MsgSiteInfoProto;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
+import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 场景移动操作
+ *
+ */
 @Component
 public class SiteService {
 
     @Autowired
     private UserRoleDao userRoleDao;
+
+    @Autowired
+    private UserService userService;
+
+
+    private MsgUserInfoProto.ResponseUserInfo userResp;
+
+    private MsgSiteInfoProto.ResponseSiteInfo siteResp;
+
 
     // 判断能否到达指定的目的地
     // now -> destination
@@ -102,88 +117,86 @@ public class SiteService {
      * 2.判断位置是否相邻
      * 3.移动后将数据记录
      *
-     * @param requestSiteInfo
+     * @param req
      * @return
      */
-    public MsgSiteInfoProto.ResponseSiteInfo move(MsgSiteInfoProto.RequestSiteInfo requestSiteInfo){
+    public void move(MsgSiteInfoProto.RequestSiteInfo req, Channel channel){
         // 先判断用户的信息
-        long userId = requestSiteInfo.getUserId();
-        if (userId <= 0){
-            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                    .setContent(ContentType.USER_EMPTY_TOKEN)
-                    .build();
+        userResp = userService.userStateInterceptor(req.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
+            return;
         }
 
         // 获取对应的目的地
-        String destination = requestSiteInfo.getContent();
+        String destination = req.getContent();
         if (Strings.isNullOrEmpty(destination)){
-            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                    .setContent(ContentType.MOVE_EMPTY)
-                    .build();
+            siteResp = combineSiteResp(ContentType.MOVE_EMPTY);
+            channel.writeAndFlush(siteResp);
+            return;
         }
 
         // 判断是否能够到达
         // 先查缓存，在查数据库
+        long userId = req.getUserId();
         Role role;
-        role = LocalUserMap.userRoleMap.get(userId);
+        role = LocalUserMap.getUserRoleMap().get(userId);
         if (role == null){
             role = userRoleDao.selectUserRole(userId).get(0);
         }
         // 数据库还是查不到，直接返回结果
         if (role == null){
-            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
+            siteResp = combineSiteResp(ContentType.ROLE_EMPTY);
+            channel.writeAndFlush(siteResp);
+            return;
         }
+
+
         // 获取当前场景名
         String siteName = LocalSiteMap.idSiteMap.get(role.getSiteId()).getName();
 
+        String content = "";
         // 判断能否到达目的地，到达后更新当前缓存位置信息
         if (getDestination(userId, role, siteName, destination)){
 
             // 重新获取当前位置信息
             Role r = LocalUserMap.userRoleMap.get(userId);
             String site = LocalSiteMap.idSiteMap.get(r.getSiteId()).getName();
-            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                    .setContent("成功到达" + destination + "\n" +
-                            "可到达附近地点：" + getNext(site).toString())
-                    .build();
+            content = "成功到达" + destination + "\n" + "可到达附近地点：" + getNext(site).toString();
+            channel.writeAndFlush(combineSiteResp(content));
+            return;
         }
 
-        return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                .setContent("无法到达" + destination + "，原因是：场景间不相邻。\n" +
-                        "可到达附近地点：" + getNext(siteName).toString())
-                .build();
+        content = "无法到达" + destination + "，原因是：场景间不相邻。\n" +
+                "可到达附近地点：" + getNext(siteName).toString();
+        channel.writeAndFlush(combineSiteResp(content));
     }
 
 
     /**
      * 获得当前角色的位置信息
      *
-     * @param requestSiteInfo
+     * @param req
      * @return
      */
-    public MsgSiteInfoProto.ResponseSiteInfo getNowSiteCName(MsgSiteInfoProto.RequestSiteInfo requestSiteInfo){
+    public void getNowSiteCName(MsgSiteInfoProto.RequestSiteInfo req, Channel channel){
         // 用户认证信息判断
-        long userId = requestSiteInfo.getUserId();
-        if (userId <= 0){
-            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_TOKEN_DATA_EMPTY)
-                    .build();
+        userResp = userService.userStateInterceptor(req.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
+            return;
         }
 
         // 玩家角色存在判断
+        long userId = req.getUserId();
         Role role = null;
         role = LocalUserMap.userRoleMap.get(userId);
         if (role == null){
             role = userRoleDao.selectUserRole(userId).get(0);
         }
         if (role == null){
-            return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
+            channel.writeAndFlush(combineSiteResp(ContentType.ROLE_EMPTY));
+            return;
         }
 
         // 如果存在
@@ -193,10 +206,19 @@ public class SiteService {
         // 返回消息
         String content = ContentType.SITE_NOW + site.getCName();
 
-        return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(content)
-                .build();
+        channel.writeAndFlush(combineSiteResp(content));
+    }
+
+
+    /**
+     * 判断两个玩家是否在相同的地点
+     *
+     * @param r1
+     * @param r2
+     * @return
+     */
+    public boolean inSameSite(Role r1, Role r2){
+        return r1.getSiteId().intValue() == r2.getSiteId();
     }
 
     // 将name -> cname
@@ -206,5 +228,12 @@ public class SiteService {
         }
 
         return LocalSiteMap.siteMap.get(name).getCName();
+    }
+
+
+    private MsgSiteInfoProto.ResponseSiteInfo combineSiteResp(String content){
+        return MsgSiteInfoProto.ResponseSiteInfo.newBuilder()
+                .setContent(content)
+                .build();
     }
 }

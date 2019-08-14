@@ -51,6 +51,21 @@ public class ProtoService {
                 .build();
     }
 
+    public List<RoleProto.Role> transToRoleListById(List<Long> roleIdList){
+        List<RoleProto.Role> res = new ArrayList<>();
+        if (roleIdList == null || roleIdList.isEmpty()){
+            return res;
+        }
+
+        for (Long id : roleIdList) {
+            Role role = LocalUserMap.getIdRoleMap().get(id);
+            RoleProto.Role r = transToRole(role);
+            res.add(r);
+        }
+
+        return res;
+    }
+
     public List<SpellProto.Spell> transToSpellList(List<Spell> res){
         List<SpellProto.Spell> spellList = new ArrayList<>();
         for (Spell spell : res){
@@ -319,6 +334,21 @@ public class ProtoService {
                 .setLoser(transToRole(LocalUserMap.getIdRoleMap().get(record.getLoser())))
                 .setWinHonor(record.getWinHonor())
                 .setLoseHonor(record.getLoseHonor())
+                .build();
+    }
+
+
+    public GroupProto.Group transToGroup(Group group) {
+        if (group == null){
+            return null;
+        }
+        Role leader = LocalUserMap.getIdRoleMap().get(group.getLeader());
+        List<RoleProto.Role> roles = transToRoleListById(group.getMembers());
+
+        return GroupProto.Group.newBuilder()
+                .setGroupId(group.getId())
+                .setLeader(transToRole(leader))
+                .addAllMembers(roles)
                 .build();
     }
 }

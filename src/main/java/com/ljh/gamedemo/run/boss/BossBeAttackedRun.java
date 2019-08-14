@@ -4,7 +4,7 @@ import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.local.cache.RoleAttrCache;
+import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgDuplicateProto;
 import com.ljh.gamedemo.service.DuplicateService;
 import com.ljh.gamedemo.service.EquipService;
@@ -28,17 +28,11 @@ public class BossBeAttackedRun implements Runnable {
     // 获取玩家信息
     private Role role;
 
-    // 获取玩家技能
-    private Spell spell;
-
     // 获取 Boss 信息
     private Boss boss;
 
-    // 标识额外伤害
-    private int extra;
-
-    // 标识是否是普攻攻击
-    private boolean attack;
+    // Boos受到的伤害值
+    private int damage;
 
     // 通信 channel
     private Channel channel;
@@ -63,12 +57,11 @@ public class BossBeAttackedRun implements Runnable {
 
     }
 
-    public BossBeAttackedRun(Role role, Spell spell, Boss boss, boolean attack, Channel channel){
+    public BossBeAttackedRun(Role role, int damage , Boss boss){
         this.role = role;
-        this.spell = spell;
+        this.damage = damage;
         this.boss = boss;
-        this.attack = attack;
-        this.channel = channel;
+        this.channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
     }
 
     public static BossBeAttackedRun getInstance(){
@@ -80,18 +73,8 @@ public class BossBeAttackedRun implements Runnable {
 
     @Override
     public void run() {
-
-        // 获取攻击的方式
-        if (attack){
-            extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getDamage();
-        }else {
-            extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getSp();
-        }
-
         // 获取 Boss 的血量
         int hp = boss.getHp();
-        // 获取玩家的伤害值
-        int damage = spell.getDamage() + extra;
 
         if (hp > 0){
             hp -= damage;
@@ -112,15 +95,14 @@ public class BossBeAttackedRun implements Runnable {
 
                 // 重新获取副本中的 Boss 信息
                 List<Boss> nowBosses = dup.getBosses();
-                boolean empty;
-                empty = nowBosses.isEmpty();
+                boolean empty = nowBosses.isEmpty();
 
                 // 发送通知玩家该 Boss 已经死亡
                 sendBossKilledMsg(boss, channel, empty);
                 boss = null;
 
                 // 打 Boss的时间判断
-                Boss next = attackTime(empty, role, dup, nowBosses);
+                attackTime(empty, role, dup, nowBosses);
                 return;
 
             }
@@ -269,7 +251,7 @@ public class BossBeAttackedRun implements Runnable {
         }else {
             // 如果存在第二个Boss的话，那么 Second Boss 会重新根据队伍中的角色进行血量扣除
             boss = nowBosses.get(0);
-            duplicateService.userBeAttackedByBoss(dup, channel);
+            duplicateService.userBeAttackedByBoss(dup);
 
             return boss;
         }

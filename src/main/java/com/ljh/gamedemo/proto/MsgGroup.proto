@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgGroup.proto
+
+import "Group.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgGroupProto";
+
+enum RequestType{
+    INVITE_GROUP = 0;
+    JOIN = 1;
+    EXIT_GROUP = 2;
+    STATE_GROUP = 3;
+}
+
+message RequestGroup{
+    int64 userId = 1;
+    int64 roleId = 2;
+    int64 groupId = 3;
+
+    RequestType type = 4;
+}
+
+message ResponseGroup{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    Group group = 4;
+}

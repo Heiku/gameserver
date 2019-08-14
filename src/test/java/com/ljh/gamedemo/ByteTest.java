@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class ByteTest {
@@ -85,7 +86,7 @@ public class ByteTest {
         }*/
 
 
-        System.out.println(UUID.randomUUID().toString());
+        System.out.println(Math.abs(new Random().nextLong()));
     }
 }
 

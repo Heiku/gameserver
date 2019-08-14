@@ -58,7 +58,11 @@ public enum MessageType {
 
     // pk
     REQUEST_PK(0x1a, MsgPKProto.RequestPK.class),
-    RESPONSE_PK(0x1b, MsgPKProto.ResponsePK.class)
+    RESPONSE_PK(0x1b, MsgPKProto.ResponsePK.class),
+
+    // group
+    REQUEST_GROUP(0x1c, MsgGroupProto.RequestGroup.class),
+    RESPONSE_GROUP(0x1d, MsgGroupProto.ResponseGroup.class)
     ;
 
 

@@ -6,6 +6,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
+import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.service.ProtoService;
 import io.netty.channel.Channel;
@@ -30,7 +31,7 @@ public class BossBeAttackedScheduleRun implements Runnable {
     // 玩家属性
     private Role role;
 
-    // 属性获得的额外伤害值
+    // 加成的技能额外伤害
     private int extra;
 
     // 技能持续的总伤害值
@@ -44,12 +45,13 @@ public class BossBeAttackedScheduleRun implements Runnable {
 
     private BossBeAttackedRun attackedRun = BossBeAttackedRun.getInstance();
 
-    public BossBeAttackedScheduleRun(Role role, Spell spell, Boss boss, Channel channel){
+    public BossBeAttackedScheduleRun(Role role, Spell spell, Boss boss, int extra){
         this.role = role;
         this.spell = spell;
         this.boss = boss;
-        this.channel = channel;
+        this.channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
 
+        this.extra = extra;
         this.allDamage = spell.getDamage();
     }
 

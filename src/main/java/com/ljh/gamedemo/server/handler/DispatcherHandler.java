@@ -40,6 +40,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
         handlerMap.put(REQUEST_CHAT.protoCode, new ChatHandler());
         handlerMap.put(REQUEST_EMAIL.protoCode, new EmailHandler());
         handlerMap.put(REQUEST_PK.protoCode, new PKHandler());
+        handlerMap.put(REQUEST_GROUP.protoCode, new GroupHandler());
     }
 
     @Override

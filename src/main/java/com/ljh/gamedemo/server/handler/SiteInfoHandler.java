@@ -4,6 +4,7 @@ import com.ljh.gamedemo.proto.protoc.MsgSiteInfoProto;
 import com.ljh.gamedemo.service.SaveDataService;
 import com.ljh.gamedemo.service.SiteService;
 import com.ljh.gamedemo.util.SpringUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +31,15 @@ public class SiteInfoHandler extends SimpleChannelInboundHandler<MsgSiteInfoProt
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MsgSiteInfoProto.RequestSiteInfo requestSiteInfo) throws Exception {
         int type = requestSiteInfo.getType().getNumber();
+        Channel channel = ctx.channel();
         switch (type){
             case SITE:
-                responseSiteInfo = siteService.getNowSiteCName(requestSiteInfo);
+                siteService.getNowSiteCName(requestSiteInfo, channel);
                 break;
             case MOVE:
-                responseSiteInfo = siteService.move(requestSiteInfo);
+                siteService.move(requestSiteInfo, channel);
                 break;
         }
-
-        ctx.writeAndFlush(responseSiteInfo);
     }
 
     @Override
