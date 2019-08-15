@@ -89,10 +89,14 @@ public class DuplicateManager {
 
                     // 停止任务
                     executor.shutdownGracefully();
+
+                    // 更新线程池标识
+                    idleArr[i] = 0;
+
+                    // 施放资源
+                    dupExecutorMap.remove(id);
                     executor = null;
 
-                    idleArr[i] = 0;
-                    dupExecutorMap.remove(id);
                 }
             }
         }

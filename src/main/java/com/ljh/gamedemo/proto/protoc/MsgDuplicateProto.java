@@ -39,6 +39,10 @@ public final class MsgDuplicateProto {
      * <code>STOP = 4;</code>
      */
     STOP(4),
+    /**
+     * <code>LEAVE = 5;</code>
+     */
+    LEAVE(5),
     UNRECOGNIZED(-1),
     ;
 
@@ -62,6 +66,10 @@ public final class MsgDuplicateProto {
      * <code>STOP = 4;</code>
      */
     public static final int STOP_VALUE = 4;
+    /**
+     * <code>LEAVE = 5;</code>
+     */
+    public static final int LEAVE_VALUE = 5;
 
 
     public final int getNumber() {
@@ -87,6 +95,7 @@ public final class MsgDuplicateProto {
         case 2: return CHALLENGE;
         case 3: return SPELL;
         case 4: return STOP;
+        case 5: return LEAVE;
         default: return null;
       }
     }
@@ -3080,10 +3089,10 @@ public final class MsgDuplicateProto {
       "result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004type\030\003 " +
       "\001(\0162\014.RequestType\022\035\n\tduplicate\030\004 \003(\0132\n.D" +
       "uplicate\022\023\n\004boss\030\005 \003(\0132\005.Boss\022\025\n\005equip\030\006" +
-      " \003(\0132\006.Equip*K\n\013RequestType\022\r\n\tDUPLICATE" +
+      " \003(\0132\006.Equip*V\n\013RequestType\022\r\n\tDUPLICATE" +
       "\020\000\022\t\n\005ENTER\020\001\022\r\n\tCHALLENGE\020\002\022\t\n\005SPELL\020\003\022" +
-      "\010\n\004STOP\020\004B2\n\035com.ljh.gamedemo.proto.prot" +
-      "ocB\021MsgDuplicateProtob\006proto3"
+      "\010\n\004STOP\020\004\022\t\n\005LEAVE\020\005B2\n\035com.ljh.gamedemo" +
+      ".proto.protocB\021MsgDuplicateProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

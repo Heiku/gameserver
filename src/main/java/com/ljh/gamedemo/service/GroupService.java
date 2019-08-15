@@ -11,8 +11,14 @@ import com.ljh.gamedemo.proto.protoc.MsgGroupProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.util.CommonUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 组队的具体操作
@@ -200,6 +206,10 @@ public class GroupService {
         // 玩家队伍存放
         GroupCache.getRoleGroupMap().put(role.getRoleId(), group);
 
+        // 队伍channel
+        ChannelGroup cg = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+        ChannelCache.getGroupChannelMap().put(group.getId(), cg);
+
         return group;
     }
 
@@ -215,8 +225,13 @@ public class GroupService {
 
         // 存档
         GroupCache.getGroupCache().put(group.getId(), group);
-
         GroupCache.getRoleGroupMap().put(own.getRoleId(), group);
+
+        // 加入队伍channel
+        Channel c = ChannelCache.getUserIdChannelMap().get(own.getUserId());
+        ChannelGroup cg = ChannelCache.getGroupChannelMap().get(group.getId());
+        cg.add(c);
+        ChannelCache.getGroupChannelMap().put(group.getId(), cg);
     }
 
 
@@ -225,7 +240,7 @@ public class GroupService {
      *
      * @param role  玩家
      */
-    private void removeGroup(Role role) {
+    public void removeGroup(Role role) {
         Group group = GroupCache.getRoleGroupMap().get(role.getRoleId());
 
         if (group != null) {
@@ -233,8 +248,12 @@ public class GroupService {
 
             // 当前队伍已经没有成员
             if (group.getMembers().isEmpty()){
+
+                // 删除缓存记录
                 GroupCache.getGroupCache().invalidate(group.getId());
                 GroupCache.getRoleGroupMap().remove(role.getRoleId());
+                ChannelCache.getGroupChannelMap().remove(group.getId());
+                // 施放资源
                 group = null;
                 return;
             }
@@ -243,9 +262,48 @@ public class GroupService {
             }
             // 更新队伍记录
             GroupCache.getRoleGroupMap().remove(role.getRoleId());
-
             GroupCache.getGroupCache().put(group.getId(), group);
-        }    }
+
+            // 移除队伍channel
+            ChannelGroup cg = ChannelCache.getGroupChannelMap().get(group.getId());
+            Channel c = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+            cg.remove(c);
+            ChannelCache.getGroupChannelMap().put(group.getId(), cg);
+        }
+    }
+
+
+    /**
+     * 判断是否拥有队伍
+     *
+     * @param role
+     * @return
+     */
+    public boolean hasGroup(Role role){
+        Group group = GroupCache.getRoleGroupMap().get(role.getRoleId());
+        return group != null;
+    }
+
+
+    /**
+     * 获取队伍内的所有玩家信息
+     *
+     * @param group
+     * @return
+     */
+    public List<Role> getGroupRoleList(Group group){
+        List<Role> roleList = new ArrayList<>();
+        List<Long> idRoleList = group.getMembers();
+        if (idRoleList == null || idRoleList.isEmpty()){
+            return roleList;
+        }
+        idRoleList.forEach( i -> {
+            Role role = LocalUserMap.getIdRoleMap().get(i);
+            roleList.add(role);
+        });
+
+        return roleList;
+    }
 
     /**
      * 发送组队邀请

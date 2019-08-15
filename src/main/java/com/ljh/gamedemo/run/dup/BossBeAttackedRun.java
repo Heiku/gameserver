@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.run.boss;
+package com.ljh.gamedemo.run.dup;
 
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 野怪受到直接伤害的task
+ *
  * @Author: Heiku
  * @Date: 2019/7/30
  */
@@ -52,7 +54,6 @@ public class BossBeAttackedRun implements Runnable {
 
     private static BossBeAttackedRun run = new BossBeAttackedRun();
 
-
     public BossBeAttackedRun(){
 
     }
@@ -73,25 +74,20 @@ public class BossBeAttackedRun implements Runnable {
 
     @Override
     public void run() {
-        // 获取 Boss 的血量
         int hp = boss.getHp();
-
         if (hp > 0){
             hp -= damage;
 
             // Boss 死亡
             if (hp <= 0){
+                // 取消玩家与Boss的关联任务
+                duplicateService.removeAttackedFuture(role);
 
-                // 将 Boss移除副本信息
-                Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
+                // 移除Boss信息
+                Duplicate dup = duplicateService.getDuplicate(role);
                 dup.getBosses().remove(boss);
                 LocalAttackCreepMap.getCurDupMap().put(role.getRoleId(), dup);
 
-                // Boss GG，消除 Boss的自动攻击任务
-                // 组队的话，那么一个副本应该对应多个玩家 duplicate, List<RoleId>
-                // 所以，取消任务的话，应该是每个玩家都取消掉血任务
-                LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId()).cancel(true);
-                LocalAttackCreepMap.getUserBeAttackedMap().remove(role.getRoleId());
 
                 // 重新获取副本中的 Boss 信息
                 List<Boss> nowBosses = dup.getBosses();
@@ -251,7 +247,7 @@ public class BossBeAttackedRun implements Runnable {
         }else {
             // 如果存在第二个Boss的话，那么 Second Boss 会重新根据队伍中的角色进行血量扣除
             boss = nowBosses.get(0);
-            duplicateService.userBeAttackedByBoss(dup);
+            duplicateService.doBossAttacked(dup);
 
             return boss;
         }

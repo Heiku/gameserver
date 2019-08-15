@@ -1,5 +1,6 @@
 package com.ljh.gamedemo;
 
+import com.ljh.gamedemo.entity.Duplicate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -86,7 +87,17 @@ public class ByteTest {
         }*/
 
 
-        System.out.println(Math.abs(new Random().nextLong()));
+        Duplicate d1 = new Duplicate();
+        d1.setId(1L);
+        d1.setName("nono");
+
+        Duplicate d2 = new Duplicate();
+        d2.setId(1L);
+        d2.setName("nono");
+
+        System.out.println(d1.hashCode());
+        System.out.println(d2.hashCode());
+        System.out.println(d1.equals(d2));
     }
 }
 

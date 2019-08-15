@@ -1,7 +1,6 @@
 package com.ljh.gamedemo.entity;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -24,25 +23,21 @@ public class Duplicate {
     /**
      * Boss野怪
      */
-    @EqualsAndHashCode.Exclude
     private List<Boss> bosses;
 
     /**
      * 装备奖励
      */
-    @EqualsAndHashCode.Exclude
     private List<Equip> equipReward;
 
     /**
      * 金币奖励
      */
-    @EqualsAndHashCode.Exclude
     private Integer goldReward;
 
     /**
      * 副本总进度 e.g. progress=2 : 代表一共有两个Boss，需要完全击杀才能获得副本奖励
      */
-    @EqualsAndHashCode.Exclude
     private Integer progress;
 
     /**
@@ -50,4 +45,8 @@ public class Duplicate {
      */
     private Integer limitTime;
 
+    /**
+     * 挑战者（队伍 / 独立玩家） 与 副本关联的id
+     */
+    private Long relatedId;
 }

@@ -20,11 +20,18 @@ public class ChannelCache {
     // 玩家对应的channel <userId, Channel>
     private static final Map<Long, Channel> userIdChannelMap = Maps.newConcurrentMap();
 
+    // 保存队伍内的channel信息
+    private static Map<Long, ChannelGroup> groupChannelMap = Maps.newConcurrentMap();
+
     public static Map<Long, Channel> getUserIdChannelMap() {
         return userIdChannelMap;
     }
 
     public static ChannelGroup getAllRoleGroup() {
         return allRoleGroup;
+    }
+
+    public static Map<Long, ChannelGroup> getGroupChannelMap() {
+        return groupChannelMap;
     }
 }

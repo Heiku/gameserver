@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.ljh.gamedemo.entity.Duplicate;
 import io.netty.util.concurrent.ScheduledFuture;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -13,6 +14,7 @@ import java.util.Queue;
  */
 public class LocalAttackCreepMap {
 
+    // Creep相关
     private static Map<Long, ScheduledFuture> userBeAttackedMap = Maps.newConcurrentMap();
 
     // 玩家当前攻击的野怪信息
@@ -21,17 +23,23 @@ public class LocalAttackCreepMap {
     // 野怪与玩家攻击相关联  <creepId, List<RoleId>>
     private static Map<Long, Queue<Long>> creepAttackedMap = Maps.newConcurrentMap();
 
-    // Boss 与玩家攻击相关联 <Duplicate, List<RoleId>>
-    private static Map<Duplicate, Queue<Long>> bossAttackedMap = Maps.newConcurrentMap();
 
+
+    // Duplicate相关
+    // Boss的攻击目标队列
+    private static Map<Long, Queue<Long>> bossAttackedMap = Maps.newConcurrentMap();
 
     // 玩家攻击副本boss关联
     // 单人打boss：<roleId, duplicate>
-    // 组队打boss：<roleId + roleId + ... , duplicate>
+    // 组队打boss：<groupId, duplicate>
     private static Map<Long, Duplicate> curDupMap = Maps.newConcurrentMap();
 
     // 挑战boss的时间戳，用于判断挑战副本成功
     private static Map<Long, Long> dupTimeStampMap = Maps.newConcurrentMap();
+
+    // 玩家受到的副本伤害任务
+    private static Map<Long, List<ScheduledFuture>> dupUserBeAttFutMap = Maps.newConcurrentMap();
+
 
     public static Map<Long, Duplicate> getCurDupMap() {
         return curDupMap;
@@ -53,7 +61,12 @@ public class LocalAttackCreepMap {
         return dupTimeStampMap;
     }
 
-    public static Map<Duplicate, Queue<Long>> getBossAttackedMap() {
+
+    public static Map<Long, Queue<Long>> getBossAttackedMap() {
         return bossAttackedMap;
+    }
+
+    public static Map<Long, List<ScheduledFuture>> getDupUserBeAttFutMap() {
+        return dupUserBeAttFutMap;
     }
 }

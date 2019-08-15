@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.run.boss;
+package com.ljh.gamedemo.run.dup;
 
 import com.ljh.gamedemo.entity.Boss;
 import com.ljh.gamedemo.entity.Duplicate;
@@ -8,7 +8,6 @@ import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.service.ProtoService;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,8 +77,7 @@ public class BossBeAttackedScheduleRun implements Runnable {
 
                 // 重新获取副本中的 Boss 信息
                 List<Boss> nowBosses = dup.getBosses();
-                boolean empty;
-                empty = nowBosses.isEmpty();
+                boolean empty = nowBosses.isEmpty();
 
                 // 发送通知玩家该 Boss 已经死亡
                 attackedRun.sendBossKilledMsg(boss, channel, empty);
