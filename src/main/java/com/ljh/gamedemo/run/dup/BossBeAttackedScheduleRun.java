@@ -9,11 +9,14 @@ import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.run.record.FutureMap;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
+ * Boss的持续掉血任务
+ *
  * @Author: Heiku
  * @Date: 2019/8/1
  */
@@ -24,8 +27,8 @@ public class BossBeAttackedScheduleRun implements Runnable {
     // 玩家的持续掉血技能
     private Spell spell;
 
-    // 目标的boss
-    private Boss boss;
+    // 副本信息
+    private Duplicate dup;
 
     // 玩家属性
     private Role role;
@@ -42,78 +45,68 @@ public class BossBeAttackedScheduleRun implements Runnable {
     // 通信 channel
     private Channel channel;
 
-    private BossBeAttackedRun attackedRun = BossBeAttackedRun.getInstance();
+    // 任务
+    private BossBeAttackedRun attackedRun;
 
-    public BossBeAttackedScheduleRun(Role role, Spell spell, Boss boss, int extra){
+    public BossBeAttackedScheduleRun(Role role, Spell spell, Duplicate _dup, int extra){
         this.role = role;
         this.spell = spell;
-        this.boss = boss;
+        this.dup = _dup;
         this.channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
 
         this.extra = extra;
         this.allDamage = spell.getDamage();
+
+        attackedRun = new BossBeAttackedRun(role, allDamage, dup.getBosses().get(0));
     }
 
     @Override
     public void run() {
+        // 判断当前副本是否还存在Boss
+        List<Boss> bossList = dup.getBosses();
+        if (bossList == null || bossList.isEmpty()){
+            cancelBossFuture();
+            return;
+        }
+        Boss boss = bossList.get(0);
+
         // 初始化数据
         extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getSp();
         // Boss 血量
         int hp = boss.getHp();
-
         // 技能造成的每秒伤害值
         int damage= spell.getDamage() / spell.getSec() + extra;
 
-        log.info("Boss：" + boss.getName() + " 持续掉血任务，掉血前的血量为：hp=" + hp);
         if (hp > 0){
             hp -= damage;
             sumDamage += damage;
-
             if (hp <= 0){
-                Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(role.getRoleId());
-
                 // 移除 Boss信息，取消任务
-                removeBossInfo(dup, boss, role);
-
-                // 重新获取副本中的 Boss 信息
-                List<Boss> nowBosses = dup.getBosses();
-                boolean empty = nowBosses.isEmpty();
-
-                // 发送通知玩家该 Boss 已经死亡
-                attackedRun.sendBossKilledMsg(boss, channel, empty);
-                boss = null;
-
-                // 攻击的时间判断
-                attackedRun.attackTime(empty, role, dup, nowBosses);
+                cancelBossFuture();
+                attackedRun.doBossDeath();
+                return;
             }
 
             // 判断总的掉血值，是否超出
             if (sumDamage >= allDamage){
-                FutureMap.futureMap.get(this.hashCode()).cancel(true);
-                log.info("Boss: " + boss.getName() + " 达到总掉血值，持续掉血任务取消");
+                cancelBossFuture();
                 return;
             }
-
             // 正常扣血
             boss.setHp(hp);
-            log.info("Boss: " + boss.getName() + " 持续掉血任务，掉血后的血量为：" + boss.getHp());
-
             // 消息返回
-            attackedRun.sendBossAttackedMsg(boss, channel);
+            attackedRun.sendBossAttackedMsg(boss);
         }
     }
 
 
-    private void removeBossInfo(Duplicate dup, Boss boss, Role role){
-        // 移除 Boss 信息
-        dup.getBosses().remove(boss);
-
-        // 取消 Boss的攻击任务
-        LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId()).cancel(true);
-        LocalAttackCreepMap.getUserBeAttackedMap().remove(role.getRoleId());
-
+    /**
+     * 取消Boss的伤害任务
+     *
+     */
+    private void cancelBossFuture(){
         // Boss死亡，移除当前的掉血任务
         FutureMap.futureMap.get(this.hashCode()).cancel(true);
-        log.info("Boss: " + boss.getName() + " 已经死亡，持续掉血任务取消");
+        log.info("Boss已经死亡，持续掉血任务取消");
     }
 }

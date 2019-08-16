@@ -509,7 +509,7 @@ public class EquipService {
      */
     public void addRoleEquips(Role role, List<Goods> goods){
 
-        // cahce
+        // cache
         List<Equip> hasEquips = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
         goods.forEach(g -> {
             Equip tmp = LocalEquipMap.getIdEquipMap().get(g.getGid());

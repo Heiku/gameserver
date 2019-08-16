@@ -14,7 +14,7 @@ import java.util.Queue;
  */
 public class LocalAttackCreepMap {
 
-    // Creep相关
+    // // 玩家受到的伤害future，现只用于Creep
     private static Map<Long, ScheduledFuture> userBeAttackedMap = Maps.newConcurrentMap();
 
     // 玩家当前攻击的野怪信息
@@ -27,7 +27,7 @@ public class LocalAttackCreepMap {
 
     // Duplicate相关
     // Boss的攻击目标队列
-    private static Map<Long, Queue<Long>> bossAttackedMap = Maps.newConcurrentMap();
+    private static Map<Long, Queue<Long>> bossAttackQueueMap = Maps.newConcurrentMap();
 
     // 玩家攻击副本boss关联
     // 单人打boss：<roleId, duplicate>
@@ -37,8 +37,11 @@ public class LocalAttackCreepMap {
     // 挑战boss的时间戳，用于判断挑战副本成功
     private static Map<Long, Long> dupTimeStampMap = Maps.newConcurrentMap();
 
-    // 玩家受到的副本伤害任务
-    private static Map<Long, List<ScheduledFuture>> dupUserBeAttFutMap = Maps.newConcurrentMap();
+    // 玩家施放的持续技能任务
+    private static Map<Long, List<ScheduledFuture>> spellToBossFutMap = Maps.newConcurrentMap();
+
+    // 当前场景中的自动施放任务
+    private static Map<Long, List<ScheduledFuture>> dupAllFutureMap = Maps.newConcurrentMap();
 
 
     public static Map<Long, Duplicate> getCurDupMap() {
@@ -62,11 +65,15 @@ public class LocalAttackCreepMap {
     }
 
 
-    public static Map<Long, Queue<Long>> getBossAttackedMap() {
-        return bossAttackedMap;
+    public static Map<Long, Queue<Long>> getBossAttackQueueMap() {
+        return bossAttackQueueMap;
     }
 
-    public static Map<Long, List<ScheduledFuture>> getDupUserBeAttFutMap() {
-        return dupUserBeAttFutMap;
+    public static Map<Long, List<ScheduledFuture>> getSpellToBossFutMap() {
+        return spellToBossFutMap;
+    }
+
+    public static Map<Long, List<ScheduledFuture>> getDupAllFutureMap() {
+        return dupAllFutureMap;
     }
 }

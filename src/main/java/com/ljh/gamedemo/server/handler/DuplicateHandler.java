@@ -36,7 +36,7 @@ public class DuplicateHandler extends SimpleChannelInboundHandler<MsgDuplicatePr
                 duplicateService.spellBoss(request, ctx.channel());
                 break;
             case STOP:
-                duplicateService.stopAttack(request);
+                duplicateService.stopAttack(request, ctx.channel());
                 break;
             case LEAVE:
                 duplicateService.leaveDuplicate(request, ctx.channel());

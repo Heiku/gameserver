@@ -8,6 +8,7 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.service.GroupService;
 import com.ljh.gamedemo.service.PKService;
 import com.ljh.gamedemo.service.ProtoService;
 import com.ljh.gamedemo.service.UserService;
@@ -39,13 +40,16 @@ public class UserBeAttackedRun implements Runnable {
     // 是否是pk
     private boolean pk;
 
-    // 引入userService
+    // base userService
     private UserService userService = SpringUtil.getBean(UserService.class);
 
-    // 引入pkService
+    // pkService
     private PKService pkService = SpringUtil.getBean(PKService.class);
 
-    // 引入protoService工具类
+    // groupService
+    private GroupService groupService = SpringUtil.getBean(GroupService.class);
+
+    // protoService Util
     private ProtoService protoService = ProtoService.getInstance();
 
 
@@ -87,7 +91,11 @@ public class UserBeAttackedRun implements Runnable {
             hp -= damage;
         }
         if (hp < 0){
-            hp = 0;
+            // 退出队伍
+            groupService.removeGroup(role);
+            // 玩家复活
+            userService.reliveRole(role);
+            return;
         }
         role.setHp(hp);
 

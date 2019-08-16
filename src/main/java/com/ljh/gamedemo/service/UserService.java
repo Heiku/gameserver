@@ -11,6 +11,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.RoleState;
 import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.UserToken;
+import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleStateCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
@@ -392,6 +393,7 @@ public class UserService {
      * @param role
      */
     public void reliveRole(Role role){
+
         role.setHp(role.getMaxHp());
 
         // 更新玩家信息
@@ -407,7 +409,6 @@ public class UserService {
         Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
         channel.writeAndFlush(userResp);
     }
-
 
 
 
@@ -436,4 +437,5 @@ public class UserService {
         }
         return null;
     }
+
 }

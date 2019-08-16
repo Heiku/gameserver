@@ -208,6 +208,7 @@ public class GroupService {
 
         // 队伍channel
         ChannelGroup cg = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+        cg.add(ChannelCache.getUserIdChannelMap().get(role.getUserId()));
         ChannelCache.getGroupChannelMap().put(group.getId(), cg);
 
         return group;
