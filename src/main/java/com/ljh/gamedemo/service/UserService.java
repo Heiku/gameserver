@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,9 @@ public class UserService {
     @Autowired
     private ChatService chatService;
 
+    @Autowired
+    private DuplicateService duplicateService;
+
     private ProtoService protoService = ProtoService.getInstance();
 
     private MsgUserInfoProto.ResponseUserInfo userResp;
@@ -64,15 +68,13 @@ public class UserService {
         Role role = null;
 
         // 优先查找本地角色
-        role = LocalUserMap.userRoleMap.get(userId);
+        role = LocalUserMap.getUserRoleMap().get(userId);
         if (role == null){
 
             // 数据库查找
             List<Role> roles = userRoleDao.selectUserRole(userId);
             if (roles.isEmpty()){
-                return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                        .setContent(ContentType.ROLE_EMPTY)
-                        .build();
+                return conbimeFailedMsg(ContentType.ROLE_EMPTY);
             }
 
             // 这里暂时只存在一个角色
@@ -205,28 +207,19 @@ public class UserService {
 
         // 校验请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_EMPTY_LOGIN_PARAM)
-                    .build();
+            return conbimeFailedMsg(ContentType.USER_EMPTY_LOGIN_PARAM);
         }
 
         // 获取混淆的pwd，数据库查玩家信息
         String md5Pwd = MD5Util.hashPwd(password);
         User user = userDao.selectUser(userName);
         if (user == null){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_EMPTY_DATA)
-                    .build();
+            return conbimeFailedMsg(ContentType.USER_EMPTY_DATA);
         }
 
         // 校验密码的正确性
         if (!user.getPassword().equals(md5Pwd)){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setContent(ContentType.BAD_PASSWORD)
-                    .setResult(ResultCode.FAILED)
-                    .build();
+            return conbimeFailedMsg(ContentType.BAD_PASSWORD);
         }
 
         // 登录成功，获取ID和token
@@ -262,20 +255,14 @@ public class UserService {
 
         // 判断请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setContent(ContentType.USER_EMPTY_REGISTER_PARAM)
-                    .setResult(ResultCode.FAILED)
-                    .build();
+            return conbimeFailedMsg(ContentType.USER_EMPTY_REGISTER_PARAM);
         }
 
         // 获取md5Pwd，存数据库user_account
         String md5Pwd = MD5Util.hashPwd(password);
         int n = userDao.insertUserAccount(0l, userName, md5Pwd);
         if (n <= 0){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setContent(ContentType.REGISTER_FAILED)
-                    .setResult(ResultCode.FAILED)
-                    .build();
+            return conbimeFailedMsg(ContentType.REGISTER_FAILED);
         }
 
         // 接着查找user信息
@@ -309,11 +296,9 @@ public class UserService {
     public MsgUserInfoProto.ResponseUserInfo exit(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 用户判断
         long userId = requestUserInfo.getUserId();
-        if (userId <= 0){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_EMPTY_DATA)
-                    .build();
+        userResp = userStateInterceptor(requestUserInfo.getUserId());
+        if (userResp != null){
+            return userResp;
         }
 
         // 获取当前的玩家角色
@@ -323,10 +308,7 @@ public class UserService {
             role = userRoleDao.selectUserRole(userId).get(0);
         }
         if (role == null){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
+            return conbimeFailedMsg(ContentType.ROLE_EMPTY);
         }
 
         // 获取当前的位置信息
@@ -335,7 +317,7 @@ public class UserService {
 
         // 移除当前玩家角色的位置信息
         List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
-
+        roleList.removeIf(r -> r.getRoleId() == roleId);
         // Iterator解决并发修改的问题
         Iterator<Role> iterator = roleList.iterator();
         while (iterator.hasNext()){
@@ -361,10 +343,7 @@ public class UserService {
         // 更新数据库role的site信息
         int n = userRoleDao.updateRoleSiteInfo(role);
         if (n <= 0){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.UPDATE_ROLE_SITE)
-                    .build();
+            return conbimeFailedMsg(ContentType.UPDATE_ROLE_SITE);
         }
 
         // 成功操作
@@ -379,7 +358,7 @@ public class UserService {
     /**
      * 更新玩家的信息 （缓存 + DB）
      *
-     * @param role
+     * @param role  玩家
      */
     public void updateRoleInfo(Role role){
         UpdateRoleInfoRun task = new UpdateRoleInfoRun(role);
@@ -390,14 +369,16 @@ public class UserService {
     /**
      * 玩家复活
      *
-     * @param role
+     * @param role  玩家
      */
     public void reliveRole(Role role){
-
         role.setHp(role.getMaxHp());
 
         // 更新玩家信息
         updateRoleInfo(role);
+
+        // 移出副本的攻击目标队列
+        duplicateService.removeAttackedQueue(role);
 
         // 消息通知
         userResp = MsgUserInfoProto.ResponseUserInfo.newBuilder()
@@ -415,8 +396,8 @@ public class UserService {
     /**
      * 用户状态判断拦截器
      *
-     * @param userId
-     * @return
+     * @param userId    请求携带的认证id
+     * @return          消息饭返回
      */
     public MsgUserInfoProto.ResponseUserInfo userStateInterceptor(long userId){
         // 判断玩家账号
@@ -436,6 +417,20 @@ public class UserService {
                     .build();
         }
         return null;
+    }
+
+
+    /**
+     * 返回失败消息
+     *
+     * @param msg 消息文本
+     * @return      消息返回
+     */
+    private MsgUserInfoProto.ResponseUserInfo conbimeFailedMsg(String msg){
+        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(msg)
+                .build();
     }
 
 }

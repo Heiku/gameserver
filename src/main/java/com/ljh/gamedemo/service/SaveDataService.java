@@ -26,6 +26,9 @@ public class SaveDataService {
     private UserService userService;
 
     @Autowired
+    private DuplicateService duplicateService;
+
+    @Autowired
     private GroupService groupService;
 
     /**
@@ -46,10 +49,12 @@ public class SaveDataService {
         log.info("update user data before inactive(): " + n);
         log.info(userId + " - "  + role.getName() + " 暂时下线！");
 
-
         // 同时，取消玩家的自动恢复任务
         ScheduledFuture future = FutureMap.getRecoverFutureMap().get(role.getRoleId());
         future.cancel(true);
+
+        // 如果在挑战副本，移出攻击目标队列中
+        duplicateService.removeAttackedQueue(role);
 
         // 退出队伍信息
         groupService.removeGroup(role);

@@ -167,7 +167,7 @@ public class BossBeAttackedRun implements Runnable {
         List<Equip> equips = dup.getEquipReward();
 
         //
-        group.getMembers().forEach(m -> {
+        for (Long m : group.getMembers()) {
             Role r = LocalUserMap.getIdRoleMap().get(m);
             r.setGold(r.getGold() + eachGold);
 
@@ -190,7 +190,7 @@ public class BossBeAttackedRun implements Runnable {
             dup.setGoldReward(eachGold);
             response = combineDupMsg(dup, eList);
             channel.writeAndFlush(response);
-        });
+        }
     }
 
 

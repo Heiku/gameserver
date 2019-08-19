@@ -2,7 +2,6 @@ package com.ljh.gamedemo.local;
 
 import com.google.common.base.Strings;
 import com.ljh.gamedemo.entity.Site;
-import com.ljh.gamedemo.run.CustomExecutor;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,18 +18,31 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
+
+/**
+ * 场景信息数据存储
+ */
 @Slf4j
 public class LocalSiteMap {
 
+    /**
+     * 场景信息数据文件
+     */
     private static File siteFile = null;
 
-    // 存储实体的数据 <name, site>
+    /**
+     * 存储实体的数据 <name, site>
+     */
     public static Map<String, Site> siteMap = new ConcurrentHashMap<>();
 
-    // 存储实体的命名对应 <cName, name>
+    /**
+     * 存储实体的命名对应 <cName, name>
+     */
     public static Map<String, String> nameMap = new HashMap<>();
 
-    // 存储实体的数据 <id, entity>
+    /**
+     * 存储实体的数据 <id, entity>
+     */
     public static Map<Integer, Site> idSiteMap = new ConcurrentHashMap<>();
 
     static {
@@ -42,6 +54,9 @@ public class LocalSiteMap {
         }
     }
 
+    /**
+     * 载入数据文件
+     */
     public static void readExcel() {
 
         // 判断文件类型，获取workBook
@@ -73,8 +88,7 @@ public class LocalSiteMap {
             }
         }
 
-
-        // 在读一次文件，重构对象关联
+        // 再读一次文件，重构对象关联
         for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -103,20 +117,19 @@ public class LocalSiteMap {
                 }
             }
         }
-
-
         idSiteMap.forEach((k,v) -> {
             // 为每一个 siteId 绑定一个线程池
             SiteCreepExecutorManager.bindSiteExecutor(k);
         } );
 
+        log.info("site 数据载入成功");
     }
     public static void main(String[] args) {
         readExcel();
 
-        SiteCreepExecutorManager.siteCreepExecutorMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " ,v: " + v);
-        });
+        SiteCreepExecutorManager.siteCreepExecutorMap.forEach(
+                (k, v) ->
+            System.out.println("k: " + k + " ,v: " + v));
 
     }
 }

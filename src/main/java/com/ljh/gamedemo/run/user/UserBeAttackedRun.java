@@ -8,10 +8,7 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
-import com.ljh.gamedemo.service.GroupService;
-import com.ljh.gamedemo.service.PKService;
-import com.ljh.gamedemo.service.ProtoService;
-import com.ljh.gamedemo.service.UserService;
+import com.ljh.gamedemo.service.*;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -91,10 +88,11 @@ public class UserBeAttackedRun implements Runnable {
             hp -= damage;
         }
         if (hp < 0){
-            // 退出队伍
-            groupService.removeGroup(role);
             // 玩家复活
             userService.reliveRole(role);
+
+            // 退出队伍
+            groupService.removeGroup(role);
             return;
         }
         role.setHp(hp);
@@ -193,6 +191,7 @@ public class UserBeAttackedRun implements Runnable {
                 .setContent(ContentType.ATTACK_CURRENT)
                 .setRole(protoService.transToRole(role))
                 .build();
+
         channel.writeAndFlush(response);
     }
 

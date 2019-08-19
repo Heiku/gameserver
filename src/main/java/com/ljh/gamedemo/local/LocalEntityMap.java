@@ -19,19 +19,25 @@ import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
 /**
- *
  * 实体数据本地存储
  */
 
 @Slf4j
 public class LocalEntityMap {
 
+    /**
+     *  实体数据文件
+     */
     private static File entityFile;
 
-    // 存储实体的数据 <entityName, entity>
+    /**
+     * 存储实体的数据 <entityName, entity>
+     */
     public static Map<String, Entity> entityMap = Maps.newHashMap();
 
-    // 存储实体的位置数据 <siteName, List<Entity>>
+    /**
+     * 存储实体的位置数据 <siteName, List<Entity>>
+     */
     public static Map<String, List<Entity>> siteEntityMap = Maps.newHashMap();
 
     static {
@@ -43,7 +49,9 @@ public class LocalEntityMap {
         }
     }
 
-    // 将.csv文件解析成实体数据
+    /**
+     * 载入数据文件
+     */
     public static void readExcel() {
 
         // 判断文件类型，获取workBook
@@ -60,7 +68,7 @@ public class LocalEntityMap {
                 Row row = sheet.getRow(j);
                 if (row != null) {
                     Entity entity = new Entity();
-                    entity = transformEntity(entity, row);
+                    transformEntity(entity, row);
 
                     // npc的场景id，并设置entity的位置信息
                     int destId = Integer.valueOf(getValue(row.getCell(5)));
@@ -70,12 +78,8 @@ public class LocalEntityMap {
                     Site site = LocalSiteMap.idSiteMap.get(destId);
                     entity.setSite(site);
 
-
                     // 另存一张映射表，用于表示场景中的实体信息
                     List<Entity> entityList;
-                    if (site == null){
-                        System.out.println(getValue(row.getCell(2)));
-                    }
                     String siteName = site.getName();
                     entityList = siteEntityMap.get(siteName);
                     if (entityList == null){
@@ -89,6 +93,7 @@ public class LocalEntityMap {
 
             }
         }
+        log.info("Entity 数据载入成功");
     }
 
     private static Entity transformEntity(Entity entity, Row row) {
@@ -104,9 +109,8 @@ public class LocalEntityMap {
     public static void main(String[] args) {
         LocalSiteMap.readExcel();
 
-        LocalSiteMap.idSiteMap.forEach((k,v) -> {
-            System.out.println("k: " + k + " value: " + v);
-        });
+        LocalSiteMap.idSiteMap.forEach((k,v) ->
+            System.out.println("k: " + k + " value: " + v));
 
     }
 

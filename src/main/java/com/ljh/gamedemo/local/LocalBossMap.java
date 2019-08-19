@@ -26,15 +26,24 @@ import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 @Slf4j
 public class LocalBossMap {
 
+    /**
+     * Boss数据文件
+     */
     private static File bossFile = null;
 
+    /**
+     * Boss 技能文件
+     */
     private static File spellBossFile = null;
 
-
-    // boss bossSpellMap <bossSpellId, bossSpell>
+    /**
+     * boss bossSpellMap <bossSpellId, bossSpell>
+     */
     private static Map<Long, BossSpell> bossSpellMap = Maps.newConcurrentMap();
 
-    // boss bossMap <bossId, boss>
+    /**
+     * boss bossMap <bossId, boss>
+     */
     private static Map<Long, Boss> bossMap = Maps.newConcurrentMap();
 
     static {
@@ -47,7 +56,9 @@ public class LocalBossMap {
         }
     }
 
-    // 先读取boss技能数据，再将数据装进boss中
+    /**
+     * 读取文件，载入Boss 信息
+     */
     public static void readExcel() {
 
         // 判断文件类型，获取workBook
@@ -112,25 +123,19 @@ public class LocalBossMap {
                 }
             }
         }
+        log.info("Boss 数据载入成功");
     }
 
     public static Map<Long, Boss> getBossMap() {
         return bossMap;
     }
 
-    public static Map<Long, BossSpell> getBossSpellMap() {
-        return bossSpellMap;
-    }
 
     public static void main(String[] args) {
         readExcel();
 
-        bossSpellMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " v: " + v);
-        });
+        bossSpellMap.forEach((k, v) -> System.out.println("k: " + k + " v: " + v));
 
-        bossMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " v: " + v);
-        });
+        bossMap.forEach((k, v) -> System.out.println("k: " + k + " v: " + v));
     }
 }

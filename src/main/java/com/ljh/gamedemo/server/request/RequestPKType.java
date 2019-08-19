@@ -1,10 +1,10 @@
 package com.ljh.gamedemo.server.request;
 
 /**
+ * PK 请求类型常量
+ *
  * @Author: Heiku
  * @Date: 2019/8/12
- *
- * PK 请求类型常量
  */
 public class RequestPKType {
 

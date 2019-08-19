@@ -25,15 +25,24 @@ import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 @Slf4j
 public class LocalCreepMap {
 
+    /**
+     * 野怪文件
+     */
     private static File creepFile = null;
 
-    // creep idMap：<creepId, Creep>
+    /**
+     * creep idMap：<creepId, Creep>
+     */
     private static Map<Integer, Creep> idCreepMap = Maps.newConcurrentMap();
 
-    // creep nameCreepMap：<creepName, Creep>
+    /**
+     * creep nameCreepMap：<creepName, Creep>
+     */
     private static Map<String, Creep> nameCreepMap = Maps.newConcurrentMap();
 
-    // creep siteCreepMap：<siteName, List<Creep>>
+    /**
+     * creep siteCreepMap：<siteName, List<Creep>>
+     */
     private static Map<Integer, List<Creep>> siteCreepMap = Maps.newConcurrentMap();
 
     static {
@@ -45,6 +54,10 @@ public class LocalCreepMap {
         }
     }
 
+
+    /**
+     * 读取文件数据
+     */
     public static void readExcel(){
 
         // 判断文件类型，获取workBook
@@ -80,7 +93,6 @@ public class LocalCreepMap {
                     // 存放 siteCreepMap
                     List<Creep> creepList;
                     Integer siteId = creep.getSiteId();
-                    String siteName = LocalSiteMap.idSiteMap.get(creep.getSiteId()).getName();
                     creepList = siteCreepMap.get(siteId);
                     if (creepList == null){
                         creepList = new ArrayList<>();
@@ -90,30 +102,19 @@ public class LocalCreepMap {
                 }
             }
         }
+        log.info("Creep 数据载入成功");
     }
 
     public static Map<Integer, List<Creep>> getSiteCreepMap() {
         return siteCreepMap;
     }
 
-    public static void setSiteCreepMap(Map<Integer, List<Creep>> siteCreepMap) {
-        LocalCreepMap.siteCreepMap = siteCreepMap;
-    }
-
     public static Map<Integer, Creep> getIdCreepMap() {
         return idCreepMap;
     }
 
-    public static void setIdCreepMap(Map<Integer, Creep> idCreepMap) {
-        LocalCreepMap.idCreepMap = idCreepMap;
-    }
-
     public static Map<String, Creep> getNameCreepMap() {
         return nameCreepMap;
-    }
-
-    public static void setNameCreepMap(Map<String, Creep> nameCreepMap) {
-        LocalCreepMap.nameCreepMap = nameCreepMap;
     }
 
     public static void main(String[] args) {
@@ -121,25 +122,20 @@ public class LocalCreepMap {
         LocalSiteMap.readExcel();
         readExcel();
 
-        nameCreepMap.forEach((k, v) ->{
-            System.out.println("k: " + k + " value: " + v);
-        });
+        nameCreepMap.forEach((k, v) ->
+            System.out.println("k: " + k + " value: " + v));
 
 
         System.out.println("======================");
 
-        idCreepMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " value: " + v);
-        });
+        idCreepMap.forEach((k, v) ->
+            System.out.println("k: " + k + " value: " + v));
 
         System.out.println("======================");
 
 
-        siteCreepMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " value: " + v);
-
-
-        });
+        siteCreepMap.forEach((k, v) ->
+            System.out.println("k: " + k + " value: " + v));
 
     }
 

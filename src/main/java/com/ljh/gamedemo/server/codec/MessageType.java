@@ -62,7 +62,11 @@ public enum MessageType {
 
     // group
     REQUEST_GROUP(0x1c, MsgGroupProto.RequestGroup.class),
-    RESPONSE_GROUP(0x1d, MsgGroupProto.ResponseGroup.class)
+    RESPONSE_GROUP(0x1d, MsgGroupProto.ResponseGroup.class),
+
+    // role
+    REQUEST_ROLE(0x1e, MsgRoleProto.RequestRole.class),
+    RESPONSE_ROLE(0x1f, MsgRoleProto.ResponseRole.class)
     ;
 
 

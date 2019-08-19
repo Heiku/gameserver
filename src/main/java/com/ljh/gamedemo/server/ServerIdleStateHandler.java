@@ -22,11 +22,7 @@ public class ServerIdleStateHandler extends IdleStateHandler {
 
     private static final int READER_IDLE_TIME = 60 * 5;
 
-    private static SaveDataService saveDataService;
-
-    static {
-        saveDataService = SpringUtil.getBean(SaveDataService.class);
-    }
+    private static SaveDataService saveDataService = new SaveDataService();
 
     public ServerIdleStateHandler(){
         super(READER_IDLE_TIME, 0, 0, TimeUnit.SECONDS);

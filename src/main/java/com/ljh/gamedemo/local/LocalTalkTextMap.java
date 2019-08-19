@@ -17,12 +17,20 @@ import java.util.Map;
 import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
+/**
+ * npc聊天信息文本数据
+ */
 @Slf4j
 public class LocalTalkTextMap {
 
+    /**
+     * npc聊天数据文件
+     */
     private static File talkTextFile = null;
 
-    // npc对话文本 <name,List<entity>>
+    /**
+     *  npc对话文本 <name,List<entity>>
+     */
     private static Map<String, List<TalkText>> talkTextMap = new HashMap<>();
 
     static {
@@ -33,7 +41,9 @@ public class LocalTalkTextMap {
         }
     }
 
-    // 获取csv文件信息，得到map集合
+    /**
+     *  获取csv文件信息，得到map集合
+     */
     public static void readExcel(){
 
         // 判断文件类型，获取workBook
@@ -73,23 +83,19 @@ public class LocalTalkTextMap {
                 }
             }
         }
+        log.info("talkTest 数据载入成功");
     }
 
     public static Map<String,List<TalkText>> getTalkTextMap(){
         return talkTextMap;
     }
 
-    public static void setTalkTextMap(Map<String, List<TalkText>> map){
-        talkTextMap = map;
-    }
-
     public static void main(String[] args) {
 
         readExcel();
 
-        talkTextMap.forEach((k,v) -> {
-            System.out.println("k: " + k + " v: " + v);
-        });
+        talkTextMap.forEach((k,v) ->
+            System.out.println("k: " + k + " v: " + v));
     }
 
 }

@@ -351,4 +351,28 @@ public class ProtoService {
                 .addAllMembers(roles)
                 .build();
     }
+
+
+    public List<RoleInitProto.RoleInit> transToRoleInitList(List<RoleInit> roleInits){
+        List<RoleInitProto.RoleInit> resList = new ArrayList<>();
+        if (roleInits == null || roleInits.isEmpty()){
+            return resList;
+        }
+        roleInits.forEach(r -> resList.add(transToRoleInit(r)));
+        return resList;
+    }
+
+    private RoleInitProto.RoleInit transToRoleInit(RoleInit r) {
+        if (r == null){
+            return null;
+        }
+        return RoleInitProto.RoleInit.newBuilder()
+                .setType(r.getType())
+                .setName(r.getName())
+                .setHp(r.getHp())
+                .setMp(r.getMp())
+                .setDesc(r.getDesc())
+                .build();
+    }
+
 }

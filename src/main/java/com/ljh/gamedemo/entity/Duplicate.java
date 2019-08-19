@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 

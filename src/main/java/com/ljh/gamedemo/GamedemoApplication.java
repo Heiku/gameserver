@@ -62,6 +62,9 @@ public class GamedemoApplication {
         // 载入玩家pk挑战的奖励信息
         LocalPKRewardMap.readExcel();
 
+        // 载入职业初始化信息
+        LocalRoleInitMap.readExcel();
+
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();
 

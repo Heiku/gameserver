@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgRole.proto
+
+import "Role.proto";
+import "RoleInit.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgRoleProto";
+
+enum RequestType{
+    ROLE = 0;
+    ROLE_TYPE = 1;
+    CREATE_ROLE = 2;
+}
+
+message RequestRole{
+    int64 userId = 1;
+    int32 roleType = 2;
+    string roleName = 3;
+
+    RequestType type = 4;
+}
+
+message ResponseRole{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    Role role = 4;
+    repeated RoleInit roleInit = 5;
+}

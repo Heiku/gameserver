@@ -19,7 +19,7 @@ public class ContentType {
 
     public static final String BAD_PASSWORD = "密码错误，请重新登录！\n";
 
-    public static final String USER_EMPTY_TOKEN = "登录的请求token信息为空！\n";
+    // public static final String USER_EMPTY_TOKEN = "登录的请求token信息为空！\n";
 
     public static final String USER_TOKEN_DATA_EMPTY = "数据库中暂无当前token记录，请重新登录\n";
 
@@ -31,6 +31,12 @@ public class ContentType {
     public static final String ROLE_EMPTY = "当前玩家暂无角色！\n";
 
     public static final String ROLE_CHOOSE = "角色选择成功！\n";
+
+    public static final String ROLE_TYPE = "当前职业种类如下；\n";
+
+    public static final String ROLE_HAS = "已经存在对应的职业信息，无法重复创建角色!\n";
+
+    public static final String ROLE_CREATE_SUCCESS = "角色创建成功！\n";
 
 
     // Entity
@@ -206,9 +212,9 @@ public class ContentType {
 
 
     // group
-    public static final String GROUP_INVITE_MSG = "玩家：【%s】向你发送组队邀请，队伍 ID：【%d】 \n输入指令【join】 + groupId 可加入队伍！\n";
+    public static final String GROUP_INVITE_MSG = "【组队请求】\n玩家：【%s】向你发送组队邀请，队伍 ID：【%d】 \n输入指令【join】 + groupId 可加入队伍！\n";
 
-    public static final String GROUP_INVITE_SEND_SUCCESS = "组对消息发送成功！\n";
+    public static final String GROUP_INVITE_SEND_SUCCESS = "组队消息发送成功！\n";
 
     public static final String GROUP_ROLE_HAS_IN_OTHER_GROUP = "当前玩家已在队伍中，想加入其它队伍先进行退队操作\n";
 

@@ -25,6 +25,8 @@ import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
 /**
+ * 读取文件, DB中的玩家装备数据
+ *
  * @Author: Heiku
  * @Date: 2019/7/18
  */
@@ -58,7 +60,11 @@ public class LocalEquipMap {
         }
     }
 
-    public static void readExcel() throws Exception {
+
+    /**
+     * 读取数据文件
+     */
+    public static void readExcel(){
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(equipFile);
@@ -108,10 +114,14 @@ public class LocalEquipMap {
         }
 
         readDB();
+        log.info("Equip 数据成功载入");
     }
 
 
-    private static void readDB() throws Exception{
+    /**
+     * 读取数据库中的玩家装备关联
+     */
+    private static void readDB(){
         // 读取数据库中的所有记录信息
         List<RoleEquip> roleEquipList = roleEquipDao.selectAll();
         for (RoleEquip re : roleEquipList){
@@ -166,17 +176,14 @@ public class LocalEquipMap {
             e.printStackTrace();
         }
 
-        idEquipMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " ,value: " + v);
-        });
+        idEquipMap.forEach((k, v) ->
+            System.out.println("k: " + k + " ,value: " + v));
 
-        typeEquipMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " ,value: " + v);
-        });
+        typeEquipMap.forEach((k, v) ->
+            System.out.println("k: " + k + " ,value: " + v));
 
-        hasEquipMap.forEach((k, v) -> {
-            System.out.println("k: " + k + " ,value: " + v);
-        });
+        hasEquipMap.forEach((k, v) ->
+            System.out.println("k: " + k + " ,value: " + v));
     }
 
 }

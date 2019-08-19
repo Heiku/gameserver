@@ -3,7 +3,6 @@ package com.ljh.gamedemo.local;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.entity.Commodity;
 import com.ljh.gamedemo.entity.Equip;
-import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.Items;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,7 +13,10 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static com.ljh.gamedemo.common.CommodityType.EQUIP;
 import static com.ljh.gamedemo.common.CommodityType.ITEM;
@@ -22,10 +24,10 @@ import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
 /**
+ * 本地加载商城物品信息
+ *
  * @Author: Heiku
  * @Date: 2019/8/2
- *
- * 本地加载商城物品信息
  */
 
 @Slf4j
@@ -39,7 +41,6 @@ public class LocalCommodityMap {
 
     // 刷新数组长度
     private static int MAX_ITEMS = 0;
-
     private static int MAX_EQUIPS = 0;
 
     // 用于存放概率物品
@@ -52,13 +53,11 @@ public class LocalCommodityMap {
 
 
     // 本本地缓存
+    // 所有的商品信息map <commodityId, Commodity>
     private static Map<Long, Commodity> idCommodityMaps = Maps.newConcurrentMap();
 
+    // 商品类型map <type, List<Commodity>>
     private static Map<Integer, List<Commodity>> typeCommodityMaps = Maps.newConcurrentMap();
-
-
-    // 存放公共背包物品信息
-    private static Map<Long, Goods> idGoodsMap = Maps.newConcurrentMap();
 
     static {
         try {
@@ -69,7 +68,7 @@ public class LocalCommodityMap {
         }
     }
 
-    public static void readExcel() throws Exception {
+    public static void readExcel(){
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(mallFile);
@@ -110,10 +109,13 @@ public class LocalCommodityMap {
         }
 
         initCommodity();
+        log.info("Commodity 数据载入成功");
     }
 
 
-
+    /**
+     * 初始化商品刷新池，构建刷新池数组
+     */
     private static void initCommodity(){
 
         // 获取商店栏中各种类的值
@@ -137,7 +139,7 @@ public class LocalCommodityMap {
         List<Commodity> itemList = typeCommodityMaps.get(ITEM.getCode());
         for (Commodity c : itemList) {
             int num = (int) (c.getProbability() * 10);
-            int max = (int) idx + num;
+            int max = idx + num;
             while (idx < max){
                 items[idx++] = c.getId();
             }
@@ -155,8 +157,10 @@ public class LocalCommodityMap {
         }
     }
 
-
-    // 随机刷新物品信息
+    /**
+     * 随机获取刷新物品信息
+     * @return  刷新的物品信息
+     */
     public static List<Items> getItemsList(){
         List<Items> list = new ArrayList<>();
 
@@ -174,7 +178,12 @@ public class LocalCommodityMap {
         return list;
     }
 
-    // 随机刷新装备
+    /**
+     * 随机刷新装备
+     *
+     * @param roleId 玩家id
+     * @return       刷新的装备信息
+     */
     public static List<Equip> getEquipsList(long roleId){
 
         // 去除用户已经拥有的装备信息
@@ -182,9 +191,7 @@ public class LocalCommodityMap {
         List<Long> out = new ArrayList<>(equips);
         if (roleId != 0) {
             List<Equip> hasList = LocalEquipMap.getHasEquipMap().get(roleId);
-            hasList.forEach(e -> {
-                out.remove(e.getEquipId());
-            });
+            hasList.forEach(e -> out.remove(e.getEquipId()));
         }
 
         // 随机获取
@@ -201,26 +208,19 @@ public class LocalCommodityMap {
         return list;
     }
 
-
-
     public static Map<Long, Commodity> getIdCommodityMaps() {
         return idCommodityMaps;
     }
 
-    public static Map<Integer, List<Commodity>> getTypeCommodityMaps() {
-        return typeCommodityMaps;
-    }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         readExcel();
 
-        idCommodityMaps.forEach((k, v) -> {
-            System.out.println("k: " + k + " v: " + v);
-        });
+        idCommodityMaps.forEach((k, v) ->
+            System.out.println("k: " + k + " v: " + v));
 
-        typeCommodityMaps.forEach((k, v) -> {
-            System.out.println("k: " + k + " v: " + v);
-        });
+        typeCommodityMaps.forEach((k, v) ->
+            System.out.println("k: " + k + " v: " + v));
 
         for (long item : items) {
             System.out.print(item + " ");

@@ -86,7 +86,7 @@ public class ByteTest {
             System.out.println(i);
         }*/
 
-
+/*
         Duplicate d1 = new Duplicate();
         d1.setId(1L);
         d1.setName("nono");
@@ -97,7 +97,7 @@ public class ByteTest {
 
         System.out.println(d1.hashCode());
         System.out.println(d2.hashCode());
-        System.out.println(d1.equals(d2));
+        System.out.println(d1.equals(d2));*/
     }
 }
 

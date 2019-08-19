@@ -26,8 +26,14 @@ import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 @Slf4j
 public class LocalDuplicateMap {
 
+    /**
+     * 副本数据文件
+     */
     private static File duplicateFile = null;
 
+    /**
+     * 副本数据map <duplicateId, Duplicate>
+     */
     private static Map<Long, Duplicate> duplicateMap = Maps.newConcurrentMap();
 
 
@@ -40,6 +46,9 @@ public class LocalDuplicateMap {
         }
     }
 
+    /**
+     * 载入数据文件
+     */
     public static void readExcel() {
 
         // 判断文件类型，获取workBook
@@ -91,6 +100,7 @@ public class LocalDuplicateMap {
                 }
             }
         }
+        log.info("Duplicate 数据载入成功");
     }
 
     public static Map<Long, Duplicate> getDuplicateMap() {

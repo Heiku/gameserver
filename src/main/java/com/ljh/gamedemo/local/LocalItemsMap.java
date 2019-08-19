@@ -3,7 +3,6 @@ package com.ljh.gamedemo.local;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.dao.RoleItemsDao;
-import com.ljh.gamedemo.entity.Commodity;
 import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.Items;
 import com.ljh.gamedemo.entity.dto.RoleItems;
@@ -24,27 +23,38 @@ import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
 /**
+ * 用于缓存用户背包内的物品
+ *
  * @Author: Heiku
  * @Date: 2019/7/16
- *
- *
- * 用于缓存用户背包内的物品
  */
 
 @Slf4j
 public class LocalItemsMap {
 
+    /**
+     * 技能数据文件
+     */
     private static File spellFile = null;
 
+    /**
+     * RoleItemsDao 读取玩家的DB 中的物品信息
+     */
     private static RoleItemsDao roleItemsDao;
 
-    // roleItemsMap <roleId, List<Items>>
+    /**
+     * roleItemsMap <roleId, List<Items>>
+     */
     private static Map<Long, List<Items>> roleItemsMap = Maps.newConcurrentMap();
 
-    // roleItemsMap <roleId, List<ItemsId>>
+    /**
+     * roleItemsMap <roleId, List<ItemsId>>
+     */
     private static Map<Long, List<Long>> roleItemsIdMap = Maps.newConcurrentMap();
 
-    // idItemsMap <itemsId, Items>
+    /**
+     * idItemsMap <itemsId, Items>
+     */
     private static Map<Long, Items> idItemsMap = Maps.newConcurrentMap();
 
     static {
@@ -57,6 +67,9 @@ public class LocalItemsMap {
         }
     }
 
+    /**
+     * 读取文件数据
+     */
     public static void readExcel() {
 
         // 判断文件类型，获取workBook
@@ -92,9 +105,13 @@ public class LocalItemsMap {
             }
         }
         readRoleItems();
+        log.info("Items 数据载入成功");
     }
 
 
+    /**
+     * 读取数据库中玩家的物品信息
+     */
     private static void readRoleItems(){
 
         // 存入 roleItemsMap
@@ -135,16 +152,8 @@ public class LocalItemsMap {
         return roleItemsMap;
     }
 
-    public static void setRoleItemsMap(Map<Long, List<Items>> roleItemsMap) {
-        LocalItemsMap.roleItemsMap = roleItemsMap;
-    }
-
     public static Map<Long, Items> getIdItemsMap() {
         return idItemsMap;
-    }
-
-    public static void setIdItemsMap(Map<Long, Items> idItemsMap) {
-        LocalItemsMap.idItemsMap = idItemsMap;
     }
 
     public static Map<Long, List<Long>> getRoleItemsIdMap() {

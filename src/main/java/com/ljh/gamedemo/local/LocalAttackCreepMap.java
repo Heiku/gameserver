@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
+ * 存储所有关于涉及攻击的数据
+ *
  * @Author: Heiku
  * @Date: 2019/7/12
  */

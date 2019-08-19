@@ -537,7 +537,9 @@ public class EquipService {
      */
     public synchronized void synCutEquipDurability(Role role){
         List<RoleEquip> roleEquipList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
-
+        if (roleEquipList == null || roleEquipList.isEmpty()){
+            return;
+        }
         log.info("攻击野怪之前，装备栏的耐久度为：" + roleEquipList);
         for (RoleEquip re : roleEquipList) {
 

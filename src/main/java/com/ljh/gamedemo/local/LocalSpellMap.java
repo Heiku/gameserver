@@ -27,28 +27,39 @@ import static com.ljh.gamedemo.util.ExcelUtil.getValue;
  *
  * @Author: Heiku
  * @Date: 2019/7/11
- *
  */
 @Data
 @Slf4j
 public class LocalSpellMap {
 
+    /**
+     * 玩家技能数据文件
+     */
     private static File spellFile = null;
 
-    // spell idMap: <spellId, Spell>
+    /**
+     * spell idMap: <spellId, Spell>
+     */
     private static Map<Integer, Spell> idSpellMap = Maps.newHashMap();
 
-    // spell nameSpellMap: <spellName, Spell>
+    /**
+     * spell nameSpellMap: <spellName, Spell>
+     */
     private static Map<String, Spell> nameSpellMap = Maps.newHashMap();
 
-    // spell typeSpellMap: <type, List<Spell>>
-    // the all spell in this entity type
+    /**
+     * spell typeSpellMap: <type, List<Spell>>
+     */
     private static Map<Integer, List<Spell>> typeSpellMap = Maps.newHashMap();
 
-    // 记录用户的所有技能信息
+    /**
+     * 记录用户的所有技能信息
+     */
     private static Map<Long, List<Spell>> roleSpellMap = Maps.newConcurrentMap();
 
-
+    /**
+     * RoleSpellDao：用于读取数据库技能信息
+     */
     private static RoleSpellDao roleSpellDao;
 
     static {
@@ -61,6 +72,9 @@ public class LocalSpellMap {
         }
     }
 
+    /**
+     * 读取本地文件数据
+     */
     public static void readExcel(){
 
         // 判断文件类型，获取workBook
@@ -109,11 +123,14 @@ public class LocalSpellMap {
         }
 
         readRoleSpell();
+        log.info("spell 数据载入成功");
     }
 
 
-    // 将数据库中的所有roleId-spellId 映射到本地map中
-    public static void readRoleSpell() {
+    /**
+     * 将数据库中的所有roleId-spellId 映射到本地map中
+     */
+    private static void readRoleSpell() {
         List<RoleSpell> roleSpellList = roleSpellDao.selectAllRoleSpell();
         if (roleSpellList == null || roleSpellList.isEmpty()) {
             return;
@@ -147,28 +164,12 @@ public class LocalSpellMap {
         }
     }
 
-    public static Map<String, Spell> getNameSpellMap() {
-        return nameSpellMap;
-    }
-
-    public static void setNameSpellMap(Map<String, Spell> nameSpellMap) {
-        LocalSpellMap.nameSpellMap = nameSpellMap;
-    }
-
     public static Map<Integer, Spell> getIdSpellMap() {
         return idSpellMap;
     }
 
-    public static void setIdSpellMap(Map<Integer, Spell> idSpellMap) {
-        LocalSpellMap.idSpellMap = idSpellMap;
-    }
-
     public static Map<Integer, List<Spell>> getTypeSpellMap() {
         return typeSpellMap;
-    }
-
-    public static void setTypeSpellMap(Map<Integer, List<Spell>> typeSpellMap) {
-        LocalSpellMap.typeSpellMap = typeSpellMap;
     }
 
     public static Map<Long, List<Spell>> getRoleSpellMap() {
@@ -183,9 +184,8 @@ public class LocalSpellMap {
         LocalSpellMap.readExcel();
 
 
-        roleSpellMap.forEach((k, v) ->{
-            System.out.println("k: " + k + " value: " + v);
-        });
+        roleSpellMap.forEach((k, v) ->
+            System.out.println("k: " + k + " value: " + v));
 
 
     }
