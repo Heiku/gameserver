@@ -13,7 +13,7 @@ public class Creep {
     /**
      * 野怪id
      */
-    private Integer creepId;
+    private Long creepId;
 
     /**
      * 野怪类型

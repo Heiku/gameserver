@@ -140,9 +140,9 @@ public final class MsgAttackCreepProto {
     long getUserId();
 
     /**
-     * <code>int32 creepId = 2;</code>
+     * <code>int64 creepId = 2;</code>
      */
-    int getCreepId();
+    long getCreepId();
 
     /**
      * <code>int32 spellId = 3;</code>
@@ -211,7 +211,7 @@ public final class MsgAttackCreepProto {
             }
             case 16: {
 
-              creepId_ = input.readInt32();
+              creepId_ = input.readInt64();
               break;
             }
             case 24: {
@@ -267,11 +267,11 @@ public final class MsgAttackCreepProto {
     }
 
     public static final int CREEPID_FIELD_NUMBER = 2;
-    private int creepId_;
+    private long creepId_;
     /**
-     * <code>int32 creepId = 2;</code>
+     * <code>int64 creepId = 2;</code>
      */
-    public int getCreepId() {
+    public long getCreepId() {
       return creepId_;
     }
 
@@ -318,8 +318,8 @@ public final class MsgAttackCreepProto {
       if (userId_ != 0L) {
         output.writeInt64(1, userId_);
       }
-      if (creepId_ != 0) {
-        output.writeInt32(2, creepId_);
+      if (creepId_ != 0L) {
+        output.writeInt64(2, creepId_);
       }
       if (spellId_ != 0) {
         output.writeInt32(3, spellId_);
@@ -340,9 +340,9 @@ public final class MsgAttackCreepProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, userId_);
       }
-      if (creepId_ != 0) {
+      if (creepId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, creepId_);
+          .computeInt64Size(2, creepId_);
       }
       if (spellId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -389,7 +389,8 @@ public final class MsgAttackCreepProto {
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getUserId());
       hash = (37 * hash) + CREEPID_FIELD_NUMBER;
-      hash = (53 * hash) + getCreepId();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCreepId());
       hash = (37 * hash) + SPELLID_FIELD_NUMBER;
       hash = (53 * hash) + getSpellId();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
@@ -529,7 +530,7 @@ public final class MsgAttackCreepProto {
         super.clear();
         userId_ = 0L;
 
-        creepId_ = 0;
+        creepId_ = 0L;
 
         spellId_ = 0;
 
@@ -616,7 +617,7 @@ public final class MsgAttackCreepProto {
         if (other.getUserId() != 0L) {
           setUserId(other.getUserId());
         }
-        if (other.getCreepId() != 0) {
+        if (other.getCreepId() != 0L) {
           setCreepId(other.getCreepId());
         }
         if (other.getSpellId() != 0) {
@@ -680,28 +681,28 @@ public final class MsgAttackCreepProto {
         return this;
       }
 
-      private int creepId_ ;
+      private long creepId_ ;
       /**
-       * <code>int32 creepId = 2;</code>
+       * <code>int64 creepId = 2;</code>
        */
-      public int getCreepId() {
+      public long getCreepId() {
         return creepId_;
       }
       /**
-       * <code>int32 creepId = 2;</code>
+       * <code>int64 creepId = 2;</code>
        */
-      public Builder setCreepId(int value) {
+      public Builder setCreepId(long value) {
         
         creepId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 creepId = 2;</code>
+       * <code>int64 creepId = 2;</code>
        */
       public Builder clearCreepId() {
         
-        creepId_ = 0;
+        creepId_ = 0L;
         onChanged();
         return this;
       }
@@ -1949,7 +1950,7 @@ public final class MsgAttackCreepProto {
     java.lang.String[] descriptorData = {
       "\n\024MsgAttackCreep.proto\032\013Creep.proto\032\nRol" +
       "e.proto\"b\n\022RequestAttackCreep\022\016\n\006userId\030" +
-      "\001 \001(\003\022\017\n\007creepId\030\002 \001(\005\022\017\n\007spellId\030\003 \001(\005\022" +
+      "\001 \001(\003\022\017\n\007creepId\030\002 \001(\003\022\017\n\007spellId\030\003 \001(\005\022" +
       "\032\n\004type\030\004 \001(\0162\014.RequestType\"~\n\023ResponseA" +
       "ttackCreep\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002 " +
       "\001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\025\n\005creep" +

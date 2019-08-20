@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 玩家在线信息缓存
+ *
  * @Author: Heiku
  * @Date: 2019/8/7
- *
- * 玩家在线信息缓存
  */
 
 @Slf4j

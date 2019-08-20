@@ -1,11 +1,13 @@
 package com.ljh.gamedemo.run.user;
 
+import com.ljh.gamedemo.entity.DurationAttack;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.dto.RoleBuff;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.local.cache.RoleInvitePKCache;
 import com.ljh.gamedemo.run.record.FutureMap;
+import com.ljh.gamedemo.service.RoleService;
 import com.ljh.gamedemo.service.UserService;
 import com.ljh.gamedemo.util.SpringUtil;
 
@@ -20,19 +22,14 @@ import java.util.List;
 public class UserBeAttackedScheduleRun implements Runnable {
 
     /**
-     * 持续掉血的技能
-     */
-    private Spell spell;
-
-    /**
      * 受到技能伤害的玩家
      */
     private Role role;
 
     /**
-     * 技能的总伤害
+     * 技能伤害参数
      */
-    private int allDamage;
+    private DurationAttack da;
 
     /**
      * 技能的累计伤害
@@ -49,23 +46,24 @@ public class UserBeAttackedScheduleRun implements Runnable {
      */
     private boolean pk;
 
-    // 获取userService
-    private UserService userService = SpringUtil.getBean(UserService.class);
+    /**
+     * RoleServie
+     */
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
     private UserBeAttackedRun run = new UserBeAttackedRun();
 
-    public UserBeAttackedScheduleRun(Role role, Spell spell, int extra, boolean pk){
-        this.role = role;
-        this.spell = spell;
-        this.extra = extra;
-        this.pk = pk;
-        this.allDamage = spell.getDamage();
+    public UserBeAttackedScheduleRun(Role _role, DurationAttack _da, int _extra, boolean _pk){
+        this.role = _role;
+        this.extra = _extra;
+        this.pk = _pk;
+        this.da = _da;
     }
 
     @Override
     public void run() {
         int hp = role.getHp();
-        int damage = spell.getDamage() / spell.getSec() + extra;
+        int damage = da.getDamage() / da.getSec() + extra;
 
         // 掉血先扣盾
         List<RoleBuff> buffList = RoleBuffCache.getCache().getIfPresent(role.getRoleId());
@@ -88,14 +86,14 @@ public class UserBeAttackedScheduleRun implements Runnable {
                     RoleInvitePKCache.getPkFutureMap().remove(role.getRoleId());
                     run.pkEnd(role);
                 }else {
-                    userService.reliveRole(role);
+                    roleService.reliveRole(role);
                 }
                 return;
             }
         }
         // 更新hp
         role.setHp(hp);
-        userService.updateRoleInfo(role);
+        roleService.updateRoleInfo(role);
 
         // 消息回复
         run.responseAttacked(role);

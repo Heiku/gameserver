@@ -38,6 +38,8 @@ public class ContentType {
 
     public static final String ROLE_CREATE_SUCCESS = "角色创建成功！\n";
 
+    public static final String ROLE_GET_HEAL = "获得治疗量：%s";
+
 
     // Entity
     public static final String ENTITY_FIND_ALL = "获取所有实体信息成功！\n";
@@ -67,6 +69,8 @@ public class ContentType {
     public static final String SPELL_EMPTY = "暂无该技能，请重新输入 learn 指令！\n";
 
     public static final String SPELL_LEARN_SUCCESS = "技能学习成功！\n";
+
+    public static final String SPELL_PARTER_NAME = "%s的小伙伴";
 
     // Exit
     public static final String EXIT_SUCCESS = "退出成功！\n";
@@ -153,6 +157,8 @@ public class ContentType {
     public static final String DUPLICATE_LEAVE_SUCCESS = "成功离开副本！\n";
 
     public static final String DUPLICATE_SPELL_FAILED = "施放技能失败！\n";
+
+    public static final String DUPLICATE_DEBUFF_FAILED = "施放技能失败，当前在眩晕状态下，还需 %d 秒才可以继续行动！\n";
 
 
     // Mall

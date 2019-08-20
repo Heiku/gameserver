@@ -17,7 +17,7 @@ enum RequestType{
 
 message RequestAttackCreep{
     int64 userId = 1;
-    int32 creepId = 2;
+    int64 creepId = 2;
     int32 spellId = 3;
 
     RequestType type = 4;

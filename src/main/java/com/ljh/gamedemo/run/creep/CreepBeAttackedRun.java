@@ -29,15 +29,7 @@ public class CreepBeAttackedRun implements Runnable {
 
     private Spell spell;
 
-    private Integer creepId;
-
-    private Channel channel;
-
-    private Integer siteId;
-
-    private ProtoService protoService = ProtoService.getInstance();
-
-    private boolean useLatch;
+    private long creepId;
 
     private Integer extra;
 
@@ -45,26 +37,20 @@ public class CreepBeAttackedRun implements Runnable {
 
     private Role role;
 
-    public CreepBeAttackedRun(Role role, Spell spell, Integer creepId, Channel channel, boolean attack, boolean useLatch){
+    private Channel channel;
+
+    private ProtoService protoService = ProtoService.getInstance();
+
+    public CreepBeAttackedRun(Role role, Spell spell, long creepId, Channel channel, boolean attack){
         this.spell = spell;
         this.creepId = creepId;
         this.channel = channel;
-        this.useLatch = useLatch;
-        this.siteId = role.getSiteId();
         this.attack = attack;
         this.role = role;
     }
 
     @Override
     public void run() {
-        if (useLatch){
-            try {
-                CountDownLatchUtil.await();
-            } catch (RejectedExecutionException e) {
-                throw e;
-            }
-        }
-
         // 判断攻击的类型，决定buff的增益效果
         if (attack){
             extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getDamage();

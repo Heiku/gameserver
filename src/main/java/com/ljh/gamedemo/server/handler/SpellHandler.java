@@ -30,10 +30,10 @@ public class SpellHandler extends SimpleChannelInboundHandler<MsgSpellProto.Requ
         int type = requestSpell.getType().getNumber();
         switch (type){
             case SPELL:
-                responseSpell = spellService.getSpell(requestSpell);
+                spellService.getSpell(requestSpell, ctx.channel());
                 break;
             case LEARN:
-                responseSpell = spellService.learn(requestSpell);
+                spellService.learn(requestSpell, ctx.channel());
                 break;
         }
 

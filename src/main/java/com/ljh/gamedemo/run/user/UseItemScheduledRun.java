@@ -11,6 +11,7 @@ import com.ljh.gamedemo.proto.protoc.MsgItemProto;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.service.ItemService;
+import com.ljh.gamedemo.service.RoleService;
 import com.ljh.gamedemo.service.UserService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
@@ -55,8 +56,8 @@ public class UseItemScheduledRun implements Runnable {
 
     private MsgItemProto.ResponseItem response;
 
-    // 调用userService
-    private UserService userService = SpringUtil.getBean(UserService.class);
+    // roleService
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
     // 调用itemsService
     private ItemService itemService = SpringUtil.getBean(ItemService.class);
@@ -162,7 +163,7 @@ public class UseItemScheduledRun implements Runnable {
         }
 
         // 更新缓存
-        userService.updateRoleInfo(role);
+        roleService.updateRoleInfo(role);
         log.info("用户使用物品，状态缓慢恢复，已成功更新用户缓存");
     }
 

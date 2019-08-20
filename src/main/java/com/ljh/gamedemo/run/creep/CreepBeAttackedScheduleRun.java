@@ -27,11 +27,9 @@ public class CreepBeAttackedScheduleRun implements Runnable {
 
     private Spell spell;
 
-    private Integer creepId;
+    private long creepId;
 
     private Channel channel;
-
-    private boolean useLatch;
 
     private Integer allDamage;
 
@@ -43,9 +41,7 @@ public class CreepBeAttackedScheduleRun implements Runnable {
 
     private Integer extra;
 
-    private boolean firstLatch = true;
-
-    public CreepBeAttackedScheduleRun(Spell spell, Integer creepId,
+    public CreepBeAttackedScheduleRun(Spell spell, long creepId,
                                       Channel channel, Role role){
         this.spell = spell;
         this.creepId = creepId;
@@ -59,18 +55,6 @@ public class CreepBeAttackedScheduleRun implements Runnable {
 
     @Override
     public void run() {
-        // 判断是否使用了CountDownLatch
-    /*    if (firstLatch) {
-            if (useLatch){
-                try {
-                    firstLatch = false;
-                    CountDownLatchUtil.await();
-                } catch (RejectedExecutionException e) {
-                    throw e;
-                }
-            }
-        }*/
-
         // 获取技能增益效果
         extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getSp();
 

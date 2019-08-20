@@ -60,4 +60,9 @@ public class Spell {
      * sec: 技能的持续时间
      */
     private Integer sec;
+
+    /**
+     * 增益效果
+     */
+    private Integer up;
 }

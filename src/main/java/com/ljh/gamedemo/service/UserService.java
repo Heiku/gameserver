@@ -27,10 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -74,7 +71,7 @@ public class UserService {
             // 数据库查找
             List<Role> roles = userRoleDao.selectUserRole(userId);
             if (roles.isEmpty()){
-                return conbimeFailedMsg(ContentType.ROLE_EMPTY);
+                return combineFailedMsg(ContentType.ROLE_EMPTY);
             }
 
             // 这里暂时只存在一个角色
@@ -144,8 +141,8 @@ public class UserService {
     /**
      * 更新玩家的在线记录
      *
-     * @param role
-     * @param line
+     * @param role      玩家角色
+     * @param line      是否下线
      */
     public void updateRoleState(Role role, boolean line) {
         Date date = new Date();
@@ -173,6 +170,8 @@ public class UserService {
 
                 // 插入新增记录
                 recordDao.insertUserState(state);
+                RoleStateCache.getCache().put(role.getRoleId(), state);
+                return;
             }else{
                 // 设置旧的在线下线属性信息
                 if (line){
@@ -197,7 +196,7 @@ public class UserService {
     /**
      * 登录操作7
      *
-     * @param requestUserInfo
+     * @param requestUserInfo   请求
      * @return
      */
     public MsgUserInfoProto.ResponseUserInfo login(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
@@ -207,19 +206,19 @@ public class UserService {
 
         // 校验请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
-            return conbimeFailedMsg(ContentType.USER_EMPTY_LOGIN_PARAM);
+            return combineFailedMsg(ContentType.USER_EMPTY_LOGIN_PARAM);
         }
 
         // 获取混淆的pwd，数据库查玩家信息
         String md5Pwd = MD5Util.hashPwd(password);
         User user = userDao.selectUser(userName);
         if (user == null){
-            return conbimeFailedMsg(ContentType.USER_EMPTY_DATA);
+            return combineFailedMsg(ContentType.USER_EMPTY_DATA);
         }
 
         // 校验密码的正确性
         if (!user.getPassword().equals(md5Pwd)){
-            return conbimeFailedMsg(ContentType.BAD_PASSWORD);
+            return combineFailedMsg(ContentType.BAD_PASSWORD);
         }
 
         // 登录成功，获取ID和token
@@ -255,14 +254,14 @@ public class UserService {
 
         // 判断请求参数
         if (Strings.isNullOrEmpty(userName) || Strings.isNullOrEmpty(password)){
-            return conbimeFailedMsg(ContentType.USER_EMPTY_REGISTER_PARAM);
+            return combineFailedMsg(ContentType.USER_EMPTY_REGISTER_PARAM);
         }
 
         // 获取md5Pwd，存数据库user_account
         String md5Pwd = MD5Util.hashPwd(password);
         int n = userDao.insertUserAccount(0l, userName, md5Pwd);
         if (n <= 0){
-            return conbimeFailedMsg(ContentType.REGISTER_FAILED);
+            return combineFailedMsg(ContentType.REGISTER_FAILED);
         }
 
         // 接着查找user信息
@@ -290,7 +289,7 @@ public class UserService {
     /**
      * 玩家退出游戏，玩家状态改变，角色最终位置持久化
      *
-     * @param requestUserInfo
+     * @param requestUserInfo       请求
      * @return
      */
     public MsgUserInfoProto.ResponseUserInfo exit(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
@@ -308,7 +307,7 @@ public class UserService {
             role = userRoleDao.selectUserRole(userId).get(0);
         }
         if (role == null){
-            return conbimeFailedMsg(ContentType.ROLE_EMPTY);
+            return combineFailedMsg(ContentType.ROLE_EMPTY);
         }
 
         // 获取当前的位置信息
@@ -343,7 +342,7 @@ public class UserService {
         // 更新数据库role的site信息
         int n = userRoleDao.updateRoleSiteInfo(role);
         if (n <= 0){
-            return conbimeFailedMsg(ContentType.UPDATE_ROLE_SITE);
+            return combineFailedMsg(ContentType.UPDATE_ROLE_SITE);
         }
 
         // 成功操作
@@ -352,43 +351,6 @@ public class UserService {
                 .setResult(ResultCode.FAILED)
                 .setContent(ContentType.EXIT_SUCCESS)
                 .build();
-    }
-
-
-    /**
-     * 更新玩家的信息 （缓存 + DB）
-     *
-     * @param role  玩家
-     */
-    public void updateRoleInfo(Role role){
-        UpdateRoleInfoRun task = new UpdateRoleInfoRun(role);
-        UserExecutorManager.addUserTask(role.getUserId(), task);
-    }
-
-
-    /**
-     * 玩家复活
-     *
-     * @param role  玩家
-     */
-    public void reliveRole(Role role){
-        role.setHp(role.getMaxHp());
-
-        // 更新玩家信息
-        updateRoleInfo(role);
-
-        // 移出副本的攻击目标队列
-        duplicateService.removeAttackedQueue(role);
-
-        // 消息通知
-        userResp = MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setType(MsgUserInfoProto.RequestType.RELIVE)
-                .setContent(ContentType.USER_RELIVE_SUCCESS)
-                .setRole(protoService.transToRole(role))
-                .build();
-        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
-        channel.writeAndFlush(userResp);
     }
 
 
@@ -426,7 +388,7 @@ public class UserService {
      * @param msg 消息文本
      * @return      消息返回
      */
-    private MsgUserInfoProto.ResponseUserInfo conbimeFailedMsg(String msg){
+    private MsgUserInfoProto.ResponseUserInfo combineFailedMsg(String msg){
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setResult(ResultCode.FAILED)
                 .setContent(msg)

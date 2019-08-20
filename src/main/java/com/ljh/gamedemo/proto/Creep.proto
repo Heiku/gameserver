@@ -7,7 +7,7 @@ option java_outer_classname = "CreepProto";
 
 message Creep{
 
-    int32 creepId = 1;
+    int64 creepId = 1;
     int32 type = 2;
     string name = 3;
     int32 num = 4;

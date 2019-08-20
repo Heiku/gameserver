@@ -1,8 +1,6 @@
 package com.ljh.gamedemo.entity.tmp;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @Author: Heiku

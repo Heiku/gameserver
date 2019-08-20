@@ -57,6 +57,16 @@ public final class SpellProto {
      * <code>int32 range = 7;</code>
      */
     int getRange();
+
+    /**
+     * <code>int32 sec = 8;</code>
+     */
+    int getSec();
+
+    /**
+     * <code>int32 up = 9;</code>
+     */
+    int getUp();
   }
   /**
    * Protobuf type {@code Spell}
@@ -138,6 +148,16 @@ public final class SpellProto {
             case 56: {
 
               range_ = input.readInt32();
+              break;
+            }
+            case 64: {
+
+              sec_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              up_ = input.readInt32();
               break;
             }
             default: {
@@ -260,6 +280,24 @@ public final class SpellProto {
       return range_;
     }
 
+    public static final int SEC_FIELD_NUMBER = 8;
+    private int sec_;
+    /**
+     * <code>int32 sec = 8;</code>
+     */
+    public int getSec() {
+      return sec_;
+    }
+
+    public static final int UP_FIELD_NUMBER = 9;
+    private int up_;
+    /**
+     * <code>int32 up = 9;</code>
+     */
+    public int getUp() {
+      return up_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -294,6 +332,12 @@ public final class SpellProto {
       }
       if (range_ != 0) {
         output.writeInt32(7, range_);
+      }
+      if (sec_ != 0) {
+        output.writeInt32(8, sec_);
+      }
+      if (up_ != 0) {
+        output.writeInt32(9, up_);
       }
       unknownFields.writeTo(output);
     }
@@ -331,6 +375,14 @@ public final class SpellProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(7, range_);
       }
+      if (sec_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, sec_);
+      }
+      if (up_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, up_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -360,6 +412,10 @@ public final class SpellProto {
           != other.getCoolDown()) return false;
       if (getRange()
           != other.getRange()) return false;
+      if (getSec()
+          != other.getSec()) return false;
+      if (getUp()
+          != other.getUp()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -385,6 +441,10 @@ public final class SpellProto {
       hash = (53 * hash) + getCoolDown();
       hash = (37 * hash) + RANGE_FIELD_NUMBER;
       hash = (53 * hash) + getRange();
+      hash = (37 * hash) + SEC_FIELD_NUMBER;
+      hash = (53 * hash) + getSec();
+      hash = (37 * hash) + UP_FIELD_NUMBER;
+      hash = (53 * hash) + getUp();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -532,6 +592,10 @@ public final class SpellProto {
 
         range_ = 0;
 
+        sec_ = 0;
+
+        up_ = 0;
+
         return this;
       }
 
@@ -565,6 +629,8 @@ public final class SpellProto {
         result.cost_ = cost_;
         result.coolDown_ = coolDown_;
         result.range_ = range_;
+        result.sec_ = sec_;
+        result.up_ = up_;
         onBuilt();
         return result;
       }
@@ -634,6 +700,12 @@ public final class SpellProto {
         }
         if (other.getRange() != 0) {
           setRange(other.getRange());
+        }
+        if (other.getSec() != 0) {
+          setSec(other.getSec());
+        }
+        if (other.getUp() != 0) {
+          setUp(other.getUp());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -888,6 +960,58 @@ public final class SpellProto {
         onChanged();
         return this;
       }
+
+      private int sec_ ;
+      /**
+       * <code>int32 sec = 8;</code>
+       */
+      public int getSec() {
+        return sec_;
+      }
+      /**
+       * <code>int32 sec = 8;</code>
+       */
+      public Builder setSec(int value) {
+        
+        sec_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 sec = 8;</code>
+       */
+      public Builder clearSec() {
+        
+        sec_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int up_ ;
+      /**
+       * <code>int32 up = 9;</code>
+       */
+      public int getUp() {
+        return up_;
+      }
+      /**
+       * <code>int32 up = 9;</code>
+       */
+      public Builder setUp(int value) {
+        
+        up_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 up = 9;</code>
+       */
+      public Builder clearUp() {
+        
+        up_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -956,11 +1080,12 @@ public final class SpellProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/S" +
-      "pell.proto\"t\n\005Spell\022\017\n\007spellId\030\001 \001(\005\022\014\n\004" +
-      "name\030\002 \001(\t\022\r\n\005level\030\003 \001(\005\022\016\n\006damage\030\004 \001(" +
-      "\005\022\014\n\004cost\030\005 \001(\005\022\020\n\010coolDown\030\006 \001(\005\022\r\n\005ran" +
-      "ge\030\007 \001(\005B+\n\035com.ljh.gamedemo.proto.proto" +
-      "cB\nSpellProtob\006proto3"
+      "pell.proto\"\215\001\n\005Spell\022\017\n\007spellId\030\001 \001(\005\022\014\n" +
+      "\004name\030\002 \001(\t\022\r\n\005level\030\003 \001(\005\022\016\n\006damage\030\004 \001" +
+      "(\005\022\014\n\004cost\030\005 \001(\005\022\020\n\010coolDown\030\006 \001(\005\022\r\n\005ra" +
+      "nge\030\007 \001(\005\022\013\n\003sec\030\010 \001(\005\022\n\n\002up\030\t \001(\005B+\n\035co" +
+      "m.ljh.gamedemo.proto.protocB\nSpellProtob" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -971,7 +1096,7 @@ public final class SpellProto {
     internal_static_Spell_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Spell_descriptor,
-        new java.lang.String[] { "SpellId", "Name", "Level", "Damage", "Cost", "CoolDown", "Range", });
+        new java.lang.String[] { "SpellId", "Name", "Level", "Damage", "Cost", "CoolDown", "Range", "Sec", "Up", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

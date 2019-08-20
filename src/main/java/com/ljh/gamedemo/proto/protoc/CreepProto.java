@@ -19,9 +19,9 @@ public final class CreepProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int32 creepId = 1;</code>
+     * <code>int64 creepId = 1;</code>
      */
-    int getCreepId();
+    long getCreepId();
 
     /**
      * <code>int32 type = 2;</code>
@@ -111,7 +111,7 @@ public final class CreepProto {
               break;
             case 8: {
 
-              creepId_ = input.readInt32();
+              creepId_ = input.readInt64();
               break;
             }
             case 16: {
@@ -183,11 +183,11 @@ public final class CreepProto {
     }
 
     public static final int CREEPID_FIELD_NUMBER = 1;
-    private int creepId_;
+    private long creepId_;
     /**
-     * <code>int32 creepId = 1;</code>
+     * <code>int64 creepId = 1;</code>
      */
-    public int getCreepId() {
+    public long getCreepId() {
       return creepId_;
     }
 
@@ -293,8 +293,8 @@ public final class CreepProto {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (creepId_ != 0) {
-        output.writeInt32(1, creepId_);
+      if (creepId_ != 0L) {
+        output.writeInt64(1, creepId_);
       }
       if (type_ != 0) {
         output.writeInt32(2, type_);
@@ -326,9 +326,9 @@ public final class CreepProto {
       if (size != -1) return size;
 
       size = 0;
-      if (creepId_ != 0) {
+      if (creepId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, creepId_);
+          .computeInt64Size(1, creepId_);
       }
       if (type_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -400,7 +400,8 @@ public final class CreepProto {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + CREEPID_FIELD_NUMBER;
-      hash = (53 * hash) + getCreepId();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCreepId());
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getType();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
@@ -548,7 +549,7 @@ public final class CreepProto {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        creepId_ = 0;
+        creepId_ = 0L;
 
         type_ = 0;
 
@@ -646,7 +647,7 @@ public final class CreepProto {
 
       public Builder mergeFrom(com.ljh.gamedemo.proto.protoc.CreepProto.Creep other) {
         if (other == com.ljh.gamedemo.proto.protoc.CreepProto.Creep.getDefaultInstance()) return this;
-        if (other.getCreepId() != 0) {
+        if (other.getCreepId() != 0L) {
           setCreepId(other.getCreepId());
         }
         if (other.getType() != 0) {
@@ -700,28 +701,28 @@ public final class CreepProto {
         return this;
       }
 
-      private int creepId_ ;
+      private long creepId_ ;
       /**
-       * <code>int32 creepId = 1;</code>
+       * <code>int64 creepId = 1;</code>
        */
-      public int getCreepId() {
+      public long getCreepId() {
         return creepId_;
       }
       /**
-       * <code>int32 creepId = 1;</code>
+       * <code>int64 creepId = 1;</code>
        */
-      public Builder setCreepId(int value) {
+      public Builder setCreepId(long value) {
         
         creepId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 creepId = 1;</code>
+       * <code>int64 creepId = 1;</code>
        */
       public Builder clearCreepId() {
         
-        creepId_ = 0;
+        creepId_ = 0L;
         onChanged();
         return this;
       }
@@ -1018,7 +1019,7 @@ public final class CreepProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/C" +
-      "reep.proto\"{\n\005Creep\022\017\n\007creepId\030\001 \001(\005\022\014\n\004" +
+      "reep.proto\"{\n\005Creep\022\017\n\007creepId\030\001 \001(\003\022\014\n\004" +
       "type\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\013\n\003num\030\004 \001(\005\022\r\n" +
       "\005level\030\005 \001(\005\022\n\n\002hp\030\006 \001(\005\022\016\n\006damage\030\007 \001(\005" +
       "\022\r\n\005maxHp\030\010 \001(\005B+\n\035com.ljh.gamedemo.prot" +

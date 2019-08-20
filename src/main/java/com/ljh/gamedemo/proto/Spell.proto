@@ -13,4 +13,6 @@ message Spell{
     int32 cost = 5;
     int32 coolDown = 6;
     int32 range = 7;
+    int32 sec = 8;
+    int32 up = 9;
 }

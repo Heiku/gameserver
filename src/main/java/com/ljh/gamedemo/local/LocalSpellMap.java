@@ -104,6 +104,7 @@ public class LocalSpellMap {
                     spell.setType(Integer.valueOf(getValue(row.getCell(7))));
                     spell.setRange(Integer.valueOf(getValue(row.getCell(8))));
                     spell.setSec(Integer.valueOf(getValue(row.getCell(9))));
+                    spell.setUp(Integer.valueOf(getValue(row.getCell(10))));
 
                     idSpellMap.put(spell.getSpellId(), spell);
                     nameSpellMap.put(spell.getName(), spell);

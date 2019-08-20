@@ -3,10 +3,7 @@ package com.ljh.gamedemo.service;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.RolePKDao;
-import com.ljh.gamedemo.entity.PKRecord;
-import com.ljh.gamedemo.entity.PKReward;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.entity.Spell;
+import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalPKRewardMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
@@ -48,6 +45,9 @@ public class PKService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @Autowired
     private SpellService spellService;
@@ -285,8 +285,11 @@ public class PKService {
                 int extra = RoleAttrCache.getRoleAttrMap().get(fromRole.getRoleId()).getSp();
                 if (spell.getSec() > 0) {
 
+                    DurationAttack da = new DurationAttack();
+                    da.setSec(spell.getSec());
+                    da.setDamage(spell.getDamage());
                     // 任务处理
-                    UserBeAttackedScheduleRun task = new UserBeAttackedScheduleRun(toRole, spell, extra, true);
+                    UserBeAttackedScheduleRun task = new UserBeAttackedScheduleRun(toRole, da, extra, true);
                     CustomExecutor executor = UserExecutorManager.getUserExecutor(toRole.getUserId());
                     ScheduledFuture future = executor.scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS);
 
@@ -484,8 +487,8 @@ public class PKService {
         loser.setHonor(loser.getHonor() + pkRecord.getLoseHonor());
 
         // 更新双方的荣誉值信息
-        userService.updateRoleInfo(winner);
-        userService.updateRoleInfo(winner);
+        roleService.updateRoleInfo(winner);
+        roleService.updateRoleInfo(winner);
     }
 
 

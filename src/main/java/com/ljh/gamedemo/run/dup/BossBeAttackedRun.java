@@ -56,8 +56,8 @@ public class BossBeAttackedRun implements Runnable {
 
     private ProtoService protoService = ProtoService.getInstance();
 
-    // UserService
-    private UserService userService = SpringUtil.getBean(UserService.class);
+    // RoleService
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
     // EquipService
     private EquipService equipService = SpringUtil.getBean(EquipService.class);
@@ -144,7 +144,7 @@ public class BossBeAttackedRun implements Runnable {
 
         // 更新玩家的金币信息
         role.setGold(role.getGold() + gold);
-        userService.updateRoleInfo(role);
+        roleService.updateRoleInfo(role);
 
         // 更新玩家的装备信息
         equipService.addRoleEquips(role, gList);
@@ -166,7 +166,7 @@ public class BossBeAttackedRun implements Runnable {
         int eachGold = dup.getGoldReward() / group.getMembers().size();
         List<Equip> equips = dup.getEquipReward();
 
-        //
+        // 为队伍成员发放奖励
         for (Long m : group.getMembers()) {
             Role r = LocalUserMap.getIdRoleMap().get(m);
             r.setGold(r.getGold() + eachGold);
@@ -180,7 +180,7 @@ public class BossBeAttackedRun implements Runnable {
             }
 
             // 进行更新
-            userService.updateRoleInfo(r);
+            roleService.updateRoleInfo(r);
             if (!goods.isEmpty()) {
                 equipService.addRoleEquips(r, goods);
             }
@@ -243,8 +243,8 @@ public class BossBeAttackedRun implements Runnable {
     /**
      * 返回副本挑战失败的消息
      *
-     * @param channel
-     * @param content
+     * @param channel   channel
+     * @param content   消息
      */
     private void sendDuplicateFailed(Channel channel, String content){
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
@@ -258,8 +258,8 @@ public class BossBeAttackedRun implements Runnable {
     /**
      * 返回副本挑战失败的队伍消息
      *
-     * @param cg
-     * @param content
+     * @param cg        channelGroup
+     * @param content   消息
      */
     private void sendDuplicateFailed(ChannelGroup cg, String content){
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
@@ -274,7 +274,7 @@ public class BossBeAttackedRun implements Runnable {
     /**
      * 返回攻击Boss 成功的消息
      *
-     * @param boss
+     * @param boss  Boss信息
      */
     public void sendBossAttackedMsg(Boss boss){
         response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
@@ -291,8 +291,8 @@ public class BossBeAttackedRun implements Runnable {
     /**
      * 返回 Boss 死亡的消息
      *
-     * @param boss
-     * @param empty
+     * @param boss      Boss信息
+     * @param empty     是否存在Boss
      */
     public void sendBossKilledMsg(Boss boss, boolean empty) {
         String content;
@@ -321,8 +321,8 @@ public class BossBeAttackedRun implements Runnable {
     /**
      * 构造奖励回复信息
      *
-     * @param dup
-     * @param equips
+     * @param dup       副本信息
+     * @param equips    装备信息
      * @return
      */
     private MsgDuplicateProto.ResponseDuplicate combineDupMsg(Duplicate dup, List<Equip> equips){

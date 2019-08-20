@@ -9,6 +9,7 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.service.ItemService;
+import com.ljh.gamedemo.service.RoleService;
 import com.ljh.gamedemo.service.UserService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
@@ -47,8 +48,8 @@ public class UseItemNowRun implements Runnable {
     // 调用 itemsService
     private ItemService itemService = SpringUtil.getBean(ItemService.class);
 
-    // 调用 userService
-    private UserService userService = SpringUtil.getBean(UserService.class);
+    // 调用 roleService
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
 
     public UseItemNowRun(long userId, long itemId, Channel channel, RecoverBuff buff){
@@ -105,7 +106,7 @@ public class UseItemNowRun implements Runnable {
         }
 
         // 更新玩家的数据信息
-        userService.updateRoleInfo(role);
+        roleService.updateRoleInfo(role);
 
         // 物品消耗，更新系统中的玩家物品信息
         itemService.updateRoleItems(role, itemId, -1);

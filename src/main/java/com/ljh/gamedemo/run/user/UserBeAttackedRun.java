@@ -37,8 +37,8 @@ public class UserBeAttackedRun implements Runnable {
     // 是否是pk
     private boolean pk;
 
-    // base userService
-    private UserService userService = SpringUtil.getBean(UserService.class);
+    // base roleService
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
     // pkService
     private PKService pkService = SpringUtil.getBean(PKService.class);
@@ -89,7 +89,7 @@ public class UserBeAttackedRun implements Runnable {
         }
         if (hp < 0){
             // 玩家复活
-            userService.reliveRole(role);
+            roleService.reliveRole(role);
 
             // 退出队伍
             groupService.removeGroup(role);
@@ -98,7 +98,7 @@ public class UserBeAttackedRun implements Runnable {
         role.setHp(hp);
 
         // 更新map
-        userService.updateRoleInfo(role);
+        roleService.updateRoleInfo(role);
 
         // 最终消息返回
         responseAttacked(role);
@@ -200,6 +200,6 @@ public class UserBeAttackedRun implements Runnable {
      */
     public void pkEnd(Role role){
         pkService.generatePkRecord(role);
-        userService.reliveRole(role);
+        roleService.reliveRole(role);
     }
 }

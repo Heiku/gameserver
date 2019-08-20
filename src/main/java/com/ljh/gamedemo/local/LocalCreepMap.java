@@ -33,7 +33,7 @@ public class LocalCreepMap {
     /**
      * creep idMap：<creepId, Creep>
      */
-    private static Map<Integer, Creep> idCreepMap = Maps.newConcurrentMap();
+    private static Map<Long, Creep> idCreepMap = Maps.newConcurrentMap();
 
     /**
      * creep nameCreepMap：<creepName, Creep>
@@ -77,7 +77,7 @@ public class LocalCreepMap {
                     Creep creep = new Creep();
 
                     // 设置野怪的属性
-                    creep.setCreepId(Integer.valueOf(getValue(row.getCell(0))));
+                    creep.setCreepId(Long.valueOf(getValue(row.getCell(0))));
                     creep.setName(getValue(row.getCell(1)));
                     creep.setType(Integer.valueOf(getValue(row.getCell(2))));
                     creep.setNum(Integer.valueOf(getValue(row.getCell(3))));
@@ -109,7 +109,7 @@ public class LocalCreepMap {
         return siteCreepMap;
     }
 
-    public static Map<Integer, Creep> getIdCreepMap() {
+    public static Map<Long, Creep> getIdCreepMap() {
         return idCreepMap;
     }
 

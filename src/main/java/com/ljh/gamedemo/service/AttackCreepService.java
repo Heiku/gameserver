@@ -29,10 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -80,11 +77,11 @@ public class AttackCreepService {
         role.setSpellList(spells);
 
         // 获取野怪的基本信息
-        Integer creepId = request.getCreepId();
+        long creepId = request.getCreepId();
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
 
         // 初始化数据，关联角色和攻击的野怪
-        Queue<Long> roleIdList = LocalAttackCreepMap.getCreepAttackedMap().get(creepId.longValue());
+        Deque<Long> roleIdList = LocalAttackCreepMap.getCreepAttackedMap().get(creepId);
         if (roleIdList == null){
             roleIdList = new LinkedList<>();
             roleIdList.offer(roleId);
@@ -92,9 +89,9 @@ public class AttackCreepService {
         if (!roleIdList.contains(roleId)){
             roleIdList.offer(roleId);
         }
-        LocalAttackCreepMap.getCreepAttackedMap().put(creepId.longValue(), roleIdList);
+        LocalAttackCreepMap.getCreepAttackedMap().put(creepId, roleIdList);
 
-        LocalAttackCreepMap.getCurrentCreepMap().put(roleId, creepId.longValue());
+        LocalAttackCreepMap.getCurrentCreepMap().put(roleId, creepId);
 
         // 加锁判断野怪野怪状态
         synchronized (this){
@@ -150,7 +147,7 @@ public class AttackCreepService {
         Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
 
         // 获取施放技能的目标野怪id
-        int creepId = request.getCreepId();
+        long creepId = request.getCreepId();
 
         // 加锁判断野怪的状态
         synchronized (this){
@@ -176,7 +173,7 @@ public class AttackCreepService {
                 ScheduledFuture future = executors.scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
                 FutureMap.futureMap.put(r.hashCode(), future);
             } else {
-                SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role, spell, creepId, channel, false, true));
+                SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role, spell, creepId, channel, false));
 
             }
         }
@@ -200,15 +197,15 @@ public class AttackCreepService {
 
         // 添加任务到用户线程
         // 野怪掉血任务
-        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role , spell, creep.getCreepId(), channel, true, false));
+        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role , spell, creep.getCreepId(), channel, true));
 
 
         // 玩家掉血任务, 第一次攻击的时候，加入玩家自动扣血，第二次攻击的时候，直接跳过
         // 掉血任务，当野怪死亡的时候 或 玩家死亡 停止
         ScheduledFuture lastFuture = LocalAttackCreepMap.getUserBeAttackedMap().get(userId);
 
-        Queue<Long> roleAttackedList = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId().longValue());
-        if (lastFuture == null && roleAttackedList.peek() != userId) {
+        Deque<Long> deque = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId());
+        if (lastFuture == null && !deque.isEmpty() && deque.peek() != userId) {
             UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), false);
             ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
                     0, spell.getCoolDown(), TimeUnit.SECONDS);
@@ -292,9 +289,9 @@ public class AttackCreepService {
         Long creepId = LocalAttackCreepMap.getCurrentCreepMap().get(role.getRoleId());
 
         // 获取当前野怪的攻击队伍
-        Queue<Long> roleAttackedList = LocalAttackCreepMap.getCreepAttackedMap().get(creepId);
-        if (roleAttackedList != null){
-            roleAttackedList.remove(role.getRoleId());
+        Deque<Long> deque = LocalAttackCreepMap.getCreepAttackedMap().get(creepId);
+        if (deque != null){
+            deque.remove(role.getRoleId());
         }
 
         // 取消玩家收到伤害的定时任务
@@ -315,7 +312,7 @@ public class AttackCreepService {
     /**
      * 用户状态拦截器，检验参数
      *
-     * @param requestAttackCreep
+     * @param requestAttackCreep    请求
      * @return
      */
     private MsgAttackCreepProto.ResponseAttackCreep userStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
@@ -343,7 +340,7 @@ public class AttackCreepService {
     /**
      * 野怪信息拦截器，校验参数
      *
-     * @param requestAttackCreep
+     * @param requestAttackCreep    请求
      * @return
      */
     private MsgAttackCreepProto.ResponseAttackCreep creepStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
@@ -352,7 +349,7 @@ public class AttackCreepService {
         }
 
         // 判断野怪的id是否有问题
-        int creepId = requestAttackCreep.getCreepId();
+        long creepId = requestAttackCreep.getCreepId();
         if (creepId <= 0){
             return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
                     .setResult(ResultCode.FAILED)

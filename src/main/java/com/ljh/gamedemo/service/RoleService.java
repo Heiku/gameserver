@@ -8,14 +8,18 @@ import com.ljh.gamedemo.entity.RoleInit;
 import com.ljh.gamedemo.local.LocalRoleInitMap;
 import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
+import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -45,6 +49,12 @@ public class RoleService {
      */
     @Autowired
     private ProtoService protoService;
+
+    /**
+     * 副本服务
+     */
+    @Autowired
+    private DuplicateService duplicateService;
 
     /**
      * userResponse
@@ -184,6 +194,78 @@ public class RoleService {
 
 
     /**
+     * 更新玩家的信息 （缓存 + DB）
+     *
+     * @param role  玩家
+     */
+    public void updateRoleInfo(Role role){
+        UpdateRoleInfoRun task = new UpdateRoleInfoRun(role);
+        UserExecutorManager.addUserTask(role.getUserId(), task);
+    }
+
+
+    /**
+     * 玩家复活
+     *
+     * @param role  玩家
+     */
+    public void reliveRole(Role role){
+        role.setHp(role.getMaxHp());
+
+        // 更新玩家信息
+        updateRoleInfo(role);
+
+        // 移出副本的攻击目标队列
+        duplicateService.removeAttackedQueue(role);
+
+        // 消息通知
+        userResp = MsgUserInfoProto.ResponseUserInfo.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgUserInfoProto.RequestType.RELIVE)
+                .setContent(ContentType.USER_RELIVE_SUCCESS)
+                .setRole(protoService.transToRole(role))
+                .build();
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+        channel.writeAndFlush(userResp);
+    }
+
+    /**
+     * 治疗挑战队列的玩家
+     *
+     * @param deque
+     */
+    public void healRole(Deque<Long> deque, int heal, int range) {
+        if (deque == null || deque.isEmpty()){
+            return;
+        }
+        int i = 0;
+        for (Long id : deque) {
+            // 治疗范围
+            if (i >= range){
+                break;
+            }
+
+            // 获取玩家信息，并更新血量
+            Role role = LocalUserMap.getIdRoleMap().get(id);
+            if (role == null){
+                continue;
+            }
+            role.setHp(role.getMaxHp() + heal);
+            if (role.getHp() > role.getMaxHp()){
+                role.setHp(role.getMaxHp());
+            }
+            i++;
+            // 更新玩家属性
+            updateRoleInfo(role);
+
+            // 发送治疗消息
+            Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+            channel.writeAndFlush(responseRoleSuccess(String.format(ContentType.ROLE_GET_HEAL, heal)));
+        }
+    }
+
+
+    /**
      * 返回失败消息
      *
      * @param msg   消息
@@ -192,6 +274,21 @@ public class RoleService {
     private MsgRoleProto.ResponseRole responseRoleFailed(String msg){
         roleResp = MsgRoleProto.ResponseRole.newBuilder()
                 .setResult(ResultCode.FAILED)
+                .setContent(msg)
+                .build();
+        return roleResp;
+    }
+
+
+    /**
+     * 返回成功消息
+     *
+     * @param msg   消息
+     * @return      协议返回
+     */
+    private MsgRoleProto.ResponseRole responseRoleSuccess(String msg){
+        roleResp = MsgRoleProto.ResponseRole.newBuilder()
+                .setResult(ResultCode.SUCCESS)
                 .setContent(msg)
                 .build();
         return roleResp;
