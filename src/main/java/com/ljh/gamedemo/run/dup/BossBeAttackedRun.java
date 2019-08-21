@@ -1,11 +1,12 @@
 package com.ljh.gamedemo.run.dup;
 
-import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.entity.*;
+import com.ljh.gamedemo.entity.Boss;
+import com.ljh.gamedemo.entity.Duplicate;
+import com.ljh.gamedemo.entity.Group;
+import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.GroupCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgDuplicateProto;
@@ -14,9 +15,6 @@ import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 野怪受到直接伤害的task
@@ -28,54 +26,77 @@ import java.util.List;
 @Slf4j
 public class BossBeAttackedRun implements Runnable {
 
-    // 获取玩家信息
+    /**
+     * 玩家信息
+     */
     private Role role;
 
-    // 获取 Boss 信息
+    /**
+     * Boss 信息
+     */
     private Boss boss;
 
-    // Boos受到的伤害值
+    /**
+     * Boos受到的伤害值
+     */
     private int damage;
 
-
-    // 是否为队伍
+    /**
+     * 是否为队伍
+     */
     private boolean isGroup;
 
-    // 具体id
+    /**
+     * 副本挑战id
+     */
     private Long bindId;
 
-
-    // channel
+    /**
+     * channel
+     */
     private Channel channel;
 
-    // ChannelGroup
+    /**
+     * ChannelGroup
+     */
     private ChannelGroup cg;
 
-
+    /**
+     * 协议返回
+     */
     private MsgDuplicateProto.ResponseDuplicate response;
 
-    private ProtoService protoService = ProtoService.getInstance();
-
-    // RoleService
-    private RoleService roleService = SpringUtil.getBean(RoleService.class);
-
-    // EquipService
-    private EquipService equipService = SpringUtil.getBean(EquipService.class);
-
-    // DuplicateService
+    /**
+     * 副本服务
+     */
     private DuplicateService duplicateService = SpringUtil.getBean(DuplicateService.class);
 
-    // GroupService
+    /**
+     * 组队服务
+     */
     private GroupService groupService = SpringUtil.getBean(GroupService.class);
+
+    /**
+     * 奖励服务
+     */
+    private RewardService rewardService = SpringUtil.getBean(RewardService.class);
+
+    /**
+     * 协议服务
+     */
+    private ProtoService protoService = ProtoService.getInstance();
 
     public BossBeAttackedRun(Role role, int damage , Boss boss){
         this.role = role;
         this.damage = damage;
         this.boss = boss;
 
+        // 判断是否组队
         isGroup = groupService.hasGroup(role);
+        // 获取挑战id
         bindId = duplicateService.getBindId(role);
 
+        // 初始化协议通道
         channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
         if (isGroup){
             cg = ChannelCache.getGroupChannelMap().get(bindId);
@@ -102,6 +123,9 @@ public class BossBeAttackedRun implements Runnable {
     }
 
 
+    /**
+     * Boss死亡的具体操作
+     */
     public void doBossDeath(){
         // 获取当前的副本信息
         Duplicate dup = duplicateService.getDuplicate(role);
@@ -118,77 +142,7 @@ public class BossBeAttackedRun implements Runnable {
         attackTime(empty, role, dup);
     }
 
-    /**
-     * 为玩家发放奖励，这里是立即得到的物品，不做队列处理
-     *
-     * @param role
-     * @param dup
-     */
-    private void sendRoleReward(Role role, Duplicate dup) {
 
-        // 奖励副本通关信息
-        int gold = dup.getGoldReward();
-        List<Equip> equips = dup.getEquipReward();
-
-        // 构造物品列表
-        List<Goods> gList = new ArrayList<>();
-        equips.forEach( e -> {
-            Goods goods = new Goods();
-            goods.setGid(e.getEquipId());
-            gList.add(goods);
-        });
-
-
-        // 更新玩家的金币信息
-        role.setGold(role.getGold() + gold);
-        roleService.updateRoleInfo(role);
-
-        // 更新玩家的装备信息
-        equipService.addRoleEquips(role, gList);
-
-        // 同时返回给玩家奖励信息
-        response = combineDupMsg(dup, equips);
-        channel.writeAndFlush(response);
-    }
-
-
-    /**
-     * 组队发放奖励
-     *
-     * @param group
-     * @param dup
-     */
-    private void sendGroupReward(Group group, Duplicate dup){
-        // 获取奖励信息
-        int eachGold = dup.getGoldReward() / group.getMembers().size();
-        List<Equip> equips = dup.getEquipReward();
-
-        // 为队伍成员发放奖励
-        for (Long m : group.getMembers()) {
-            Role r = LocalUserMap.getIdRoleMap().get(m);
-            r.setGold(r.getGold() + eachGold);
-
-            List<Goods> goods = new ArrayList<>();
-            List<Equip> eList = new ArrayList<>();
-            if (!equips.isEmpty()) {
-                goods.add(new Goods(equips.get(0).getEquipId(), CommodityType.EQUIP.getCode()));
-                eList.add(equips.get(0));
-                equips.remove(0);
-            }
-
-            // 进行更新
-            roleService.updateRoleInfo(r);
-            if (!goods.isEmpty()) {
-                equipService.addRoleEquips(r, goods);
-            }
-
-            // 消息回复
-            channel = ChannelCache.getUserIdChannelMap().get(r.getUserId());
-            dup.setGoldReward(eachGold);
-            response = combineDupMsg(dup, eList);
-            channel.writeAndFlush(response);
-        }
-    }
 
 
 
@@ -212,10 +166,10 @@ public class BossBeAttackedRun implements Runnable {
             if (now - last <= duration){
                 // 副本挑战成功
                 if (!isGroup) {
-                    sendRoleReward(role, dup);
+                    rewardService.sendRoleReward(role, dup);
                 }else {
                     Group group = GroupCache.getGroupCache().getIfPresent(bindId);
-                    sendGroupReward(group, dup);
+                    rewardService.sendGroupReward(group, dup);
                 }
             }else {
                 // 超过时间，挑战失败
@@ -280,24 +234,5 @@ public class BossBeAttackedRun implements Runnable {
         }else {
             channel.writeAndFlush(response);
         }
-    }
-
-
-    /**
-     * 构造奖励回复信息
-     *
-     * @param dup       副本信息
-     * @param equips    装备信息
-     * @return
-     */
-    private MsgDuplicateProto.ResponseDuplicate combineDupMsg(Duplicate dup, List<Equip> equips){
-        response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(ContentType.DUPLICATE_CHALLENGE_SUCCESS)
-                .setType(MsgDuplicateProto.RequestType.DUPLICATE)
-                .addDuplicate(protoService.transToDuplicate(dup))
-                .addAllEquip(protoService.transToEquipList(equips))
-                .build();
-        return response;
     }
 }

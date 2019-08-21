@@ -59,8 +59,8 @@ public class EquipService {
      * 2.判断玩家的类型，筛选对应的装备
      * 3.构造返回
      *
-     * @param request
-     * @param channel
+     * @param request   请求
+     * @param channel   channel
      */
     public void getEquip(MsgEquipProto.RequestEquip request, Channel channel) {
         // 用户状态判断
@@ -74,11 +74,6 @@ public class EquipService {
         long userId = request.getUserId();
         Role role = LocalUserMap.userRoleMap.get(userId);
 
-        // TODO: 暂时查询所有的装备信息，后期将改为按照角色的类别划分
-        // 获取所有的装备信息
-        // allList <Equip>  idEquipMap中获取
-        // hasList <RoleEquip> roleEquipMap中获取
-        // setMap <equipId, equip>
         List<Equip> allList;
         allList = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
 

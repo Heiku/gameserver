@@ -50,4 +50,6 @@ public class Duplicate {
      * 挑战者（队伍 / 独立玩家） 与 副本关联的id
      */
     private Long relatedId;
+
+    private List<Double> probability;
 }

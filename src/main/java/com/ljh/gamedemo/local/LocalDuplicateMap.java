@@ -96,6 +96,16 @@ public class LocalDuplicateMap {
                     }
                     duplicate.setEquipReward(equips);
 
+                    String probStr = getValue(row.getCell(7));
+                    String[] proArr = probStr.split("\\|");
+                    List<Double> proList = new ArrayList<>();
+                    for (String s : proArr) {
+                        Double d = Double.valueOf(s);
+                        proList.add(d);
+                    }
+                    duplicate.setProbability(proList);
+
+
                     duplicateMap.put(duplicate.getId(), duplicate);
                 }
             }
