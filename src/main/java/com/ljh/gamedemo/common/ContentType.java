@@ -79,7 +79,9 @@ public class ContentType {
     // Attack
     public static final String ATTACK_DEATH_CREEP = "你攻击的野怪已经死亡！\n";
 
-    public static final String ATTACK_CURRENT = "正在受到攻击！\n";
+    public static final String ATTACK_CURRENT = "受到直接伤害！\n";
+
+    public static final String ATTACK_DURATION = "受到中毒伤害！\n";
 
     public static final String ATTACK_SPELL_EMPTY = "请输入正确的技能id！\n";
 
@@ -160,6 +162,9 @@ public class ContentType {
 
     public static final String DUPLICATE_DEBUFF_FAILED = "施放技能失败，当前在眩晕状态下，还需 %d 秒才可以继续行动！\n";
 
+    public static final String DUPLICATE_DIZINESS_WAIT_SEC = "眩晕中，期间无法施放任何技能，需等待 %d 秒！\n";
+
+    public static final String DUPLICATE_SPELL_DURATION = "Boss 施放中毒效果，开始受到中毒伤害！\n";
 
     // Mall
     public static final String MALL_FIND_SUCCESS = "查找成功！\n";
@@ -239,6 +244,8 @@ public class ContentType {
     public static final String GROUP_NOT_IN_GROUP = "当前玩家没有加入任何队伍！\n";
 
     public static final String GROUP_STATE_SUCCESS = "查找队伍信息成功！\n";
+
+    public static final String GROUP_SELF_FAILED = "无法邀请自己组队！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

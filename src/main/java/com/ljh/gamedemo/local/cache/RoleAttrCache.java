@@ -36,7 +36,7 @@ public class RoleAttrCache {
             roleAttrMap.put(attr.getRoleId(), attr);
 
             Role role = LocalUserMap.idRoleMap.get(attr.getRoleId());
-            role.setHp(role.getMaxHp() + attr.getHp());
+            role.setHp(role.getHp() + attr.getHp());
             LocalUserMap.idRoleMap.put(role.getRoleId(), role);
             LocalUserMap.userRoleMap.put(role.getUserId(), role);
         }

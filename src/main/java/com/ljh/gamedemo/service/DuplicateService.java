@@ -746,7 +746,7 @@ public class DuplicateService {
      * @param channel       channel
      * @param msg           消息
      */
-    private void sendCommonMsg(Channel channel, String msg){
+    public void sendCommonMsg(Channel channel, String msg){
         dupResp = MsgDuplicateProto.ResponseDuplicate.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setType(MsgDuplicateProto.RequestType.LEAVE)
@@ -767,5 +767,35 @@ public class DuplicateService {
                 .setContent(msg)
                 .build();
         return dupResp;
+    }
+
+
+    /**
+     * 返回副本挑战失败的消息
+     *
+     * @param channel   channel
+     * @param content   消息
+     */
+    public void sendDuplicateFailed(Channel channel, String content){
+        dupResp = MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(content)
+                .build();
+        channel.writeAndFlush(dupResp);
+    }
+
+
+    /**
+     * 返回副本挑战失败的队伍消息
+     *
+     * @param cg        channelGroup
+     * @param content   消息
+     */
+    public void sendDuplicateFailed(ChannelGroup cg, String content){
+        dupResp = MsgDuplicateProto.ResponseDuplicate.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(content)
+                .build();
+        cg.writeAndFlush(dupResp);
     }
 }

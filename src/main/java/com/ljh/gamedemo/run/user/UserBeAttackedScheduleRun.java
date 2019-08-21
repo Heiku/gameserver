@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.run.user;
 
+import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.entity.DurationAttack;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
@@ -7,9 +8,9 @@ import com.ljh.gamedemo.entity.dto.RoleBuff;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.local.cache.RoleInvitePKCache;
 import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.service.RoleService;
-import com.ljh.gamedemo.service.UserService;
+import com.ljh.gamedemo.service.*;
 import com.ljh.gamedemo.util.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @Author: Heiku
  * @Date: 2019/8/12
  */
+@Slf4j
 public class UserBeAttackedScheduleRun implements Runnable {
 
     /**
@@ -47,9 +49,24 @@ public class UserBeAttackedScheduleRun implements Runnable {
     private boolean pk;
 
     /**
-     * RoleServie
+     * AttackCreepService
+     */
+    private AttackCreepService attackCreepService = SpringUtil.getBean(AttackCreepService.class);
+
+    /**
+     * RoleService
      */
     private RoleService roleService = SpringUtil.getBean(RoleService.class);
+
+    /**
+     * pkService
+     */
+    private PKService pkService = SpringUtil.getBean(PKService.class);
+
+    /**
+     * groupService
+     */
+    private GroupService groupService = SpringUtil.getBean(GroupService.class);
 
     private UserBeAttackedRun run = new UserBeAttackedRun();
 
@@ -74,18 +91,23 @@ public class UserBeAttackedScheduleRun implements Runnable {
             hp -= damage;
             sumDamage += damage;
 
+            if (sumDamage >= da.getDamage()){
+                log.info("已经达到最大持续伤害的最大值，任务取消!");
+                FutureMap.getFutureMap().get(this.hashCode()).cancel(true);
+                return;
+            }
+
             //玩家死亡，取消任务
             if (hp <= 0){
-
-                // 取消持续掉血任务
-                FutureMap.getFutureMap().remove(this.hashCode()).cancel(true);
-
                 // pk 处理
                 if (pk){
                     // 移除 pk 记录
                     RoleInvitePKCache.getPkFutureMap().remove(role.getRoleId());
-                    run.pkEnd(role);
+                    pkService.pkEnd(role);
                 }else {
+                    // 退出队伍
+                    groupService.removeGroup(role);
+                    // 玩家复活
                     roleService.reliveRole(role);
                 }
                 return;
@@ -96,6 +118,6 @@ public class UserBeAttackedScheduleRun implements Runnable {
         roleService.updateRoleInfo(role);
 
         // 消息回复
-        run.responseAttacked(role);
+        attackCreepService.responseAttacked(role, ContentType.ATTACK_DURATION);
     }
 }

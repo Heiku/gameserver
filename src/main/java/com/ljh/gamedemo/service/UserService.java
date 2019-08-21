@@ -11,13 +11,10 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.RoleState;
 import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.UserToken;
-import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleStateCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
-import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.RecoverUserRun;
 import com.ljh.gamedemo.util.SessionUtil;
@@ -27,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -47,9 +46,7 @@ public class UserService {
     private ChatService chatService;
 
     @Autowired
-    private DuplicateService duplicateService;
-
-    private ProtoService protoService = ProtoService.getInstance();
+    private ProtoService protoService;
 
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
@@ -109,7 +106,7 @@ public class UserService {
 
         // 为每一个玩家添加自动恢复的task
         RecoverUserRun task = new RecoverUserRun(userId, null, null);
-        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS);
+        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
         FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
     }
 

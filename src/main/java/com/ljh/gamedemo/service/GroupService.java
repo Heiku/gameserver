@@ -92,9 +92,17 @@ public class GroupService {
             channel.writeAndFlush(userResp);
             return;
         }
+
         // 获取用户信息
         Role own = LocalUserMap.getUserRoleMap().get(req.getUserId());
         Role invite = LocalUserMap.getIdRoleMap().get(req.getRoleId());
+
+        // 判断是否邀请自己组队
+        if (own.getRoleId().longValue() == invite.getRoleId()){
+            responseFailed(channel, ContentType.GROUP_SELF_FAILED);
+            return;
+        }
+
 
         // 只有相同地点的玩家才可以组队
         if (!siteService.inSameSite(own, invite)){

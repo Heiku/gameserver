@@ -50,6 +50,9 @@ public class BossDoAttackedRun implements Runnable {
     public void run() {
         // 获取目标的id
         long targetId = dupService.getFirstAimFromQueue(dup);
+        if (targetId == 0){
+            dupService.destroyDupSource(null, dup);
+        }
 
         // 目标为玩家
         Role role = LocalUserMap.getIdRoleMap().get(targetId);

@@ -1,6 +1,5 @@
 package com.ljh.gamedemo.service;
 
-import com.ljh.gamedemo.dao.UserDao;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalUserMap;
@@ -12,22 +11,39 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * 用于玩家离线时，保存玩家的数据，及数据的清理
+ *
+ */
 @Service
 @Slf4j
 public class SaveDataService {
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private UserRoleDao userRoleDao;
 
+    /**
+     * 用户服务
+     */
     @Autowired
     private UserService userService;
 
+    /**
+     * 玩家服务
+     */
+    @Autowired
+    private RoleService roleService;
+
+    /**
+     * 副本服务
+     */
     @Autowired
     private DuplicateService duplicateService;
 
+    /**
+     * 组队服务
+     */
     @Autowired
     private GroupService groupService;
 
@@ -42,16 +58,19 @@ public class SaveDataService {
         if (userId <= 0){
             return;
         }
-
         Role role = LocalUserMap.userRoleMap.get(userId);
         int n = userRoleDao.updateRoleSiteInfo(role);
         System.out.println(role);
         log.info("update user data before inactive(): " + n);
         log.info(userId + " - "  + role.getName() + " 暂时下线！");
 
+
         // 同时，取消玩家的自动恢复任务
         ScheduledFuture future = FutureMap.getRecoverFutureMap().get(role.getRoleId());
         future.cancel(true);
+
+        // 取消玩家的受攻击任务
+        roleService.removeRoleFutureList(role);
 
         // 如果在挑战副本，移出攻击目标队列中
         duplicateService.removeAttackedQueue(role);

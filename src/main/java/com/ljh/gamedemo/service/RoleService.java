@@ -5,6 +5,7 @@ import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.RoleInit;
+import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalRoleInitMap;
 import com.ljh.gamedemo.local.LocalSiteMap;
 import com.ljh.gamedemo.local.LocalUserMap;
@@ -13,7 +14,9 @@ import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -210,13 +213,13 @@ public class RoleService {
      * @param role  玩家
      */
     public void reliveRole(Role role){
+        // 移出副本的攻击目标队列
+        duplicateService.removeAttackedQueue(role);
+
         role.setHp(role.getMaxHp());
 
         // 更新玩家信息
         updateRoleInfo(role);
-
-        // 移出副本的攻击目标队列
-        duplicateService.removeAttackedQueue(role);
 
         // 消息通知
         userResp = MsgUserInfoProto.ResponseUserInfo.newBuilder()
@@ -250,7 +253,7 @@ public class RoleService {
             if (role == null){
                 continue;
             }
-            role.setHp(role.getMaxHp() + heal);
+            role.setHp(role.getHp() + heal);
             if (role.getHp() > role.getMaxHp()){
                 role.setHp(role.getMaxHp());
             }
@@ -264,6 +267,19 @@ public class RoleService {
         }
     }
 
+
+    /**
+     * 将玩家身上的所有持续伤害移除
+     *
+     * @param role 玩家信息
+     */
+    public void removeRoleFutureList(Role role) {
+        List<ScheduledFuture> roleFutureList = LocalAttackCreepMap.getRoleSchFutMap().get(role.getRoleId());
+        if (roleFutureList == null || roleFutureList.isEmpty()){
+            return;
+        }
+        roleFutureList.forEach(f -> f.cancel(true));
+    }
 
     /**
      * 返回失败消息
@@ -293,4 +309,6 @@ public class RoleService {
                 .build();
         return roleResp;
     }
+
+
 }

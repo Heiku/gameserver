@@ -36,7 +36,5 @@ public class SpellHandler extends SimpleChannelInboundHandler<MsgSpellProto.Requ
                 spellService.learn(requestSpell, ctx.channel());
                 break;
         }
-
-        ctx.channel().writeAndFlush(responseSpell);
     }
 }

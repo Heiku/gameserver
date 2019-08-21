@@ -60,11 +60,10 @@ public class LocalSpellMap {
     /**
      * RoleSpellDao：用于读取数据库技能信息
      */
-    private static RoleSpellDao roleSpellDao;
+    private static RoleSpellDao roleSpellDao = SpringUtil.getBean(RoleSpellDao.class);
 
     static {
         try {
-            roleSpellDao = SpringUtil.getBean(RoleSpellDao.class);
             spellFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "csv/spell.xlsx");
         }catch (FileNotFoundException e){
             log.error("can not find creepFile,please check file location");

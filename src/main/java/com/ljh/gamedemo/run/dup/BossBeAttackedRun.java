@@ -116,9 +116,6 @@ public class BossBeAttackedRun implements Runnable {
 
         // 判断是否通关
         attackTime(empty, role, dup);
-
-        // 回收
-        boss = null;
     }
 
     /**
@@ -223,9 +220,9 @@ public class BossBeAttackedRun implements Runnable {
             }else {
                 // 超过时间，挑战失败
                 if (!isGroup) {
-                    sendDuplicateFailed(channel, ContentType.DUPLICATE_TIME_OUT);
+                    duplicateService.sendDuplicateFailed(channel, ContentType.DUPLICATE_TIME_OUT);
                 }else {
-                    sendDuplicateFailed(cg, ContentType.DUPLICATE_TIME_OUT);
+                    duplicateService.sendDuplicateFailed(cg, ContentType.DUPLICATE_TIME_OUT);
                 }
             }
 
@@ -237,38 +234,6 @@ public class BossBeAttackedRun implements Runnable {
             duplicateService.doBossAttacked(dup);
         }
     }
-
-
-
-    /**
-     * 返回副本挑战失败的消息
-     *
-     * @param channel   channel
-     * @param content   消息
-     */
-    private void sendDuplicateFailed(Channel channel, String content){
-        response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
-                .setResult(ResultCode.FAILED)
-                .setContent(content)
-                .build();
-        channel.writeAndFlush(response);
-    }
-
-
-    /**
-     * 返回副本挑战失败的队伍消息
-     *
-     * @param cg        channelGroup
-     * @param content   消息
-     */
-    private void sendDuplicateFailed(ChannelGroup cg, String content){
-        response = MsgDuplicateProto.ResponseDuplicate.newBuilder()
-                .setResult(ResultCode.FAILED)
-                .setContent(content)
-                .build();
-        cg.writeAndFlush(response);
-    }
-
 
 
     /**

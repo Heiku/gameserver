@@ -7,7 +7,6 @@ import io.netty.util.concurrent.ScheduledFuture;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 /**
  * 存储所有关于涉及攻击的数据
@@ -47,6 +46,10 @@ public class LocalAttackCreepMap {
     private static Map<Long, List<ScheduledFuture>> dupAllFutureMap = Maps.newConcurrentMap();
 
 
+    // 多场景下的玩家受到的持续伤害
+    private static Map<Long, List<ScheduledFuture>> roleSchFutMap = Maps.newConcurrentMap();
+
+
     public static Map<Long, Duplicate> getCurDupMap() {
         return curDupMap;
     }
@@ -78,5 +81,9 @@ public class LocalAttackCreepMap {
 
     public static Map<Long, List<ScheduledFuture>> getDupAllFutureMap() {
         return dupAllFutureMap;
+    }
+
+    public static Map<Long, List<ScheduledFuture>> getRoleSchFutMap() {
+        return roleSchFutMap;
     }
 }

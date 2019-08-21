@@ -31,9 +31,6 @@ public class UserBeAttackedRun implements Runnable {
     // 玩家收到的伤害值
     private Integer damage;
 
-    // 用于通知掉血
-    private Channel channel;
-
     // 是否是pk
     private boolean pk;
 
@@ -46,8 +43,10 @@ public class UserBeAttackedRun implements Runnable {
     // groupService
     private GroupService groupService = SpringUtil.getBean(GroupService.class);
 
-    // protoService Util
-    private ProtoService protoService = ProtoService.getInstance();
+    /**
+     * CreepAttackService
+     */
+    private AttackCreepService attackCreepService = SpringUtil.getBean(AttackCreepService.class);
 
 
     public UserBeAttackedRun(){
@@ -88,11 +87,10 @@ public class UserBeAttackedRun implements Runnable {
             hp -= damage;
         }
         if (hp < 0){
-            // 玩家复活
-            roleService.reliveRole(role);
-
             // 退出队伍
             groupService.removeGroup(role);
+            // 玩家复活
+            roleService.reliveRole(role);
             return;
         }
         role.setHp(hp);
@@ -100,14 +98,14 @@ public class UserBeAttackedRun implements Runnable {
         // 更新map
         roleService.updateRoleInfo(role);
 
-        // 最终消息返回
-        responseAttacked(role);
+        // 直接伤害返回
+        attackCreepService.responseAttacked(role, ContentType.ATTACK_CURRENT);
 
         // pk 对决
         // 判断玩家的hp，生成pk 结果
         if (pk){
             if (role.getHp() <= 0) {
-                pkEnd(role);
+                pkService.pkEnd(role);
             }
         }
     }
@@ -171,35 +169,6 @@ public class UserBeAttackedRun implements Runnable {
             hp -= damage;
             buffList.remove(buff);
         }
-
         return hp;
-    }
-
-
-    /**
-     * 消息返回
-     *
-     * @param role
-     */
-    public void responseAttacked(Role role){
-        channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
-
-        MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep
-                .newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setType(MsgAttackCreepProto.RequestType.ATTACK)
-                .setContent(ContentType.ATTACK_CURRENT)
-                .setRole(protoService.transToRole(role))
-                .build();
-
-        channel.writeAndFlush(response);
-    }
-
-    /**
-     * pk 结束
-     */
-    public void pkEnd(Role role){
-        pkService.generatePkRecord(role);
-        roleService.reliveRole(role);
     }
 }

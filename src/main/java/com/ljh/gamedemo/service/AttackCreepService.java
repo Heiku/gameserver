@@ -2,7 +2,6 @@ package com.ljh.gamedemo.service;
 
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
@@ -12,6 +11,7 @@ import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
+import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.CustomExecutor;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
@@ -21,7 +21,6 @@ import com.ljh.gamedemo.run.creep.CreepBeAttackedScheduleRun;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.UserBeAttackedRun;
 import com.ljh.gamedemo.run.user.UserDeclineMpRun;
-import com.ljh.gamedemo.run.util.CountDownLatchUtil;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
@@ -29,7 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,11 +44,18 @@ public class AttackCreepService {
 
     private MsgAttackCreepProto.ResponseAttackCreep response;
 
-    @Autowired
-    private RoleEquipDao equipDao;
-
+    /**
+     * 装备服务
+     */
     @Autowired
     private EquipService equipService;
+
+    /**
+     * 协议工具
+     */
+    @Autowired
+    private ProtoService protoService;
+
 
     /**
      * 处理攻击野怪请求，默认采用普攻攻击的方式
@@ -395,6 +404,25 @@ public class AttackCreepService {
         return null;
     }
 
+
+
+    /**
+     * 消息返回
+     *
+     * @param role
+     */
+    public void responseAttacked(Role role, String msg){
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+
+        MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep
+                .newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgAttackCreepProto.RequestType.ATTACK)
+                .setContent(msg)
+                .setRole(protoService.transToRole(role))
+                .build();
+        channel.writeAndFlush(response);
+    }
 
 }
 

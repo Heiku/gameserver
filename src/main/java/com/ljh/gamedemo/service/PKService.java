@@ -562,6 +562,15 @@ public class PKService {
 
 
     /**
+     * pk结束，一方阵亡
+     */
+    public void pkEnd(Role role){
+        generatePkRecord(role);
+        roleService.reliveRole(role);
+    }
+
+
+    /**
      * 规定 PK 战斗只能在竞技场上进行，判断玩家双方是否都在竞技场上
      *
      * @param challenge
