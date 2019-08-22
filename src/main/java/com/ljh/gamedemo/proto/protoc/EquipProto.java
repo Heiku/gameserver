@@ -77,6 +77,11 @@ public final class EquipProto {
      * <code>int32 state = 11;</code>
      */
     int getState();
+
+    /**
+     * <code>int32 minTrans = 12;</code>
+     */
+    int getMinTrans();
   }
   /**
    * Protobuf type {@code Equip}
@@ -178,6 +183,11 @@ public final class EquipProto {
             case 88: {
 
               state_ = input.readInt32();
+              break;
+            }
+            case 96: {
+
+              minTrans_ = input.readInt32();
               break;
             }
             default: {
@@ -336,6 +346,15 @@ public final class EquipProto {
       return state_;
     }
 
+    public static final int MINTRANS_FIELD_NUMBER = 12;
+    private int minTrans_;
+    /**
+     * <code>int32 minTrans = 12;</code>
+     */
+    public int getMinTrans() {
+      return minTrans_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -382,6 +401,9 @@ public final class EquipProto {
       }
       if (state_ != 0) {
         output.writeInt32(11, state_);
+      }
+      if (minTrans_ != 0) {
+        output.writeInt32(12, minTrans_);
       }
       unknownFields.writeTo(output);
     }
@@ -435,6 +457,10 @@ public final class EquipProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(11, state_);
       }
+      if (minTrans_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(12, minTrans_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -472,6 +498,8 @@ public final class EquipProto {
           != other.getArmor()) return false;
       if (getState()
           != other.getState()) return false;
+      if (getMinTrans()
+          != other.getMinTrans()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -506,6 +534,8 @@ public final class EquipProto {
       hash = (53 * hash) + getArmor();
       hash = (37 * hash) + STATE_FIELD_NUMBER;
       hash = (53 * hash) + getState();
+      hash = (37 * hash) + MINTRANS_FIELD_NUMBER;
+      hash = (53 * hash) + getMinTrans();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -661,6 +691,8 @@ public final class EquipProto {
 
         state_ = 0;
 
+        minTrans_ = 0;
+
         return this;
       }
 
@@ -698,6 +730,7 @@ public final class EquipProto {
         result.hpUp_ = hpUp_;
         result.armor_ = armor_;
         result.state_ = state_;
+        result.minTrans_ = minTrans_;
         onBuilt();
         return result;
       }
@@ -779,6 +812,9 @@ public final class EquipProto {
         }
         if (other.getState() != 0) {
           setState(other.getState());
+        }
+        if (other.getMinTrans() != 0) {
+          setMinTrans(other.getMinTrans());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1137,6 +1173,32 @@ public final class EquipProto {
         onChanged();
         return this;
       }
+
+      private int minTrans_ ;
+      /**
+       * <code>int32 minTrans = 12;</code>
+       */
+      public int getMinTrans() {
+        return minTrans_;
+      }
+      /**
+       * <code>int32 minTrans = 12;</code>
+       */
+      public Builder setMinTrans(int value) {
+        
+        minTrans_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 minTrans = 12;</code>
+       */
+      public Builder clearMinTrans() {
+        
+        minTrans_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1205,12 +1267,13 @@ public final class EquipProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/E" +
-      "quip.proto\"\254\001\n\005Equip\022\017\n\007equipId\030\001 \001(\003\022\014\n" +
+      "quip.proto\"\276\001\n\005Equip\022\017\n\007equipId\030\001 \001(\003\022\014\n" +
       "\004name\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\014\n\004part\030\004 \001(\005\022" +
       "\r\n\005level\030\005 \001(\005\022\022\n\ndurability\030\006 \001(\005\022\013\n\003aU" +
       "p\030\007 \001(\005\022\014\n\004spUp\030\010 \001(\005\022\014\n\004hpUp\030\t \001(\005\022\r\n\005a" +
-      "rmor\030\n \001(\005\022\r\n\005state\030\013 \001(\005B+\n\035com.ljh.gam" +
-      "edemo.proto.protocB\nEquipProtob\006proto3"
+      "rmor\030\n \001(\005\022\r\n\005state\030\013 \001(\005\022\020\n\010minTrans\030\014 " +
+      "\001(\005B+\n\035com.ljh.gamedemo.proto.protocB\nEq" +
+      "uipProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1221,7 +1284,7 @@ public final class EquipProto {
     internal_static_Equip_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Equip_descriptor,
-        new java.lang.String[] { "EquipId", "Name", "Type", "Part", "Level", "Durability", "AUp", "SpUp", "HpUp", "Armor", "State", });
+        new java.lang.String[] { "EquipId", "Name", "Type", "Part", "Level", "Durability", "AUp", "SpUp", "HpUp", "Armor", "State", "MinTrans", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

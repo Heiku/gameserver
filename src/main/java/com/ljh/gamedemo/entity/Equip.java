@@ -3,17 +3,23 @@ package com.ljh.gamedemo.entity;
 import lombok.Data;
 
 /**
+ * 装备实体类
+ *
  * @Author: Heiku
  * @Date: 2019/7/17
- *
- * 装备实体类
  */
 
 @Data
 public class Equip {
 
+    /**
+     * 装备id
+     */
     private Long equipId;
 
+    /**
+     * 装备名
+     */
     private String name;
 
     /**
@@ -60,4 +66,9 @@ public class Equip {
      * 表示装备的状态：1：可用，0：不可用
      */
     private Integer state;
+
+    /**
+     * 最小交易金额
+     */
+    private Integer minTrans;
 }

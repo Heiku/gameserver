@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgFaceTrans.proto
+
+import "Trans.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgFaceTransProto";
+
+enum RequestType{
+    INITIATE = 0;       // 交易发起
+    YES_TRANS = 1;        // 接受交易
+    NO_TRANS = 2;       // 拒绝交易
+    ASK_TRANS = 3;      // 发送交易内容
+    ACCEPT_TRANS = 4;   // 接受交易结果
+    REFUSE_TRANS = 5;   // 拒绝交易结果
+    LEAVE_TRANS = 6;    // 离开交易
+}
+
+message RequestFaceTrans{
+    int64 userId = 1;       // 申请人信息
+    int64 roleId = 2;       // 接收人信息
+
+    int64 goodsId = 3;      // 交易物品id
+    int32 num = 4;          // 交易数量
+    int32 amount = 5;       // 交易金额
+    int64 tmpId = 6;        // 交易关联id
+
+    RequestType type = 7;   // 请求类型
+}
+
+
+message ResponseFaceTrans{
+    int32 result = 1;       // 结果
+    string content = 2;     // 结果信息
+
+    RequestType type = 3;   // 请求类型
+
+    Trans trans = 4;        // 交易单
+}

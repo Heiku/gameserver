@@ -62,6 +62,11 @@ public final class ItemsProto {
      * <code>int32 sec = 7;</code>
      */
     int getSec();
+
+    /**
+     * <code>int32 minTrans = 8;</code>
+     */
+    int getMinTrans();
   }
   /**
    * Protobuf type {@code Items}
@@ -145,6 +150,11 @@ public final class ItemsProto {
             case 56: {
 
               sec_ = input.readInt32();
+              break;
+            }
+            case 64: {
+
+              minTrans_ = input.readInt32();
               break;
             }
             default: {
@@ -292,6 +302,15 @@ public final class ItemsProto {
       return sec_;
     }
 
+    public static final int MINTRANS_FIELD_NUMBER = 8;
+    private int minTrans_;
+    /**
+     * <code>int32 minTrans = 8;</code>
+     */
+    public int getMinTrans() {
+      return minTrans_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -326,6 +345,9 @@ public final class ItemsProto {
       }
       if (sec_ != 0) {
         output.writeInt32(7, sec_);
+      }
+      if (minTrans_ != 0) {
+        output.writeInt32(8, minTrans_);
       }
       unknownFields.writeTo(output);
     }
@@ -362,6 +384,10 @@ public final class ItemsProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(7, sec_);
       }
+      if (minTrans_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, minTrans_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -391,6 +417,8 @@ public final class ItemsProto {
           != other.getUp()) return false;
       if (getSec()
           != other.getSec()) return false;
+      if (getMinTrans()
+          != other.getMinTrans()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -417,6 +445,8 @@ public final class ItemsProto {
       hash = (53 * hash) + getUp();
       hash = (37 * hash) + SEC_FIELD_NUMBER;
       hash = (53 * hash) + getSec();
+      hash = (37 * hash) + MINTRANS_FIELD_NUMBER;
+      hash = (53 * hash) + getMinTrans();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -564,6 +594,8 @@ public final class ItemsProto {
 
         sec_ = 0;
 
+        minTrans_ = 0;
+
         return this;
       }
 
@@ -597,6 +629,7 @@ public final class ItemsProto {
         result.desc_ = desc_;
         result.up_ = up_;
         result.sec_ = sec_;
+        result.minTrans_ = minTrans_;
         onBuilt();
         return result;
       }
@@ -667,6 +700,9 @@ public final class ItemsProto {
         }
         if (other.getSec() != 0) {
           setSec(other.getSec());
+        }
+        if (other.getMinTrans() != 0) {
+          setMinTrans(other.getMinTrans());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -964,6 +1000,32 @@ public final class ItemsProto {
         onChanged();
         return this;
       }
+
+      private int minTrans_ ;
+      /**
+       * <code>int32 minTrans = 8;</code>
+       */
+      public int getMinTrans() {
+        return minTrans_;
+      }
+      /**
+       * <code>int32 minTrans = 8;</code>
+       */
+      public Builder setMinTrans(int value) {
+        
+        minTrans_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 minTrans = 8;</code>
+       */
+      public Builder clearMinTrans() {
+        
+        minTrans_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1032,11 +1094,11 @@ public final class ItemsProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/I" +
-      "tems.proto\"h\n\005Items\022\017\n\007itemsId\030\001 \001(\003\022\014\n\004" +
+      "tems.proto\"z\n\005Items\022\017\n\007itemsId\030\001 \001(\003\022\014\n\004" +
       "name\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\013\n\003num\030\004 \001(\005\022\014\n" +
-      "\004desc\030\005 \001(\t\022\n\n\002up\030\006 \001(\005\022\013\n\003sec\030\007 \001(\005B+\n\035" +
-      "com.ljh.gamedemo.proto.protocB\nItemsProt" +
-      "ob\006proto3"
+      "\004desc\030\005 \001(\t\022\n\n\002up\030\006 \001(\005\022\013\n\003sec\030\007 \001(\005\022\020\n\010" +
+      "minTrans\030\010 \001(\005B+\n\035com.ljh.gamedemo.proto" +
+      ".protocB\nItemsProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1047,7 +1109,7 @@ public final class ItemsProto {
     internal_static_Items_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Items_descriptor,
-        new java.lang.String[] { "ItemsId", "Name", "Type", "Num", "Desc", "Up", "Sec", });
+        new java.lang.String[] { "ItemsId", "Name", "Type", "Num", "Desc", "Up", "Sec", "MinTrans", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

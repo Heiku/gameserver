@@ -93,6 +93,7 @@ public class LocalEquipMap {
                     equip.setArmor(Integer.valueOf(getValue(row.getCell(8))));
                     equip.setDurability(Integer.valueOf(getValue(row.getCell(9))));
                     equip.setState(Integer.valueOf(getValue(row.getCell(10))));
+                    equip.setMinTrans(Integer.valueOf(getValue(row.getCell(11))));
 
                     idEquipMap.put(equip.getEquipId(), equip);
 

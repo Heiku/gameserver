@@ -94,6 +94,7 @@ public class LocalItemsMap {
                     items.setUp(Integer.valueOf(getValue(row.getCell(3))));
                     items.setSec(Integer.valueOf(getValue(row.getCell(4))));
                     items.setDesc(getValue(row.getCell(5)));
+                    items.setMinTrans(Integer.valueOf(getValue(row.getCell(6))));
 
                     // 存放idItemsMap
                     idItemsMap.put(items.getItemsId(), items);

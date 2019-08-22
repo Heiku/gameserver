@@ -13,4 +13,5 @@ message Items{
     string desc = 5;
     int32 up = 6;
     int32 sec = 7;
+    int32 minTrans = 8;
 }

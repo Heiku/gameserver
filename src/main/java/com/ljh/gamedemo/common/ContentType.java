@@ -7,6 +7,7 @@ public class ContentType {
 
     // User Request
     public static final String USER_EMPTY_REGISTER_PARAM = "用户注册的数据为空，请输入指令\n";
+
     public static final String USER_EMPTY_LOGIN_PARAM = "用户登录的数据为空，请输入指令\n";
 
     public static final String USER_EMPTY_DATA = "数据库中暂无用户记录，请重新注册\n";
@@ -28,6 +29,8 @@ public class ContentType {
 
 
     // Role
+    public static final String ROLE_EMPTY_PARAM = "输入的玩家 id 为空，请重新输入！\n";
+
     public static final String ROLE_EMPTY = "当前玩家暂无角色！\n";
 
     public static final String ROLE_CHOOSE = "角色选择成功！\n";
@@ -246,6 +249,44 @@ public class ContentType {
     public static final String GROUP_STATE_SUCCESS = "查找队伍信息成功！\n";
 
     public static final String GROUP_SELF_FAILED = "无法邀请自己组队！\n";
+
+
+    // face to face Transaction
+    public static final String FACE_TRANS_APPLY_NOT_INT_SAME_SITE = "交易申请失败，交易双方应在统一场景中！\n";
+
+    public static final String FACE_TRANS_APPLY_FAILED_LEVEL = "交易申请失败，为保证游戏平衡，交易双方等级应在最低等级限制 【%d】 以上！\n";
+
+    public static final String FACE_TRANS_APPLY_FAILED_HONOR = "交易申请失败，为保证游戏平衡，交易双方等级应在最低荣誉值限制 【%d】 以上！\n";
+
+    public static final String FACE_TRANS_APPLY_NOT_FOUND = "找不到对应的交易申请信息！\n";
+
+    public static final String FACE_TRANS_APPLY_SEND_SUCCESS = "面对面交易申请发送成功！（申请超过 5 min自动失效）\n";
+
+    public static final String FACE_TRANS_APPLY_RECEIVE = "【面对面交易申请】\n玩家：【%s】向你发送面对面交易申请，申请 ID：【%d】\n输入指令 yes + id 可进入面对面交易状态！\n";
+
+    public static final String FACE_TRANS_APPLY_HAS_IN = "当前已经在其他交易当中，无法接收申请！\n";
+
+    public static final String FACE_TRANS_APPLY_NO_IN = "已经断开交易连接，无法进行交易！\n";
+
+    public static final String FACE_TRANS_APPLY_JOIN_FAILED = "加入交易失败，交易信息不存在!\n";
+
+    public static final String FACE_TRANS_APPLY_AGREE   = "与玩家：【%s】的面对面交易申请已经被同意，开始你们的交易吧！\n";
+
+    public static final String FACE_TRANS_APPLY_REFUSE = "与玩家：【%s】的面对面交易申请已被拒绝！\n";
+
+    public static final String FACE_TRANS_APPLY_AGREE_SUCCESS = "完成交易申请通过，开始交易吧！\n";
+
+    public static final String FACE_TRANS_APPLY_REFUSE_SUCCESS = "完成交易申请拒绝！\n";
+
+    public static final String FACE_TRANS_SUBMIT_FAILED_WITHOUT_GOODS = "提交交易失败，背包中不存在交易的物品！（请核对交易的物品，数量）\n";
+
+    public static final String FACE_TRANS_SUMMIT_FAILED_NO_ENOUGH_GOLD = "交易金额小于最小的物品最低交易总额，请重新输入交易金额！\n";
+
+    public static final String FACE_TRANS_SUBMIT_RECORD_SEND_SUCCESS = "交易记录发送成功，请等待对方确认！\n";
+
+    public static final String FACE_TRANS_SUBMIT_RECORD_RECEIVE = "【交易单记录】\n请确认是否进行本次交易！\n";
+
+    public static final String FACE_TRANS_NO_ENOUGH_GOLD_PAY = "没有足够得金额支付本次交易！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

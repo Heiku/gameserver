@@ -269,6 +269,47 @@ public class RoleService {
 
 
     /**
+     * 加锁判断是否足够金额购买物品，能得话直接支付，否得话返回失败
+     *
+     * @param receiver      玩家信息
+     * @param amount        交易金额
+     */
+    public synchronized boolean enoughPay(Role receiver, Integer amount) {
+        if (receiver.getGold() < amount){
+            return false;
+        }
+
+        // 能购买
+        receiver.setGold(receiver.getGold() - amount);
+        updateRoleInfo(receiver);
+        return true;
+    }
+
+    /**
+     * 判断玩家是否存在
+     *
+     * @param roleId    玩家id
+     * @return          返回
+     */
+    public MsgRoleProto.ResponseRole roleInterceptor(long roleId){
+        if(roleId <= 0){
+            return MsgRoleProto.ResponseRole.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.ROLE_EMPTY_PARAM)
+                    .build();
+        }
+        Role role = LocalUserMap.getIdRoleMap().get(roleId);
+        if (role == null){
+            return MsgRoleProto.ResponseRole.newBuilder()
+                    .setResult(ResultCode.FAILED)
+                    .setContent(ContentType.ROLE_EMPTY)
+                    .build();
+        }
+        return null;
+    }
+
+
+    /**
      * 将玩家身上的所有持续伤害移除
      *
      * @param role 玩家信息

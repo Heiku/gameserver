@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "Role.proto";
+import "Goods.proto";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Trans.proto
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "TransProto";
+
+message Trans{
+    int64 id = 1;
+
+    Role promoter = 2;  // 发起人
+    Role receiver = 3;  // 接收人
+
+    Goods goods = 4;    // 物品
+    int32 amount = 5;   // 金额
+}

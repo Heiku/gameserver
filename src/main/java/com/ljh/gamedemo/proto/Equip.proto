@@ -18,4 +18,5 @@ message Equip{
     int32 hpUp = 9;
     int32 armor = 10;
     int32 state = 11;
+    int32 minTrans = 12;
 }

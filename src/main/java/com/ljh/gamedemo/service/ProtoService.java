@@ -296,8 +296,6 @@ public class ProtoService {
         return null;
     }
 
-
-
     public EmailProto.Email transToEmail(Role r, Email email, List<GoodsProto.Goods> goodsList) {
         return EmailProto.Email.newBuilder()
                 .setId(email.getId())
@@ -372,6 +370,26 @@ public class ProtoService {
                 .setHp(r.getHp())
                 .setMp(r.getMp())
                 .setDesc(r.getDesc())
+                .build();
+    }
+
+
+    public TransProto.Trans transToTransaction(Transaction trans) {
+        if (trans == null){
+            return null;
+        }
+
+        EmailGoods emailGoods = new EmailGoods();
+        emailGoods.setGid(trans.getGoodsId());
+        emailGoods.setNum(trans.getNum());
+
+
+        return TransProto.Trans.newBuilder()
+                .setId(trans.getId())
+                .setPromoter(transToRole(LocalUserMap.getIdRoleMap().get(trans.getPromoter())))
+                .setReceiver(transToRole(LocalUserMap.getIdRoleMap().get(trans.getReceiver())))
+                .setGoods(transToGoods(emailGoods))
+                .setAmount(trans.getAmount())
                 .build();
     }
 
