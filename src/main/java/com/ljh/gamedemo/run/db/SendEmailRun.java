@@ -22,39 +22,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author: Heiku
- * @Date: 2019/8/8
- *
  * 发送邮件的task
- *
  * 1.邮件数据持久
  * 2.消息发送
+ *
+ * @Author: Heiku
+ * @Date: 2019/8/8
  */
 
 @Slf4j
 public class SendEmailRun implements Runnable {
 
+    /**
+     * 邮件信息
+     */
     private Email email;
 
+    /**
+     * 附件信息
+     */
     private List<EmailGoods> egList;
 
-    private EmailType type;
-
-    // response
+    /**
+     * 协议返回
+     */
     private MsgEmailProto.ResponseEmail response;
 
-    // 注入邮件相关的dao
+    /**
+     * 数据库 role_email
+     */
     private RoleEmailDao emailDao = SpringUtil.getBean(RoleEmailDao.class);
 
+    /**
+     * 数据库 email_goods
+     */
     private EmailGoodsDao emailGoodsDao = SpringUtil.getBean(EmailGoodsDao.class);
 
-    // 协议转换service
+    /**
+     * 协议转换服务
+     */
     private ProtoService protoService = ProtoService.getInstance();
 
     public SendEmailRun(Email email, List<EmailGoods> egList, EmailType type){
         this.email = email;
         this.egList = egList;
-        this.type = type;
     }
 
     @Override

@@ -383,7 +383,6 @@ public class ProtoService {
         emailGoods.setGid(trans.getGoodsId());
         emailGoods.setNum(trans.getNum());
 
-
         return TransProto.Trans.newBuilder()
                 .setId(trans.getId())
                 .setPromoter(transToRole(LocalUserMap.getIdRoleMap().get(trans.getPromoter())))

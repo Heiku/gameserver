@@ -8,6 +8,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalEquipMap;
 import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
+import com.ljh.gamedemo.local.LocalUserMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,5 +112,31 @@ public class GoodsService {
         }
 
         return 0;
+    }
+
+
+    /**
+     * 移除玩家的物品信息
+     *
+     * @param roleId        玩家id
+     * @param goodsId       物品id
+     * @param num           数量
+     */
+    public void removeRoleGoods(long roleId, long goodsId, int num) {
+        // 获取物品信息
+        Goods goods = LocalGoodsMap.getIdGoodsMap().get(goodsId);
+        Role r = LocalUserMap.getIdRoleMap().get(roleId);
+
+        // 判断玩家是否拥有这些物品
+        int type = goods.getType();
+        if (type == CommodityType.ITEM.getCode()){
+            // 更新物品信息
+            itemService.updateRoleItems(r, goodsId, -num);
+        }
+
+        else if (type == CommodityType.EQUIP.getCode()){
+            // 更新装备信息
+            equipService.removeRoleEquips(r, goodsId, num);
+        }
     }
 }

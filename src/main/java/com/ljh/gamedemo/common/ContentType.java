@@ -288,6 +288,18 @@ public class ContentType {
 
     public static final String FACE_TRANS_NO_ENOUGH_GOLD_PAY = "没有足够得金额支付本次交易！\n";
 
+    public static final String FACE_TRANS_SUCCESS = "交易成功，交易物品随后将通过邮件发送，请注意查收！\n";
+
+    public static final String FACE_TRANS_SUCCESS_GAIN_GOLD = "交易成功，获得金币：%d\n";
+
+    public static final String FACE_TRANS_RECEIVER_REFUSE_SUCCESS = "成功拒绝交易订单，订单失效！\n";
+
+    public static final String FACE_TRANS_PROMOTER_REFUSE_SUCCESS = "交易订单已经被取消，订单失效！\n";
+
+    public static final String FACE_TRANS_OTHERS_LEAVE_STATE = "对方离开交易状态，交易取消！\n";
+
+    public static final String FACE_TRANS_LEAVE_STATE_SUCCESS = "成功离开交易状态，交易取消！\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 

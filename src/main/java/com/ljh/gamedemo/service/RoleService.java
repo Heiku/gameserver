@@ -278,7 +278,6 @@ public class RoleService {
         if (receiver.getGold() < amount){
             return false;
         }
-
         // 能购买
         receiver.setGold(receiver.getGold() - amount);
         updateRoleInfo(receiver);

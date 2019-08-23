@@ -6,7 +6,6 @@ import com.ljh.gamedemo.dao.RoleEquipDao;
 import com.ljh.gamedemo.entity.Equip;
 import com.ljh.gamedemo.entity.Goods;
 import com.ljh.gamedemo.entity.dto.RoleEquip;
-import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -34,20 +33,34 @@ import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 @Slf4j
 public class LocalEquipMap {
 
+    /**
+     * 装备文件
+     */
     private static File equipFile = null;
 
+    /**
+     * db role_equip
+     */
     private static RoleEquipDao roleEquipDao;
 
-    // equip idEquipMap: <Long, Equip>
+    /**
+     * 所有装备的基本信息 (equipId, Equip)
+     */
     private static Map<Long, Equip> idEquipMap = Maps.newConcurrentMap();
 
-    private static Map<Long, List<RoleEquip>> roleEquipMap = Maps.newConcurrentMap();
+    /**
+     * 玩家现在穿上的装备 (roleId, List<Equip>)
+     */
+    private static Map<Long, List<Equip>> roleEquipMap = Maps.newConcurrentMap();
 
+    /**
+     * 玩啊拥有的装备 (roleId, List<Equip>)
+     */
     private static Map<Long, List<Equip>> hasEquipMap = Maps.newConcurrentMap();
 
-
-    // 暂时用不着
-    // equip typeEquipMap: <Integer, ListM<Equip>>
+    /**
+     * equip typeEquipMap: <Integer, ListM<Equip>>
+     */
     private static Map<Integer, List<Equip>> typeEquipMap = Maps.newHashMap();
 
     static {
@@ -65,7 +78,6 @@ public class LocalEquipMap {
      * 读取数据文件
      */
     public static void readExcel(){
-
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(equipFile);
 
@@ -124,36 +136,33 @@ public class LocalEquipMap {
      */
     private static void readDB(){
         // 读取数据库中的所有记录信息
-        List<RoleEquip> roleEquipList = roleEquipDao.selectAll();
+        List<RoleEquip> roleEquipList = roleEquipDao.selectAllOn();
         for (RoleEquip re : roleEquipList){
-            long roleId = re.getRoleId();
+            Equip equip = roleEquipToEquip(re);
 
-            List<RoleEquip> list = roleEquipMap.get(roleId);
+            long roleId = re.getRoleId();
+            List<Equip> list = roleEquipMap.get(roleId);
             if (list == null){
                 list = new ArrayList<>();
             }
-            list.add(re);
+            list.add(equip);
 
             roleEquipMap.put(roleId, list);
         }
 
 
         // 读取用户所拥有的全部装备信息
-        List<RoleEquipHas> hasList = roleEquipDao.selectAllHasEquip();
-        for (RoleEquipHas reh : hasList) {
-            long equipId = reh.getEquipId();
-            Equip equip = new Equip();
-            Equip data = idEquipMap.get(equipId);
-            BeanUtils.copyProperties(data, equip);
-
+        List<RoleEquip> hasList = roleEquipDao.selectAllBag();
+        for (RoleEquip re : hasList) {
+            Equip equip = roleEquipToEquip(re);
 
             List<Equip> list;
-            list = hasEquipMap.get(reh.getRoleId());
+            list = hasEquipMap.get(re.getRoleId());
             if (list == null){
                 list = new ArrayList<>();
             }
             list.add(equip);
-            hasEquipMap.put(reh.getRoleId(), list);
+            hasEquipMap.put(re.getRoleId(), list);
         }
     }
 
@@ -161,13 +170,30 @@ public class LocalEquipMap {
         return idEquipMap;
     }
 
-
-    public static Map<Long, List<RoleEquip>> getRoleEquipMap() {
+    public static Map<Long, List<Equip>> getRoleEquipMap() {
         return roleEquipMap;
     }
 
     public static Map<Long, List<Equip>> getHasEquipMap() {
         return hasEquipMap;
+    }
+
+    /**
+     * 将数据库roleEquip -> equip
+     *
+     * @param re    玩家装备关联
+     * @return
+     */
+    private static Equip roleEquipToEquip(RoleEquip re){
+        Equip equip = new Equip();
+        Equip data = LocalEquipMap.getIdEquipMap().get(re.getEquipId());
+        BeanUtils.copyProperties(data, equip);
+        equip.setId(re.getId());
+        equip.setDurability(re.getDurability());
+        equip.setState(re.getState());
+        equip.setHasOn(re.getHasOn());
+
+        return equip;
     }
 
     public static void main(String[] args) {
@@ -180,8 +206,6 @@ public class LocalEquipMap {
         idEquipMap.forEach((k, v) ->
             System.out.println("k: " + k + " ,value: " + v));
 
-        typeEquipMap.forEach((k, v) ->
-            System.out.println("k: " + k + " ,value: " + v));
 
         hasEquipMap.forEach((k, v) ->
             System.out.println("k: " + k + " ,value: " + v));

@@ -18,7 +18,7 @@ enum RequestType{
 message RequestEquip{
 
     int64 userId = 1;
-    int64 equipId = 2;
+    int64 id = 2;
 
     RequestType type = 3;
 }

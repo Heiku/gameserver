@@ -19,67 +19,72 @@ public final class EquipProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 equipId = 1;</code>
+     * <code>int64 id = 1;</code>
+     */
+    long getId();
+
+    /**
+     * <code>int64 equipId = 2;</code>
      */
     long getEquipId();
 
     /**
-     * <code>string name = 2;</code>
+     * <code>string name = 3;</code>
      */
     java.lang.String getName();
     /**
-     * <code>string name = 2;</code>
+     * <code>string name = 3;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>int32 type = 3;</code>
+     * <code>int32 type = 4;</code>
      */
     int getType();
 
     /**
-     * <code>int32 part = 4;</code>
+     * <code>int32 part = 5;</code>
      */
     int getPart();
 
     /**
-     * <code>int32 level = 5;</code>
+     * <code>int32 level = 6;</code>
      */
     int getLevel();
 
     /**
-     * <code>int32 durability = 6;</code>
+     * <code>int32 durability = 7;</code>
      */
     int getDurability();
 
     /**
-     * <code>int32 aUp = 7;</code>
+     * <code>int32 aUp = 8;</code>
      */
     int getAUp();
 
     /**
-     * <code>int32 spUp = 8;</code>
+     * <code>int32 spUp = 9;</code>
      */
     int getSpUp();
 
     /**
-     * <code>int32 hpUp = 9;</code>
+     * <code>int32 hpUp = 10;</code>
      */
     int getHpUp();
 
     /**
-     * <code>int32 armor = 10;</code>
+     * <code>int32 armor = 11;</code>
      */
     int getArmor();
 
     /**
-     * <code>int32 state = 11;</code>
+     * <code>int32 state = 12;</code>
      */
     int getState();
 
     /**
-     * <code>int32 minTrans = 12;</code>
+     * <code>int32 minTrans = 13;</code>
      */
     int getMinTrans();
   }
@@ -131,61 +136,66 @@ public final class EquipProto {
               break;
             case 8: {
 
+              id_ = input.readInt64();
+              break;
+            }
+            case 16: {
+
               equipId_ = input.readInt64();
               break;
             }
-            case 18: {
+            case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
             }
-            case 24: {
+            case 32: {
 
               type_ = input.readInt32();
               break;
             }
-            case 32: {
+            case 40: {
 
               part_ = input.readInt32();
               break;
             }
-            case 40: {
+            case 48: {
 
               level_ = input.readInt32();
               break;
             }
-            case 48: {
+            case 56: {
 
               durability_ = input.readInt32();
               break;
             }
-            case 56: {
+            case 64: {
 
               aUp_ = input.readInt32();
               break;
             }
-            case 64: {
+            case 72: {
 
               spUp_ = input.readInt32();
               break;
             }
-            case 72: {
+            case 80: {
 
               hpUp_ = input.readInt32();
               break;
             }
-            case 80: {
+            case 88: {
 
               armor_ = input.readInt32();
               break;
             }
-            case 88: {
+            case 96: {
 
               state_ = input.readInt32();
               break;
             }
-            case 96: {
+            case 104: {
 
               minTrans_ = input.readInt32();
               break;
@@ -222,19 +232,28 @@ public final class EquipProto {
               com.ljh.gamedemo.proto.protoc.EquipProto.Equip.class, com.ljh.gamedemo.proto.protoc.EquipProto.Equip.Builder.class);
     }
 
-    public static final int EQUIPID_FIELD_NUMBER = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private long id_;
+    /**
+     * <code>int64 id = 1;</code>
+     */
+    public long getId() {
+      return id_;
+    }
+
+    public static final int EQUIPID_FIELD_NUMBER = 2;
     private long equipId_;
     /**
-     * <code>int64 equipId = 1;</code>
+     * <code>int64 equipId = 2;</code>
      */
     public long getEquipId() {
       return equipId_;
     }
 
-    public static final int NAME_FIELD_NUMBER = 2;
+    public static final int NAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object name_;
     /**
-     * <code>string name = 2;</code>
+     * <code>string name = 3;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -249,7 +268,7 @@ public final class EquipProto {
       }
     }
     /**
-     * <code>string name = 2;</code>
+     * <code>string name = 3;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -265,91 +284,91 @@ public final class EquipProto {
       }
     }
 
-    public static final int TYPE_FIELD_NUMBER = 3;
+    public static final int TYPE_FIELD_NUMBER = 4;
     private int type_;
     /**
-     * <code>int32 type = 3;</code>
+     * <code>int32 type = 4;</code>
      */
     public int getType() {
       return type_;
     }
 
-    public static final int PART_FIELD_NUMBER = 4;
+    public static final int PART_FIELD_NUMBER = 5;
     private int part_;
     /**
-     * <code>int32 part = 4;</code>
+     * <code>int32 part = 5;</code>
      */
     public int getPart() {
       return part_;
     }
 
-    public static final int LEVEL_FIELD_NUMBER = 5;
+    public static final int LEVEL_FIELD_NUMBER = 6;
     private int level_;
     /**
-     * <code>int32 level = 5;</code>
+     * <code>int32 level = 6;</code>
      */
     public int getLevel() {
       return level_;
     }
 
-    public static final int DURABILITY_FIELD_NUMBER = 6;
+    public static final int DURABILITY_FIELD_NUMBER = 7;
     private int durability_;
     /**
-     * <code>int32 durability = 6;</code>
+     * <code>int32 durability = 7;</code>
      */
     public int getDurability() {
       return durability_;
     }
 
-    public static final int AUP_FIELD_NUMBER = 7;
+    public static final int AUP_FIELD_NUMBER = 8;
     private int aUp_;
     /**
-     * <code>int32 aUp = 7;</code>
+     * <code>int32 aUp = 8;</code>
      */
     public int getAUp() {
       return aUp_;
     }
 
-    public static final int SPUP_FIELD_NUMBER = 8;
+    public static final int SPUP_FIELD_NUMBER = 9;
     private int spUp_;
     /**
-     * <code>int32 spUp = 8;</code>
+     * <code>int32 spUp = 9;</code>
      */
     public int getSpUp() {
       return spUp_;
     }
 
-    public static final int HPUP_FIELD_NUMBER = 9;
+    public static final int HPUP_FIELD_NUMBER = 10;
     private int hpUp_;
     /**
-     * <code>int32 hpUp = 9;</code>
+     * <code>int32 hpUp = 10;</code>
      */
     public int getHpUp() {
       return hpUp_;
     }
 
-    public static final int ARMOR_FIELD_NUMBER = 10;
+    public static final int ARMOR_FIELD_NUMBER = 11;
     private int armor_;
     /**
-     * <code>int32 armor = 10;</code>
+     * <code>int32 armor = 11;</code>
      */
     public int getArmor() {
       return armor_;
     }
 
-    public static final int STATE_FIELD_NUMBER = 11;
+    public static final int STATE_FIELD_NUMBER = 12;
     private int state_;
     /**
-     * <code>int32 state = 11;</code>
+     * <code>int32 state = 12;</code>
      */
     public int getState() {
       return state_;
     }
 
-    public static final int MINTRANS_FIELD_NUMBER = 12;
+    public static final int MINTRANS_FIELD_NUMBER = 13;
     private int minTrans_;
     /**
-     * <code>int32 minTrans = 12;</code>
+     * <code>int32 minTrans = 13;</code>
      */
     public int getMinTrans() {
       return minTrans_;
@@ -369,41 +388,44 @@ public final class EquipProto {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0L) {
+        output.writeInt64(1, id_);
+      }
       if (equipId_ != 0L) {
-        output.writeInt64(1, equipId_);
+        output.writeInt64(2, equipId_);
       }
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
       }
       if (type_ != 0) {
-        output.writeInt32(3, type_);
+        output.writeInt32(4, type_);
       }
       if (part_ != 0) {
-        output.writeInt32(4, part_);
+        output.writeInt32(5, part_);
       }
       if (level_ != 0) {
-        output.writeInt32(5, level_);
+        output.writeInt32(6, level_);
       }
       if (durability_ != 0) {
-        output.writeInt32(6, durability_);
+        output.writeInt32(7, durability_);
       }
       if (aUp_ != 0) {
-        output.writeInt32(7, aUp_);
+        output.writeInt32(8, aUp_);
       }
       if (spUp_ != 0) {
-        output.writeInt32(8, spUp_);
+        output.writeInt32(9, spUp_);
       }
       if (hpUp_ != 0) {
-        output.writeInt32(9, hpUp_);
+        output.writeInt32(10, hpUp_);
       }
       if (armor_ != 0) {
-        output.writeInt32(10, armor_);
+        output.writeInt32(11, armor_);
       }
       if (state_ != 0) {
-        output.writeInt32(11, state_);
+        output.writeInt32(12, state_);
       }
       if (minTrans_ != 0) {
-        output.writeInt32(12, minTrans_);
+        output.writeInt32(13, minTrans_);
       }
       unknownFields.writeTo(output);
     }
@@ -414,52 +436,56 @@ public final class EquipProto {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, id_);
+      }
       if (equipId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, equipId_);
+          .computeInt64Size(2, equipId_);
       }
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
       }
       if (type_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, type_);
+          .computeInt32Size(4, type_);
       }
       if (part_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, part_);
+          .computeInt32Size(5, part_);
       }
       if (level_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, level_);
+          .computeInt32Size(6, level_);
       }
       if (durability_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, durability_);
+          .computeInt32Size(7, durability_);
       }
       if (aUp_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(7, aUp_);
+          .computeInt32Size(8, aUp_);
       }
       if (spUp_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, spUp_);
+          .computeInt32Size(9, spUp_);
       }
       if (hpUp_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(9, hpUp_);
+          .computeInt32Size(10, hpUp_);
       }
       if (armor_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(10, armor_);
+          .computeInt32Size(11, armor_);
       }
       if (state_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(11, state_);
+          .computeInt32Size(12, state_);
       }
       if (minTrans_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(12, minTrans_);
+          .computeInt32Size(13, minTrans_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -476,6 +502,8 @@ public final class EquipProto {
       }
       com.ljh.gamedemo.proto.protoc.EquipProto.Equip other = (com.ljh.gamedemo.proto.protoc.EquipProto.Equip) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (getEquipId()
           != other.getEquipId()) return false;
       if (!getName()
@@ -511,6 +539,9 @@ public final class EquipProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
       hash = (37 * hash) + EQUIPID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEquipId());
@@ -669,6 +700,8 @@ public final class EquipProto {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0L;
+
         equipId_ = 0L;
 
         name_ = "";
@@ -719,6 +752,7 @@ public final class EquipProto {
       @java.lang.Override
       public com.ljh.gamedemo.proto.protoc.EquipProto.Equip buildPartial() {
         com.ljh.gamedemo.proto.protoc.EquipProto.Equip result = new com.ljh.gamedemo.proto.protoc.EquipProto.Equip(this);
+        result.id_ = id_;
         result.equipId_ = equipId_;
         result.name_ = name_;
         result.type_ = type_;
@@ -779,6 +813,9 @@ public final class EquipProto {
 
       public Builder mergeFrom(com.ljh.gamedemo.proto.protoc.EquipProto.Equip other) {
         if (other == com.ljh.gamedemo.proto.protoc.EquipProto.Equip.getDefaultInstance()) return this;
+        if (other.getId() != 0L) {
+          setId(other.getId());
+        }
         if (other.getEquipId() != 0L) {
           setEquipId(other.getEquipId());
         }
@@ -845,15 +882,41 @@ public final class EquipProto {
         return this;
       }
 
+      private long id_ ;
+      /**
+       * <code>int64 id = 1;</code>
+       */
+      public long getId() {
+        return id_;
+      }
+      /**
+       * <code>int64 id = 1;</code>
+       */
+      public Builder setId(long value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 id = 1;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private long equipId_ ;
       /**
-       * <code>int64 equipId = 1;</code>
+       * <code>int64 equipId = 2;</code>
        */
       public long getEquipId() {
         return equipId_;
       }
       /**
-       * <code>int64 equipId = 1;</code>
+       * <code>int64 equipId = 2;</code>
        */
       public Builder setEquipId(long value) {
         
@@ -862,7 +925,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int64 equipId = 1;</code>
+       * <code>int64 equipId = 2;</code>
        */
       public Builder clearEquipId() {
         
@@ -873,7 +936,7 @@ public final class EquipProto {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>string name = 2;</code>
+       * <code>string name = 3;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -888,7 +951,7 @@ public final class EquipProto {
         }
       }
       /**
-       * <code>string name = 2;</code>
+       * <code>string name = 3;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -904,7 +967,7 @@ public final class EquipProto {
         }
       }
       /**
-       * <code>string name = 2;</code>
+       * <code>string name = 3;</code>
        */
       public Builder setName(
           java.lang.String value) {
@@ -917,7 +980,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>string name = 2;</code>
+       * <code>string name = 3;</code>
        */
       public Builder clearName() {
         
@@ -926,7 +989,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>string name = 2;</code>
+       * <code>string name = 3;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -942,13 +1005,13 @@ public final class EquipProto {
 
       private int type_ ;
       /**
-       * <code>int32 type = 3;</code>
+       * <code>int32 type = 4;</code>
        */
       public int getType() {
         return type_;
       }
       /**
-       * <code>int32 type = 3;</code>
+       * <code>int32 type = 4;</code>
        */
       public Builder setType(int value) {
         
@@ -957,7 +1020,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 type = 3;</code>
+       * <code>int32 type = 4;</code>
        */
       public Builder clearType() {
         
@@ -968,13 +1031,13 @@ public final class EquipProto {
 
       private int part_ ;
       /**
-       * <code>int32 part = 4;</code>
+       * <code>int32 part = 5;</code>
        */
       public int getPart() {
         return part_;
       }
       /**
-       * <code>int32 part = 4;</code>
+       * <code>int32 part = 5;</code>
        */
       public Builder setPart(int value) {
         
@@ -983,7 +1046,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 part = 4;</code>
+       * <code>int32 part = 5;</code>
        */
       public Builder clearPart() {
         
@@ -994,13 +1057,13 @@ public final class EquipProto {
 
       private int level_ ;
       /**
-       * <code>int32 level = 5;</code>
+       * <code>int32 level = 6;</code>
        */
       public int getLevel() {
         return level_;
       }
       /**
-       * <code>int32 level = 5;</code>
+       * <code>int32 level = 6;</code>
        */
       public Builder setLevel(int value) {
         
@@ -1009,7 +1072,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 level = 5;</code>
+       * <code>int32 level = 6;</code>
        */
       public Builder clearLevel() {
         
@@ -1020,13 +1083,13 @@ public final class EquipProto {
 
       private int durability_ ;
       /**
-       * <code>int32 durability = 6;</code>
+       * <code>int32 durability = 7;</code>
        */
       public int getDurability() {
         return durability_;
       }
       /**
-       * <code>int32 durability = 6;</code>
+       * <code>int32 durability = 7;</code>
        */
       public Builder setDurability(int value) {
         
@@ -1035,7 +1098,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 durability = 6;</code>
+       * <code>int32 durability = 7;</code>
        */
       public Builder clearDurability() {
         
@@ -1046,13 +1109,13 @@ public final class EquipProto {
 
       private int aUp_ ;
       /**
-       * <code>int32 aUp = 7;</code>
+       * <code>int32 aUp = 8;</code>
        */
       public int getAUp() {
         return aUp_;
       }
       /**
-       * <code>int32 aUp = 7;</code>
+       * <code>int32 aUp = 8;</code>
        */
       public Builder setAUp(int value) {
         
@@ -1061,7 +1124,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 aUp = 7;</code>
+       * <code>int32 aUp = 8;</code>
        */
       public Builder clearAUp() {
         
@@ -1072,13 +1135,13 @@ public final class EquipProto {
 
       private int spUp_ ;
       /**
-       * <code>int32 spUp = 8;</code>
+       * <code>int32 spUp = 9;</code>
        */
       public int getSpUp() {
         return spUp_;
       }
       /**
-       * <code>int32 spUp = 8;</code>
+       * <code>int32 spUp = 9;</code>
        */
       public Builder setSpUp(int value) {
         
@@ -1087,7 +1150,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 spUp = 8;</code>
+       * <code>int32 spUp = 9;</code>
        */
       public Builder clearSpUp() {
         
@@ -1098,13 +1161,13 @@ public final class EquipProto {
 
       private int hpUp_ ;
       /**
-       * <code>int32 hpUp = 9;</code>
+       * <code>int32 hpUp = 10;</code>
        */
       public int getHpUp() {
         return hpUp_;
       }
       /**
-       * <code>int32 hpUp = 9;</code>
+       * <code>int32 hpUp = 10;</code>
        */
       public Builder setHpUp(int value) {
         
@@ -1113,7 +1176,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 hpUp = 9;</code>
+       * <code>int32 hpUp = 10;</code>
        */
       public Builder clearHpUp() {
         
@@ -1124,13 +1187,13 @@ public final class EquipProto {
 
       private int armor_ ;
       /**
-       * <code>int32 armor = 10;</code>
+       * <code>int32 armor = 11;</code>
        */
       public int getArmor() {
         return armor_;
       }
       /**
-       * <code>int32 armor = 10;</code>
+       * <code>int32 armor = 11;</code>
        */
       public Builder setArmor(int value) {
         
@@ -1139,7 +1202,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 armor = 10;</code>
+       * <code>int32 armor = 11;</code>
        */
       public Builder clearArmor() {
         
@@ -1150,13 +1213,13 @@ public final class EquipProto {
 
       private int state_ ;
       /**
-       * <code>int32 state = 11;</code>
+       * <code>int32 state = 12;</code>
        */
       public int getState() {
         return state_;
       }
       /**
-       * <code>int32 state = 11;</code>
+       * <code>int32 state = 12;</code>
        */
       public Builder setState(int value) {
         
@@ -1165,7 +1228,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 state = 11;</code>
+       * <code>int32 state = 12;</code>
        */
       public Builder clearState() {
         
@@ -1176,13 +1239,13 @@ public final class EquipProto {
 
       private int minTrans_ ;
       /**
-       * <code>int32 minTrans = 12;</code>
+       * <code>int32 minTrans = 13;</code>
        */
       public int getMinTrans() {
         return minTrans_;
       }
       /**
-       * <code>int32 minTrans = 12;</code>
+       * <code>int32 minTrans = 13;</code>
        */
       public Builder setMinTrans(int value) {
         
@@ -1191,7 +1254,7 @@ public final class EquipProto {
         return this;
       }
       /**
-       * <code>int32 minTrans = 12;</code>
+       * <code>int32 minTrans = 13;</code>
        */
       public Builder clearMinTrans() {
         
@@ -1267,13 +1330,13 @@ public final class EquipProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/E" +
-      "quip.proto\"\276\001\n\005Equip\022\017\n\007equipId\030\001 \001(\003\022\014\n" +
-      "\004name\030\002 \001(\t\022\014\n\004type\030\003 \001(\005\022\014\n\004part\030\004 \001(\005\022" +
-      "\r\n\005level\030\005 \001(\005\022\022\n\ndurability\030\006 \001(\005\022\013\n\003aU" +
-      "p\030\007 \001(\005\022\014\n\004spUp\030\010 \001(\005\022\014\n\004hpUp\030\t \001(\005\022\r\n\005a" +
-      "rmor\030\n \001(\005\022\r\n\005state\030\013 \001(\005\022\020\n\010minTrans\030\014 " +
-      "\001(\005B+\n\035com.ljh.gamedemo.proto.protocB\nEq" +
-      "uipProtob\006proto3"
+      "quip.proto\"\312\001\n\005Equip\022\n\n\002id\030\001 \001(\003\022\017\n\007equi" +
+      "pId\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\014\n\004type\030\004 \001(\005\022\014\n" +
+      "\004part\030\005 \001(\005\022\r\n\005level\030\006 \001(\005\022\022\n\ndurability" +
+      "\030\007 \001(\005\022\013\n\003aUp\030\010 \001(\005\022\014\n\004spUp\030\t \001(\005\022\014\n\004hpU" +
+      "p\030\n \001(\005\022\r\n\005armor\030\013 \001(\005\022\r\n\005state\030\014 \001(\005\022\020\n" +
+      "\010minTrans\030\r \001(\005B+\n\035com.ljh.gamedemo.prot" +
+      "o.protocB\nEquipProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1284,7 +1347,7 @@ public final class EquipProto {
     internal_static_Equip_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Equip_descriptor,
-        new java.lang.String[] { "EquipId", "Name", "Type", "Part", "Level", "Durability", "AUp", "SpUp", "HpUp", "Armor", "State", "MinTrans", });
+        new java.lang.String[] { "Id", "EquipId", "Name", "Type", "Part", "Level", "Durability", "AUp", "SpUp", "HpUp", "Armor", "State", "MinTrans", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -7,16 +7,18 @@ option java_outer_classname = "EquipProto";
 
 message Equip{
 
-    int64 equipId = 1;
-    string name = 2;
-    int32 type = 3;
-    int32 part = 4;
-    int32 level = 5;
-    int32 durability = 6;
-    int32 aUp = 7;
-    int32 spUp = 8;
-    int32 hpUp = 9;
-    int32 armor = 10;
-    int32 state = 11;
-    int32 minTrans = 12;
+    int64 id = 1;
+    int64 equipId = 2;
+    string name = 3;
+    int32 type = 4;
+    int32 part = 5;
+    int32 level = 6;
+    int32 durability = 7;
+    int32 aUp = 8;
+    int32 spUp = 9;
+    int32 hpUp = 10;
+    int32 armor = 11;
+    int32 state = 12;
+    int32 minTrans = 13;
+
 }

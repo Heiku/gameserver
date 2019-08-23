@@ -13,6 +13,11 @@ import lombok.Data;
 public class Equip {
 
     /**
+     * 装备编号
+     */
+    private Long id;
+
+    /**
      * 装备id
      */
     private Long equipId;
@@ -71,4 +76,10 @@ public class Equip {
      * 最小交易金额
      */
     private Integer minTrans;
+
+
+    /**
+     * 是否穿戴
+     */
+    private Integer hasOn;
 }

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.ljh.gamedemo.common.ItemsType.*;
@@ -252,9 +253,9 @@ public class ItemService {
     /**
      * 更新玩家物品
      *
-     * @param r
-     * @param gid
-     * @param num
+     * @param r     玩家信息
+     * @param gid   物品id
+     * @param num   数量
      */
     public void updateRoleItems(Role r, long gid, int num){
         List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(r.getRoleId());
@@ -262,27 +263,22 @@ public class ItemService {
             return;
         }
 
-        Items items = new Items();
-        // 更新缓存中的物品数量
-        for (Items i : itemsList) {
-            if (i.getItemsId() == gid){
-                i.setNum(i.getNum() + num);
-                items = i;
+        Optional<Items> result = itemsList.stream().filter(i -> i.getItemsId() == gid).findFirst();
+        if (result.isPresent()){
+            Items items = result.get();
+            items.setNum(items.getNum() + num);
 
-                // 物品为 0，删除玩家的物品记录
-                if (i.getNum() == 0){
-                    removeRoleItem(r, i);
-                }
-                break;
+            if (items.getNum() == 0){
+                removeRoleItem(r, items);
             }
+
+            LocalItemsMap.getRoleItemsMap().put(r.getRoleId(), itemsList);
+            log.info("更新RoleItemList后，数量为：" + itemsList);
+
+            // 同步更新数据库
+            SaveRoleItemRun run = new SaveRoleItemRun(items, r);
+            SaveRoleItemManager.addQueue(run);
         }
-        LocalItemsMap.getRoleItemsMap().put(r.getRoleId(), itemsList);
-        log.info("更新RoleItemList后，数量为：" + itemsList);
-
-
-        // 同步更新数据库
-        SaveRoleItemRun run = new SaveRoleItemRun(items, r);
-        SaveRoleItemManager.addQueue(run);
     }
 
 
@@ -317,10 +313,10 @@ public class ItemService {
     /**
      * 更新玩家的物品数量
      *
-     * @param r
-     * @param itemsList
-     * @param items
-     * @param num
+     * @param r             玩家信息
+     * @param itemsList     物品列表
+     * @param items         物品信息
+     * @param num           物品数量
      */
     private void updateItemInfo(Role r, List<Items> itemsList, Items items, int num) {
 
@@ -344,11 +340,7 @@ public class ItemService {
     private void removeRoleItem(Role r, Items i){
         // 更新缓存信息
         List<Items> itemsList = LocalItemsMap.getRoleItemsMap().get(r.getRoleId());
-        itemsList.forEach(it -> {
-            if (it.getItemsId().intValue() == i.getItemsId()){
-                itemsList.remove(i);
-            }
-        });
+        itemsList.removeIf(it -> it.getItemsId().longValue() == i.getItemsId());
 
         // 移除id集合
         LocalItemsMap.getRoleItemsIdMap().get(r.getRoleId()).remove(i.getItemsId());

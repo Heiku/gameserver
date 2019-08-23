@@ -106,8 +106,8 @@ public class EmailService {
     /**
      * 接收邮件道具
      *
-     * @param request
-     * @param channel
+     * @param request   请求
+     * @param channel   channel
      */
     public void receiveEmail(MsgEmailProto.RequestEmail request, Channel channel) {
         // 玩家状态判断
@@ -157,9 +157,9 @@ public class EmailService {
     /**
      * 组合邮件消息
      *
-     * @param type
-     * @param role
-     * @return  
+     * @param type      邮件类型
+     * @param role      玩家信息
+     * @return          返回邮件信息
      */
     private Email combineEmail(Role role, EmailType type){
         Email email = new Email();
@@ -184,7 +184,7 @@ public class EmailService {
     /**
      * 组合邮件列表消息返回  <email, List<EmailGoods>>
      *
-     * @param emailList
+     * @param emailList     邮件列表
      * @return
      */
     private MsgEmailProto.ResponseEmail combineEmailList(List<Email> emailList, Role role) {
@@ -214,8 +214,8 @@ public class EmailService {
     /**
      * 成功消息返回
      *
-     * @param channel
-     * @param content
+     * @param channel       channel
+     * @param content       消息
      */
     private void responseSuccess(Channel channel, String content) {
         emailResp = MsgEmailProto.ResponseEmail.newBuilder()
@@ -231,8 +231,8 @@ public class EmailService {
     /**
      * 失败消息返回
      *
-     * @param channel
-     * @param content
+     * @param channel       channel
+     * @param content       消息
      */
     private void responseFailed(Channel channel, String content) {
         emailResp = MsgEmailProto.ResponseEmail.newBuilder()

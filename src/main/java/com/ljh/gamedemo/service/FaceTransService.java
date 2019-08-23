@@ -2,6 +2,7 @@ package com.ljh.gamedemo.service;
 
 import com.google.protobuf.Message;
 import com.ljh.gamedemo.common.ContentType;
+import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.FaceTransDao;
 import com.ljh.gamedemo.entity.EmailGoods;
@@ -145,13 +146,13 @@ public class FaceTransService {
         }
 
         // 判断双方等级
-        if (promoter.getLevel() <= MIN_TRANS_LEVEL || receiver.getLevel() <= MIN_TRANS_LEVEL){
+        if (promoter.getLevel() < MIN_TRANS_LEVEL || receiver.getLevel() < MIN_TRANS_LEVEL){
             sendFailedMsg(channel, String.format(ContentType.FACE_TRANS_APPLY_FAILED_LEVEL, MIN_TRANS_LEVEL));
             return;
         }
 
         // 判断双方荣誉值
-        if (promoter.getHonor() <= MIN_TRANS_HONOR || receiver.getHonor() <= MIN_TRANS_HONOR){
+        if (promoter.getHonor() < MIN_TRANS_HONOR || receiver.getHonor() < MIN_TRANS_HONOR){
             sendFailedMsg(channel, String.format(ContentType.FACE_TRANS_APPLY_FAILED_HONOR, MIN_TRANS_HONOR));
             return;
         }
@@ -250,7 +251,7 @@ public class FaceTransService {
      * @param channel   channel
      */
     public void askTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
-        message = faceCommonInterceptor(req, channel);
+        message = faceCommonInterceptor(req);
         if (message != null){
             channel.writeAndFlush(message);
             return;
@@ -291,7 +292,7 @@ public class FaceTransService {
      */
     public void acceptTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
         // 状态判断
-        message = faceCommonInterceptor(req, channel);
+        message = faceCommonInterceptor(req);
         if (message != null){
             channel.writeAndFlush(message);
             return;
@@ -306,15 +307,119 @@ public class FaceTransService {
 
         // 购买成功，获取玩家A的出售商品，调用发送物品邮件
         if (b){
+            // 更新交易状态
+            trans.setSuccess(1);
+            trans.setModifyTime(new Date());
+            int n = transDao.updateFaceTrans(trans);
+            log.info("update face_trans, affected row: " + n);
+
+            // 移除当前的交易单
+            removeCurrentTrans(trans.getPromoter(), trans.getReceiver());
+
+            // 移除交易人的物品信息
+            goodsService.removeRoleGoods(trans.getPromoter(), trans.getGoodsId(), trans.getNum());
+
+            // 交易人获得金币
+            Role promoter = LocalUserMap.getIdRoleMap().get(trans.getPromoter());
+            promoter.setGold(promoter.getGold() + trans.getAmount());
+            roleService.updateRoleInfo(promoter);
+
+            // 消息返回
+            Channel proCh = ChannelCache.getUserIdChannelMap().get(promoter.getUserId());
+            sendCommonMsg(proCh, String.format(ContentType.FACE_TRANS_SUCCESS_GAIN_GOLD, trans.getAmount()));
+
+
+            // 接收人
             List<EmailGoods> goods = new ArrayList<>();
-            goods.add(new EmailGoods());
-            emailService.sendEmail();
-            sendCommonMsg();
+            EmailGoods ed = new EmailGoods();
+            ed.setGid(trans.getGoodsId());
+            ed.setNum(trans.getNum());
+            goods.add(ed);
+
+            // 邮件发送通知
+            emailService.sendEmail(receiver, goods, EmailType.FACE_TRANS);
+            sendCommonMsg(channel, ContentType.FACE_TRANS_SUCCESS);
         }else {
             sendFailedMsg(channel, ContentType.FACE_TRANS_NO_ENOUGH_GOLD_PAY);
         }
     }
 
+
+    /**
+     * 移除缓存中的交易订单
+     *
+     * @param promoter      交易人
+     * @param receiver      接收人
+     */
+    private void removeCurrentTrans(Long promoter, Long receiver) {
+        FaceTransCache.getUnConfirmTransMap().remove(promoter);
+        FaceTransCache.getUnConfirmTransMap().remove(receiver);
+    }
+
+
+
+    /**
+     * 拒绝交易
+     *
+     * @param req           请求
+     * @param channel       channel
+     */
+    public void refuseTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
+        // 状态判断
+        message = faceCommonInterceptor(req);
+        if (message != null){
+            channel.writeAndFlush(message);
+            return;
+        }
+        // 获取基本信息
+        Role receiver = LocalUserMap.getUserRoleMap().get(req.getUserId());
+        Transaction trans = FaceTransCache.getUnConfirmTransMap().get(receiver.getRoleId());
+        Role promoter = LocalUserMap.getIdRoleMap().get(trans.getPromoter());
+
+        // 移除交易订单信息
+        removeCurrentTrans(trans.getPromoter(), trans.getReceiver());
+
+        // 消息通知双方
+        sendCommonMsg(channel, ContentType.FACE_TRANS_RECEIVER_REFUSE_SUCCESS);
+        Channel proCh = ChannelCache.getUserIdChannelMap().get(promoter.getUserId());
+        sendCommonMsg(proCh, ContentType.FACE_TRANS_PROMOTER_REFUSE_SUCCESS);
+    }
+
+
+    /**
+     * 离开交易状态
+     *
+     * @param req       请求
+     * @param channel   channel
+     */
+    public void leaveTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
+        userResp = userService.userStateInterceptor(req.getUserId());
+        if (userResp != null){
+            channel.writeAndFlush(userResp);
+            return;
+        }
+        // 获取用户信息
+        Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
+
+        // 将交易状态去除
+        FaceTransApply apply = FaceTransCache.getRoleFaceTransMap().get(role.getRoleId());
+        if (apply != null){
+            long otherId = apply.getReceiver().longValue() != role.getRoleId() ? apply.getReceiver() : apply.getPromoter();
+
+            // 移除 trans, apply
+            FaceTransCache.getUnConfirmTransMap().remove(role.getRoleId());
+            FaceTransCache.getUnConfirmTransMap().remove(otherId);
+
+            FaceTransCache.getRoleFaceTransMap().remove(role.getRoleId());
+            FaceTransCache.getRoleFaceTransMap().remove(otherId);
+            FaceTransCache.getApplyFaceTransCache().invalidate(apply.getId());
+
+            // 消息通知双方
+            Channel otherCh = ChannelCache.getUserIdChannelMap().get(LocalUserMap.getIdRoleMap().get(otherId).getUserId());
+            sendCommonMsg(otherCh, ContentType.FACE_TRANS_OTHERS_LEAVE_STATE);
+            sendCommonMsg(channel, ContentType.FACE_TRANS_LEAVE_STATE_SUCCESS);
+        }
+    }
 
 
     /**
@@ -364,6 +469,8 @@ public class FaceTransService {
         return null;
     }
 
+
+
     /**
      * 记录下未确认的交易记录
      *
@@ -396,6 +503,7 @@ public class FaceTransService {
     }
 
 
+
     /**
      * 发送公共消息
      *
@@ -412,6 +520,7 @@ public class FaceTransService {
     }
 
 
+
     /**
      * 发送失败消息
      *
@@ -423,7 +532,7 @@ public class FaceTransService {
                 .setResult(ResultCode.FAILED)
                 .setContent(msg)
                 .build();
-        ch.writeAndFlush(msg);
+        ch.writeAndFlush(faceResp);
     }
 
 
@@ -431,7 +540,7 @@ public class FaceTransService {
      * 构造失败消息
      *
      * @param msg   消息
-     * @return
+     * @return      协议返回
      */
     private MsgFaceTransProto.ResponseFaceTrans combineFailedMsg(String msg){
         faceResp = MsgFaceTransProto.ResponseFaceTrans.newBuilder()
@@ -479,10 +588,9 @@ public class FaceTransService {
      * 公共拦截器
      *
      * @param req       请求
-     * @param channel   channel
      * @return          返回
      */
-    private Message faceCommonInterceptor(MsgFaceTransProto.RequestFaceTrans req, Channel channel){
+    private Message faceCommonInterceptor(MsgFaceTransProto.RequestFaceTrans req){
         userResp = userService.userStateInterceptor(req.getUserId());
         if (userResp != null){
             return userResp;
@@ -511,12 +619,5 @@ public class FaceTransService {
                 .setTrans(protoService.transToTransaction(transaction))
                 .build();
         reCh.writeAndFlush(faceResp);
-    }
-
-
-    public void refuseTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
-    }
-
-    public void leaveTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
     }
 }

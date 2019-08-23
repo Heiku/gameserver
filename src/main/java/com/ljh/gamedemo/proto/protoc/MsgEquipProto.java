@@ -140,9 +140,9 @@ public final class MsgEquipProto {
     long getUserId();
 
     /**
-     * <code>int64 equipId = 2;</code>
+     * <code>int64 id = 2;</code>
      */
-    long getEquipId();
+    long getId();
 
     /**
      * <code>.RequestType type = 3;</code>
@@ -206,7 +206,7 @@ public final class MsgEquipProto {
             }
             case 16: {
 
-              equipId_ = input.readInt64();
+              id_ = input.readInt64();
               break;
             }
             case 24: {
@@ -256,13 +256,13 @@ public final class MsgEquipProto {
       return userId_;
     }
 
-    public static final int EQUIPID_FIELD_NUMBER = 2;
-    private long equipId_;
+    public static final int ID_FIELD_NUMBER = 2;
+    private long id_;
     /**
-     * <code>int64 equipId = 2;</code>
+     * <code>int64 id = 2;</code>
      */
-    public long getEquipId() {
-      return equipId_;
+    public long getId() {
+      return id_;
     }
 
     public static final int TYPE_FIELD_NUMBER = 3;
@@ -299,8 +299,8 @@ public final class MsgEquipProto {
       if (userId_ != 0L) {
         output.writeInt64(1, userId_);
       }
-      if (equipId_ != 0L) {
-        output.writeInt64(2, equipId_);
+      if (id_ != 0L) {
+        output.writeInt64(2, id_);
       }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgEquipProto.RequestType.EQUIP.getNumber()) {
         output.writeEnum(3, type_);
@@ -318,9 +318,9 @@ public final class MsgEquipProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, userId_);
       }
-      if (equipId_ != 0L) {
+      if (id_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, equipId_);
+          .computeInt64Size(2, id_);
       }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgEquipProto.RequestType.EQUIP.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
@@ -343,8 +343,8 @@ public final class MsgEquipProto {
 
       if (getUserId()
           != other.getUserId()) return false;
-      if (getEquipId()
-          != other.getEquipId()) return false;
+      if (getId()
+          != other.getId()) return false;
       if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -360,9 +360,9 @@ public final class MsgEquipProto {
       hash = (37 * hash) + USERID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getUserId());
-      hash = (37 * hash) + EQUIPID_FIELD_NUMBER;
+      hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getEquipId());
+          getId());
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -500,7 +500,7 @@ public final class MsgEquipProto {
         super.clear();
         userId_ = 0L;
 
-        equipId_ = 0L;
+        id_ = 0L;
 
         type_ = 0;
 
@@ -531,7 +531,7 @@ public final class MsgEquipProto {
       public com.ljh.gamedemo.proto.protoc.MsgEquipProto.RequestEquip buildPartial() {
         com.ljh.gamedemo.proto.protoc.MsgEquipProto.RequestEquip result = new com.ljh.gamedemo.proto.protoc.MsgEquipProto.RequestEquip(this);
         result.userId_ = userId_;
-        result.equipId_ = equipId_;
+        result.id_ = id_;
         result.type_ = type_;
         onBuilt();
         return result;
@@ -584,8 +584,8 @@ public final class MsgEquipProto {
         if (other.getUserId() != 0L) {
           setUserId(other.getUserId());
         }
-        if (other.getEquipId() != 0L) {
-          setEquipId(other.getEquipId());
+        if (other.getId() != 0L) {
+          setId(other.getId());
         }
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
@@ -645,28 +645,28 @@ public final class MsgEquipProto {
         return this;
       }
 
-      private long equipId_ ;
+      private long id_ ;
       /**
-       * <code>int64 equipId = 2;</code>
+       * <code>int64 id = 2;</code>
        */
-      public long getEquipId() {
-        return equipId_;
+      public long getId() {
+        return id_;
       }
       /**
-       * <code>int64 equipId = 2;</code>
+       * <code>int64 id = 2;</code>
        */
-      public Builder setEquipId(long value) {
+      public Builder setId(long value) {
         
-        equipId_ = value;
+        id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 equipId = 2;</code>
+       * <code>int64 id = 2;</code>
        */
-      public Builder clearEquipId() {
+      public Builder clearId() {
         
-        equipId_ = 0L;
+        id_ = 0L;
         onChanged();
         return this;
       }
@@ -2430,15 +2430,15 @@ public final class MsgEquipProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\016MsgEquip.proto\032\013Equip.proto\032\nRole.prot" +
-      "o\"K\n\014RequestEquip\022\016\n\006userId\030\001 \001(\003\022\017\n\007equ" +
-      "ipId\030\002 \001(\003\022\032\n\004type\030\003 \001(\0162\014.RequestType\"\215" +
-      "\001\n\rResponseEquip\022\016\n\006result\030\001 \001(\005\022\017\n\007cont" +
-      "ent\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\023\n" +
-      "\004role\030\004 \001(\0132\005.Role\022\023\n\003own\030\005 \003(\0132\006.Equip\022" +
-      "\025\n\005equip\030\006 \003(\0132\006.Equip*7\n\013RequestType\022\t\n" +
-      "\005EQUIP\020\000\022\007\n\003PUT\020\001\022\013\n\007TAKEOFF\020\002\022\007\n\003FIX\020\003B" +
-      ".\n\035com.ljh.gamedemo.proto.protocB\rMsgEqu" +
-      "ipProtob\006proto3"
+      "o\"F\n\014RequestEquip\022\016\n\006userId\030\001 \001(\003\022\n\n\002id\030" +
+      "\002 \001(\003\022\032\n\004type\030\003 \001(\0162\014.RequestType\"\215\001\n\rRe" +
+      "sponseEquip\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030\002" +
+      " \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\023\n\004role" +
+      "\030\004 \001(\0132\005.Role\022\023\n\003own\030\005 \003(\0132\006.Equip\022\025\n\005eq" +
+      "uip\030\006 \003(\0132\006.Equip*7\n\013RequestType\022\t\n\005EQUI" +
+      "P\020\000\022\007\n\003PUT\020\001\022\013\n\007TAKEOFF\020\002\022\007\n\003FIX\020\003B.\n\035co" +
+      "m.ljh.gamedemo.proto.protocB\rMsgEquipPro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2451,7 +2451,7 @@ public final class MsgEquipProto {
     internal_static_RequestEquip_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RequestEquip_descriptor,
-        new java.lang.String[] { "UserId", "EquipId", "Type", });
+        new java.lang.String[] { "UserId", "Id", "Type", });
     internal_static_ResponseEquip_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ResponseEquip_fieldAccessorTable = new
