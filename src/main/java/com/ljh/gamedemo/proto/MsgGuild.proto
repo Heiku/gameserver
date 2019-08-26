@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgGuild.proto
+
+import "Guild.proto";
+import "GuildApply.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgGuildProto";
+
+enum RequestType{
+    GUILD = 0;
+    GUILD_ALL = 1;
+    ESTABLISH = 2;
+    APPLY_GUILD = 3;
+    APPLY_ALL = 4;
+    APPROVAL = 5;
+    MODIFY_ANN = 6;
+    GIVE = 7;
+    DONATE = 8;
+    KICK_OUT = 9;
+    EXIT_GUILD = 10;
+
+    COMMON_GUILD = 12;
+}
+
+message RequestGuild {
+    int64 userId = 1;
+    int64 roleId = 2; // 目标玩家id
+    int64 guildId = 3; // 公会id
+    int64 goodsId = 4; // 捐献的物品id
+    int32 position = 5; // 赋予的权限
+    string guildName = 6; // 公会名
+    string bulletin = 7; // 公会公告
+    int32 approval = 8;     // 审批结果
+    int32 num = 9;          // 捐赠数量
+    RequestType type = 10; // 请求类型
+}
+
+message ResponseGuild{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    repeated Guild guild = 4;
+    repeated GuildApply apply = 5;
+}

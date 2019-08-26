@@ -70,7 +70,11 @@ public enum MessageType {
 
     // face_transaction
     REQUEST_FACE_TRANS(0x20, MsgFaceTransProto.RequestFaceTrans.class),
-    RESPONSE_FACE_TRANS(0x21, MsgFaceTransProto.ResponseFaceTrans.class)
+    RESPONSE_FACE_TRANS(0x21, MsgFaceTransProto.ResponseFaceTrans.class),
+
+    // guild
+    REQUEST_GUILD(0x22,MsgGuildProto.RequestGuild.class),
+    RESPONSE_GUILD(0x23, MsgGuildProto.ResponseGuild.class)
     ;
 
 

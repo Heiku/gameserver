@@ -36,7 +36,9 @@ import java.util.Optional;
 @Service
 public class EquipService {
 
-    // 装备修理的最低值
+    /**
+     * 装备修理的最低值
+     */
     public static final int MIN_FIX_DUR = 10;
 
     /**

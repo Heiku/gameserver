@@ -300,6 +300,16 @@ public class ContentType {
 
     public static final String FACE_TRANS_LEAVE_STATE_SUCCESS = "成功离开交易状态，交易取消！\n";
 
+
+    // Guild
+    public static final String GUILD_NOT_IN = "当前尚未加入任何公会！\n";
+
+    public static final String GUILD_ESTABLISH_HAS_IN = "建立公会失败,玩家已经在公会中，需要先退出公会！\n";
+
+    public static final String GUILD_ESTABLISH_HONOR_NOT_ENOUGH = "建立公会失败,玩家的荣誉值低于 %d ！\n";
+
+
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 

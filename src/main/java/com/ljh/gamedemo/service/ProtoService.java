@@ -7,6 +7,7 @@ import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,12 @@ import java.util.Map;
 
 @Service
 public class ProtoService {
+
+    /**
+     * 公会服务
+     */
+    @Autowired
+    private GuildService guildService;
 
     private static ProtoService protoService;
 
@@ -392,4 +399,38 @@ public class ProtoService {
                 .build();
     }
 
+    public List<GuildProto.Guild> transToGuildList(List<Guild> guildList) {
+        List<GuildProto.Guild> guilds = new ArrayList<>();
+        if (guildList == null || guildList.isEmpty()){
+            return guilds;
+        }
+        guildList.forEach(e -> {
+            List<GuildMemberProto.GuildMember> members = new ArrayList<>();
+            e.getMembers().forEach(m -> members.add(transToMember(m)));
+
+            GuildProto.Guild g = GuildProto.Guild.newBuilder()
+                    .setGuildId(e.getId())
+                    .setName(e.getName())
+                    .setBulletin(e.getBulletin())
+                    .setLevel(e.getLevel())
+                    .setNum(e.getNum())
+                    .setMaxNum(e.getMaxNum())
+                    .setPresident(transToRole(LocalUserMap.getIdRoleMap().get(e.getPresident())))
+                    .addAllMember(members)
+                    .build();
+
+            guilds.add(g);
+        });
+        return guilds;
+    }
+
+    private GuildMemberProto.GuildMember transToMember(Member m) {
+        GuildMemberProto.GuildMember member = GuildMemberProto.GuildMember.newBuilder()
+                .setRole(transToRole(LocalUserMap.getIdRoleMap().get(m.getRoleId())))
+                .setPosition(m.getPosition())
+                .setToday(m.getToday())
+                .setAll(m.getAll())
+                .build();
+        return member;
+    }
 }

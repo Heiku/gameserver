@@ -14,14 +14,26 @@ import java.util.Map;
  */
 public class ChannelCache {
 
-    // 所有的玩家channel
+    /**
+     * 所有的玩家channel
+     */
     private static ChannelGroup allRoleGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    // 玩家对应的channel <userId, Channel>
+    /**
+     * 玩家对应的channel <userId, Channel>
+     */
     private static final Map<Long, Channel> userIdChannelMap = Maps.newConcurrentMap();
 
-    // 保存队伍内的channel信息
+    /**
+     * 保存队伍内的channel信息
+     */
     private static Map<Long, ChannelGroup> groupChannelMap = Maps.newConcurrentMap();
+
+    /**
+     * 保存公会内的channel信息
+     */
+    private static Map<Long, ChannelGroup> guildChannelMap = Maps.newConcurrentMap();
+
 
     public static Map<Long, Channel> getUserIdChannelMap() {
         return userIdChannelMap;
@@ -33,5 +45,9 @@ public class ChannelCache {
 
     public static Map<Long, ChannelGroup> getGroupChannelMap() {
         return groupChannelMap;
+    }
+
+    public static Map<Long, ChannelGroup> getGuildChannelMap() {
+        return guildChannelMap;
     }
 }
