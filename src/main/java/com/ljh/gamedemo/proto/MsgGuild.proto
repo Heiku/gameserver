@@ -18,8 +18,9 @@ enum RequestType{
     MODIFY_ANN = 6;
     GIVE = 7;
     DONATE = 8;
-    KICK_OUT = 9;
-    EXIT_GUILD = 10;
+    TAKE_OUT = 9;
+    KICK_OUT = 10;
+    EXIT_GUILD = 11;
 
     COMMON_GUILD = 12;
 }
@@ -34,7 +35,8 @@ message RequestGuild {
     string bulletin = 7; // 公会公告
     int32 approval = 8;     // 审批结果
     int32 num = 9;          // 捐赠数量
-    RequestType type = 10; // 请求类型
+    int64 applyId = 10;     // 申请id
+    RequestType type = 11; // 请求类型
 }
 
 message ResponseGuild{

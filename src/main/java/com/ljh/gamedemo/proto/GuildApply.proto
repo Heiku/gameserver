@@ -8,7 +8,8 @@ option java_package = "com.ljh.gamedemo.proto.protoc";
 option java_outer_classname = "GuildApplyProto";
 
 message GuildApply{
-     Role applicant = 1;     // 申请人
-     string applyTime = 2;      // 申请时间
+     int64 id = 1;            // 申请号
+     Role applicant = 2;     // 申请人
+     string applyTime = 3;      // 申请时间
 }
 

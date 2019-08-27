@@ -16,6 +16,10 @@ import java.util.List;
 @Mapper
 public interface GuildDao {
 
+    /**
+     * 公会信息
+     *
+     */
     @Select("select * from guild")
     List<Guild> queryGuildList();
 
@@ -32,6 +36,12 @@ public interface GuildDao {
     int updateGuild(Guild guild);
 
 
+    /**
+     * 公会成员信息
+     *
+     * @param member
+     * @return
+     */
 
     @Insert("insert into role_guild(role_id, gid, position, today, all) values (#{roleId. #{gid}, #{position}, #{today}. #{all})")
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
@@ -44,7 +54,7 @@ public interface GuildDao {
     Member queryMemberByRoleId(long roleId);
 
     @Update("update role_guild set position = #{position}, today = #{today}, all = #{all} where role_id = #{roleId}}")
-    int updateMemberByRoleId(long roleId);
+    int updateMemberByRoleId(Member member);
 
     @Delete("delete from role_guild where role_id = #{roleId}")
     int deleteMemberInfo(long roleId);

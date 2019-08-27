@@ -20,10 +20,19 @@ public final class GuildApplyProto {
 
     /**
      * <pre>
+     * 申请号
+     * </pre>
+     *
+     * <code>int64 id = 1;</code>
+     */
+    long getId();
+
+    /**
+     * <pre>
      * 申请人
      * </pre>
      *
-     * <code>.Role applicant = 1;</code>
+     * <code>.Role applicant = 2;</code>
      */
     boolean hasApplicant();
     /**
@@ -31,7 +40,7 @@ public final class GuildApplyProto {
      * 申请人
      * </pre>
      *
-     * <code>.Role applicant = 1;</code>
+     * <code>.Role applicant = 2;</code>
      */
     com.ljh.gamedemo.proto.protoc.RoleProto.Role getApplicant();
     /**
@@ -39,7 +48,7 @@ public final class GuildApplyProto {
      * 申请人
      * </pre>
      *
-     * <code>.Role applicant = 1;</code>
+     * <code>.Role applicant = 2;</code>
      */
     com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getApplicantOrBuilder();
 
@@ -48,7 +57,7 @@ public final class GuildApplyProto {
      * 申请时间
      * </pre>
      *
-     * <code>string applyTime = 2;</code>
+     * <code>string applyTime = 3;</code>
      */
     java.lang.String getApplyTime();
     /**
@@ -56,7 +65,7 @@ public final class GuildApplyProto {
      * 申请时间
      * </pre>
      *
-     * <code>string applyTime = 2;</code>
+     * <code>string applyTime = 3;</code>
      */
     com.google.protobuf.ByteString
         getApplyTimeBytes();
@@ -107,7 +116,12 @@ public final class GuildApplyProto {
             case 0:
               done = true;
               break;
-            case 10: {
+            case 8: {
+
+              id_ = input.readInt64();
+              break;
+            }
+            case 18: {
               com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder subBuilder = null;
               if (applicant_ != null) {
                 subBuilder = applicant_.toBuilder();
@@ -120,7 +134,7 @@ public final class GuildApplyProto {
 
               break;
             }
-            case 18: {
+            case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
               applyTime_ = s;
@@ -158,14 +172,27 @@ public final class GuildApplyProto {
               com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply.class, com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply.Builder.class);
     }
 
-    public static final int APPLICANT_FIELD_NUMBER = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private long id_;
+    /**
+     * <pre>
+     * 申请号
+     * </pre>
+     *
+     * <code>int64 id = 1;</code>
+     */
+    public long getId() {
+      return id_;
+    }
+
+    public static final int APPLICANT_FIELD_NUMBER = 2;
     private com.ljh.gamedemo.proto.protoc.RoleProto.Role applicant_;
     /**
      * <pre>
      * 申请人
      * </pre>
      *
-     * <code>.Role applicant = 1;</code>
+     * <code>.Role applicant = 2;</code>
      */
     public boolean hasApplicant() {
       return applicant_ != null;
@@ -175,7 +202,7 @@ public final class GuildApplyProto {
      * 申请人
      * </pre>
      *
-     * <code>.Role applicant = 1;</code>
+     * <code>.Role applicant = 2;</code>
      */
     public com.ljh.gamedemo.proto.protoc.RoleProto.Role getApplicant() {
       return applicant_ == null ? com.ljh.gamedemo.proto.protoc.RoleProto.Role.getDefaultInstance() : applicant_;
@@ -185,20 +212,20 @@ public final class GuildApplyProto {
      * 申请人
      * </pre>
      *
-     * <code>.Role applicant = 1;</code>
+     * <code>.Role applicant = 2;</code>
      */
     public com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getApplicantOrBuilder() {
       return getApplicant();
     }
 
-    public static final int APPLYTIME_FIELD_NUMBER = 2;
+    public static final int APPLYTIME_FIELD_NUMBER = 3;
     private volatile java.lang.Object applyTime_;
     /**
      * <pre>
      * 申请时间
      * </pre>
      *
-     * <code>string applyTime = 2;</code>
+     * <code>string applyTime = 3;</code>
      */
     public java.lang.String getApplyTime() {
       java.lang.Object ref = applyTime_;
@@ -217,7 +244,7 @@ public final class GuildApplyProto {
      * 申请时间
      * </pre>
      *
-     * <code>string applyTime = 2;</code>
+     * <code>string applyTime = 3;</code>
      */
     public com.google.protobuf.ByteString
         getApplyTimeBytes() {
@@ -247,11 +274,14 @@ public final class GuildApplyProto {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0L) {
+        output.writeInt64(1, id_);
+      }
       if (applicant_ != null) {
-        output.writeMessage(1, getApplicant());
+        output.writeMessage(2, getApplicant());
       }
       if (!getApplyTimeBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, applyTime_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, applyTime_);
       }
       unknownFields.writeTo(output);
     }
@@ -262,12 +292,16 @@ public final class GuildApplyProto {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, id_);
+      }
       if (applicant_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getApplicant());
+          .computeMessageSize(2, getApplicant());
       }
       if (!getApplyTimeBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, applyTime_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, applyTime_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -284,6 +318,8 @@ public final class GuildApplyProto {
       }
       com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply other = (com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (hasApplicant() != other.hasApplicant()) return false;
       if (hasApplicant()) {
         if (!getApplicant()
@@ -302,6 +338,9 @@ public final class GuildApplyProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
       if (hasApplicant()) {
         hash = (37 * hash) + APPLICANT_FIELD_NUMBER;
         hash = (53 * hash) + getApplicant().hashCode();
@@ -441,6 +480,8 @@ public final class GuildApplyProto {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0L;
+
         if (applicantBuilder_ == null) {
           applicant_ = null;
         } else {
@@ -475,6 +516,7 @@ public final class GuildApplyProto {
       @java.lang.Override
       public com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply buildPartial() {
         com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply result = new com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply(this);
+        result.id_ = id_;
         if (applicantBuilder_ == null) {
           result.applicant_ = applicant_;
         } else {
@@ -529,6 +571,9 @@ public final class GuildApplyProto {
 
       public Builder mergeFrom(com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply other) {
         if (other == com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply.getDefaultInstance()) return this;
+        if (other.getId() != 0L) {
+          setId(other.getId());
+        }
         if (other.hasApplicant()) {
           mergeApplicant(other.getApplicant());
         }
@@ -565,6 +610,44 @@ public final class GuildApplyProto {
         return this;
       }
 
+      private long id_ ;
+      /**
+       * <pre>
+       * 申请号
+       * </pre>
+       *
+       * <code>int64 id = 1;</code>
+       */
+      public long getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * 申请号
+       * </pre>
+       *
+       * <code>int64 id = 1;</code>
+       */
+      public Builder setId(long value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 申请号
+       * </pre>
+       *
+       * <code>int64 id = 1;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private com.ljh.gamedemo.proto.protoc.RoleProto.Role applicant_;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.ljh.gamedemo.proto.protoc.RoleProto.Role, com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder, com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder> applicantBuilder_;
@@ -573,7 +656,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public boolean hasApplicant() {
         return applicantBuilder_ != null || applicant_ != null;
@@ -583,7 +666,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public com.ljh.gamedemo.proto.protoc.RoleProto.Role getApplicant() {
         if (applicantBuilder_ == null) {
@@ -597,7 +680,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public Builder setApplicant(com.ljh.gamedemo.proto.protoc.RoleProto.Role value) {
         if (applicantBuilder_ == null) {
@@ -617,7 +700,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public Builder setApplicant(
           com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder builderForValue) {
@@ -635,7 +718,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public Builder mergeApplicant(com.ljh.gamedemo.proto.protoc.RoleProto.Role value) {
         if (applicantBuilder_ == null) {
@@ -657,7 +740,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public Builder clearApplicant() {
         if (applicantBuilder_ == null) {
@@ -675,7 +758,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder getApplicantBuilder() {
         
@@ -687,7 +770,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       public com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder getApplicantOrBuilder() {
         if (applicantBuilder_ != null) {
@@ -702,7 +785,7 @@ public final class GuildApplyProto {
        * 申请人
        * </pre>
        *
-       * <code>.Role applicant = 1;</code>
+       * <code>.Role applicant = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.ljh.gamedemo.proto.protoc.RoleProto.Role, com.ljh.gamedemo.proto.protoc.RoleProto.Role.Builder, com.ljh.gamedemo.proto.protoc.RoleProto.RoleOrBuilder> 
@@ -724,7 +807,7 @@ public final class GuildApplyProto {
        * 申请时间
        * </pre>
        *
-       * <code>string applyTime = 2;</code>
+       * <code>string applyTime = 3;</code>
        */
       public java.lang.String getApplyTime() {
         java.lang.Object ref = applyTime_;
@@ -743,7 +826,7 @@ public final class GuildApplyProto {
        * 申请时间
        * </pre>
        *
-       * <code>string applyTime = 2;</code>
+       * <code>string applyTime = 3;</code>
        */
       public com.google.protobuf.ByteString
           getApplyTimeBytes() {
@@ -763,7 +846,7 @@ public final class GuildApplyProto {
        * 申请时间
        * </pre>
        *
-       * <code>string applyTime = 2;</code>
+       * <code>string applyTime = 3;</code>
        */
       public Builder setApplyTime(
           java.lang.String value) {
@@ -780,7 +863,7 @@ public final class GuildApplyProto {
        * 申请时间
        * </pre>
        *
-       * <code>string applyTime = 2;</code>
+       * <code>string applyTime = 3;</code>
        */
       public Builder clearApplyTime() {
         
@@ -793,7 +876,7 @@ public final class GuildApplyProto {
        * 申请时间
        * </pre>
        *
-       * <code>string applyTime = 2;</code>
+       * <code>string applyTime = 3;</code>
        */
       public Builder setApplyTimeBytes(
           com.google.protobuf.ByteString value) {
@@ -873,10 +956,10 @@ public final class GuildApplyProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020GuildApply.proto\032\nRole.proto\"9\n\nGuildA" +
-      "pply\022\030\n\tapplicant\030\001 \001(\0132\005.Role\022\021\n\tapplyT" +
-      "ime\030\002 \001(\tB0\n\035com.ljh.gamedemo.proto.prot" +
-      "ocB\017GuildApplyProtob\006proto3"
+      "\n\020GuildApply.proto\032\nRole.proto\"E\n\nGuildA" +
+      "pply\022\n\n\002id\030\001 \001(\003\022\030\n\tapplicant\030\002 \001(\0132\005.Ro" +
+      "le\022\021\n\tapplyTime\030\003 \001(\tB0\n\035com.ljh.gamedem" +
+      "o.proto.protocB\017GuildApplyProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -888,7 +971,7 @@ public final class GuildApplyProto {
     internal_static_GuildApply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_GuildApply_descriptor,
-        new java.lang.String[] { "Applicant", "ApplyTime", });
+        new java.lang.String[] { "Id", "Applicant", "ApplyTime", });
     com.ljh.gamedemo.proto.protoc.RoleProto.getDescriptor();
   }
 

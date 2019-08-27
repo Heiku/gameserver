@@ -26,7 +26,9 @@ public class RequestGuildType {
 
     public static final int DONATE = 8;
 
-    public static final int KICK_OUT = 9;
+    public static final int TAKE_OUT = 9;
 
-    public static final int EXIT_GUILD = 10;
+    public static final int KICK_OUT = 10;
+
+    public static final int EXIT_GUILD = 11;
 }

@@ -56,13 +56,17 @@ public final class MsgGuildProto {
      */
     DONATE(8),
     /**
-     * <code>KICK_OUT = 9;</code>
+     * <code>TAKE_OUT = 9;</code>
      */
-    KICK_OUT(9),
+    TAKE_OUT(9),
     /**
-     * <code>EXIT_GUILD = 10;</code>
+     * <code>KICK_OUT = 10;</code>
      */
-    EXIT_GUILD(10),
+    KICK_OUT(10),
+    /**
+     * <code>EXIT_GUILD = 11;</code>
+     */
+    EXIT_GUILD(11),
     /**
      * <code>COMMON_GUILD = 12;</code>
      */
@@ -107,13 +111,17 @@ public final class MsgGuildProto {
      */
     public static final int DONATE_VALUE = 8;
     /**
-     * <code>KICK_OUT = 9;</code>
+     * <code>TAKE_OUT = 9;</code>
      */
-    public static final int KICK_OUT_VALUE = 9;
+    public static final int TAKE_OUT_VALUE = 9;
     /**
-     * <code>EXIT_GUILD = 10;</code>
+     * <code>KICK_OUT = 10;</code>
      */
-    public static final int EXIT_GUILD_VALUE = 10;
+    public static final int KICK_OUT_VALUE = 10;
+    /**
+     * <code>EXIT_GUILD = 11;</code>
+     */
+    public static final int EXIT_GUILD_VALUE = 11;
     /**
      * <code>COMMON_GUILD = 12;</code>
      */
@@ -147,8 +155,9 @@ public final class MsgGuildProto {
         case 6: return MODIFY_ANN;
         case 7: return GIVE;
         case 8: return DONATE;
-        case 9: return KICK_OUT;
-        case 10: return EXIT_GUILD;
+        case 9: return TAKE_OUT;
+        case 10: return KICK_OUT;
+        case 11: return EXIT_GUILD;
         case 12: return COMMON_GUILD;
         default: return null;
       }
@@ -303,10 +312,19 @@ public final class MsgGuildProto {
 
     /**
      * <pre>
+     * 申请id
+     * </pre>
+     *
+     * <code>int64 applyId = 10;</code>
+     */
+    long getApplyId();
+
+    /**
+     * <pre>
      * 请求类型
      * </pre>
      *
-     * <code>.RequestType type = 10;</code>
+     * <code>.RequestType type = 11;</code>
      */
     int getTypeValue();
     /**
@@ -314,7 +332,7 @@ public final class MsgGuildProto {
      * 请求类型
      * </pre>
      *
-     * <code>.RequestType type = 10;</code>
+     * <code>.RequestType type = 11;</code>
      */
     com.ljh.gamedemo.proto.protoc.MsgGuildProto.RequestType getType();
   }
@@ -414,6 +432,11 @@ public final class MsgGuildProto {
               break;
             }
             case 80: {
+
+              applyId_ = input.readInt64();
+              break;
+            }
+            case 88: {
               int rawValue = input.readEnum();
 
               type_ = rawValue;
@@ -622,14 +645,27 @@ public final class MsgGuildProto {
       return num_;
     }
 
-    public static final int TYPE_FIELD_NUMBER = 10;
+    public static final int APPLYID_FIELD_NUMBER = 10;
+    private long applyId_;
+    /**
+     * <pre>
+     * 申请id
+     * </pre>
+     *
+     * <code>int64 applyId = 10;</code>
+     */
+    public long getApplyId() {
+      return applyId_;
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 11;
     private int type_;
     /**
      * <pre>
      * 请求类型
      * </pre>
      *
-     * <code>.RequestType type = 10;</code>
+     * <code>.RequestType type = 11;</code>
      */
     public int getTypeValue() {
       return type_;
@@ -639,7 +675,7 @@ public final class MsgGuildProto {
      * 请求类型
      * </pre>
      *
-     * <code>.RequestType type = 10;</code>
+     * <code>.RequestType type = 11;</code>
      */
     public com.ljh.gamedemo.proto.protoc.MsgGuildProto.RequestType getType() {
       @SuppressWarnings("deprecation")
@@ -688,8 +724,11 @@ public final class MsgGuildProto {
       if (num_ != 0) {
         output.writeInt32(9, num_);
       }
+      if (applyId_ != 0L) {
+        output.writeInt64(10, applyId_);
+      }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgGuildProto.RequestType.GUILD.getNumber()) {
-        output.writeEnum(10, type_);
+        output.writeEnum(11, type_);
       }
       unknownFields.writeTo(output);
     }
@@ -734,9 +773,13 @@ public final class MsgGuildProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(9, num_);
       }
+      if (applyId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(10, applyId_);
+      }
       if (type_ != com.ljh.gamedemo.proto.protoc.MsgGuildProto.RequestType.GUILD.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(10, type_);
+          .computeEnumSize(11, type_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -771,6 +814,8 @@ public final class MsgGuildProto {
           != other.getApproval()) return false;
       if (getNum()
           != other.getNum()) return false;
+      if (getApplyId()
+          != other.getApplyId()) return false;
       if (type_ != other.type_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -805,6 +850,9 @@ public final class MsgGuildProto {
       hash = (53 * hash) + getApproval();
       hash = (37 * hash) + NUM_FIELD_NUMBER;
       hash = (53 * hash) + getNum();
+      hash = (37 * hash) + APPLYID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getApplyId());
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -958,6 +1006,8 @@ public final class MsgGuildProto {
 
         num_ = 0;
 
+        applyId_ = 0L;
+
         type_ = 0;
 
         return this;
@@ -995,6 +1045,7 @@ public final class MsgGuildProto {
         result.bulletin_ = bulletin_;
         result.approval_ = approval_;
         result.num_ = num_;
+        result.applyId_ = applyId_;
         result.type_ = type_;
         onBuilt();
         return result;
@@ -1072,6 +1123,9 @@ public final class MsgGuildProto {
         }
         if (other.getNum() != 0) {
           setNum(other.getNum());
+        }
+        if (other.getApplyId() != 0L) {
+          setApplyId(other.getApplyId());
         }
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
@@ -1537,13 +1591,51 @@ public final class MsgGuildProto {
         return this;
       }
 
+      private long applyId_ ;
+      /**
+       * <pre>
+       * 申请id
+       * </pre>
+       *
+       * <code>int64 applyId = 10;</code>
+       */
+      public long getApplyId() {
+        return applyId_;
+      }
+      /**
+       * <pre>
+       * 申请id
+       * </pre>
+       *
+       * <code>int64 applyId = 10;</code>
+       */
+      public Builder setApplyId(long value) {
+        
+        applyId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 申请id
+       * </pre>
+       *
+       * <code>int64 applyId = 10;</code>
+       */
+      public Builder clearApplyId() {
+        
+        applyId_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private int type_ = 0;
       /**
        * <pre>
        * 请求类型
        * </pre>
        *
-       * <code>.RequestType type = 10;</code>
+       * <code>.RequestType type = 11;</code>
        */
       public int getTypeValue() {
         return type_;
@@ -1553,7 +1645,7 @@ public final class MsgGuildProto {
        * 请求类型
        * </pre>
        *
-       * <code>.RequestType type = 10;</code>
+       * <code>.RequestType type = 11;</code>
        */
       public Builder setTypeValue(int value) {
         type_ = value;
@@ -1565,7 +1657,7 @@ public final class MsgGuildProto {
        * 请求类型
        * </pre>
        *
-       * <code>.RequestType type = 10;</code>
+       * <code>.RequestType type = 11;</code>
        */
       public com.ljh.gamedemo.proto.protoc.MsgGuildProto.RequestType getType() {
         @SuppressWarnings("deprecation")
@@ -1577,7 +1669,7 @@ public final class MsgGuildProto {
        * 请求类型
        * </pre>
        *
-       * <code>.RequestType type = 10;</code>
+       * <code>.RequestType type = 11;</code>
        */
       public Builder setType(com.ljh.gamedemo.proto.protoc.MsgGuildProto.RequestType value) {
         if (value == null) {
@@ -1593,7 +1685,7 @@ public final class MsgGuildProto {
        * 请求类型
        * </pre>
        *
-       * <code>.RequestType type = 10;</code>
+       * <code>.RequestType type = 11;</code>
        */
       public Builder clearType() {
         
@@ -3122,21 +3214,22 @@ public final class MsgGuildProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\016MsgGuild.proto\032\013Guild.proto\032\020GuildAppl" +
-      "y.proto\"\302\001\n\014RequestGuild\022\016\n\006userId\030\001 \001(\003" +
+      "y.proto\"\323\001\n\014RequestGuild\022\016\n\006userId\030\001 \001(\003" +
       "\022\016\n\006roleId\030\002 \001(\003\022\017\n\007guildId\030\003 \001(\003\022\017\n\007goo" +
       "dsId\030\004 \001(\003\022\020\n\010position\030\005 \001(\005\022\021\n\tguildNam" +
       "e\030\006 \001(\t\022\020\n\010bulletin\030\007 \001(\t\022\020\n\010approval\030\010 " +
-      "\001(\005\022\013\n\003num\030\t \001(\005\022\032\n\004type\030\n \001(\0162\014.Request" +
-      "Type\"\177\n\rResponseGuild\022\016\n\006result\030\001 \001(\005\022\017\n" +
-      "\007content\030\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestTy" +
-      "pe\022\025\n\005guild\030\004 \003(\0132\006.Guild\022\032\n\005apply\030\005 \003(\013" +
-      "2\013.GuildApply*\272\001\n\013RequestType\022\t\n\005GUILD\020\000" +
-      "\022\r\n\tGUILD_ALL\020\001\022\r\n\tESTABLISH\020\002\022\017\n\013APPLY_" +
-      "GUILD\020\003\022\r\n\tAPPLY_ALL\020\004\022\014\n\010APPROVAL\020\005\022\016\n\n" +
-      "MODIFY_ANN\020\006\022\010\n\004GIVE\020\007\022\n\n\006DONATE\020\010\022\014\n\010KI" +
-      "CK_OUT\020\t\022\016\n\nEXIT_GUILD\020\n\022\020\n\014COMMON_GUILD" +
-      "\020\014B.\n\035com.ljh.gamedemo.proto.protocB\rMsg" +
-      "GuildProtob\006proto3"
+      "\001(\005\022\013\n\003num\030\t \001(\005\022\017\n\007applyId\030\n \001(\003\022\032\n\004typ" +
+      "e\030\013 \001(\0162\014.RequestType\"\177\n\rResponseGuild\022\016" +
+      "\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004type\030" +
+      "\003 \001(\0162\014.RequestType\022\025\n\005guild\030\004 \003(\0132\006.Gui" +
+      "ld\022\032\n\005apply\030\005 \003(\0132\013.GuildApply*\310\001\n\013Reque" +
+      "stType\022\t\n\005GUILD\020\000\022\r\n\tGUILD_ALL\020\001\022\r\n\tESTA" +
+      "BLISH\020\002\022\017\n\013APPLY_GUILD\020\003\022\r\n\tAPPLY_ALL\020\004\022" +
+      "\014\n\010APPROVAL\020\005\022\016\n\nMODIFY_ANN\020\006\022\010\n\004GIVE\020\007\022" +
+      "\n\n\006DONATE\020\010\022\014\n\010TAKE_OUT\020\t\022\014\n\010KICK_OUT\020\n\022" +
+      "\016\n\nEXIT_GUILD\020\013\022\020\n\014COMMON_GUILD\020\014B.\n\035com" +
+      ".ljh.gamedemo.proto.protocB\rMsgGuildProt" +
+      "ob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3149,7 +3242,7 @@ public final class MsgGuildProto {
     internal_static_RequestGuild_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RequestGuild_descriptor,
-        new java.lang.String[] { "UserId", "RoleId", "GuildId", "GoodsId", "Position", "GuildName", "Bulletin", "Approval", "Num", "Type", });
+        new java.lang.String[] { "UserId", "RoleId", "GuildId", "GoodsId", "Position", "GuildName", "Bulletin", "Approval", "Num", "ApplyId", "Type", });
     internal_static_ResponseGuild_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ResponseGuild_fieldAccessorTable = new

@@ -433,4 +433,21 @@ public class ProtoService {
                 .build();
         return member;
     }
+
+    public List<GuildApplyProto.GuildApply> transToGuildApplyList(List<GuildApply> applies) {
+        List<GuildApplyProto.GuildApply> applyList = new ArrayList<>();
+        if (applies == null){
+            return applyList;
+        }
+        applies.forEach(a -> applyList.add(transToGuildApply(a)));
+        return applyList;
+    }
+
+    private GuildApplyProto.GuildApply transToGuildApply(GuildApply a) {
+        return  GuildApplyProto.GuildApply.newBuilder()
+                .setId(a.getId())
+                .setApplicant(transToRole(LocalUserMap.getIdRoleMap().get(a.getRoleId())))
+                .setApplyTime(a.getCreateTime().toString())
+                .build();
+    }
 }

@@ -308,7 +308,45 @@ public class ContentType {
 
     public static final String GUILD_ESTABLISH_HONOR_NOT_ENOUGH = "建立公会失败,玩家的荣誉值低于 %d ！\n";
 
+    public static final String GUILD_ESTABLISH_SUCCESS = "建立公会成功！\n";
 
+    public static final String GUILD_APPLY_HAS_IN = "申请加入公会失败，当前玩家已经在公会中，需要先退出公会！\n";
+
+    public static final String GUILD_APPLY_NOT_FOUND = "申请加入的公会不存在！\n";
+
+    public static final String GUILD_APPLY_SUCCESS = "申请进入成功，等待公会审批！\n";
+
+    public static final String GUILD_NOT_PERMISSION = "当前用户没有该权限！\n";
+
+    public static final String GUILD_OUT_OF_MAX_NUM = "超过公会的最大容纳量！\n";
+
+    public static final String GUILD_APPLY_AGREE = "加入公会【 %s 】 申请已经被同意！\n";
+
+    public static final String GUILD_APPLY_REFUSE = "加入公会【 %s 】的申请被拒绝！\n";
+
+    public static final String GUILD_CHANGE_INFO_SUCCESS = "修改公会信息成功！\n";
+
+    public static final String GUILD_GIVE_FAILED_WRONG_INFO = "更改权限失败，该玩家非公会成员！\n";
+
+    public static final String GUILD_GIVE_FAILED_WRONG_PERMISSION = "更改权限失败，权限不足！\n";
+
+    public static final String GUILD_GIVE_SUCCESS = "修改权限成功！\n";
+
+    public static final String GUILD_HAS_KICK_OUT = "已经被踢出公会！\n";
+
+    public static final String GUILD_KICK_OUT_SUCCECSS = "成功踢出玩家！\n";
+
+    public static final String GUILD_LEAVE_SUCCESS = "成功离开公会！\n";
+
+    public static final String GUILD_STORE_NO_ENOUGH = "公会仓库不足，无法取出物品！\n";
+
+    public static final String GUILD_DONATE_FAILED_WITHOUT_GOODS = "捐献失败，背包中物品数量不足！\n";
+
+    public static final String GUILD_DONATE_SUCCESS = "捐献成功！\n";
+
+    public static final String GUILD_TAKE_OUT_FAILED = "取出失败！\n";
+
+    public static final String GUILD_TAKE_OUT_SUCCESS = "取出成功！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

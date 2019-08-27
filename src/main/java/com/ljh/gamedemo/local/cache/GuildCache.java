@@ -2,8 +2,11 @@ package com.ljh.gamedemo.local.cache;
 
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.entity.Guild;
+import com.ljh.gamedemo.entity.GuildApply;
+import com.ljh.gamedemo.entity.GuildGoodsStore;
 import com.ljh.gamedemo.entity.Member;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +32,15 @@ public class GuildCache {
      */
     private static Map<Long, Member> roleMemberMap = Maps.newConcurrentMap();
 
+    /**
+     * 公会申请信息 (guildId, List<GuildApply>)
+     */
+    private static Map<Long, List<GuildApply>> guildApplyMap = Maps.newConcurrentMap();
+
+    /**
+     * 公会物品仓库信息 (guildId, List<GuildStoreMap>)
+     */
+    private static Map<Long, List<GuildGoodsStore>> guildStoreMap = Maps.newConcurrentMap();
 
     public static Map<Long, Guild> getIdGuildMap() {
         return idGuildMap;
@@ -40,5 +52,13 @@ public class GuildCache {
 
     public static Map<Long, Guild> getRoleIdGuildMap() {
         return roleIdGuildMap;
+    }
+
+    public static Map<Long, List<GuildApply>> getGuildApplyMap() {
+        return guildApplyMap;
+    }
+
+    public static Map<Long, List<GuildGoodsStore>> getGuildStoreMap() {
+        return guildStoreMap;
     }
 }

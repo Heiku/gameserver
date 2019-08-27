@@ -21,4 +21,12 @@ public enum MemberType {
         this.code = _code;
         this.name = _name;
     }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
