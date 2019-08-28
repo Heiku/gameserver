@@ -450,4 +450,18 @@ public class ProtoService {
                 .setApplyTime(a.getCreateTime().toString())
                 .build();
     }
+
+
+    public EntityProto.Entity transToEntity(Entity entity){
+        if (entity == null){
+            return null;
+        }
+        return EntityProto.Entity.newBuilder()
+                .setName(entity.getName())
+                .setId(entity.getId())
+                .setType(entity.getType())
+                .setAlive(entity.getAlive())
+                .setLevel(entity.getLevel())
+                .build();
+    }
 }

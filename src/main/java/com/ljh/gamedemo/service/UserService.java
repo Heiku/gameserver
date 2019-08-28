@@ -83,10 +83,9 @@ public class UserService {
     public MsgUserInfoProto.ResponseUserInfo getState(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析得到userId
         long userId = requestUserInfo.getUserId();
-        Role role = null;
 
         // 优先查找本地角色
-        role = LocalUserMap.getUserRoleMap().get(userId);
+        Role role = LocalUserMap.getUserRoleMap().get(userId);
         if (role == null){
 
             // 数据库查找
@@ -117,7 +116,6 @@ public class UserService {
                 .setUserId(userId)
                 .setContent(ContentType.ROLE_CHOOSE)
                 .setResult(ResultCode.SUCCESS)
-                // 设置role对象
                 .setRole(protoService.transToRole(role))
                 .build();
     }
@@ -125,7 +123,7 @@ public class UserService {
     /**
      * 将自动回血回蓝的任务添加到用户线程池中
      *
-     * @param role
+     * @param role  玩家信息
      */
     private void addRecoverTask(Role role) {
 
@@ -295,6 +293,7 @@ public class UserService {
         // 写入token返回
         String token = MD5Util.hashToken(userName);
         int m = userDao.insertUserToken(userId, token);
+        log.info("insert into user_token, affected rows: " + m);
 
         // 注册成功，将玩家信息写如本地缓存
         LocalUserMap.userMap.put(userId, user);
@@ -341,13 +340,6 @@ public class UserService {
         // 移除当前玩家角色的位置信息
         List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
         roleList.removeIf(r -> r.getRoleId() == roleId);
-        // Iterator解决并发修改的问题
-        Iterator<Role> iterator = roleList.iterator();
-        while (iterator.hasNext()){
-            if (iterator.next().getRoleId() == roleId){
-                iterator.remove();
-            }
-        }
 
         // 移除当前的玩家在线信息
         LocalUserMap.userMap.remove(userId);
@@ -370,11 +362,7 @@ public class UserService {
         }
 
         // 成功操作
-        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                .setType(MsgUserInfoProto.RequestType.EXIT)
-                .setResult(ResultCode.FAILED)
-                .setContent(ContentType.EXIT_SUCCESS)
-                .build();
+        return combineFailedMsg(ContentType.EXIT_SUCCESS);
     }
 
 
@@ -388,19 +376,13 @@ public class UserService {
     public MsgUserInfoProto.ResponseUserInfo userStateInterceptor(long userId){
         // 判断玩家账号
         if (userId <= 0){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_EMPTY_DATA)
-                    .build();
+            return combineFailedMsg(ContentType.USER_EMPTY_DATA);
         }
 
         // 判断角色信息
         Role role = LocalUserMap.userRoleMap.get(userId);
         if (role == null){
-            return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
+            return combineFailedMsg(ContentType.ROLE_EMPTY);
         }
         return null;
     }
@@ -418,5 +400,4 @@ public class UserService {
                 .setContent(msg)
                 .build();
     }
-
 }
