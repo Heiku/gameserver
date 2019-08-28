@@ -38,9 +38,16 @@ public class GuildCache {
     private static Map<Long, List<GuildApply>> guildApplyMap = Maps.newConcurrentMap();
 
     /**
+     * 玩家公会申请信息 (roleId, List<GuildApply>)
+     */
+    private static Map<Long, List<GuildApply>> roleGuildApplyMap = Maps.newConcurrentMap();
+
+    /**
      * 公会物品仓库信息 (guildId, List<GuildStoreMap>)
      */
     private static Map<Long, List<GuildGoodsStore>> guildStoreMap = Maps.newConcurrentMap();
+
+
 
     public static Map<Long, Guild> getIdGuildMap() {
         return idGuildMap;
@@ -60,5 +67,9 @@ public class GuildCache {
 
     public static Map<Long, List<GuildGoodsStore>> getGuildStoreMap() {
         return guildStoreMap;
+    }
+
+    public static Map<Long, List<GuildApply>> getRoleGuildApplyMap() {
+        return roleGuildApplyMap;
     }
 }

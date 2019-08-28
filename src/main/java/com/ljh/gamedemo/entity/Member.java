@@ -11,7 +11,6 @@ import lombok.Data;
 
 @Data
 public class Member {
-
     /**
      * 成员id
      */
@@ -30,10 +29,10 @@ public class Member {
     /**
      *  今日贡献值
      */
-    private Integer today;
+    private Integer todayCon;
 
     /**
      * 总贡献值
      */
-    private Integer all;
+    private Integer allCon;
 }

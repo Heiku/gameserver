@@ -33,21 +33,45 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class UserService {
 
+    /**
+     * UserDao
+     */
     @Autowired
     private UserDao userDao;
 
+    /**
+     * UserRoleDao
+     */
     @Autowired
     private UserRoleDao userRoleDao;
 
+    /**
+     * ChatRecordDao
+     */
     @Autowired
     private ChatRecordDao recordDao;
 
+    /**
+     * 聊天服务
+     */
     @Autowired
     private ChatService chatService;
 
+    /**
+     * 公会服务
+     */
+    @Autowired
+    private GuildService guildService;
+
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
+    /**
+     * 用户协议返回
+     */
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
     /**
@@ -83,6 +107,9 @@ public class UserService {
 
         // 获取离线的私信消息
         chatService.receiveOfflineMsg(role);
+
+        // 进入公会聊天
+        guildService.joinGuildChannelGroup(role);
 
         // 确定角色成功，返回角色信息
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()

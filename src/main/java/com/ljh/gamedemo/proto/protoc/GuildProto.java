@@ -83,7 +83,7 @@ public final class GuildProto {
 
     /**
      * <pre>
-     * 最大人数值
+     * 最大人数
      * </pre>
      *
      * <code>int32 maxNum = 6;</code>
@@ -424,7 +424,7 @@ public final class GuildProto {
     private int maxNum_;
     /**
      * <pre>
-     * 最大人数值
+     * 最大人数
      * </pre>
      *
      * <code>int32 maxNum = 6;</code>
@@ -1291,7 +1291,7 @@ public final class GuildProto {
       private int maxNum_ ;
       /**
        * <pre>
-       * 最大人数值
+       * 最大人数
        * </pre>
        *
        * <code>int32 maxNum = 6;</code>
@@ -1301,7 +1301,7 @@ public final class GuildProto {
       }
       /**
        * <pre>
-       * 最大人数值
+       * 最大人数
        * </pre>
        *
        * <code>int32 maxNum = 6;</code>
@@ -1314,7 +1314,7 @@ public final class GuildProto {
       }
       /**
        * <pre>
-       * 最大人数值
+       * 最大人数
        * </pre>
        *
        * <code>int32 maxNum = 6;</code>

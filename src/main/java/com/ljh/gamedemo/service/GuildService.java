@@ -1,15 +1,12 @@
 package com.ljh.gamedemo.service;
 
 import com.google.common.collect.Lists;
-import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.EmailType;
-import com.ljh.gamedemo.common.MemberType;
-import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.common.*;
 import com.ljh.gamedemo.dao.GuildApplyDao;
 import com.ljh.gamedemo.dao.GuildDao;
 import com.ljh.gamedemo.dao.GuildGoodsDao;
 import com.ljh.gamedemo.entity.*;
-import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.local.*;
 import com.ljh.gamedemo.local.cache.GuildCache;
 import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgGuildProto;
@@ -98,8 +95,21 @@ public class GuildService {
             return;
         }
 
+        List<GuildGoodsStore> storeList = GuildCache.getGuildStoreMap().get(guild.getId());
+        if (storeList == null){
+            storeList = Lists.newArrayList();
+        }
+        List<EmailGoods> emailGoods = Lists.newArrayList();
+        storeList.forEach(s -> {
+            EmailGoods ed = new EmailGoods();
+            ed.setGid(s.getGoodsId());
+            ed.setNum(s.getNum());
+
+            emailGoods.add(ed);
+        });
+
         // 组成消息，准备返回
-        guildResp = combineResp(Lists.newArrayList(guild), null, MsgGuildProto.RequestType.GUILD);
+        guildResp = combineResp(Lists.newArrayList(guild), null, emailGoods, MsgGuildProto.RequestType.GUILD);
         channel.writeAndFlush(guildResp);
     }
 
@@ -115,7 +125,7 @@ public class GuildService {
         List<Guild> guilds = getAllGuild();
 
         // 消息返回
-        guildResp = combineResp(guilds, null, MsgGuildProto.RequestType.GUILD_ALL);
+        guildResp = combineResp(guilds, null, null, MsgGuildProto.RequestType.GUILD_ALL);
         channel.writeAndFlush(guildResp);
     }
 
@@ -173,6 +183,15 @@ public class GuildService {
             return;
         }
 
+        // 判断是否已经重复申请该公会
+        List<GuildApply> applyList = Optional.ofNullable(GuildCache.getRoleGuildApplyMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
+        Optional<GuildApply> result = applyList.stream().filter(ga -> ga.getGuildId() == req.getGuildId()).findFirst();
+        if (result.isPresent()){
+            sendFailedMsg(channel, ContentType.GUILD_APPLY_HAS_APPLY);
+            return;
+        }
+
         // 进行申请操作
         doGuildApply(role, guild);
 
@@ -206,7 +225,7 @@ public class GuildService {
         // 获取所有的申请信息
         List<GuildApply> applyList = GuildCache.getGuildApplyMap().get(guild.getId());
 
-        guildResp = combineResp(null, applyList, MsgGuildProto.RequestType.APPLY_ALL);
+        guildResp = combineResp(null, applyList, null, MsgGuildProto.RequestType.APPLY_ALL);
         channel.writeAndFlush(guildResp);
     }
 
@@ -221,7 +240,7 @@ public class GuildService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 获取当前的公会信息
-        Guild guild = GuildCache.getRoleIdGuildMap().get(req.getRoleId());
+        Guild guild = GuildCache.getRoleIdGuildMap().get(role.getRoleId());
         if (guild == null){
             sendFailedMsg(channel, ContentType.GUILD_NOT_IN);
             return;
@@ -246,6 +265,8 @@ public class GuildService {
 
         // 进行审批
         doApproval(role, guild, applyId, approval);
+
+        sendCommonMsg(channel, ContentType.GUILD_APPROVAL_SUCCESS);
     }
 
 
@@ -259,7 +280,7 @@ public class GuildService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 获取当前的公会信息
-        Guild guild = GuildCache.getRoleIdGuildMap().get(req.getRoleId());
+        Guild guild = GuildCache.getRoleIdGuildMap().get(role.getRoleId());
         if (guild == null){
             sendFailedMsg(channel, ContentType.GUILD_NOT_IN);
             return;
@@ -297,7 +318,7 @@ public class GuildService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 获取当前的公会信息
-        Guild guild = GuildCache.getRoleIdGuildMap().get(req.getRoleId());
+        Guild guild = GuildCache.getRoleIdGuildMap().get(role.getRoleId());
         if (guild == null){
             sendFailedMsg(channel, ContentType.GUILD_NOT_IN);
             return;
@@ -338,7 +359,7 @@ public class GuildService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 获取当前的公会信息
-        Guild guild = GuildCache.getRoleIdGuildMap().get(req.getRoleId());
+        Guild guild = GuildCache.getRoleIdGuildMap().get(role.getRoleId());
         if (guild == null){
             sendFailedMsg(channel, ContentType.GUILD_NOT_IN);
             return;
@@ -360,11 +381,64 @@ public class GuildService {
 
             // 物品改动记录
             goodsRecord(role, guild, goodsId, num, true);
+
+            // 增加玩家贡献值
+            addRoleGuildContribution(role, goodsId, num);
+            
+            // 公会消息通知
+            sendGuildChannel(guild, role, goodsId, num);
         }else {
             sendFailedMsg(channel, ContentType.GUILD_DONATE_FAILED_WITHOUT_GOODS);
             return;
         }
         sendCommonMsg(channel, ContentType.GUILD_DONATE_SUCCESS);
+    }
+
+
+    /**
+     * 发送公会消息
+     *
+     * @param guild     公会信息
+     * @param role      玩家信息
+     * @param goodsId   物品id
+     * @param num       数量
+     */
+    private void sendGuildChannel(Guild guild, Role role, long goodsId, int num) {
+        ChannelGroup cg = ChannelCache.getGuildChannelMap().get(guild.getId());
+        String name = LocalGoodsMap.getIdGoodsMap().get(goodsId).getType().intValue() == CommodityType.ITEM.getCode() ?
+                LocalItemsMap.getIdItemsMap().get(goodsId).getName() :
+                LocalEquipMap.getIdEquipMap().get(goodsId).getName();
+        String msg = String.format(ContentType.GUILD_DONATE_MSG, role.getName(), name, num);
+        sendCommonMsg(cg, msg);
+    }
+
+
+    /**
+     * 更新玩家的贡献值
+     *
+     * @param role      玩家信息
+     * @param goodsId   物品id
+     * @param num       物品数量
+     */
+    private void addRoleGuildContribution(Role role, long goodsId, int num) {
+        // 获取成员信息
+        Member member = GuildCache.getRoleMemberMap().get(role.getRoleId());
+        Goods goods = LocalGoodsMap.getIdGoodsMap().get(goodsId);
+        int con;
+        if (goods.getType().intValue() == CommodityType.ITEM.getCode()){
+            con = LocalItemsMap.getIdItemsMap().get(goodsId).getMinTrans();
+        }else {
+            con = LocalEquipMap.getIdEquipMap().get(goodsId).getMinTrans();
+        }
+        member.setTodayCon(member.getTodayCon() + con * num);
+        member.setAllCon(member.getAllCon() + con);
+
+        // 更新数据库
+        int n = guildDao.updateMemberByRoleId(member);
+        log.info("update guild_member, affected rows: " + n);
+
+        // 更新缓存
+        GuildCache.getRoleMemberMap().put(member.getRoleId(), member);
     }
 
 
@@ -378,7 +452,7 @@ public class GuildService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 获取当前的公会信息
-        Guild guild = GuildCache.getRoleIdGuildMap().get(req.getRoleId());
+        Guild guild = GuildCache.getRoleIdGuildMap().get(role.getRoleId());
         if (guild == null){
             sendFailedMsg(channel, ContentType.GUILD_NOT_IN);
             return;
@@ -393,6 +467,10 @@ public class GuildService {
         if (!b){
             sendFailedMsg(channel, ContentType.GUILD_TAKE_OUT_FAILED);
         }
+
+        // 记录物品变动记录
+        goodsRecord(role, guild, goodsId, num, false);
+
         // 取出成功，邮件发送物品
         EmailGoods ed = new EmailGoods();
         ed.setGid(goodsId);
@@ -548,8 +626,14 @@ public class GuildService {
             return;
         }
 
-        // 玩家主动
         Member member = GuildCache.getRoleMemberMap().get(role.getRoleId());
+        List<Member> members = guild.getMembers();
+        if (members.size() > 1 && member.getPosition() == MemberType.PRESIDENT.getCode()){
+            sendFailedMsg(channel, ContentType.GUILD_LEAVE_FAILED_NOT_EMPTY);
+            return;
+        }
+
+        // 玩家主动
         doKickMember(member, guild, ContentType.GUILD_LEAVE_SUCCESS);
     }
 
@@ -572,6 +656,15 @@ public class GuildService {
 
         List<Member> members = guild.getMembers();
         members.removeIf(m -> m.getRoleId().longValue() == kickM.getRoleId());
+        if (members.size() == 0){
+             n = guildDao.deleteGuild(guild);
+             log.info("delete guild, affected rows: " + n);
+
+             GuildCache.getIdGuildMap().remove(guild.getId());
+        }
+        guild.setNum(guild.getNum() - 1);
+        n = guildDao.updateGuild(guild);
+        log.info("update guild, affected rows: " + n);
 
         // 移除本地记录
         GuildCache.getRoleIdGuildMap().remove(role.getRoleId());
@@ -626,11 +719,13 @@ public class GuildService {
             int n = guildApplyDao.updateGuildApply(apply);
             log.info("update guild_apply, affected rows: " + n);
 
-            // 删除对应的本地缓存记录
-            applies.removeIf(ga -> ga.getId() == applyId);
-
             // 获取申请人信息
             Role applicant = LocalUserMap.getIdRoleMap().get(apply.getRoleId());
+
+            // 删除对应的本地缓存记录
+            applies.removeIf(ga -> ga.getId() == applyId);
+            List<GuildApply> applyList = GuildCache.getRoleGuildApplyMap().get(applicant.getRoleId());
+            applyList.removeIf(a -> a.getId() == applyId);
 
             // 判断审批结果，并进行消息返回
             doJoinGuild(applicant, guild, approval);
@@ -660,6 +755,10 @@ public class GuildService {
             List<Member> members = guild.getMembers();
             members.add(member);
             guild.setNum(guild.getNum() + 1);
+
+            // 更新公会信息
+            n = guildDao.updateGuild(guild);
+            log.info("update guild, affrcted rows: " + n);
 
             // 本地保存
             GuildCache.getRoleMemberMap().put(applicant.getRoleId(), member);
@@ -698,13 +797,17 @@ public class GuildService {
         int n = guildApplyDao.insertGuildApply(apply);
         log.info("insert guild_apply, affected rows: " + n);
 
-        // 本地缓存申请信息
-        List<GuildApply> applyList = GuildCache.getGuildApplyMap().get(guild.getId());
-        if (applyList == null){
-            applyList = new ArrayList<>();
-        }
+        // 存储公会的申请信息
+        List<GuildApply> applyList = Optional.ofNullable(GuildCache.getGuildApplyMap().get(guild.getId()))
+                .orElse(Lists.newArrayList());
         applyList.add(apply);
         GuildCache.getGuildApplyMap().put(guild.getId(), applyList);
+
+        // 存储玩家的申请信息
+        List<GuildApply> roleApplyList = Optional.ofNullable(GuildCache.getRoleGuildApplyMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
+        roleApplyList.add(apply);
+        GuildCache.getRoleGuildApplyMap().put(role.getRoleId(), roleApplyList);
     }
 
 
@@ -717,14 +820,13 @@ public class GuildService {
      */
     private void doEstablishGuild(Role role, String guildName, String bulletin) {
         // 构建公会实体
-        Guild guild = Guild.builder()
-                .name(guildName)
-                .bulletin(bulletin)
-                .level(1)
-                .num(1)
-                .maxNum(20)
-                .president(role.getRoleId())
-                .build();
+        Guild guild =new Guild();
+        guild.setName(guildName);
+        guild.setBulletin(bulletin);
+        guild.setLevel(1);
+        guild.setNum(1);
+        guild.setMaxNum(20);
+        guild.setPresident(role.getRoleId());
 
         // 保存公会信息
         int n = guildDao.insertGuild(guild);
@@ -765,10 +867,33 @@ public class GuildService {
         member.setRoleId(role.getRoleId());
         member.setGid(guild.getId());
         member.setPosition(type.getCode());
-        member.setToday(0);
-        member.setAll(0);
+        member.setTodayCon(0);
+        member.setAllCon(0);
 
         return member;
+    }
+
+
+    /**
+     * 加入公会消息 channelGroup (防止服务器重启，玩家离开channelGroup)
+     *
+     * @param role  玩家信息
+     */
+    public void joinGuildChannelGroup(Role role){
+        Guild guild = GuildCache.getRoleIdGuildMap().get(role.getRoleId());
+        if (guild == null){
+            return;
+        }
+
+        // 有公会，那么加入公会 channelGroup中
+        ChannelGroup cg = Optional.ofNullable(ChannelCache.getGroupChannelMap().get(guild.getId()))
+                .orElse(new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+        if (cg.contains(channel)){
+            return;
+        }
+        cg.add(channel);
+        ChannelCache.getGuildChannelMap().put(guild.getId(), cg);
     }
 
 
@@ -794,11 +919,21 @@ public class GuildService {
     }
 
 
-    private MsgGuildProto.ResponseGuild combineResp(List<Guild> guilds, List<GuildApply> applies, MsgGuildProto.RequestType type) {
+    /**
+     * 构建返回消息
+     *
+     * @param guilds        公会信息
+     * @param applies       公会申请信息
+     * @param storeList     公会物品列表
+     * @param type          请求类型
+     * @return              公会协议返回
+     */
+    private MsgGuildProto.ResponseGuild combineResp(List<Guild> guilds, List<GuildApply> applies, List<EmailGoods> storeList, MsgGuildProto.RequestType type) {
         guildResp = MsgGuildProto.ResponseGuild.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .addAllGuild(protoService.transToGuildList(guilds))
                 .addAllApply(protoService.transToGuildApplyList(applies))
+                .addAllGoods(protoService.transToGoodsList(storeList))
                 .setType(type)
                 .build();
         return guildResp;
@@ -815,9 +950,28 @@ public class GuildService {
         guildResp = MsgGuildProto.ResponseGuild.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(msg)
+                .setType(MsgGuildProto.RequestType.COMMON_GUILD)
                 .build();
         channel.writeAndFlush(guildResp);
     }
+
+
+    /**
+     * 公会消息
+     *
+     * @param cg      guildChannelGroup
+     * @param msg     消息
+     */
+    private void sendCommonMsg(ChannelGroup cg, String msg){
+        guildResp = MsgGuildProto.ResponseGuild.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setContent(msg)
+                .setType(MsgGuildProto.RequestType.COMMON_GUILD)
+                .build();
+        cg.writeAndFlush(guildResp);
+    }
+
+
 
     /**
      * 发送失败消息
@@ -832,6 +986,4 @@ public class GuildService {
                 .build();
         channel.writeAndFlush(guildResp);
     }
-
-
 }

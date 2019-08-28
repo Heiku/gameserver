@@ -314,6 +314,8 @@ public class ContentType {
 
     public static final String GUILD_APPLY_NOT_FOUND = "申请加入的公会不存在！\n";
 
+    public static final String GUILD_APPLY_HAS_APPLY = "已经申请加入该公会了，请不要重复申请！\n";
+
     public static final String GUILD_APPLY_SUCCESS = "申请进入成功，等待公会审批！\n";
 
     public static final String GUILD_NOT_PERMISSION = "当前用户没有该权限！\n";
@@ -323,6 +325,8 @@ public class ContentType {
     public static final String GUILD_APPLY_AGREE = "加入公会【 %s 】 申请已经被同意！\n";
 
     public static final String GUILD_APPLY_REFUSE = "加入公会【 %s 】的申请被拒绝！\n";
+
+    public static final String GUILD_APPROVAL_SUCCESS = "审批成功！\n";
 
     public static final String GUILD_CHANGE_INFO_SUCCESS = "修改公会信息成功！\n";
 
@@ -338,6 +342,8 @@ public class ContentType {
 
     public static final String GUILD_LEAVE_SUCCESS = "成功离开公会！\n";
 
+    public static final String GUILD_LEAVE_FAILED_NOT_EMPTY = "离开公会失败，公会人数大于2，请尝试将职位转移给其他公会成员再进行退出公会操作！\n";
+
     public static final String GUILD_STORE_NO_ENOUGH = "公会仓库不足，无法取出物品！\n";
 
     public static final String GUILD_DONATE_FAILED_WITHOUT_GOODS = "捐献失败，背包中物品数量不足！\n";
@@ -347,6 +353,8 @@ public class ContentType {
     public static final String GUILD_TAKE_OUT_FAILED = "取出失败！\n";
 
     public static final String GUILD_TAKE_OUT_SUCCESS = "取出成功！\n";
+
+    public static final String GUILD_DONATE_MSG = "【公会消息】\n玩家：%s 成功捐献物品：%s 数量：%d\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

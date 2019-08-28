@@ -31,9 +31,12 @@ public interface GuildDao {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertGuild(Guild guild);
 
-    @Update("update guild set name = #{name}, bulletin = #{bulletin}, level = #{level}, num = #{num}, max_num = #{maxNum}. " +
+    @Update("update guild set name = #{name}, bulletin = #{bulletin}, level = #{level}, num = #{num}, max_num = #{maxNum},  " +
             " president = #{president} where id = #{id}")
     int updateGuild(Guild guild);
+
+    @Delete("delete from guild where id = #{id}")
+    int deleteGuild(Guild guild);
 
 
     /**
@@ -43,19 +46,22 @@ public interface GuildDao {
      * @return
      */
 
-    @Insert("insert into role_guild(role_id, gid, position, today, all) values (#{roleId. #{gid}, #{position}, #{today}. #{all})")
-    @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
+    @Insert("insert into role_guild(role_id, gid, position, today_con, all_con) values (#{roleId}, #{gid}, #{position}, #{todayCon}, #{allCon})")
     int insertGuildMember(Member member);
 
     @Select("select * from role_guild where gid = #{gid}")
-    int queryAllMemberByGid(long gid);
+    List<Member> queryAllMemberByGid(long gid);
 
     @Select("select * from role_guild where role_id = #{roleId}")
     Member queryMemberByRoleId(long roleId);
 
-    @Update("update role_guild set position = #{position}, today = #{today}, all = #{all} where role_id = #{roleId}}")
+    @Update("update role_guild set position = #{position}, today_con = #{todayCon}, all_con = #{allCon} where role_id = #{roleId}")
     int updateMemberByRoleId(Member member);
 
     @Delete("delete from role_guild where role_id = #{roleId}")
     int deleteMemberInfo(long roleId);
+
+
+    @Update("update role_guild set today_con = 0")
+    int updateTodayCon();
 }

@@ -1821,6 +1821,30 @@ public final class MsgGuildProto {
      */
     com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApplyOrBuilder getApplyOrBuilder(
         int index);
+
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> 
+        getGoodsList();
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.GoodsProto.Goods getGoods(int index);
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    int getGoodsCount();
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    java.util.List<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+        getGoodsOrBuilderList();
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder getGoodsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code ResponseGuild}
@@ -1839,6 +1863,7 @@ public final class MsgGuildProto {
       type_ = 0;
       guild_ = java.util.Collections.emptyList();
       apply_ = java.util.Collections.emptyList();
+      goods_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1907,6 +1932,15 @@ public final class MsgGuildProto {
                   input.readMessage(com.ljh.gamedemo.proto.protoc.GuildApplyProto.GuildApply.parser(), extensionRegistry));
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                goods_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              goods_.add(
+                  input.readMessage(com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -1927,6 +1961,9 @@ public final class MsgGuildProto {
         }
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
           apply_ = java.util.Collections.unmodifiableList(apply_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) != 0)) {
+          goods_ = java.util.Collections.unmodifiableList(goods_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2075,6 +2112,41 @@ public final class MsgGuildProto {
       return apply_.get(index);
     }
 
+    public static final int GOODS_FIELD_NUMBER = 6;
+    private java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> goods_;
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    public java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> getGoodsList() {
+      return goods_;
+    }
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    public java.util.List<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+        getGoodsOrBuilderList() {
+      return goods_;
+    }
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    public int getGoodsCount() {
+      return goods_.size();
+    }
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods getGoods(int index) {
+      return goods_.get(index);
+    }
+    /**
+     * <code>repeated .Goods goods = 6;</code>
+     */
+    public com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder getGoodsOrBuilder(
+        int index) {
+      return goods_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2104,6 +2176,9 @@ public final class MsgGuildProto {
       for (int i = 0; i < apply_.size(); i++) {
         output.writeMessage(5, apply_.get(i));
       }
+      for (int i = 0; i < goods_.size(); i++) {
+        output.writeMessage(6, goods_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2132,6 +2207,10 @@ public final class MsgGuildProto {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, apply_.get(i));
       }
+      for (int i = 0; i < goods_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, goods_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2156,6 +2235,8 @@ public final class MsgGuildProto {
           .equals(other.getGuildList())) return false;
       if (!getApplyList()
           .equals(other.getApplyList())) return false;
+      if (!getGoodsList()
+          .equals(other.getGoodsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2180,6 +2261,10 @@ public final class MsgGuildProto {
       if (getApplyCount() > 0) {
         hash = (37 * hash) + APPLY_FIELD_NUMBER;
         hash = (53 * hash) + getApplyList().hashCode();
+      }
+      if (getGoodsCount() > 0) {
+        hash = (37 * hash) + GOODS_FIELD_NUMBER;
+        hash = (53 * hash) + getGoodsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2311,6 +2396,7 @@ public final class MsgGuildProto {
                 .alwaysUseFieldBuilders) {
           getGuildFieldBuilder();
           getApplyFieldBuilder();
+          getGoodsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -2333,6 +2419,12 @@ public final class MsgGuildProto {
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           applyBuilder_.clear();
+        }
+        if (goodsBuilder_ == null) {
+          goods_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          goodsBuilder_.clear();
         }
         return this;
       }
@@ -2381,6 +2473,15 @@ public final class MsgGuildProto {
           result.apply_ = apply_;
         } else {
           result.apply_ = applyBuilder_.build();
+        }
+        if (goodsBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0)) {
+            goods_ = java.util.Collections.unmodifiableList(goods_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.goods_ = goods_;
+        } else {
+          result.goods_ = goodsBuilder_.build();
         }
         onBuilt();
         return result;
@@ -2489,6 +2590,32 @@ public final class MsgGuildProto {
                    getApplyFieldBuilder() : null;
             } else {
               applyBuilder_.addAllMessages(other.apply_);
+            }
+          }
+        }
+        if (goodsBuilder_ == null) {
+          if (!other.goods_.isEmpty()) {
+            if (goods_.isEmpty()) {
+              goods_ = other.goods_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureGoodsIsMutable();
+              goods_.addAll(other.goods_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.goods_.isEmpty()) {
+            if (goodsBuilder_.isEmpty()) {
+              goodsBuilder_.dispose();
+              goodsBuilder_ = null;
+              goods_ = other.goods_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              goodsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getGoodsFieldBuilder() : null;
+            } else {
+              goodsBuilder_.addAllMessages(other.goods_);
             }
           }
         }
@@ -3141,6 +3268,246 @@ public final class MsgGuildProto {
         }
         return applyBuilder_;
       }
+
+      private java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> goods_ =
+        java.util.Collections.emptyList();
+      private void ensureGoodsIsMutable() {
+        if (!((bitField0_ & 0x00000004) != 0)) {
+          goods_ = new java.util.ArrayList<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods>(goods_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.GoodsProto.Goods, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder, com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> goodsBuilder_;
+
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> getGoodsList() {
+        if (goodsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(goods_);
+        } else {
+          return goodsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public int getGoodsCount() {
+        if (goodsBuilder_ == null) {
+          return goods_.size();
+        } else {
+          return goodsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods getGoods(int index) {
+        if (goodsBuilder_ == null) {
+          return goods_.get(index);
+        } else {
+          return goodsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder setGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods value) {
+        if (goodsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGoodsIsMutable();
+          goods_.set(index, value);
+          onChanged();
+        } else {
+          goodsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder setGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder builderForValue) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          goodsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder addGoods(com.ljh.gamedemo.proto.protoc.GoodsProto.Goods value) {
+        if (goodsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGoodsIsMutable();
+          goods_.add(value);
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder addGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods value) {
+        if (goodsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureGoodsIsMutable();
+          goods_.add(index, value);
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder addGoods(
+          com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder builderForValue) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.add(builderForValue.build());
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder addGoods(
+          int index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder builderForValue) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          goodsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder addAllGoods(
+          java.lang.Iterable<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.Goods> values) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, goods_);
+          onChanged();
+        } else {
+          goodsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder clearGoods() {
+        if (goodsBuilder_ == null) {
+          goods_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          goodsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public Builder removeGoods(int index) {
+        if (goodsBuilder_ == null) {
+          ensureGoodsIsMutable();
+          goods_.remove(index);
+          onChanged();
+        } else {
+          goodsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder getGoodsBuilder(
+          int index) {
+        return getGoodsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder getGoodsOrBuilder(
+          int index) {
+        if (goodsBuilder_ == null) {
+          return goods_.get(index);  } else {
+          return goodsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public java.util.List<? extends com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+           getGoodsOrBuilderList() {
+        if (goodsBuilder_ != null) {
+          return goodsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(goods_);
+        }
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder addGoodsBuilder() {
+        return getGoodsFieldBuilder().addBuilder(
+            com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder addGoodsBuilder(
+          int index) {
+        return getGoodsFieldBuilder().addBuilder(
+            index, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Goods goods = 6;</code>
+       */
+      public java.util.List<com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder> 
+           getGoodsBuilderList() {
+        return getGoodsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.ljh.gamedemo.proto.protoc.GoodsProto.Goods, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder, com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder> 
+          getGoodsFieldBuilder() {
+        if (goodsBuilder_ == null) {
+          goodsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.ljh.gamedemo.proto.protoc.GoodsProto.Goods, com.ljh.gamedemo.proto.protoc.GoodsProto.Goods.Builder, com.ljh.gamedemo.proto.protoc.GoodsProto.GoodsOrBuilder>(
+                  goods_,
+                  ((bitField0_ & 0x00000004) != 0),
+                  getParentForChildren(),
+                  isClean());
+          goods_ = null;
+        }
+        return goodsBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -3213,28 +3580,30 @@ public final class MsgGuildProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016MsgGuild.proto\032\013Guild.proto\032\020GuildAppl" +
-      "y.proto\"\323\001\n\014RequestGuild\022\016\n\006userId\030\001 \001(\003" +
-      "\022\016\n\006roleId\030\002 \001(\003\022\017\n\007guildId\030\003 \001(\003\022\017\n\007goo" +
-      "dsId\030\004 \001(\003\022\020\n\010position\030\005 \001(\005\022\021\n\tguildNam" +
-      "e\030\006 \001(\t\022\020\n\010bulletin\030\007 \001(\t\022\020\n\010approval\030\010 " +
-      "\001(\005\022\013\n\003num\030\t \001(\005\022\017\n\007applyId\030\n \001(\003\022\032\n\004typ" +
-      "e\030\013 \001(\0162\014.RequestType\"\177\n\rResponseGuild\022\016" +
-      "\n\006result\030\001 \001(\005\022\017\n\007content\030\002 \001(\t\022\032\n\004type\030" +
-      "\003 \001(\0162\014.RequestType\022\025\n\005guild\030\004 \003(\0132\006.Gui" +
-      "ld\022\032\n\005apply\030\005 \003(\0132\013.GuildApply*\310\001\n\013Reque" +
-      "stType\022\t\n\005GUILD\020\000\022\r\n\tGUILD_ALL\020\001\022\r\n\tESTA" +
-      "BLISH\020\002\022\017\n\013APPLY_GUILD\020\003\022\r\n\tAPPLY_ALL\020\004\022" +
-      "\014\n\010APPROVAL\020\005\022\016\n\nMODIFY_ANN\020\006\022\010\n\004GIVE\020\007\022" +
-      "\n\n\006DONATE\020\010\022\014\n\010TAKE_OUT\020\t\022\014\n\010KICK_OUT\020\n\022" +
-      "\016\n\nEXIT_GUILD\020\013\022\020\n\014COMMON_GUILD\020\014B.\n\035com" +
-      ".ljh.gamedemo.proto.protocB\rMsgGuildProt" +
-      "ob\006proto3"
+      "\n\016MsgGuild.proto\032\013Guild.proto\032\013Goods.pro" +
+      "to\032\020GuildApply.proto\"\323\001\n\014RequestGuild\022\016\n" +
+      "\006userId\030\001 \001(\003\022\016\n\006roleId\030\002 \001(\003\022\017\n\007guildId" +
+      "\030\003 \001(\003\022\017\n\007goodsId\030\004 \001(\003\022\020\n\010position\030\005 \001(" +
+      "\005\022\021\n\tguildName\030\006 \001(\t\022\020\n\010bulletin\030\007 \001(\t\022\020" +
+      "\n\010approval\030\010 \001(\005\022\013\n\003num\030\t \001(\005\022\017\n\007applyId" +
+      "\030\n \001(\003\022\032\n\004type\030\013 \001(\0162\014.RequestType\"\226\001\n\rR" +
+      "esponseGuild\022\016\n\006result\030\001 \001(\005\022\017\n\007content\030" +
+      "\002 \001(\t\022\032\n\004type\030\003 \001(\0162\014.RequestType\022\025\n\005gui" +
+      "ld\030\004 \003(\0132\006.Guild\022\032\n\005apply\030\005 \003(\0132\013.GuildA" +
+      "pply\022\025\n\005goods\030\006 \003(\0132\006.Goods*\310\001\n\013RequestT" +
+      "ype\022\t\n\005GUILD\020\000\022\r\n\tGUILD_ALL\020\001\022\r\n\tESTABLI" +
+      "SH\020\002\022\017\n\013APPLY_GUILD\020\003\022\r\n\tAPPLY_ALL\020\004\022\014\n\010" +
+      "APPROVAL\020\005\022\016\n\nMODIFY_ANN\020\006\022\010\n\004GIVE\020\007\022\n\n\006" +
+      "DONATE\020\010\022\014\n\010TAKE_OUT\020\t\022\014\n\010KICK_OUT\020\n\022\016\n\n" +
+      "EXIT_GUILD\020\013\022\020\n\014COMMON_GUILD\020\014B.\n\035com.lj" +
+      "h.gamedemo.proto.protocB\rMsgGuildProtob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.ljh.gamedemo.proto.protoc.GuildProto.getDescriptor(),
+          com.ljh.gamedemo.proto.protoc.GoodsProto.getDescriptor(),
           com.ljh.gamedemo.proto.protoc.GuildApplyProto.getDescriptor(),
         });
     internal_static_RequestGuild_descriptor =
@@ -3248,8 +3617,9 @@ public final class MsgGuildProto {
     internal_static_ResponseGuild_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ResponseGuild_descriptor,
-        new java.lang.String[] { "Result", "Content", "Type", "Guild", "Apply", });
+        new java.lang.String[] { "Result", "Content", "Type", "Guild", "Apply", "Goods", });
     com.ljh.gamedemo.proto.protoc.GuildProto.getDescriptor();
+    com.ljh.gamedemo.proto.protoc.GoodsProto.getDescriptor();
     com.ljh.gamedemo.proto.protoc.GuildApplyProto.getDescriptor();
   }
 

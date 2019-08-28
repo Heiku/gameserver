@@ -271,7 +271,7 @@ public class ProtoService {
         List<GoodsProto.Goods> res = new ArrayList<>();
 
         if (egList == null || egList.isEmpty()){
-            return null;
+            return res;
         }
 
         egList.forEach( e -> {
@@ -428,8 +428,8 @@ public class ProtoService {
         GuildMemberProto.GuildMember member = GuildMemberProto.GuildMember.newBuilder()
                 .setRole(transToRole(LocalUserMap.getIdRoleMap().get(m.getRoleId())))
                 .setPosition(m.getPosition())
-                .setToday(m.getToday())
-                .setAll(m.getAll())
+                .setToday(m.getTodayCon())
+                .setAll(m.getAllCon())
                 .build();
         return member;
     }

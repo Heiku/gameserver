@@ -3,6 +3,7 @@ syntax = "proto3";
 // protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgGuild.proto
 
 import "Guild.proto";
+import "Goods.proto";
 import "GuildApply.proto";
 
 option java_package = "com.ljh.gamedemo.proto.protoc";
@@ -46,4 +47,5 @@ message ResponseGuild{
 
     repeated Guild guild = 4;
     repeated GuildApply apply = 5;
+    repeated Goods goods = 6;
 }

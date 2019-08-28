@@ -9,8 +9,10 @@ import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 @MapperScan("com.ljh.gamedemo.dao")
 public class GamedemoApplication {
 
@@ -64,6 +66,9 @@ public class GamedemoApplication {
 
         // 载入职业初始化信息
         LocalRoleInitMap.readExcel();
+
+        // 载入公会的数据库信息
+        LocalGuildMap.readDB();
 
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();

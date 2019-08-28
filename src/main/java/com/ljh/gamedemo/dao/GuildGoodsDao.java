@@ -4,6 +4,8 @@ import com.ljh.gamedemo.entity.GuildGoodsRecord;
 import com.ljh.gamedemo.entity.GuildGoodsStore;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 /**
  * 公会物品数据库操作
  *
@@ -20,6 +22,7 @@ public interface GuildGoodsDao {
     int insertGuildGoodsRecord(GuildGoodsRecord record);
 
 
+
     @Insert("insert into guild_goods_store (guild_id, goods_id, num) values (#{guildId}, #{goodsId}, #{num})")
     int insertGuildStore(GuildGoodsStore guildGoodsStore);
 
@@ -28,4 +31,7 @@ public interface GuildGoodsDao {
 
     @Delete("delete from guild_goods_store where id = #{id}")
     int deleteGuildStore(GuildGoodsStore guildGoodsStore);
+
+    @Select("select * from guild_goods_store where id = #{gid}")
+    List<GuildGoodsStore> queryAllGuildStore(long gid);
 }
