@@ -74,7 +74,11 @@ public enum MessageType {
 
     // guild
     REQUEST_GUILD(0x22,MsgGuildProto.RequestGuild.class),
-    RESPONSE_GUILD(0x23, MsgGuildProto.ResponseGuild.class)
+    RESPONSE_GUILD(0x23, MsgGuildProto.ResponseGuild.class),
+
+    // trade
+    REQUEST_TRADE(0x24, MsgTradeProto.RequestTrade.class),
+    RESPONSE_TRADE(0x25, MsgTradeProto.ResponseTrade.class)
     ;
 
 

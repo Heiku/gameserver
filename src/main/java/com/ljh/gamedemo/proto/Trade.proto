@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Trade.proto
+
+import "Role.proto";
+import "Goods.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "TradeProto";
+
+message Trade{
+    int64 tradeId = 1;      // 交易号
+    Role seller = 2;        // 卖家
+    Role buyer = 3;         // 买家（临时拍家）
+    int32 type = 4;         // 交易模式：1：一口价，2：拍卖
+    Goods goods = 5;        // 物品
+    int32 num = 6;          // 数量
+    int32 price = 7;        // 交易金额
+    string createTime = 8;     // 出售时间
+    int32 remainTime = 9;       // 剩余时间( timeUnit: s)
+}
+

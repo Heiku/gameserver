@@ -356,6 +356,13 @@ public class ContentType {
 
     public static final String GUILD_DONATE_MSG = "【公会消息】\n玩家：%s 成功捐献物品：%s 数量：%d\n";
 
+
+    // Trade
+    public static final String TRADE_PUT_FAILED_NOT_ENOUGH = "上架物品失败，物品不足！\n";
+
+    public static final String TRADE_PUT_SUCCESS = "上架物品成功！\n";
+
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 

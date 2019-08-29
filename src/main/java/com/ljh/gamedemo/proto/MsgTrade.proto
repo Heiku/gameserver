@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/MsgTrade.proto
+
+import "Trade.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "MsgTradeProto";
+
+enum RequestType{
+    TRADE_STATE = 0;            // 交易状态
+    FIXED_PRICE_ALL = 1;        // 获取所有一口价商品
+    AUCTION_ALL = 2;            // 获取所有拍卖商品
+    PUT_GOODS = 3;                // 上架商品
+    BUY_FIXED = 4;              // 购买一口价物品
+    BUY_AUCTION = 5;            // 购买拍卖物品
+    OUT_OF_TRADE = 6;           // 商品下架
+
+    COMMON_TRADE = 7;           // 公共消息
+}
+
+message RequestTrade{
+    int64 userId = 1;
+    int64 goodsId = 2;
+    int32 price = 3;
+    int64 tradeId = 4;
+    int32 tradeType = 5;
+    int32 num = 6;
+
+    RequestType type = 7;
+}
+
+message ResponseTrade{
+    int32 result = 1;
+    string content = 2;
+    RequestType type = 3;
+
+    repeated Trade trade = 4;
+}
+

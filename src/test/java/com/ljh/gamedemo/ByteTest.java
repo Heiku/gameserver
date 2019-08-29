@@ -4,6 +4,8 @@ import com.ljh.gamedemo.entity.Duplicate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 
 import java.util.List;
 import java.util.Random;
@@ -100,6 +102,13 @@ public class ByteTest {
         System.out.println(d1.hashCode());
         System.out.println(d2.hashCode());
         System.out.println(d1.equals(d2));*/
+
+
+        DateTime now = new DateTime();
+        System.out.println(now);
+
+        DateTime later = now.plus(Minutes.minutes(30)).toDateTime();
+        System.out.println(later);
     }
 }
 

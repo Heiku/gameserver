@@ -44,6 +44,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
         handlerMap.put(REQUEST_ROLE.protoCode, new RoleHandler());
         handlerMap.put(REQUEST_FACE_TRANS.protoCode, new FaceTransactionHandler());
         handlerMap.put(REQUEST_GUILD.protoCode, new GuildHandler());
+        handlerMap.put(REQUEST_TRADE.protoCode, new TradeHandler());
     }
 
     @Override

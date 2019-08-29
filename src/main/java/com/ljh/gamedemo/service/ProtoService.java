@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.service;
 
+import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalEquipMap;
@@ -7,10 +8,15 @@ import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.*;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.Minutes;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -462,6 +468,40 @@ public class ProtoService {
                 .setType(entity.getType())
                 .setAlive(entity.getAlive())
                 .setLevel(entity.getLevel())
+                .build();
+    }
+
+    public List<TradeProto.Trade> transToTradeList(List<Trade> trades) {
+        List<TradeProto.Trade> tradeList = Lists.newLinkedList();
+        if (trades == null || trades.isEmpty()){
+            return tradeList;
+        }
+
+        trades.forEach(t -> tradeList.add(transToTrade(t)));
+        return tradeList;
+    }
+
+
+    private TradeProto.Trade transToTrade(Trade t) {
+        EmailGoods eg = new EmailGoods();
+        eg.setGid(t.getGoodsId());
+        eg.setNum(1);
+
+        Date now = new Date();
+        Date end = t.getEndTime();
+        Interval in = new Interval(end.getTime(), now.getTime());
+        Period p = in.toPeriod();
+        int remain = p.getMinutes() * 60 + p.getSeconds();
+
+        return TradeProto.Trade.newBuilder()
+                .setTradeId(t.getTradeId())
+                .setBuyer(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getBuyer())))
+                .setSeller(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getBuyer())))
+                .setGoods(transToGoods(eg))
+                .setPrice(t.getPrice())
+                .setType(t.getType())
+                .setCreateTime(t.getStartTime().toString())
+                .setRemainTime(remain)
                 .build();
     }
 }
