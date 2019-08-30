@@ -5,6 +5,7 @@ import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.local.cache.RoleStateCache;
 import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.manager.SendEmailManager;
+import com.ljh.gamedemo.run.util.CleanUpCacheManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -69,6 +70,8 @@ public class GamedemoApplication {
 
         // 载入公会的数据库信息
         LocalGuildMap.readDB();
+
+        CleanUpCacheManager.run();
 
         // 启动背包数据存库线程池
         SaveRoleItemManager.run();

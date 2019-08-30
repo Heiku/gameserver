@@ -9,8 +9,8 @@ package com.ljh.gamedemo.common;
 public enum  CommodityType {
 
     ITEM(1, "物品"),
-    EQUIP(2, "装备")
-
+    EQUIP(2, "装备"),
+    GOLD(3, "金币")
     ;
 
 

@@ -11,7 +11,22 @@ public class TradeType {
     /**
      * 拍卖交易的最长持续时间
      */
-    public static final int AUCTION_DURATION = 30;
+    public static final int AUCTION_DURATION = 1;
+
+    /**
+     * 出价的累加价格
+     */
+    public static final int LOWEST_AUCTION_PRICE = 50;
+
+    /**
+     * 交易进行中
+     */
+    public static final int TRADE_STATE_ON = 1;
+
+    /**
+     * 交易已经结束
+     */
+    public static final int TRADE_STATE_OFF = 2;
 
     /**
      * 一口价模式

@@ -12,6 +12,7 @@ import com.ljh.gamedemo.local.LocalUserMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,6 +138,48 @@ public class GoodsService {
         else if (type == CommodityType.EQUIP.getCode()){
             // 更新装备信息
             equipService.removeRoleEquips(r, goodsId, num);
+        }
+    }
+
+
+    /**
+     * 向玩家发放物品到背包
+     *
+     * @param r         玩家
+     * @param goods     物品
+     * @param num       数量
+     */
+    public void sendRoleGoods(Role r, Goods goods, int num){
+        // 获取发放物品的状态
+        int type = goods.getType();
+        if (type == CommodityType.ITEM.getCode()){
+
+            // 添加玩家的物品数量
+            itemService.addRoleItems(r, goods.getGid(), num);
+        }
+
+        else if (type == CommodityType.EQUIP.getCode()){
+
+            // 添加玩家的装备数量
+            List<Goods> gList = new ArrayList<>();
+            gList.add(goods);
+            equipService.addRoleEquips(r, gList);
+        }
+    }
+
+
+    /**
+     * 获取出售物品的名称
+     *
+     * @param goodsId       物品id
+     * @return              物品名
+     */
+    public String getGoodsName(Long goodsId) {
+        Goods goods = LocalGoodsMap.getIdGoodsMap().get(goodsId);
+        if (goods.getType().intValue() == CommodityType.ITEM.getCode()){
+            return LocalItemsMap.getIdItemsMap().get(goodsId).getName();
+        }else {
+            return LocalEquipMap.getIdEquipMap().get(goodsId).getName();
         }
     }
 }

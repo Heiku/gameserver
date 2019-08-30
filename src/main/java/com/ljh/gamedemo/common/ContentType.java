@@ -362,6 +362,25 @@ public class ContentType {
 
     public static final String TRADE_PUT_SUCCESS = "上架物品成功！\n";
 
+    public static final String TRADE_NOT_FOUND = "交易信息不存在！\n";
+
+    public static final String TRADE_AUCTION_SELL_SUCCESS = "【交易行消息】\n你在拍卖行出售的物品：%s 成功出售，获得金币 %d ！\n";
+
+    public static final String TRADE_AUCTION_PRICE_FAILED = "出价竞拍失败，最低的起拍价不应低于 %d ！\n";
+
+    public static final String TRADE_AUCTION_BY_OTHERS = "【交易行消息】\n你在交易行竞拍的物品: %s，被他人成功竞拍！\n";
+
+    public static final String TRADE_AUCTION_SUCCESS_GET = "【交易行消息】\n恭喜你，你在交易行以金币 %d 成功竞拍到物品：%s ，物品随后将通过邮件的方式发送，请注意接收!\n";
+
+    public static final String TRADE_AUCTION_SUCCESS = "竞拍成功！\n";
+
+    public static final String TRADE_OUT_OF_FAILED_OTHERS = "无法下架他人的交易信息！\n";
+
+    public static final String TRADE_OUT_OF_FAILED_SOMEONE_HAS_TRADE = "下架物品失败，该交易物品已经被他人竞拍！\n";
+
+    public static final String TRADE_OUT_OF_SUCCESS = "下架物品成功，物品已经返回玩家背包中！\n";
+
+    public static final String TRADE_BUY_SUCCESS = "购买成功，物品随后将通过邮件发送，请注意接收！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

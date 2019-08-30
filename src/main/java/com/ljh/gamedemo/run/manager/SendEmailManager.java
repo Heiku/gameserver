@@ -18,7 +18,7 @@ public class SendEmailManager {
 
     private static Integer MAX_TASK = 100;
 
-    private static Integer DELAY_SEC = 1;
+    private static Integer DELAY_SEC = 5;
 
     private static BlockingQueue<SendEmailRun> queue = new LinkedBlockingQueue<>(MAX_TASK);
 

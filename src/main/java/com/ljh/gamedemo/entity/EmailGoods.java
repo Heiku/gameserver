@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: Heiku
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 
 @Data
+@NoArgsConstructor
 public class EmailGoods {
 
     /**
@@ -31,4 +33,9 @@ public class EmailGoods {
      * 物品数量
      */
     private Integer num;
+
+    public EmailGoods(Long _gid, Integer _num){
+        this.gid = _gid;
+        this.num = _num;
+    }
 }

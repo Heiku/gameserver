@@ -17,7 +17,7 @@ public class Trade {
     /**
      * 交易id
      */
-    private Long tradeId;
+    private Long id;
 
     /**
      * 物品id

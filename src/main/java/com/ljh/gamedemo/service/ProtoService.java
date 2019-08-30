@@ -48,7 +48,8 @@ public class ProtoService {
 
     public RoleProto.Role transToRole(Role role){
         if (role == null){
-            return null;
+            return RoleProto.Role.newBuilder()
+                    .build();
         }
 
         return RoleProto.Role.newBuilder()
@@ -483,20 +484,26 @@ public class ProtoService {
 
 
     private TradeProto.Trade transToTrade(Trade t) {
+        if (t == null){
+            return TradeProto.Trade.newBuilder().build();
+        }
         EmailGoods eg = new EmailGoods();
         eg.setGid(t.getGoodsId());
         eg.setNum(1);
 
         Date now = new Date();
         Date end = t.getEndTime();
-        Interval in = new Interval(end.getTime(), now.getTime());
-        Period p = in.toPeriod();
-        int remain = p.getMinutes() * 60 + p.getSeconds();
+        int remain = 0;
+        if (now.getTime() <= end.getTime()) {
+            Interval in = new Interval(now.getTime(), end.getTime());
+            Period p = in.toPeriod();
+            remain= p.getMinutes() * 60 + p.getSeconds();
+        }
 
         return TradeProto.Trade.newBuilder()
-                .setTradeId(t.getTradeId())
+                .setTradeId(t.getId())
                 .setBuyer(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getBuyer())))
-                .setSeller(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getBuyer())))
+                .setSeller(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getSeller())))
                 .setGoods(transToGoods(eg))
                 .setPrice(t.getPrice())
                 .setType(t.getType())

@@ -1,19 +1,13 @@
 package com.ljh.gamedemo.service;
 
-import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.MallOrderDao;
-import com.ljh.gamedemo.dao.RoleEquipDao;
-import com.ljh.gamedemo.dao.RoleItemsDao;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.*;
-import com.ljh.gamedemo.entity.dto.RoleEquipHas;
 import com.ljh.gamedemo.entity.tmp.MallBuyTimes;
 import com.ljh.gamedemo.local.LocalCommodityMap;
-import com.ljh.gamedemo.local.LocalEquipMap;
-import com.ljh.gamedemo.local.LocalItemsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.MallBuyCache;
 import com.ljh.gamedemo.proto.protoc.CommodityProto;
@@ -29,54 +23,54 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 商城操作
+ *
  * @Author: Heiku
  * @Date: 2019/8/2
- *
- *
- *  商城操作
  */
 
 @Service
 @Slf4j
 public class MallService {
 
+    /**
+     * RoleDao
+     */
     @Autowired
     private UserRoleDao roleDao;
 
-    @Autowired
-    private RoleItemsDao itemsDao;
-
-    @Autowired
-    private RoleEquipDao equipDao;
-
+    /**
+     * MallOrderDao
+     */
     @Autowired
     private MallOrderDao orderDao;
 
-
-
+    /**
+     * 邮件服务
+     */
     @Autowired
     private EmailService emailService;
 
-    @Autowired
-    private ItemService itemService;
-
-    @Autowired
-    private EquipService equipService;
-
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
+    /**
+     * 商城协议返回
+     */
     private MsgMallProto.ResponseMall response;
 
     /**
      * 获取商店的刷新列表
      *
-     * @param request
-     * @return
+     * @param request   请求
+     * @param channel   channel
+     * @return          协议返回
      */
     public MsgMallProto.ResponseMall getMall(MsgMallProto.RequestMall request, Channel channel) {
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
-
 
         // 获取随机的商品
         List<Items> items = LocalCommodityMap.getItemsList();
@@ -95,8 +89,9 @@ public class MallService {
     /**
      * 购买商品
      *
-     * @param request
-     * @return
+     * @param request   请求
+     * @param channel   channel
+     * @return          协议返回
      */
     public MsgMallProto.ResponseMall buyMall(MsgMallProto.RequestMall request, Channel channel) {
         response = commonInterceptor(request);
@@ -124,14 +119,14 @@ public class MallService {
     /**
      * 同步进行购买操作
      *
-     * @param userId
-     * @param c
-     * @param channel
+     * @param userId        用户id
+     * @param c             商品信息
+     * @param num           商品数量
+     * @param channel       channel
      */
     private synchronized void synDoBuySelect(long userId, Commodity c, int num, Channel channel) {
         // 获取玩家信息
         Role role = LocalUserMap.userRoleMap.get(userId);
-
         int ownGold = role.getGold();
         int price = c.getPrice();
 
@@ -170,6 +165,7 @@ public class MallService {
         // 第一次购买
         timesList = new ArrayList<>();
         MallBuyTimes times = new MallBuyTimes();
+
         times.setCId(c.getId());
         times.setTimes(times.getTimes() + num);
         timesList.add(times);
@@ -188,9 +184,9 @@ public class MallService {
      * 2.玩家获得物品
      *
      *
-     * @param role
-     * @param c
-     * @param channel
+     * @param role      玩家信息
+     * @param c         商品信息
+     * @param channel   channel
      */
     private void doBuy(Role role, Commodity c, int num, Channel channel) {
 
@@ -216,9 +212,9 @@ public class MallService {
     /**
      * 填充邮件物品信息，调用 emailService 发送邮件
      *
-     * @param role
-     * @param order
-     * @param type
+     * @param role      玩啊及信息
+     * @param order     商品订单
+     * @param type      邮件类型
      */
     private void sendCommodityEmail(Role role, MallOrder order, EmailType type) {
         List<EmailGoods> edList = new ArrayList<>();
@@ -231,17 +227,17 @@ public class MallService {
         edList.add(ed);
 
         // 发送邮件
-        emailService.sendEmail(role, edList, EmailType.BUY);
+        emailService.sendEmail(role, edList, type);
     }
 
 
     /**
      * 生成订单实体类
      *
-     * @param role
-     * @param c
-     * @param num
-     * @return
+     * @param role      玩家信息
+     * @param c         商品信息
+     * @param num       商品数量
+     * @return          返回订单信息
      */
     private MallOrder generateOrder(Role role, Commodity c, int num) {
         MallOrder mallOrder = new MallOrder();
@@ -258,8 +254,9 @@ public class MallService {
     /**
      * 缓存，Db 更新玩家的金币值
      *
-     * @param role
-     * @param c
+     * @param role      玩家信息
+     * @param c         商品信息
+     * @param num       商品数量
      */
     private void updateRoleGold(Role role, Commodity c, int num){
         log.info("玩家：" + role.getName() + " 购买商品前，金币为：" + role.getGold());
@@ -283,38 +280,14 @@ public class MallService {
     }
 
 
-    /**
-     * 向玩家发放物品
-     *
-     * @param r         玩家
-     * @param goods     物品
-     * @param num       数量
-     */
-    public void sendRoleGoods(Role r, Goods goods, int num){
-        // 获取发放物品的状态
-        int type = goods.getType();
-        if (type == CommodityType.ITEM.getCode()){
-
-            // 添加玩家的物品数量
-            itemService.addRoleItems(r, goods.getGid(), num);
-        }
-
-        else if (type == CommodityType.EQUIP.getCode()){
-
-            // 添加玩家的装备数量
-            List<Goods> gList = new ArrayList<>();
-            gList.add(goods);
-            equipService.addRoleEquips(r, gList);
-        }
-    }
 
 
     /**
      * 组合商品列表
      *
-     * @param items
-     * @param equips
-     * @return
+     * @param items     物品列表
+     * @param equips    装备列表
+     * @return          商品协议实体类
      */
     private List<CommodityProto.Commodity> combineToCommodities(List<Items> items, List<Equip> equips) {
         System.out.println(items);
@@ -340,17 +313,15 @@ public class MallService {
         });
 
         System.out.println(list);
-        List<CommodityProto.Commodity> res = protoService.transToCommodityList(list);
-
-        return res;
+        return protoService.transToCommodityList(list);
     }
 
 
     /**
      * 构造消息返回
      *
-     * @param commodities
-     * @param channel
+     * @param commodities       商品列表
+     * @param channel           channel
      */
     private void responseCommodityList(List<CommodityProto.Commodity> commodities, Channel channel) {
         response = MsgMallProto.ResponseMall.newBuilder()
@@ -367,32 +338,24 @@ public class MallService {
     /**
      * 返回失败的消息回复
      *
-     * @param channel
-     * @param content
+     * @param channel       channel
+     * @param content       消息
      */
     private void responseFailed(Channel channel, String content) {
         response = MsgMallProto.ResponseMall.newBuilder()
                 .setResult(ResultCode.FAILED)
                 .setContent(content)
                 .build();
-
         channel.writeAndFlush(response);
     }
-
-
-
-
-
-
-
 
 
 
     /**
      * 用户状态拦截器
      *
-     * @param request
-     * @return
+     * @param request   请求
+     * @return          商城协议返回
      */
     private MsgMallProto.ResponseMall userStateInterceptor(MsgMallProto.RequestMall request){
         // 用户id标识判断
@@ -418,8 +381,8 @@ public class MallService {
     /**
      * 商品状态判断
      *
-     * @param request
-     * @return
+     * @param request       请求
+     * @return              商城协议返回
      */
     private MsgMallProto.ResponseMall commodityInterceptor(MsgMallProto.RequestMall request) {
 
@@ -436,8 +399,8 @@ public class MallService {
     /**
      * 购买数量判断
      *
-     * @param request
-     * @return
+     * @param request       请求
+     * @return              商城协议返回
      */
     private MsgMallProto.ResponseMall numInterceptor(MsgMallProto.RequestMall request) {
         int num = request.getNum();
@@ -458,8 +421,8 @@ public class MallService {
     /**
      * 公共消息拦截器
      *
-     * @param request
-     * @return
+     * @param request       请求
+     * @return              商城协议返回
      */
     private MsgMallProto.ResponseMall commonInterceptor(MsgMallProto.RequestMall request){
         // 用户状态判断

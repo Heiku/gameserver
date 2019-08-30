@@ -44,13 +44,21 @@ import static com.ljh.gamedemo.common.ItemsType.*;
 @Service
 public class ItemService {
 
+    /**
+     * RoleItemsDao
+     */
     @Autowired
     private RoleItemsDao roleItemsDao;
 
-
+    /**
+     * 用户服务
+     */
     @Autowired
     private UserService userService;
 
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 

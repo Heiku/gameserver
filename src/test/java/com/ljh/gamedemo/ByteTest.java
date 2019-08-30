@@ -105,10 +105,12 @@ public class ByteTest {
 
 
         DateTime now = new DateTime();
-        System.out.println(now);
+        System.out.println(now.toDate().getTime());
 
-        DateTime later = now.plus(Minutes.minutes(30)).toDateTime();
-        System.out.println(later);
+        DateTime later = now.plus(Minutes.minutes(2)).toDateTime();
+        System.out.println(later.toDate().getTime());
+
+        //System.out.println(0.3 - 0.2 == 0.1);
     }
 }
 

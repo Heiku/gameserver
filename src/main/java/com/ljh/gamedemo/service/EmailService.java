@@ -37,24 +37,33 @@ import java.util.Map;
 @Slf4j
 public class EmailService {
 
+    /**
+     * EmailDao
+     */
     @Autowired
     private RoleEmailDao emailDao;
 
+    /**
+     * EmailGoodsDao
+     */
     @Autowired
     private EmailGoodsDao emailGoodsDao;
 
-
+    /**
+     * 物品服务
+     */
     @Autowired
-    private UserService userService;
+    private GoodsService goodsService;
 
-    @Autowired
-    private MallService mallService;
-
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
-    private MsgUserInfoProto.ResponseUserInfo userResp;
-
+    /**
+     * 邮件协议返回
+     */
     private MsgEmailProto.ResponseEmail emailResp;
 
     /**
@@ -64,13 +73,6 @@ public class EmailService {
      * @param channel
      */
     public void getAllEmail(MsgEmailProto.RequestEmail request, Channel channel){
-
-        // 玩家状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-        }
-
         long userId = request.getUserId();
         Role role = LocalUserMap.userRoleMap.get(userId);
 
@@ -110,12 +112,6 @@ public class EmailService {
      * @param channel   channel
      */
     public void receiveEmail(MsgEmailProto.RequestEmail request, Channel channel) {
-        // 玩家状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-        }
-
         // 获取基本信息
         long eid = request.getEid();
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
@@ -140,7 +136,7 @@ public class EmailService {
             Goods goods = LocalGoodsMap.getIdGoodsMap().get(eg.getGid());
 
             // 直接发放到背包中
-            mallService.sendRoleGoods(role, goods, eg.getNum());
+            goodsService.sendRoleGoods(role, goods, eg.getNum());
         });
 
 

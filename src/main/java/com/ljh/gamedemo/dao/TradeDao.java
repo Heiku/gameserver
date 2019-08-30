@@ -23,4 +23,7 @@ public interface TradeDao {
 
     @Update("update trade set buyer = #{buyer}, price = #{price}, process = #{process} where id = #{id}")
     int updateTrade(Trade trade);
+
+    @Select("select * from trade where process = 1")
+    List<Trade> selectAllOnTrade();
 }
