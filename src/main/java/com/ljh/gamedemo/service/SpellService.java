@@ -24,6 +24,8 @@ import java.util.Map;
 
 
 /**
+ * 技能服务
+ *
  * @Author: Heiku
  * @Date: 2019/7/11
  */
@@ -125,7 +127,7 @@ public class SpellService {
      * 3.存放 map<roleId, List<spell>>
      * 4.构造response
      *
-     * @param requestSpell
+     * @param requestSpell      技能请求
      * @return
      */
     public void learn(MsgSpellProto.RequestSpell requestSpell, Channel channel){

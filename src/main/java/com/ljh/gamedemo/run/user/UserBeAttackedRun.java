@@ -1,16 +1,12 @@
 package com.ljh.gamedemo.run.user;
 
 import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.dto.RoleBuff;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
-import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.service.*;
 import com.ljh.gamedemo.util.SpringUtil;
-import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -25,13 +21,19 @@ import java.util.List;
 @Slf4j
 public class UserBeAttackedRun implements Runnable {
 
-    // 这里只需要一个userId，在去map中读取最新的role
+    /**
+     * 玩家标识id
+     */
     private Long userId;
 
-    // 玩家收到的伤害值
+    /**
+     * 玩家收到的伤害值
+     */
     private Integer damage;
 
-    // 是否是pk
+    /**
+     * 是否是pk
+     */
     private boolean pk;
 
     // base roleService
@@ -75,100 +77,29 @@ public class UserBeAttackedRun implements Runnable {
         // 获取基础信息
         Role role = LocalUserMap.userRoleMap.get(userId);
 
-        int hp = role.getHp();
-        log.info("攻击前的 role 属性为："  + role);
-
         // 掉血优先扣护盾值，判断护盾的值，及护盾是否有效
-        List<RoleBuff> buffList = RoleBuffCache.getCache().getIfPresent(role.getRoleId());
-        if (buffList != null && !buffList.isEmpty()){
-            hp = cutShield(buffList, hp);
-        } else {
-            // 没有buff，也直接扣血
-            hp -= damage;
-        }
+        int hp = roleService.cutShield(role, damage);
+
+        // 玩家死亡
         if (hp < 0){
+
+            // 如果是pk对决，产生pk结果
+            if (pk){
+                pkService.pkEnd(role);
+                return;
+            }
             // 退出队伍
             groupService.removeGroup(role);
             // 玩家复活
             roleService.reliveRole(role);
             return;
         }
-        role.setHp(hp);
 
-        // 更新map
+        // 更新玩家角色信息
+        role.setHp(hp);
         roleService.updateRoleInfo(role);
 
-        // 直接伤害返回
+        // 消息通知
         attackCreepService.responseAttacked(role, ContentType.ATTACK_CURRENT);
-
-        // pk 对决
-        // 判断玩家的hp，生成pk 结果
-        if (pk){
-            if (role.getHp() <= 0) {
-                pkService.pkEnd(role);
-            }
-        }
-    }
-
-
-    /**
-     * 扣除护盾值
-     *
-     * @param buffList
-     * @param hp
-     * @return
-     */
-    public int cutShield(List<RoleBuff> buffList, int hp){
-        // 记录护盾打碎后多余的扣血值
-        int blood;
-
-        // 获取护盾的buff
-        RoleBuff buff = new RoleBuff();
-        for (RoleBuff b : buffList) {
-            if (b.getType() == 1){
-                buff = b;
-            }
-        }
-
-        // 获取当前时间点
-        long nowTs = System.currentTimeMillis();
-        long td = nowTs - buff.getCreateTime();
-        long cd = buff.getSec() * 1000;
-
-        // 护盾时间的有效期判断
-        if (td < cd){
-            int shield = buff.getShield();
-            log.info("存在护盾buff，护盾值为：" + shield);
-
-            // 护盾值有效
-            if (shield >= 0) {
-                shield -= damage;
-                log.info("护盾收到伤害：当前护盾值为: " + shield);
-
-                // 盾碎了
-                if (shield <= 0) {
-                    // 获取扣血值
-                    blood = Math.abs(shield - damage);
-                    log.info("护盾碎了，将收到额外的伤害为：" + blood);
-
-                    // 移除 buff
-                    buffList.remove(buff);
-                    log.info("移除护盾buff后，当前的玩家buff有：" + buffList);
-
-                    // 同时玩家扣血
-                    if (hp > 0) {
-                        hp -= blood;
-                    }
-                } else {
-                    // 更新shield
-                    buff.setShield(shield);
-                }
-            }
-        }else {
-            // 护盾技能过期，移除护盾技能
-            hp -= damage;
-            buffList.remove(buff);
-        }
-        return hp;
     }
 }

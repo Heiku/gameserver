@@ -7,7 +7,7 @@ import com.ljh.gamedemo.entity.DurationAttack;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.UserBeAttackedScheduleRun;
@@ -66,10 +66,8 @@ public class BossDurationRun implements Runnable {
             // 玩家受到伤害
             Role role = LocalUserMap.getIdRoleMap().get(id);
             if (role != null){
-                DurationAttack da = new DurationAttack();
-                da.setDamage(s.getDamage());
-                da.setSec(s.getSec());
-                UserBeAttackedScheduleRun task = new UserBeAttackedScheduleRun(role, da, 0, false);
+                UserBeAttackedScheduleRun task = new UserBeAttackedScheduleRun(role, new DurationAttack(s.getDamage(), s.getSec())
+                        , 0, false);
                 ScheduledFuture future = UserExecutorManager.getUserExecutor(role.getUserId())
                         .scheduleAtFixedRate(task, 0, 3, TimeUnit.SECONDS);
 

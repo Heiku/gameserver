@@ -86,6 +86,7 @@ public class LocalCreepMap {
                     creep.setMaxHp(Integer.valueOf(getValue(row.getCell(6))));
                     creep.setDamage(Integer.valueOf(getValue(row.getCell(7))));
                     creep.setSiteId(Integer.valueOf(getValue(row.getCell(8))));
+                    creep.setCoolDown(Integer.valueOf(getValue(row.getCell(8))));
 
                     idCreepMap.put(creep.getCreepId(), creep);
                     nameCreepMap.put(creep.getName(), creep);

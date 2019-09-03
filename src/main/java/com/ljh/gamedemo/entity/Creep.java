@@ -56,4 +56,8 @@ public class Creep {
      */
     private Integer siteId;
 
+    /**
+     * 攻速
+     */
+    private Integer coolDown;
 }

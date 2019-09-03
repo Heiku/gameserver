@@ -5,7 +5,7 @@ import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgDuplicateProto;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;

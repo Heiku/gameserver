@@ -20,6 +20,8 @@ public class ContentType {
 
     public static final String BAD_PASSWORD = "密码错误，请重新登录！\n";
 
+    public static final String USER_OUT_OF = "账号被强制下线，原因：账号异地登录！\n";
+
     // public static final String USER_EMPTY_TOKEN = "登录的请求token信息为空！\n";
 
     public static final String USER_TOKEN_DATA_EMPTY = "数据库中暂无当前token记录，请重新登录\n";
@@ -381,6 +383,8 @@ public class ContentType {
     public static final String TRADE_OUT_OF_SUCCESS = "下架物品成功，物品已经返回玩家背包中！\n";
 
     public static final String TRADE_BUY_SUCCESS = "购买成功，物品随后将通过邮件发送，请注意接收！\n";
+
+    public static final String TRADE_AUCTION_TIME_END = "【交易行消息】\n你在拍卖行出售的物品：%s 在拍卖时间内没有人竞价，物品已经返回你的背包中！\n";
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";

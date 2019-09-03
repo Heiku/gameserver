@@ -6,11 +6,14 @@ import com.ljh.gamedemo.entity.Creep;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.local.LocalCreepMap;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.util.CountDownLatchUtil;
+import com.ljh.gamedemo.service.AttackCreepService;
 import com.ljh.gamedemo.service.ProtoService;
+import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +21,8 @@ import java.util.concurrent.RejectedExecutionException;
 
 
 /**
+ * 技能对野怪造成持续伤害
+ *
  * @Author: Heiku
  * @Date: 2019/7/22
  */
@@ -25,42 +30,66 @@ import java.util.concurrent.RejectedExecutionException;
 @Slf4j
 public class CreepBeAttackedScheduleRun implements Runnable {
 
-    private Spell spell;
-
-    private long creepId;
-
-    private Channel channel;
-
-    private Integer allDamage;
-
-    private Integer sumDamage = 0;
-
-    private ProtoService protoService = ProtoService.getInstance();
-
+    /**
+     * 玩家信息
+     */
     private Role role;
 
-    private Integer extra;
+    /**
+     * 技能信息
+     */
+    private Spell spell;
 
-    public CreepBeAttackedScheduleRun(Spell spell, long creepId,
-                                      Channel channel, Role role){
+    /**
+     * 野怪信息
+     */
+    private Creep creep;
+
+    /**
+     * 额外伤害加成
+     */
+    private int extra;
+
+    /**
+     * channel
+     */
+    private Channel channel;
+
+    /**
+     * 技能总伤害
+     */
+    private Integer allDamage;
+
+    /**
+     * 技能累计伤害
+     */
+    private Integer sumDamage = 0;
+
+    /**
+     * 攻击野怪的任务
+     */
+    private AttackCreepService creepService = SpringUtil.getBean(AttackCreepService.class);
+
+
+
+    public CreepBeAttackedScheduleRun(Role role, Spell spell, Creep creep, int extra){
+        this.role = role;
         this.spell = spell;
-        this.creepId = creepId;
-        this.channel = channel;
+        this.creep = creep;
+        this.extra = extra;
+
+        this.channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
 
         // 持续伤害的总伤害值
         this.allDamage = spell.getDamage();
-
-        this.role = role;
     }
 
     @Override
     public void run() {
-        // 获取技能增益效果
-        extra = RoleAttrCache.getRoleAttrMap().get(role.getRoleId()).getSp();
-
-        Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
+        // 获取初始血量西悉尼
         int hp = creep.getHp();
         int startUp = creep.getMaxHp();
+
         // 每秒造成的伤害值
         int damage = spell.getDamage() / spell.getSec() + extra;
 
@@ -79,13 +108,7 @@ public class CreepBeAttackedScheduleRun implements Runnable {
                 FutureMap.futureMap.get(this.hashCode()).cancel(true);
                 log.info("野怪持续掉血任务：野怪死亡，任务取消");
 
-                MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                        .setType(MsgAttackCreepProto.RequestType.ATTACK)
-                        .setResult(ResultCode.SUCCESS)
-                        .setContent(ContentType.ATTACK_DEATH_CREEP)
-                        .setCreep(protoService.transToCreep(creep))
-                        .build();
-                channel.writeAndFlush(response);
+                creepService.sendCreepMsg(role, creep, ContentType.ATTACK_DEATH_CREEP);
                 return;
             }
 
@@ -96,20 +119,12 @@ public class CreepBeAttackedScheduleRun implements Runnable {
                 return;
             }
 
-            // 扣血
+            // 更新野怪的血量
             creep.setHp(hp);
             LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
 
-            log.info("野怪持续掉血任务，野怪掉血后：" + creep.getHp());
-
             // 最后攻击成功，返回消息给client
-            MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setType(MsgAttackCreepProto.RequestType.ATTACK)
-                    .setResult(ResultCode.SUCCESS)
-                    .setContent(ContentType.ATTACK_CURRENT)
-                    .setCreep(protoService.transToCreep(creep))
-                    .build();
-            channel.writeAndFlush(response);
+            creepService.sendCreepMsg(role, creep, ContentType.ATTACK_CURRENT);
         }
     }
 }

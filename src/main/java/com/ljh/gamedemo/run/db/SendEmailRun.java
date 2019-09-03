@@ -9,7 +9,7 @@ import com.ljh.gamedemo.entity.Email;
 import com.ljh.gamedemo.entity.EmailGoods;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.EmailProto;
 import com.ljh.gamedemo.proto.protoc.GoodsProto;
 import com.ljh.gamedemo.proto.protoc.MsgEmailProto;

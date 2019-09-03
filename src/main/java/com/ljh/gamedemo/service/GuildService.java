@@ -8,7 +8,7 @@ import com.ljh.gamedemo.dao.GuildGoodsDao;
 import com.ljh.gamedemo.entity.*;
 import com.ljh.gamedemo.local.*;
 import com.ljh.gamedemo.local.cache.GuildCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgGuildProto;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;

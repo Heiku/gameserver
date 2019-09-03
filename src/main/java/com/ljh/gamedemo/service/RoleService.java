@@ -1,14 +1,17 @@
 package com.ljh.gamedemo.service;
 
+import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.UserRoleDao;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.RoleInit;
+import com.ljh.gamedemo.entity.dto.RoleBuff;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalRoleInitMap;
 import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
+import com.ljh.gamedemo.local.cache.RoleBuffCache;
 import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 具体的玩家职业操作
@@ -205,6 +209,7 @@ public class RoleService {
     }
 
 
+
     /**
      * 玩家复活
      *
@@ -233,7 +238,7 @@ public class RoleService {
     /**
      * 治疗挑战队列的玩家
      *
-     * @param deque
+     * @param deque     挑战队列
      */
     public void healRole(Deque<Long> deque, int heal, int range) {
         if (deque == null || deque.isEmpty()){
@@ -267,6 +272,71 @@ public class RoleService {
 
 
     /**
+     * 如果存在护盾Buff，扣除护盾值
+     *
+     * @param role  玩家信息
+     * @return      返回最新的血量值
+     */
+    public synchronized int cutShield(Role role, int damage){
+        // 获取血量信息
+        int hp = role.getHp();
+
+        // 判断是否有护盾Buff
+        List<RoleBuff> buffList = Optional.ofNullable(RoleBuffCache.getCache().getIfPresent(role.getRoleId()))
+                .orElse(Lists.newArrayList());
+        Optional<RoleBuff> result = buffList.stream()
+                .filter(b -> b.getType() == 1)
+                .findFirst();
+        if (result.isPresent()) {
+
+            // 记录护盾打碎后多余的扣血值
+            int blood;
+            RoleBuff buff = result.get();
+
+            // 获取当前时间点
+            long nowTs = System.currentTimeMillis();
+            long td = nowTs - buff.getCreateTime();
+            long cd = buff.getSec() * 1000;
+
+            // 护盾时间的有效期判断
+            if (td < cd) {
+                int shield = buff.getShield();
+
+                // 护盾值有效
+                if (shield >= 0) {
+                    shield -= damage;
+
+                    // 盾碎了
+                    if (shield <= 0) {
+                        // 获取扣血值
+                        blood = Math.abs(shield - damage);
+
+                        // 移除 buff
+                        buffList.remove(buff);
+
+                        // 同时玩家扣血
+                        if (hp > 0) {
+                            hp -= blood;
+                        }
+                    } else {
+                        // 更新shield
+                        buff.setShield(shield);
+                    }
+                }
+            } else {
+                // 护盾技能过期，移除护盾技能
+                hp -= damage;
+                buffList.remove(buff);
+            }
+            // 更新Buff缓存
+            RoleBuffCache.getCache().put(role.getRoleId(), buffList);
+        }
+        hp -= damage;
+        return hp;
+    }
+
+
+    /**
      * 加锁判断是否足够金额购买物品，能得话直接支付，否得话返回失败
      *
      * @param receiver      玩家信息
@@ -281,6 +351,7 @@ public class RoleService {
         updateRoleInfo(receiver);
         return true;
     }
+
 
     /**
      * 判断玩家是否存在

@@ -9,7 +9,7 @@ import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.RoleState;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleStateCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgChatProto;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;

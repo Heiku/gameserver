@@ -8,7 +8,7 @@ import com.ljh.gamedemo.entity.tmp.RoleDeBuff;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.service.DuplicateService;
 import com.ljh.gamedemo.util.SpringUtil;
 

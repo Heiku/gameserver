@@ -9,7 +9,7 @@ import com.ljh.gamedemo.local.*;
 import com.ljh.gamedemo.local.cache.GroupCache;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.DuplicateProto;
 import com.ljh.gamedemo.proto.protoc.MsgDuplicateProto;
 import com.ljh.gamedemo.proto.protoc.MsgSpellProto;
@@ -46,27 +46,51 @@ import static com.ljh.gamedemo.common.SpellSchoolType.*;
 @Slf4j
 public class DuplicateService {
 
+    /**
+     * 玩家额外属性服务
+     */
     @Autowired
-    private UserService userService;
+    private RoleAttrService attrService;
 
+    /**
+     * 玩家服务
+     */
     @Autowired
     private RoleService roleService;
 
+    /**
+     * 组队服务
+     */
     @Autowired
     private GroupService groupService;
 
+    /**
+     * 装备服务
+     */
     @Autowired
     private EquipService equipService;
 
+    /**
+     * 技能服务
+     */
     @Autowired
     private SpellService spellService;
 
+    /**
+     * Boss服务
+     */
     @Autowired
     private BossService bossService;
 
+    /**
+     * 召唤伙伴服务
+     */
     @Autowired
     private PartnerService partnerService;
 
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
@@ -91,12 +115,6 @@ public class DuplicateService {
      * @param request   请求
      */
     public void getDuplicate(MsgDuplicateProto.RequestDuplicate request, Channel channel){
-        // 玩家角色状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
 
         // 获取当前的副本列表
         List<Duplicate> duplicates = new ArrayList<>();
@@ -124,12 +142,6 @@ public class DuplicateService {
      * @param request   请求
      */
     public void enterDuplicate(MsgDuplicateProto.RequestDuplicate request, Channel channel) {
-        // 玩家角色状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
 
         // 副本信息判断
         dupResp = duplicateStateInterceptor(request);
@@ -169,12 +181,6 @@ public class DuplicateService {
      * @param channel       channel
      */
     public void spellBoss(MsgDuplicateProto.RequestDuplicate request, Channel channel){
-        // 用户状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null) {
-            channel.writeAndFlush(userResp);
-            return;
-        }
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
 
         // 技能判断
@@ -240,12 +246,7 @@ public class DuplicateService {
      * @param channel   channel
      */
     private void doSpellAttack(Role role, Spell spell, Duplicate dup, Channel channel) {
-        int extra = 0;
-        // 获取 Buff 加成的额外伤害
-        RoleAttr attr = RoleAttrCache.getRoleAttrMap().get(role.getRoleId());
-        if (attr != null){
-            extra = spell.getCost() == 0 ? attr.getDamage() : attr.getSp();
-        }
+        int extra = attrService.getExtraDamage(role, spell);
 
         Boss boss = dup.getBosses().get(0);
 

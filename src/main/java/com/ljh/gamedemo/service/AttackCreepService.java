@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.service;
 
+import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.entity.Creep;
@@ -11,8 +12,9 @@ import com.ljh.gamedemo.local.LocalCreepMap;
 import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleBuffCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.proto.protoc.MsgSpellProto;
 import com.ljh.gamedemo.run.CustomExecutor;
 import com.ljh.gamedemo.run.SiteCreepExecutorManager;
 import com.ljh.gamedemo.run.UserExecutorManager;
@@ -28,11 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.ljh.gamedemo.common.SpellSchoolType.*;
 
 /**
  * @Author: Heiku
@@ -42,13 +43,23 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class AttackCreepService {
 
-    private MsgAttackCreepProto.ResponseAttackCreep response;
+    /**
+     * 玩家属性服务
+     */
+    @Autowired
+    private RoleAttrService attrService;
 
     /**
      * 装备服务
      */
     @Autowired
     private EquipService equipService;
+
+    /**
+     * 技能服务
+     */
+    @Autowired
+    private SpellService spellService;
 
     /**
      * 协议工具
@@ -58,201 +69,125 @@ public class AttackCreepService {
 
 
     /**
-     * 处理攻击野怪请求，默认采用普攻攻击的方式
-     *
-     * @param request
-     * @param channel
-     * @return
+     * 技能协议返回
      */
-    public MsgAttackCreepProto.ResponseAttackCreep attackCreep(MsgAttackCreepProto.RequestAttackCreep request, Channel channel){
+    private MsgSpellProto.ResponseSpell spellResp;
 
-        // 先进行角色状态，野怪状态的拦截判断
-        response = userStateInterceptor(request);
-        if (response != null){
-            return response;
-        }
-
-        response = creepStateInterceptor(request);
-        if (response != null){
-            return response;
-        }
-
-
-        // 获取角色的基本信息
-        long userId = request.getUserId();
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        long roleId = role.getRoleId();
-        List<Spell> spells = LocalSpellMap.getRoleSpellMap().get(roleId);
-        role.setSpellList(spells);
-
-        // 获取野怪的基本信息
-        long creepId = request.getCreepId();
-        Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
-
-        // 初始化数据，关联角色和攻击的野怪
-        Deque<Long> roleIdList = LocalAttackCreepMap.getCreepAttackedMap().get(creepId);
-        if (roleIdList == null){
-            roleIdList = new LinkedList<>();
-            roleIdList.offer(roleId);
-        }
-        if (!roleIdList.contains(roleId)){
-            roleIdList.offer(roleId);
-        }
-        LocalAttackCreepMap.getCreepAttackedMap().put(creepId, roleIdList);
-
-        LocalAttackCreepMap.getCurrentCreepMap().put(roleId, creepId);
-
-        // 加锁判断野怪野怪状态
-        synchronized (this){
-            if (creep.getNum() <= 0 || creep.getHp() <= 0){
-                response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                        .setResult(ResultCode.FAILED)
-                        .setContent(ContentType.ATTACK_DEATH_CREEP)
-                        .build();
-                channel.writeAndFlush(channel);
-                return null;
-            }
-        }
-
-        // 攻击野怪
-        doAttack(userId, role, creep, channel);
-
-        return null;
-    }
+    /**
+     * 攻击野怪协议返回
+     */
+    private MsgAttackCreepProto.ResponseAttackCreep response;
 
 
     /**
      * 处理技能攻击野怪请求
      *
-     * @param request
-     * @param channel
-     * @return
+     * @param request       请求
+     * @param channel       channel
      */
-    public MsgAttackCreepProto.ResponseAttackCreep spellAttackCreep(MsgAttackCreepProto.RequestAttackCreep request, Channel channel){
-        // 先进行角色状态，野怪状态的拦截判断
-        response = userStateInterceptor(request);
+    public void spellAttackCreep(MsgAttackCreepProto.RequestAttackCreep request, Channel channel){
+        // 野怪判断
+        response = creepStateInterceptor(request.getCreepId());
         if (response != null){
-            return response;
+            channel.writeAndFlush(response);
+            return;
         }
+
+        // 攻击的野怪信息
+        Creep creep = LocalCreepMap.getIdCreepMap().get(request.getCreepId());
 
         // 技能拦截判断
-        response = spellStateInterceptor(request);
-        if (response != null){
-            return response;
+        spellResp = spellService.spellStateInterceptor(request.getSpellId());
+        if (spellResp != null){
+            channel.writeAndFlush(spellResp);
+            return;
         }
-
         // 获取角色的基本信息
-        long userId = request.getUserId();
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        log.info(role.getName() + " attack creep by spell");
-
-        long roleId = role.getRoleId();
-        List<Spell> spells = LocalSpellMap.getRoleSpellMap().get(roleId);
-        role.setSpellList(spells);
-
+        Role role = LocalUserMap.getUserRoleMap().get(request.getUserId());
 
         // 获取施放的技能spell
-        int spellId = request.getSpellId();
-        Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
-
-        // 获取施放技能的目标野怪id
-        long creepId = request.getCreepId();
-
-        // 加锁判断野怪的状态
-        synchronized (this){
-           Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
-           if (creep.getNum() <= 0 || creep.getHp() <= 0){
-
-               response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                       .setResult(ResultCode.FAILED)
-                       .setContent(ContentType.ATTACK_DEATH_CREEP)
-                       .build();
-               return response;
-           }
-        }
-
-        UserDeclineMpRun task = new UserDeclineMpRun(roleId, spell);
-        Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(userId, task);
-
-        if (mpFuture != null && mpFuture.isSuccess()) {
-            // 判断是直接伤害还是持续伤害？
-            if (spell.getSec() > 0) {
-                CreepBeAttackedScheduleRun r = new CreepBeAttackedScheduleRun(spell, creepId, channel, role);
-                CustomExecutor executors = SiteCreepExecutorManager.getExecutor(role.getSiteId());
-                ScheduledFuture future = executors.scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
-                FutureMap.futureMap.put(r.hashCode(), future);
-            } else {
-                SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role, spell, creepId, channel, false));
-
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 具体的攻击野怪的操作操作
-     *
-     * @param role
-     * @param creep
-     * @param channel
-     */
-    private void doAttack(long userId, Role role, Creep creep, Channel channel){
-        // 先选择一个普通攻击的技能
-        List<Spell> spells = role.getSpellList();
-        spells.sort((a, b) -> a.getSpellId().compareTo(b.getSpellId()));
-
-        // 普通攻击技能
-        Spell spell = spells.get(0);
-
-        // 添加任务到用户线程
-        // 野怪掉血任务
-        SiteCreepExecutorManager.addCreepTask(role.getSiteId(), new CreepBeAttackedRun(role , spell, creep.getCreepId(), channel, true));
-
-
-        // 玩家掉血任务, 第一次攻击的时候，加入玩家自动扣血，第二次攻击的时候，直接跳过
-        // 掉血任务，当野怪死亡的时候 或 玩家死亡 停止
-        ScheduledFuture lastFuture = LocalAttackCreepMap.getUserBeAttackedMap().get(userId);
-
-        Deque<Long> deque = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId());
-        if (lastFuture == null && !deque.isEmpty() && deque.peek() != userId) {
-            UserBeAttackedRun task = new UserBeAttackedRun(userId, spell.getDamage(), false);
-            ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task,
-                    0, spell.getCoolDown(), TimeUnit.SECONDS);
-            FutureMap.futureMap.put(task.hashCode(), future);
-            LocalAttackCreepMap.getUserBeAttackedMap().put(role.getRoleId(), future);
-        }
-
-        // 装备消耗耐久任务
-        equipService.synCutEquipDurability(role);
-    }
-
-
-    /**
-     * 用户主动技能，施放技能Buff
-     *
-     * @param request
-     * @param channel
-     * @return
-     */
-    public MsgAttackCreepProto.ResponseAttackCreep spellToSave(MsgAttackCreepProto.RequestAttackCreep request, Channel channel) {
-
-        // user.spell interceptor
-        response = userStateInterceptor(request);
-        if (response != null){
-            return response;
-        }
-        response = spellStateInterceptor(request);
-        if (response != null){
-            return response;
-        }
-
-        // gain base data
-        Role role = LocalUserMap.userRoleMap.get(request.getUserId());
         Spell spell = LocalSpellMap.getIdSpellMap().get(request.getSpellId());
 
-        // transform bean entity
+        // 进行技能施放
+        doSpellAttack(role, spell, creep);
+    }
+
+
+    /**
+     * 具体的技能施放操作
+     *
+     * @param role      玩家信息
+     * @param spell     技能信息
+     * @param creep     野怪信息
+     */
+    private void doSpellAttack(Role role, Spell spell, Creep creep) {
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+
+        // 初始化攻击数据
+        initCreepAttack(role, creep);
+
+        // 野怪开始攻击玩家
+        creepStartAttack(role, creep);
+
+        // 读取Buff的额外伤害
+        int extra = attrService.getExtraDamage(role, spell);
+
+        // 普攻，直接伤害
+        if (spell.getCost() == 0){
+            doAttack(role, creep, extra);
+            return;
+        }
+
+        // 技能伤害
+        // 扣蓝
+        UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell);
+        Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(role.getUserId(), mpTask);
+
+        // 异步转同步，等待扣蓝任务完成
+        try {
+            mpFuture.sync();
+
+            if (mpFuture.get()){
+                switch (spell.getSchool()){
+
+                    // 直接伤害
+                    case DIRECT:
+                        SiteCreepExecutorManager.addCreepTask(role.getSiteId(),
+                                new CreepBeAttackedRun(role, creep, extra + spell.getDamage()));
+                        break;
+
+                    // 持续伤害
+                    case DURATION:
+                        spellDur(role, spell, creep, extra);
+                        break;
+
+                    // 护盾技能
+                    case SHIELD:
+                        spellShield(role, spell);
+                        break;
+                }
+            }else {
+                sendFailedMsg(channel, ContentType.DUPLICATE_SPELL_FAILED);
+
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 护盾技能
+     *
+     * @param role      玩家信息
+     * @param spell     技能信息
+     */
+    private void spellShield(Role role, Spell spell) {
+        // 获取护盾技能的具体信息
         int shield = spell.getDamage();
         int sec = spell.getSec();
+
+        // 构建玩家 buff信息
         RoleBuff buff = new RoleBuff();
         buff.setRoleId(role.getRoleId());
         buff.setShield(shield);
@@ -260,20 +195,102 @@ public class AttackCreepService {
         buff.setSec(sec);
         buff.setCreateTime(System.currentTimeMillis());
 
-        List<RoleBuff> buffList = RoleBuffCache.getCache().getIfPresent(role.getRoleId());
-        if (buffList == null || buffList.isEmpty()){
-            buffList = new ArrayList<>();
-        }
+        List<RoleBuff> buffList = Optional.ofNullable(RoleBuffCache.getCache().getIfPresent(role.getRoleId()))
+                .orElse(Lists.newArrayList());
         buffList.add(buff);
 
         // update cache
         RoleBuffCache.getCache().put(role.getRoleId(), buffList);
 
-        return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                .setContent(ContentType.ATTACK_SPELL_SUCCESS)
-                .setResult(ResultCode.FAILED)
-                .setType(MsgAttackCreepProto.RequestType.SAVE)
-                .build();
+
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+        sendFailedMsg(channel, ContentType.ATTACK_SPELL_SUCCESS);
+    }
+
+    /**
+     * 技能持续伤害
+     *
+     * @param role      玩家信息
+     * @param spell     技能信息
+     * @param creep     野怪信息
+     * @param extra     额外伤害
+     */
+    private void spellDur(Role role, Spell spell, Creep creep, int extra){
+
+        // 构建掉血任务
+        CreepBeAttackedScheduleRun task = new CreepBeAttackedScheduleRun(role, spell, creep, extra);
+
+        // 获取线程池，并执行
+        CustomExecutor executors = SiteCreepExecutorManager.getExecutor(role.getSiteId());
+        ScheduledFuture future = executors.scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS);
+        FutureMap.futureMap.put(task.hashCode(), future);
+    }
+
+
+    /**
+     * 野怪开始从目标队列寻找攻击目标，
+     *
+     * @param role  玩家信息
+     * @param creep 野怪信息
+     */
+    private void creepStartAttack(Role role, Creep creep) {
+        // 获取野怪的攻击技能
+        int damage = creep.getDamage();
+        int coolDown = creep.getCoolDown();
+
+        // 获取目标队列
+        Deque<Long> deque = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId());
+
+        // 判断之前是否有攻击的任务
+        ScheduledFuture lastFuture = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
+
+        // 玩家掉血任务, 第一次攻击的时候，加入玩家自动扣血，第二次攻击的时候，直接跳过
+        if (lastFuture == null && !deque.isEmpty() && deque.peek() != role.getUserId().longValue()) {
+            UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), damage, false);
+            ScheduledFuture future = UserExecutorManager.getUserExecutor(role.getUserId()).scheduleAtFixedRate(task,
+                    0, coolDown, TimeUnit.SECONDS);
+            FutureMap.futureMap.put(task.hashCode(), future);
+            LocalAttackCreepMap.getUserBeAttackedMap().put(role.getRoleId(), future);
+        }
+    }
+
+
+    /**
+     * 初始化野怪的攻击数据（攻击目标队列，攻击野怪的关联）
+     *
+     * @param role      玩家信息
+     * @param creep     野怪信息
+     */
+    private void initCreepAttack(Role role, Creep creep) {
+        // 初始化数据，关联角色和攻击的野怪，加入挑战队列中
+        Deque<Long> roleIdList = Optional.ofNullable(LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId()))
+                .orElse(Lists.newLinkedList());
+        if (!roleIdList.contains(role.getRoleId())){
+            roleIdList.offer(role.getRoleId());
+        }
+
+        // 保存当前的攻击野怪关联
+        LocalAttackCreepMap.getCreepAttackedMap().put(creep.getCreepId(), roleIdList);
+        LocalAttackCreepMap.getCurrentCreepMap().put(role.getRoleId(), creep.getCreepId());
+    }
+
+    /**
+     * 具体的攻击野怪的操作操作
+     *
+     * @param role      玩家信息
+     * @param creep     野怪信息
+     */
+    private void doAttack(Role role, Creep creep, int extra){
+        // 先选择一个普通攻击的技能
+        Spell spell = role.getSpellList().get(0);
+
+        // 添加任务到用户线程
+        // 野怪掉血任务
+        SiteCreepExecutorManager.addCreepTask(role.getSiteId(),
+                new CreepBeAttackedRun(role, creep, extra + spell.getDamage()));
+
+        // 装备消耗耐久任务
+        equipService.synCutEquipDurability(role);
     }
 
 
@@ -284,15 +301,13 @@ public class AttackCreepService {
      * 1.移除玩家攻击野怪的状态
      * 2.去除玩家收到攻击的任务
      *
-     * @param requestAttackCreep
-     * @param channel
-     * @return
+     * @param req           请求
+     * @param channel       channel
      */
-    public MsgAttackCreepProto.ResponseAttackCreep stopAttack(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep, Channel channel) {
+    public void stopAttack(MsgAttackCreepProto.RequestAttackCreep req, Channel channel) {
 
         // 获取玩家的基本信息
-        long userId = requestAttackCreep.getUserId();
-        Role role = LocalUserMap.userRoleMap.get(userId);
+        Role role = LocalUserMap.userRoleMap.get(req.getUserId());
 
         // 获取退出攻击的野怪目标
         Long creepId = LocalAttackCreepMap.getCurrentCreepMap().get(role.getRoleId());
@@ -309,101 +324,30 @@ public class AttackCreepService {
             future.cancel(true);
         }
 
-        return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setType(MsgAttackCreepProto.RequestType.STOP)
-                .setContent(ContentType.ATTACK_STOP)
-                .build();
+        sendCommonMsg(channel, ContentType.ATTACK_STOP);
     }
 
-
-
-    /**
-     * 用户状态拦截器，检验参数
-     *
-     * @param requestAttackCreep    请求
-     * @return
-     */
-    private MsgAttackCreepProto.ResponseAttackCreep userStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
-        // 用户id标识判断
-        long userId = requestAttackCreep.getUserId();
-        if (userId <= 0){
-            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_TOKEN_DATA_EMPTY)
-                    .build();
-        }
-        // 找不到对应的角色信息
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        if (role == null){
-            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ROLE_EMPTY)
-                    .build();
-        }
-
-        return null;
-    }
 
 
     /**
      * 野怪信息拦截器，校验参数
      *
-     * @param requestAttackCreep    请求
-     * @return
+     * @param creepId    野怪id
+     * @return           协议返回
      */
-    private MsgAttackCreepProto.ResponseAttackCreep creepStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
-        if (requestAttackCreep.getSpellId() > 0){
-            return null;
-        }
-
+    private synchronized MsgAttackCreepProto.ResponseAttackCreep creepStateInterceptor(long creepId){
         // 判断野怪的id是否有问题
-        long creepId = requestAttackCreep.getCreepId();
-        if (creepId <= 0){
-            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.CREEP_PARAM_EMPTY)
-                    .build();
+        if (creepId <= 0 || LocalCreepMap.getIdCreepMap().get(creepId) == null){
+            return combineFailedMsg(ContentType.CREEP_PARAM_EMPTY);
         }
 
+        // 判断野怪的状态信息
         Creep creep = LocalCreepMap.getIdCreepMap().get(creepId);
-        if (creep == null){
-            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.CREEP_EMPTY)
-                    .build();
-        }
-
-        return null;
-    }
-
-
-    /**
-     * 技能信息查询拦截
-     */
-    private MsgAttackCreepProto.ResponseAttackCreep spellStateInterceptor(MsgAttackCreepProto.RequestAttackCreep requestAttackCreep){
-
-        // 判断技能信息是否存在的问题
-        int spellId = requestAttackCreep.getSpellId();
-        if (spellId <= 0){
-            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setType(MsgAttackCreepProto.RequestType.SPELL)
-                    .setContent(ContentType.ATTACK_SPELL_EMPTY)
-                    .build();
-        }
-
-        Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
-        if (spell == null){
-            return MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setType(MsgAttackCreepProto.RequestType.SPELL)
-                    .setContent(ContentType.ATTACK_SPELL_NOT_FOUND)
-                    .build();
+        if (creep.getNum() <= 0 || creep.getHp() <= 0){
+            return combineFailedMsg(ContentType.ATTACK_DEATH_CREEP);
         }
         return null;
     }
-
 
 
     /**
@@ -424,5 +368,67 @@ public class AttackCreepService {
         channel.writeAndFlush(response);
     }
 
+
+    /**
+     * 发送野怪消息通知
+     *
+     * @param creep     野怪信息
+     * @param msg       消息
+     */
+    public void sendCreepMsg(Role role, Creep creep, String msg){
+        // 获取对应攻击的玩家channel
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+
+        response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setType(MsgAttackCreepProto.RequestType.ATTACK)
+                .setResult(ResultCode.SUCCESS)
+                .setContent(msg)
+                .setCreep(protoService.transToCreep(creep))
+                .build();
+        channel.writeAndFlush(response);
+    }
+
+    /**
+     * 发送失败消息
+     *
+     * @param channel   channel
+     * @param msg       消息
+     */
+    private void sendFailedMsg(Channel channel, String msg){
+        response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(msg)
+                .build();
+        channel.writeAndFlush(response);
+    }
+
+    /**
+     * 发送公共消息
+     *
+     * @param channel   channel
+     * @param msg       消息
+     */
+    private void sendCommonMsg(Channel channel, String msg){
+        response = MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgAttackCreepProto.RequestType.STOP)
+                .setContent(msg)
+                .build();
+        channel.writeAndFlush(response);
+    }
+
+
+    /**
+     * 构造失败消息
+     *
+     * @param msg       消息
+     * @return          协议返回
+     */
+    private MsgAttackCreepProto.ResponseAttackCreep combineFailedMsg(String msg){
+        return  MsgAttackCreepProto.ResponseAttackCreep.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(msg)
+                .build();
+    }
 }
 

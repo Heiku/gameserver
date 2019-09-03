@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.listener;
 
+import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.ljh.gamedemo.entity.Trade;
@@ -27,6 +28,7 @@ public class TradeExpireListener implements RemovalListener<Long, Trade> {
 
     @Override
     public void onRemoval(RemovalNotification<Long, Trade> notify) {
+        if (notify.getCause() == RemovalCause.EXPIRED) {
             // 获取交易时间结束的交易单
             Trade trade = notify.getValue();
 
@@ -39,5 +41,6 @@ public class TradeExpireListener implements RemovalListener<Long, Trade> {
 
             // 说明拍卖交易完成
             tradeService.completeAuctionTrade(trade);
+        }
     }
 }

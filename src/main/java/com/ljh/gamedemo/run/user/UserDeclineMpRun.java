@@ -7,9 +7,10 @@ import com.ljh.gamedemo.entity.Spell;
 import com.ljh.gamedemo.entity.tmp.SpellTimeStamp;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.SpellCdCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.service.ProtoService;
+import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,16 +28,29 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class UserDeclineMpRun implements Callable<Boolean> {
 
-    // 施放的技能
+    /**
+     * 释放的技能
+     */
     private Spell spell;
 
-    // 玩家
+    /**
+     * 玩家id
+     */
     private long roleId;
 
+    /**
+     * channel
+     */
     private Channel channel;
 
-    private ProtoService protoService = ProtoService.getInstance();
+    /**
+     * 协议服务
+     */
+    private ProtoService protoService = SpringUtil.getBean(ProtoService.class);
 
+    /**
+     * 协议返回
+     */
     private MsgAttackCreepProto.ResponseAttackCreep response;
 
     public UserDeclineMpRun(long roleId, Spell spell){

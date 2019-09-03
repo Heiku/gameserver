@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.local.channel;
+package com.ljh.gamedemo.local.cache;
 
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;

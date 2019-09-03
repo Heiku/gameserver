@@ -2,6 +2,7 @@ package com.ljh.gamedemo.local.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListeners;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.common.TradeType;
 import com.ljh.gamedemo.entity.Trade;
@@ -9,6 +10,7 @@ import com.ljh.gamedemo.listener.TradeExpireListener;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,7 +26,7 @@ public class TradeCache {
      */
     private static Cache<Long, Trade> tradeCache = CacheBuilder.newBuilder()
             .expireAfterWrite(TradeType.AUCTION_DURATION, TimeUnit.MINUTES)
-            .removalListener(new TradeExpireListener())
+            .removalListener(RemovalListeners.asynchronous(new TradeExpireListener(), Executors.newSingleThreadExecutor()))
             .build();
 
 

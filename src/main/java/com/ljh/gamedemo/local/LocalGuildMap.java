@@ -9,13 +9,8 @@ import com.ljh.gamedemo.entity.GuildApply;
 import com.ljh.gamedemo.entity.GuildGoodsStore;
 import com.ljh.gamedemo.entity.Member;
 import com.ljh.gamedemo.local.cache.GuildCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
 import com.ljh.gamedemo.util.SpringUtil;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

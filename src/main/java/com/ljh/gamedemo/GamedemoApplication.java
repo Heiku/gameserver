@@ -71,6 +71,9 @@ public class GamedemoApplication {
         // 载入公会的数据库信息
         LocalGuildMap.readDB();
 
+        // 载入玩家的拍卖行交易信息
+        LocalTradeMap.readDB();
+
         CleanUpCacheManager.run();
 
         // 启动背包数据存库线程池

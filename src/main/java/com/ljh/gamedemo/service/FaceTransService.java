@@ -11,7 +11,7 @@ import com.ljh.gamedemo.entity.Transaction;
 import com.ljh.gamedemo.entity.tmp.FaceTransApply;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.FaceTransCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgFaceTransProto;
 import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;

@@ -8,7 +8,7 @@ import com.ljh.gamedemo.entity.Group;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.cache.GroupCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgDuplicateProto;
 import com.ljh.gamedemo.service.*;
 import com.ljh.gamedemo.util.SpringUtil;

@@ -49,26 +49,26 @@ public class UserBeAttackedScheduleRun implements Runnable {
     private boolean pk;
 
     /**
-     * AttackCreepService
+     * 攻击野怪服务
      */
     private AttackCreepService attackCreepService = SpringUtil.getBean(AttackCreepService.class);
 
     /**
-     * RoleService
+     * 玩家服务
      */
     private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
     /**
-     * pkService
+     * pk服务
      */
     private PKService pkService = SpringUtil.getBean(PKService.class);
 
     /**
-     * groupService
+     * 组队服务
      */
     private GroupService groupService = SpringUtil.getBean(GroupService.class);
 
-    private UserBeAttackedRun run = new UserBeAttackedRun();
+
 
     public UserBeAttackedScheduleRun(Role _role, DurationAttack _da, int _extra, boolean _pk){
         this.role = _role;
@@ -79,40 +79,34 @@ public class UserBeAttackedScheduleRun implements Runnable {
 
     @Override
     public void run() {
-        int hp = role.getHp();
         int damage = da.getDamage() / da.getSec() + extra;
+        int hp = roleService.cutShield(role, damage);
 
-        // 掉血先扣盾
-        List<RoleBuff> buffList = RoleBuffCache.getCache().getIfPresent(role.getRoleId());
-        if (buffList != null && !buffList.isEmpty()){
-            hp = run.cutShield(buffList, hp);
-        } else {
-            // 没有buff，也直接扣血
-            hp -= damage;
-            sumDamage += damage;
+        // 累计持续掉血量
+        sumDamage += damage;
 
-            if (sumDamage >= da.getDamage()){
-                log.info("已经达到最大持续伤害的最大值，任务取消!");
-                FutureMap.getFutureMap().get(this.hashCode()).cancel(true);
-                return;
-            }
-
-            //玩家死亡，取消任务
-            if (hp <= 0){
-                // pk 处理
-                if (pk){
-                    // 移除 pk 记录
-                    RoleInvitePKCache.getPkFutureMap().remove(role.getRoleId());
-                    pkService.pkEnd(role);
-                }else {
-                    // 退出队伍
-                    groupService.removeGroup(role);
-                    // 玩家复活
-                    roleService.reliveRole(role);
-                }
-                return;
-            }
+        if (sumDamage >= da.getDamage()){
+            log.info("已经达到最大持续伤害的最大值，任务取消!");
+            FutureMap.getFutureMap().get(this.hashCode()).cancel(true);
+            return;
         }
+
+        //玩家死亡，取消任务
+        if (hp <= 0){
+            // pk 处理
+            if (pk){
+                // 移除 pk 记录
+                RoleInvitePKCache.getPkFutureMap().remove(role.getRoleId());
+                pkService.pkEnd(role);
+            }else {
+                // 退出队伍
+                groupService.removeGroup(role);
+                // 玩家复活
+                roleService.reliveRole(role);
+            }
+            return;
+        }
+
         // 更新hp
         role.setHp(hp);
         roleService.updateRoleInfo(role);

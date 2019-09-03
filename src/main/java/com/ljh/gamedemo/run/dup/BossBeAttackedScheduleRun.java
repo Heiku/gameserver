@@ -4,12 +4,10 @@ import com.ljh.gamedemo.entity.Boss;
 import com.ljh.gamedemo.entity.Duplicate;
 import com.ljh.gamedemo.entity.Role;
 import com.ljh.gamedemo.entity.Spell;
-import com.ljh.gamedemo.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.run.record.FutureMap;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

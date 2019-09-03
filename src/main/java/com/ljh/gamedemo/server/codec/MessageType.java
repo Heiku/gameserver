@@ -109,7 +109,7 @@ public enum MessageType {
         for (MessageType protoType : MessageType.values()) {
             if (protoType.getProtoCode().intValue() == code){
 
-                // 反射生成协议对象
+                // 反射生成协议对象C
                 Constructor constructor = protoType.getMessageLite().getDeclaredConstructor();
                 constructor.setAccessible(true);
 

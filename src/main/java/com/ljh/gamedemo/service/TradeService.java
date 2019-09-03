@@ -13,7 +13,7 @@ import com.ljh.gamedemo.entity.Trade;
 import com.ljh.gamedemo.local.LocalGoodsMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.TradeCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgTradeProto;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +71,7 @@ public class TradeService {
      * 交易协议返回
      */
     private MsgTradeProto.ResponseTrade tradeResp;
+
 
     /**
      * 获取当前的交易状态
@@ -291,7 +292,7 @@ public class TradeService {
      * @param req       请求
      * @param channel   channel
      */
-    public void outOfTrade(MsgTradeProto.RequestTrade req, Channel channel) {
+    public synchronized void outOfTrade(MsgTradeProto.RequestTrade req, Channel channel) {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 判断订单是否存在
@@ -452,6 +453,11 @@ public class TradeService {
 
         // 更新交易记录
         updateTradeRecord(trade, role);
+
+        // 消息返回
+        String name = goodsService.getGoodsName(trade.getGoodsId());
+        Channel ch = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+        sendCommonMsg(ch, String.format(ContentType.TRADE_AUCTION_TIME_END, name));
     }
 
 

@@ -4,6 +4,7 @@ import com.google.protobuf.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.util.ReferenceCountUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,11 +52,12 @@ public class CustomProtobufDecoder extends ByteToMessageDecoder {
                 offset = 0;
             }
 
+            // release byteBuf
+            bodyByteBuf.release();
+
             //反序列化
             MessageLite result = decodeBody(dataType, array, offset, readableLen);
             out.add(result);
-
-
         }
     }
 

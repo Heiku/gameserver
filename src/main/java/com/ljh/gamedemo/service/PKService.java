@@ -9,7 +9,7 @@ import com.ljh.gamedemo.local.LocalSpellMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.local.cache.RoleAttrCache;
 import com.ljh.gamedemo.local.cache.RoleInvitePKCache;
-import com.ljh.gamedemo.local.channel.ChannelCache;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgPKProto;
 import com.ljh.gamedemo.proto.protoc.MsgSpellProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
@@ -285,9 +285,7 @@ public class PKService {
                 int extra = RoleAttrCache.getRoleAttrMap().get(fromRole.getRoleId()).getSp();
                 if (spell.getSec() > 0) {
 
-                    DurationAttack da = new DurationAttack();
-                    da.setSec(spell.getSec());
-                    da.setDamage(spell.getDamage());
+                    DurationAttack da = new DurationAttack(spell.getDamage(), spell.getSec());
                     // 任务处理
                     UserBeAttackedScheduleRun task = new UserBeAttackedScheduleRun(toRole, da, extra, true);
                     CustomExecutor executor = UserExecutorManager.getUserExecutor(toRole.getUserId());

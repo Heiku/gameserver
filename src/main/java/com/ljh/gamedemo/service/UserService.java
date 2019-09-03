@@ -12,6 +12,7 @@ import com.ljh.gamedemo.entity.RoleState;
 import com.ljh.gamedemo.entity.User;
 import com.ljh.gamedemo.entity.UserToken;
 import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.local.cache.ChannelCache;
 import com.ljh.gamedemo.local.cache.RoleStateCache;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.UserExecutorManager;
@@ -77,8 +78,8 @@ public class UserService {
     /**
      * 用户登录后，并没有角色状态，需要通过 getState() 初始化玩家角色
      *
-     * @param requestUserInfo
-     * @return
+     * @param requestUserInfo       请求
+     * @return                      用户协议返回
      */
     public MsgUserInfoProto.ResponseUserInfo getState(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析得到userId
@@ -99,7 +100,7 @@ public class UserService {
         }
 
         // 初始化玩家状态
-        initUserState(userId, role, channel);
+        initUserState(role, channel);
 
         // 添加玩家回血回蓝task
         addRecoverTask(role);
@@ -140,20 +141,16 @@ public class UserService {
      * 初始化玩家数据
      *
      *
-     * @param userId
-     * @param role
-     * @param channel
+     * @param role          玩家信息
+     * @param channel       channel
      */
-    private void initUserState(long userId, Role role, Channel channel) {
+    private void initUserState(Role role, Channel channel) {
 
         // 本地保存
-        LocalUserMap.userRoleMap.put(userId, role);
+        LocalUserMap.userRoleMap.put(role.getUserId(), role);
 
         // 分配用户的业务线程
-        UserExecutorManager.bindUserExecutor(userId);
-
-        // 绑定 channel
-        SessionUtil.bindSession(userId, channel);
+        UserExecutorManager.bindUserExecutor(role.getUserId());
 
         // 记录玩家在线信息
         updateRoleState(role, true);
@@ -219,7 +216,7 @@ public class UserService {
      * 登录操作7
      *
      * @param requestUserInfo   请求
-     * @return
+     * @return                  用户协议返回
      */
     public MsgUserInfoProto.ResponseUserInfo login(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析message的请求参数
@@ -237,10 +234,15 @@ public class UserService {
         if (user == null){
             return combineFailedMsg(ContentType.USER_EMPTY_DATA);
         }
-
         // 校验密码的正确性
         if (!user.getPassword().equals(md5Pwd)){
             return combineFailedMsg(ContentType.BAD_PASSWORD);
+        }
+
+        // 判断是否已经有账号登录
+        Channel oldCh = ChannelCache.getUserIdChannelMap().get(user.getUserId());
+        if (oldCh != null){
+            doOutLineUser(oldCh);
         }
 
         // 登录成功，获取ID和token
@@ -251,6 +253,9 @@ public class UserService {
 
         // 在本地缓存Map中存储当前的用户信息
         LocalUserMap.userMap.put(userId, user);
+
+        // 绑定 channel
+        SessionUtil.bindSession(userId, channel);
 
         // 成功消息返回
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
@@ -264,10 +269,25 @@ public class UserService {
 
 
     /**
+     * 顶号
+     *
+     * @param oldCh     old channel
+     */
+    private void doOutLineUser(Channel oldCh) {
+        // 消息通知
+        userResp = combineFailedMsg(ContentType.USER_OUT_OF);
+        oldCh.writeAndFlush(userResp);
+
+        // 旧channel 关闭
+        oldCh.close();
+    }
+
+
+    /**
      * 注册操作
      *
-     * @param requestUserInfo
-     * @return
+     * @param requestUserInfo   请求
+     * @return                  用户协议返回
      */
     public MsgUserInfoProto.ResponseUserInfo register(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 解析message请求参数
@@ -281,10 +301,8 @@ public class UserService {
 
         // 获取md5Pwd，存数据库user_account
         String md5Pwd = MD5Util.hashPwd(password);
-        int n = userDao.insertUserAccount(0l, userName, md5Pwd);
-        if (n <= 0){
-            return combineFailedMsg(ContentType.REGISTER_FAILED);
-        }
+        int n = userDao.insertUserAccount(0L, userName, md5Pwd);
+        log.info("insert into user_account, affected rows: " + n);
 
         // 接着查找user信息
         User user = userDao.selectUser(userName);
@@ -313,7 +331,7 @@ public class UserService {
      * 玩家退出游戏，玩家状态改变，角色最终位置持久化
      *
      * @param requestUserInfo       请求
-     * @return
+     * @return                      用户协议返回
      */
     public MsgUserInfoProto.ResponseUserInfo exit(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
         // 用户判断
@@ -343,8 +361,6 @@ public class UserService {
 
         // 移除当前的玩家在线信息
         LocalUserMap.userMap.remove(userId);
-
-        // 移除当前玩家的角色在线信息
         LocalUserMap.userRoleMap.remove(userId);
 
         SessionUtil.unBindSession(channel);
