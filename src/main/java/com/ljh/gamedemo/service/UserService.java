@@ -2,7 +2,7 @@ package com.ljh.gamedemo.service;
 
 import com.google.common.base.Strings;
 import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.MD5Util;
+import com.ljh.gamedemo.util.MD5Util;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.dao.ChatRecordDao;
 import com.ljh.gamedemo.dao.UserDao;
@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

@@ -1,7 +1,6 @@
 package com.ljh.gamedemo.dao;
 
-import com.ljh.gamedemo.common.MD5Util;
-import com.ljh.gamedemo.entity.User;
+import com.ljh.gamedemo.util.MD5Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

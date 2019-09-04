@@ -20,10 +20,6 @@ public class LocalUserMap {
      */
     private static UserRoleDao userRoleDao;
 
-    static {
-        userRoleDao = SpringUtil.getBean(UserRoleDao.class);
-    }
-
     /**
      * 存放当前在线的的玩家 (userId, User)
      */
@@ -44,6 +40,11 @@ public class LocalUserMap {
      */
     public static Map<Long, Role> idRoleMap = Maps.newConcurrentMap();
 
+
+
+    static {
+        userRoleDao = SpringUtil.getBean(UserRoleDao.class);
+    }
 
     /**
      * 读取数据库，获取role的位置信息

@@ -100,6 +100,7 @@ public class TradeService {
         // 获取一口价的所有交易信息
         List<Trade> trades = Lists.newArrayList(TradeCache.getFixTradeMap().values());
 
+        // 消息返回
         tradeResp = combineResp(trades, MsgTradeProto.RequestType.FIXED_PRICE_ALL);
         channel.writeAndFlush(tradeResp);
     }
@@ -112,12 +113,10 @@ public class TradeService {
      * @param channel   channel
      */
     public void auctionAll(MsgTradeProto.RequestTrade req, Channel channel) {
-        System.out.println(TradeCache.getTradeCache().asMap());
-        TradeCache.getTradeCache().cleanUp();
-
         // 获取拍卖的所有交易信息
         List<Trade> trades = Lists.newArrayList(TradeCache.getAuctionTradeMap().values());
 
+        // 消息返回
         tradeResp = combineResp(trades, MsgTradeProto.RequestType.AUCTION_ALL);
         channel.writeAndFlush(tradeResp);
     }
@@ -369,8 +368,10 @@ public class TradeService {
         // 去除交易信息记录
         removeCurTradeRecord(trade);
 
+        // 更新DB交易记录
         updateTradeRecord(trade, role);
 
+        // 交易下架
         TradeCache.getTradeCache().invalidate(trade.getId());
     }
 
@@ -498,8 +499,8 @@ public class TradeService {
     /**
      * 通知买家成功竞拍到商品
      *
-     * @param buyer
-     * @param trade
+     * @param buyer     买家
+     * @param trade     交易信息
      */
     private void notifyBuyerTradeComplete(Role buyer, Trade trade) {
         Channel ch = ChannelCache.getUserIdChannelMap().get(buyer.getUserId());

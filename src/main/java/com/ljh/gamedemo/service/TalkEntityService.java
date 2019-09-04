@@ -10,12 +10,12 @@ import com.ljh.gamedemo.local.LocalTalkTextMap;
 import com.ljh.gamedemo.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.TalkEntityProto;
 import io.netty.channel.Channel;
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TalkEntityService {
@@ -46,7 +46,6 @@ public class TalkEntityService {
         // 构造proto，准备返回
         Entity entity = LocalEntityMap.entityMap.get(npcName);
 
-
         // 获取npc的对话信息
         List<TalkText> talkTextList = LocalTalkTextMap.getTalkTextMap().get(npcName);
         if (talkTextList == null || talkTextList.isEmpty()){
@@ -54,32 +53,24 @@ public class TalkEntityService {
             return;
         }
 
-
-        // 这里根据role的level获取不同阶段的npc对话
-        TalkText talkText = new TalkText();
-
         // 排序进行level降序，找到一个等级符合的对话
         Collections.sort(talkTextList);
-        talkTextList.forEach(e -> {
-            if (role.getLevel() >= e.getLevel()){
-                try {
-                    BeanUtils.copyProperties(talkText, e);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
 
+        // 筛选符合条件的对话内容
+        Optional<TalkText> result = talkTextList.stream().filter(e -> role.getLevel() >= e.getLevel()).findFirst();
+        if (result.isPresent()){
+            TalkText talkText = result.get();
+            // 返回消息
+            resp =  TalkEntityProto.ResponseTalkEntity.newBuilder()
+                    .setResult(ResultCode.SUCCESS)
+                    .setEntity(protoService.transToEntity(entity))
+                    .setFirst(talkText.getFirst())
+                    .setContent(talkText.getContent())
+                    .setRole(protoService.transToRole(role))
+                    .build();
+            channel.writeAndFlush(resp);
 
-        // 返回消息
-        resp =  TalkEntityProto.ResponseTalkEntity.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setEntity(protoService.transToEntity(entity))
-                .setFirst(talkText.getFirst())
-                .setContent(talkText.getContent())
-                .setRole(protoService.transToRole(role))
-                .build();
-        channel.writeAndFlush(resp);
+        }
     }
 
 

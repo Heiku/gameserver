@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.common;
+package com.ljh.gamedemo.util;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;

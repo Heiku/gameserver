@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
+import org.springframework.context.event.EventListener;
 
 import java.util.List;
 import java.util.Random;
@@ -104,13 +105,18 @@ public class ByteTest {
         System.out.println(d1.equals(d2));*/
 
 
-        DateTime now = new DateTime();
+        /*DateTime now = new DateTime();
         System.out.println(now.toDate().getTime());
 
         DateTime later = now.plus(Minutes.minutes(2)).toDateTime();
-        System.out.println(later.toDate().getTime());
+        System.out.println(later.toDate().getTime());*/
 
         //System.out.println(0.3 - 0.2 == 0.1);
+
+        String str = "1001,2";
+        String[] strArr = str.split("\\|");
+        System.out.println(strArr[0]);
+
     }
 }
 

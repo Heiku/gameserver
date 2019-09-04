@@ -33,30 +33,45 @@ import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 @Slf4j
 public class LocalCommodityMap {
 
-    // 物品的刷新量
+    /**
+     * 物品的刷新量
+     */
     private static final int ITEM_NUM = 3;
 
-    // 装备的刷新量
+    /**
+     * 装备的刷新量
+     */
     private static final int EQUIP_NUM = 2;
 
-    // 刷新数组长度
+    /**
+     * 刷新数组长度
+     */
     private static int MAX_ITEMS = 0;
     private static int MAX_EQUIPS = 0;
 
-    // 用于存放概率物品
+    /**
+     * 用于存放概率物品
+     */
     private static long[] items;
 
+    /**
+     * 装备列表
+     */
     private static List<Long> equips;
 
-    // 本地文件
+    /**
+     * 商品的本地文件
+     */
     private static File mallFile = null;
 
-
-    // 本本地缓存
-    // 所有的商品信息map <commodityId, Commodity>
+    /**
+     * 所有的商品信息map <commodityId, Commodity>
+     */
     private static Map<Long, Commodity> idCommodityMaps = Maps.newConcurrentMap();
 
-    // 商品类型map <type, List<Commodity>>
+    /**
+     * 商品类型map <type, List<Commodity>>
+     */
     private static Map<Integer, List<Commodity>> typeCommodityMaps = Maps.newConcurrentMap();
 
     static {
@@ -94,7 +109,6 @@ public class LocalCommodityMap {
 
                     // 独立存储
                     idCommodityMaps.put(c.getId(), c);
-
 
                     // 分类存储
                     List<Commodity> list;
@@ -210,28 +224,5 @@ public class LocalCommodityMap {
 
     public static Map<Long, Commodity> getIdCommodityMaps() {
         return idCommodityMaps;
-    }
-
-
-    public static void main(String[] args) {
-        readExcel();
-
-        idCommodityMaps.forEach((k, v) ->
-            System.out.println("k: " + k + " v: " + v));
-
-        typeCommodityMaps.forEach((k, v) ->
-            System.out.println("k: " + k + " v: " + v));
-
-        for (long item : items) {
-            System.out.print(item + " ");
-        }
-        System.out.println();
-
-        for (long equip : equips) {
-            System.out.print(equip + " ");
-        }
-
-        System.out.println(LocalCommodityMap.getEquipsList(1002L));
-        System.out.println(LocalCommodityMap.getItemsList());
     }
 }

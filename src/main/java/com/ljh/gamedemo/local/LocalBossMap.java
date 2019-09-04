@@ -48,7 +48,7 @@ public class LocalBossMap {
 
     static {
         try {
-            spellBossFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "csv/spellBoss.xlsx");
+            spellBossFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "csv/spell_boss.xlsx");
             bossFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "csv/boss.xlsx");
         }catch (FileNotFoundException e){
             log.error("can not find bossFile,please check file location");
