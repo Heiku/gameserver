@@ -59,7 +59,13 @@ public class ExcelUtil {
         return dataFormatter.formatCellValue(cell);
     }
 
+    public static Integer getIntValue(Cell cell){
+        return Integer.valueOf(getValue(cell));
+    }
 
+    public static Long getLongValue(Cell cell){
+        return Long.valueOf(getValue(cell));
+    }
 
     // get filePath postfix
     public static String getPostFix(String path) {

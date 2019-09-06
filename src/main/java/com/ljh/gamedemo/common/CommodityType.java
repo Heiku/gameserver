@@ -1,10 +1,10 @@
 package com.ljh.gamedemo.common;
 
 /**
+ * 商品类型
+ *
  * @Author: Heiku
  * @Date: 2019/8/2
- *
- * 商品类型
  */
 public enum  CommodityType {
 

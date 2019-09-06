@@ -1,8 +1,8 @@
 package com.ljh.gamedemo.run.db;
 
-import com.ljh.gamedemo.dao.RoleItemsDao;
-import com.ljh.gamedemo.entity.Items;
-import com.ljh.gamedemo.entity.Role;
+import com.ljh.gamedemo.module.items.dao.RoleItemsDao;
+import com.ljh.gamedemo.module.items.bean.Items;
+import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 

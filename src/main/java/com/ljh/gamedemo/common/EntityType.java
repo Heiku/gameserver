@@ -1,7 +1,6 @@
 package com.ljh.gamedemo.common;
 
 /**
- *
  * 通用的实体类型
  */
 public enum  EntityType {

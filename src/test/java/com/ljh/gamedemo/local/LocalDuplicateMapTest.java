@@ -1,5 +1,8 @@
 package com.ljh.gamedemo.local;
 
+import com.ljh.gamedemo.module.duplicate.local.LocalBossMap;
+import com.ljh.gamedemo.module.duplicate.local.LocalDuplicateMap;
+import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

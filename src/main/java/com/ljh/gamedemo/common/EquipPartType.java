@@ -1,10 +1,10 @@
 package com.ljh.gamedemo.common;
 
 /**
+ * 通用的装备类型
+ *
  * @Author: Heiku
  * @Date: 2019/7/18
- *
- * 通用的装备类型
  */
 public enum EquipPartType {
 

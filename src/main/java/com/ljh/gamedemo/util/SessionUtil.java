@@ -1,7 +1,7 @@
 package com.ljh.gamedemo.util;
 
 import com.ljh.gamedemo.attribute.Attributes;
-import com.ljh.gamedemo.local.cache.ChannelCache;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import io.netty.channel.Channel;
 
 public class SessionUtil {

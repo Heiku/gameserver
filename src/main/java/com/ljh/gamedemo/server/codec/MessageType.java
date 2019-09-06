@@ -78,7 +78,11 @@ public enum MessageType {
 
     // trade
     REQUEST_TRADE(0x24, MsgTradeProto.RequestTrade.class),
-    RESPONSE_TRADE(0x25, MsgTradeProto.ResponseTrade.class)
+    RESPONSE_TRADE(0x25, MsgTradeProto.ResponseTrade.class),
+
+    // task
+    REQUEST_TASK(0x26, MsgTaskProto.RequestTask.class),
+    RESPONSE_TASK(0x27, MsgTaskProto.ResponseTask.class)
     ;
 
 

@@ -1,11 +1,11 @@
 package com.ljh.gamedemo.run.dup;
 
-import com.ljh.gamedemo.entity.Boss;
-import com.ljh.gamedemo.entity.Duplicate;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.entity.Spell;
-import com.ljh.gamedemo.local.cache.RoleAttrCache;
-import com.ljh.gamedemo.local.cache.ChannelCache;
+import com.ljh.gamedemo.module.duplicate.bean.Boss;
+import com.ljh.gamedemo.module.duplicate.bean.Duplicate;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.spell.bean.Spell;
+import com.ljh.gamedemo.module.role.cache.RoleAttrCache;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.run.record.FutureMap;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;

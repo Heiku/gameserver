@@ -1,7 +1,7 @@
 package com.ljh.gamedemo.run.user;
 
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.dao;
 
+import com.ljh.gamedemo.module.user.dao.UserDao;
 import com.ljh.gamedemo.util.MD5Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;

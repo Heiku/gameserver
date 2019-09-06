@@ -1,15 +1,15 @@
 package com.ljh.gamedemo.run.dup;
 
 import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.entity.BossSpell;
-import com.ljh.gamedemo.entity.Duplicate;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.entity.tmp.RoleDeBuff;
-import com.ljh.gamedemo.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.local.cache.RoleBuffCache;
-import com.ljh.gamedemo.local.cache.ChannelCache;
-import com.ljh.gamedemo.service.DuplicateService;
+import com.ljh.gamedemo.module.duplicate.bean.BossSpell;
+import com.ljh.gamedemo.module.duplicate.bean.Duplicate;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.role.tmp.RoleDeBuff;
+import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
+import com.ljh.gamedemo.module.role.cache.RoleBuffCache;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
 import com.ljh.gamedemo.util.SpringUtil;
 
 import java.util.Deque;

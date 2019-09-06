@@ -1,6 +1,6 @@
 package com.ljh.gamedemo.schedule;
 
-import com.ljh.gamedemo.dao.GuildDao;
+import com.ljh.gamedemo.module.guild.dao.GuildDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

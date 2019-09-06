@@ -1,16 +1,16 @@
 package com.ljh.gamedemo.run.dup;
 
 import com.ljh.gamedemo.common.ChallengeType;
-import com.ljh.gamedemo.entity.BossSpell;
-import com.ljh.gamedemo.entity.Duplicate;
-import com.ljh.gamedemo.entity.Partner;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.local.LocalUserMap;
-import com.ljh.gamedemo.local.cache.PartnerCache;
+import com.ljh.gamedemo.module.duplicate.bean.BossSpell;
+import com.ljh.gamedemo.module.duplicate.bean.Duplicate;
+import com.ljh.gamedemo.module.spell.bean.Partner;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
+import com.ljh.gamedemo.module.spell.cache.PartnerCache;
 import com.ljh.gamedemo.run.UserExecutorManager;
 import com.ljh.gamedemo.run.user.UserBeAttackedRun;
-import com.ljh.gamedemo.service.PartnerService;
+import com.ljh.gamedemo.module.spell.service.PartnerService;
 import com.ljh.gamedemo.util.SpringUtil;
 
 import java.util.Deque;

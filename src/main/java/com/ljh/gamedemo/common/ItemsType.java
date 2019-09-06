@@ -1,10 +1,10 @@
 package com.ljh.gamedemo.common;
 
 /**
+ * itemsType，物品分类
+ *
  * @Author: Heiku
  * @Date: 2019/7/16
- *
- * itemsType，物品分类
  */
 public enum ItemsType {
 

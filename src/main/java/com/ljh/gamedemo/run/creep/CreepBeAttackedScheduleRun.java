@@ -1,23 +1,16 @@
 package com.ljh.gamedemo.run.creep;
 
 import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.entity.Creep;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.entity.Spell;
-import com.ljh.gamedemo.local.LocalCreepMap;
-import com.ljh.gamedemo.local.cache.ChannelCache;
-import com.ljh.gamedemo.local.cache.RoleAttrCache;
-import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
+import com.ljh.gamedemo.module.creep.bean.Creep;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.spell.bean.Spell;
+import com.ljh.gamedemo.module.creep.local.LocalCreepMap;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.run.util.CountDownLatchUtil;
-import com.ljh.gamedemo.service.AttackCreepService;
-import com.ljh.gamedemo.service.ProtoService;
+import com.ljh.gamedemo.module.creep.service.AttackCreepService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.RejectedExecutionException;
 
 
 /**

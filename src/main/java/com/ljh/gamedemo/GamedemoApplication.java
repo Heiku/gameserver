@@ -1,11 +1,26 @@
 package com.ljh.gamedemo;
 
-import com.ljh.gamedemo.local.*;
-import com.ljh.gamedemo.local.cache.RoleAttrCache;
-import com.ljh.gamedemo.local.cache.RoleStateCache;
+import com.ljh.gamedemo.module.role.cache.RoleAttrCache;
+import com.ljh.gamedemo.module.role.cache.RoleStateCache;
+import com.ljh.gamedemo.module.creep.local.LocalCreepMap;
+import com.ljh.gamedemo.module.duplicate.local.LocalBossMap;
+import com.ljh.gamedemo.module.duplicate.local.LocalDuplicateMap;
+import com.ljh.gamedemo.module.entity.local.LocalEntityMap;
+import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
+import com.ljh.gamedemo.module.guild.local.LocalGuildMap;
+import com.ljh.gamedemo.module.items.local.LocalItemsMap;
+import com.ljh.gamedemo.module.mall.local.LocalCommodityMap;
+import com.ljh.gamedemo.module.pk.local.LocalPKRewardMap;
+import com.ljh.gamedemo.module.site.local.LocalSiteMap;
+import com.ljh.gamedemo.module.spell.local.LocalSpellMap;
+import com.ljh.gamedemo.module.talk.local.LocalTalkTextMap;
+import com.ljh.gamedemo.module.role.local.LocalRoleInitMap;
+import com.ljh.gamedemo.module.task.local.LocalTaskMap;
+import com.ljh.gamedemo.module.trade.local.LocalTradeMap;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.manager.SendEmailManager;
-import com.ljh.gamedemo.run.util.CleanUpCacheManager;
+import com.ljh.gamedemo.util.CleanUpCacheManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +29,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@MapperScan("com.ljh.gamedemo.dao")
+@MapperScan("com.ljh.gamedemo.mod.*.dao")
 public class GamedemoApplication {
 
     public static void main(String[] args) throws Exception{
@@ -73,6 +88,9 @@ public class GamedemoApplication {
 
         // 载入玩家的拍卖行交易信息
         LocalTradeMap.readDB();
+
+        // 载入任务信息
+        LocalTaskMap.readExcel();
 
         CleanUpCacheManager.run();
 

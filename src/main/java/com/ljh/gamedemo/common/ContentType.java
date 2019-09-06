@@ -1,5 +1,9 @@
 package com.ljh.gamedemo.common;
 
+
+/**
+ * 协议文本内容
+ */
 public class ContentType {
 
     // Common

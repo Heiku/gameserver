@@ -1,11 +1,11 @@
 package com.ljh.gamedemo.run.creep;
 
 import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.entity.Creep;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.local.LocalCreepMap;
-import com.ljh.gamedemo.service.AttackCreepService;
+import com.ljh.gamedemo.module.creep.bean.Creep;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.module.creep.local.LocalCreepMap;
+import com.ljh.gamedemo.module.creep.service.AttackCreepService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;

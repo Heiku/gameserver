@@ -1,11 +1,12 @@
 package com.ljh.gamedemo.local;
 
+import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
+import com.ljh.gamedemo.module.items.local.LocalItemsMap;
+import com.ljh.gamedemo.module.mall.local.LocalCommodityMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * @Author: Heiku

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// protoc --proto_path=src/main/java/com/ljh/gamedemo/proto/ --java_out=src/main/java src/main/java/com/ljh/gamedemo/proto/Task.proto
+
+import "Goods.proto";
+
+option java_package = "com.ljh.gamedemo.proto.protoc";
+option java_outer_classname = "TaskProto";
+
+message Task{
+    int64 id = 1;       // id
+    int64 taskId = 2;   // taskId
+    string name = 3;    // 任务名
+    int32 type = 4;     // 任务类别
+    int32 gold = 5;     // 奖励金币值
+    repeated Goods goods = 6;   // 物品奖励
+    string desc = 7;        // 任务描述
+}
+

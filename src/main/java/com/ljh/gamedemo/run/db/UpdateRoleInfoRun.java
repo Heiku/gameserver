@@ -1,8 +1,8 @@
 package com.ljh.gamedemo.run.db;
 
-import com.ljh.gamedemo.dao.UserRoleDao;
-import com.ljh.gamedemo.entity.Role;
-import com.ljh.gamedemo.local.LocalUserMap;
+import com.ljh.gamedemo.module.role.dao.UserRoleDao;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 

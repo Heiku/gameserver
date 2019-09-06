@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.dao;
 
-import com.ljh.gamedemo.entity.dto.RoleItems;
+import com.ljh.gamedemo.module.items.bean.RoleItems;
+import com.ljh.gamedemo.module.items.dao.RoleItemsDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
