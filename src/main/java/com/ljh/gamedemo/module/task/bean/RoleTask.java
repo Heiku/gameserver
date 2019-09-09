@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.task.bean;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Date;
  * @Date: 2019/9/4
  */
 
+@Builder
 @Data
 public class RoleTask {
 
@@ -30,7 +32,7 @@ public class RoleTask {
     private Long taskId;
 
     /**
-     * 进度 (2：领取未进行， 3：正在进行中， 4：完成任务， 5：放弃任务)
+     * 进度 (1：未领取， 2：正在进行中， 3：完成任务， 4：放弃任务)
      */
     private Integer progress;
 

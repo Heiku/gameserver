@@ -436,7 +436,8 @@ public class EquipService {
                 LocalEquipMap.getHasEquipMap().get(role.getRoleId()).removeIf(e -> e.getEquipId() == goodsId);
 
                 // 同时删除数据库信息
-                equipDao.deleteRoleEquip(result.get().getId());
+                int n = equipDao.deleteRoleEquip(result.get().getId());
+                log.info("delete equip, affected rows: " + n);
 
                 num--;
             }

@@ -5,6 +5,7 @@ import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
 import com.ljh.gamedemo.module.items.local.LocalItemsMap;
+import com.ljh.gamedemo.module.task.bean.Task;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.creep.bean.Creep;
 import com.ljh.gamedemo.module.duplicate.bean.Boss;
@@ -33,11 +34,9 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 实体类型 -> proto type
@@ -49,12 +48,6 @@ import java.util.Map;
 @Service
 public class ProtoService {
 
-    /**
-     * 公会服务
-     */
-    @Autowired
-    private GuildService guildService;
-
     private static ProtoService protoService;
 
     public static ProtoService getInstance(){
@@ -65,6 +58,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Role
+     *
+     * @param role      玩家信息
+     * @return          玩家协议
+     */
     public RoleProto.Role transToRole(Role role){
         if (role == null){
             return RoleProto.Role.newBuilder()
@@ -84,6 +83,13 @@ public class ProtoService {
                 .build();
     }
 
+
+    /**
+     * proto RoleList
+     *
+     * @param roleIdList        玩家id列表
+     * @return                  玩家协议列表
+     */
     public List<RoleProto.Role> transToRoleListById(List<Long> roleIdList){
         List<RoleProto.Role> res = new ArrayList<>();
         if (roleIdList == null || roleIdList.isEmpty()){
@@ -99,6 +105,14 @@ public class ProtoService {
         return res;
     }
 
+
+
+    /**
+     * proto SpellList
+     *
+     * @param res       技能列表
+     * @return          技能协议列表
+     */
     public List<SpellProto.Spell> transToSpellList(List<Spell> res){
         List<SpellProto.Spell> spellList = new ArrayList<>();
         for (Spell spell : res){
@@ -109,6 +123,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Spell
+     *
+     * @param spell     技能信息
+     * @return          技能协议
+     */
     public SpellProto.Spell transToSpell(Spell spell){
         return SpellProto.Spell.newBuilder()
                 .setSpellId(spell.getSpellId())
@@ -121,6 +141,13 @@ public class ProtoService {
                 .build();
     }
 
+
+    /**
+     * proto Crepp
+     *
+     * @param creep     野怪信息
+     * @return          野怪协议
+     */
     public CreepProto.Creep transToCreep(Creep creep){
         return CreepProto.Creep.newBuilder()
                 .setCreepId(creep.getCreepId())
@@ -135,6 +162,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Items
+     *
+     * @param items     物品信息
+     * @return          物品协议
+     */
     public ItemsProto.Items transToItem(Items items){
         if (items == null){
             return ItemsProto.Items.newBuilder().build();
@@ -151,6 +184,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto ItemsList
+     *
+     * @param items     物品信息列表
+     * @return          物品协议列表
+     */
     public List<ItemsProto.Items> transToItemsList(List<Items> items){
         List<ItemsProto.Items> list = new ArrayList<>();
         if (items == null || items.isEmpty()){
@@ -163,6 +202,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Equip
+     *
+     * @param equip     装备信息
+     * @return          装备协议
+     */
     public EquipProto.Equip transToEquip(Equip equip){
         if (equip == null){
             return EquipProto.Equip.newBuilder().build();
@@ -182,6 +227,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto EquipList
+     *
+     * @param equips        装备列表
+     * @return              装备协议列表
+     */
     public List<EquipProto.Equip> transToEquipList(List<Equip> equips){
         List<EquipProto.Equip> list = new ArrayList<>();
         if (equips == null || equips.isEmpty()){
@@ -194,7 +245,12 @@ public class ProtoService {
     }
 
 
-
+    /**
+     * proto DuplicateList
+     *
+     * @param duplicates        副本列表
+     * @return                  副本协议列表
+     */
     public List<DuplicateProto.Duplicate> transToDuplicateList(List<Duplicate> duplicates) {
         List<DuplicateProto.Duplicate> list = new ArrayList<>();
         if (duplicates == null){
@@ -207,6 +263,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Duplicate
+     *
+     * @param duplicate     副本信息
+     * @return              副本协议
+     */
     public DuplicateProto.Duplicate transToDuplicate(Duplicate duplicate) {
         return DuplicateProto.Duplicate.newBuilder()
                 .setId(duplicate.getId())
@@ -220,6 +282,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto BossList
+     *
+     * @param bosses        Boss列表
+     * @return              Boss协议列表
+     */
     public List<BossProto.Boss> transToBossList(List<Boss> bosses){
         List<BossProto.Boss> list = new ArrayList<>();
         if (bosses == null){
@@ -230,6 +298,13 @@ public class ProtoService {
         return list;
     }
 
+
+    /**
+     * proto Boss
+     *
+     * @param boss      boss信息
+     * @return          boss协议信息
+     */
     public BossProto.Boss transToBoss(Boss boss) {
         return BossProto.Boss.newBuilder()
                 .setId(boss.getId())
@@ -240,6 +315,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto bossSpellList
+     *
+     * @param bossSpells        boss技能列表
+     * @return                  boss技能协议列表
+     */
     private List<SpellProto.Spell> transToBossSpellList(List<BossSpell> bossSpells){
         List<SpellProto.Spell> list = new ArrayList<>();
         if (bossSpells == null){
@@ -250,6 +331,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto BossSpell
+     *
+     * @param bossSpell     boss技能信息
+     * @return              boss技能协议信息
+     */
     private SpellProto.Spell transToSpell(BossSpell bossSpell){
         return SpellProto.Spell.newBuilder()
                 .setSpellId(bossSpell.getSpellId().intValue())
@@ -267,6 +354,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto CommodityList
+     *
+     * @param list      商品列表
+     * @return          商品协议列表
+     */
     public List<CommodityProto.Commodity> transToCommodityList(List<Commodity> list) {
         List<CommodityProto.Commodity> res = new ArrayList<>();
 
@@ -278,8 +371,18 @@ public class ProtoService {
         return res;
     }
 
+
+    /**
+     * proto Commodity
+     *
+     * @param e     商品信息
+     * @return      商品协议信息
+     */
     private CommodityProto.Commodity transToCommodity(Commodity e) {
-        CommodityProto.Commodity c = CommodityProto.Commodity.newBuilder()
+        if (Objects.isNull(e)){
+            return CommodityProto.Commodity.newBuilder().build();
+        }
+        return CommodityProto.Commodity.newBuilder()
                 .setId(e.getId())
                 .setType(e.getType())
                 .setLimit(e.getLimit())
@@ -287,12 +390,15 @@ public class ProtoService {
                 .setItem(transToItem(e.getItems()))
                 .setEquip(transToEquip(e.getEquip()))
                 .build();
-
-        return c;
     }
 
 
-
+    /**
+     * proto EmailGoodsList
+     *
+     * @param egList        物品列表
+     * @return              物品协议列表
+     */
     public List<GoodsProto.Goods> transToGoodsList(List<EmailGoods> egList) {
         List<GoodsProto.Goods> res = new ArrayList<>();
 
@@ -308,6 +414,13 @@ public class ProtoService {
         return res;
     }
 
+
+    /**
+     * proto Goods
+     *
+     * @param e     邮件物品信息
+     * @return      协议物品信息
+     */
     private GoodsProto.Goods transToGoods(EmailGoods e) {
 
 
@@ -329,6 +442,15 @@ public class ProtoService {
         return null;
     }
 
+
+    /**
+     * proto Email
+     *
+     * @param r             玩家信息
+     * @param email         邮件信息
+     * @param goodsList     物品信息列表
+     * @return              邮件协议信息
+     */
     public EmailProto.Email transToEmail(Role r, Email email, List<GoodsProto.Goods> goodsList) {
         return EmailProto.Email.newBuilder()
                 .setId(email.getId())
@@ -341,7 +463,13 @@ public class ProtoService {
     }
 
 
-
+    /**
+     * proto EmailList
+     *
+     * @param emailGoodsMap     邮件列表
+     * @param role              玩家信息
+     * @return                  邮件协议列表
+     */
     public List<EmailProto.Email> transToEmailList(Map<Email, List<EmailGoods>> emailGoodsMap, Role role) {
         List<EmailProto.Email> resList = new ArrayList<>();
 
@@ -354,6 +482,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto PKRecord
+     *
+     * @param record     pk记录信息
+     * @return           pk记录协议信息
+     */
     public PKProto.PKRecord transToPkRecord(PKRecord record) {
         if (record == null){
             return null;
@@ -369,6 +503,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Group
+     *
+     * @param group     队伍消息
+     * @return          队伍协议消息
+     */
     public GroupProto.Group transToGroup(Group group) {
         if (group == null){
             return null;
@@ -384,6 +524,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto RoleInitList
+     *
+     * @param roleInits     玩家初始化列表
+     * @return              玩家初始化协议列表
+     */
     public List<RoleInitProto.RoleInit> transToRoleInitList(List<RoleInit> roleInits){
         List<RoleInitProto.RoleInit> resList = new ArrayList<>();
         if (roleInits == null || roleInits.isEmpty()){
@@ -393,6 +539,13 @@ public class ProtoService {
         return resList;
     }
 
+
+    /**
+     * proto RoleInit
+     *
+     * @param r     玩家初始化信息
+     * @return      玩家初始化协议信息
+     */
     private RoleInitProto.RoleInit transToRoleInit(RoleInit r) {
         if (r == null){
             return null;
@@ -407,6 +560,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto Transaction
+     *
+     * @param trans     交易信息
+     * @return          交易协议信息
+     */
     public TransProto.Trans transToTransaction(Transaction trans) {
         if (trans == null){
             return null;
@@ -425,6 +584,13 @@ public class ProtoService {
                 .build();
     }
 
+
+    /**
+     * proto GuildList
+     *
+     * @param guildList     公会列表
+     * @return              公会协议列表
+     */
     public List<GuildProto.Guild> transToGuildList(List<Guild> guildList) {
         List<GuildProto.Guild> guilds = new ArrayList<>();
         if (guildList == null || guildList.isEmpty()){
@@ -450,16 +616,33 @@ public class ProtoService {
         return guilds;
     }
 
+
+    /**
+     * proto member
+     *
+     * @param m     公会成员信息
+     * @return      公会成员协议信息
+     */
     private GuildMemberProto.GuildMember transToMember(Member m) {
-        GuildMemberProto.GuildMember member = GuildMemberProto.GuildMember.newBuilder()
+        if (Objects.isNull(m)){
+            return GuildMemberProto.GuildMember.newBuilder().build();
+        }
+
+        return GuildMemberProto.GuildMember.newBuilder()
                 .setRole(transToRole(LocalUserMap.getIdRoleMap().get(m.getRoleId())))
                 .setPosition(m.getPosition())
                 .setToday(m.getTodayCon())
                 .setAll(m.getAllCon())
                 .build();
-        return member;
     }
 
+
+    /**
+     * proto GuildApplyList
+     *
+     * @param applies   公会申请列表
+     * @return          公会申请协议列表
+     */
     public List<GuildApplyProto.GuildApply> transToGuildApplyList(List<GuildApply> applies) {
         List<GuildApplyProto.GuildApply> applyList = new ArrayList<>();
         if (applies == null){
@@ -469,6 +652,13 @@ public class ProtoService {
         return applyList;
     }
 
+
+    /**
+     * proto GuildApply
+     *
+     * @param a     公会申请信息
+     * @return      公会申请协议信息
+     */
     private GuildApplyProto.GuildApply transToGuildApply(GuildApply a) {
         return  GuildApplyProto.GuildApply.newBuilder()
                 .setId(a.getId())
@@ -478,6 +668,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto entity
+     *
+     * @param entity        实体信息
+     * @return              实体协议
+     */
     public EntityProto.Entity transToEntity(Entity entity){
         if (entity == null){
             return null;
@@ -491,6 +687,13 @@ public class ProtoService {
                 .build();
     }
 
+
+    /**
+     * proto tradeList
+     *
+     * @param trades        交易列表
+     * @return              交易协议列表
+     */
     public List<TradeProto.Trade> transToTradeList(List<Trade> trades) {
         List<TradeProto.Trade> tradeList = Lists.newLinkedList();
         if (trades == null || trades.isEmpty()){
@@ -502,6 +705,12 @@ public class ProtoService {
     }
 
 
+    /**
+     * proto trade
+     *
+     * @param t     交易实体
+     * @return      交易协议实体
+     */
     private TradeProto.Trade transToTrade(Trade t) {
         if (t == null){
             return TradeProto.Trade.newBuilder().build();
@@ -528,6 +737,44 @@ public class ProtoService {
                 .setType(t.getType())
                 .setCreateTime(t.getStartTime().toString())
                 .setRemainTime(remain)
+                .build();
+    }
+
+
+    /**
+     * proto taskList
+     *
+     * @param allTask   任务列表
+     * @return          任务协议列表
+     */
+    public List<TaskProto.Task> transToTaskList(List<Task> allTask) {
+        List<TaskProto.Task> tasks = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(allTask)){
+            return tasks;
+        }
+        allTask.forEach(t -> tasks.add(transToTask(t)));
+        return tasks;
+    }
+
+
+
+    /**
+     * proto task
+     *
+     * @param task      任务实体
+     * @return          任务协议实体
+     */
+    private TaskProto.Task transToTask(Task task) {
+        if (Objects.isNull(task)){
+            return TaskProto.Task.newBuilder().build();
+        }
+        return TaskProto.Task.newBuilder()
+                .setId(task.getId())
+                .setName(task.getName())
+                .setDesc(task.getDesc())
+                .setGold(task.getGold())
+                .setType(task.getType())
+                .addAllGoods(transToGoodsList(task.getGoods()))
                 .build();
     }
 }

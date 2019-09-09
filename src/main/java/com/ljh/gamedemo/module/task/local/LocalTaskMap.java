@@ -3,8 +3,11 @@ package com.ljh.gamedemo.module.task.local;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.module.email.bean.EmailGoods;
+import com.ljh.gamedemo.module.task.bean.RoleTask;
 import com.ljh.gamedemo.module.task.bean.Task;
 import com.ljh.gamedemo.module.task.cache.TaskCache;
+import com.ljh.gamedemo.module.task.dao.TaskDao;
+import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -35,9 +38,16 @@ public class LocalTaskMap {
      */
     private static File taskFile = null;
 
+    /**
+     * taskDao
+     */
+    private static TaskDao taskDao;
+
     static {
         try {
             taskFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "csv/task.xlsx");
+
+            taskDao = SpringUtil.getBean(TaskDao.class);
         }catch (FileNotFoundException e){
             e.printStackTrace();
         }
@@ -105,7 +115,42 @@ public class LocalTaskMap {
                 }
             }
         }
+
+        // 读取数据库任务信息
+        readDB();
+
         log.info("task 数据载入成功");
+    }
+
+    /**
+     * 读取数据库表中的任务状态信息
+     */
+    public static void readDB(){
+
+        // 读取所有玩家正在进行中的任务信息
+        List<RoleTask> processTaskList = Optional.ofNullable(taskDao.selectUnCompleteTask())
+                .orElse(Lists.newArrayList());
+        processTaskList.forEach(roleTask -> {
+            Task task = TaskCache.getIdTaskMap().get(roleTask.getTaskId());
+            task.setId(roleTask.getId());
+
+            List<Task> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(roleTask.getRoleId()))
+                    .orElse(Lists.newArrayList());
+            tasks.add(task);
+            TaskCache.getRoleProcessTaskMap().put(roleTask.getRoleId(), tasks);
+        });
+
+
+        // 读取所有玩家已经完成的任务信息
+        List<RoleTask> finishTaskList = Optional.ofNullable(taskDao.selectFinishTask())
+                .orElse(Lists.newArrayList());
+        finishTaskList.forEach(roleTask -> {
+
+            List<RoleTask> tasks = Optional.ofNullable(TaskCache.getRoleDoneTaskMap().get(roleTask.getRoleId()))
+                    .orElse(Lists.newArrayList());
+            tasks.add(roleTask);
+            TaskCache.getRoleDoneTaskMap().put(roleTask.getRoleId(), tasks);
+        });
     }
 
     public static void main(String[] args) {

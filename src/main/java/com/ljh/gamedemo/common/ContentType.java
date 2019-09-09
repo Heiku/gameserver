@@ -390,6 +390,22 @@ public class ContentType {
 
     public static final String TRADE_AUCTION_TIME_END = "【交易行消息】\n你在拍卖行出售的物品：%s 在拍卖时间内没有人竞价，物品已经返回你的背包中！\n";
 
+
+    // Task
+    public static final String TASK_ALL = "【任务列表】\n当前可接的任务如下所示：\n\n";
+
+    public static final String TASK_STATE = "【任务列表】\n当前正在进行中的任务如下所示：\n\n";
+
+    public static final String TASK_WRONG_PARAM = "任务id有误，请重新输入！\n";
+
+    public static final String TASK_RECEIVE_SUCCESS = "任务领取成功！\n";
+
+    public static final String TASK_RECEIVE_FAILED = "任务领取失败，已经领取过该任务，无法重复领取！\n";
+
+    public static final String TASK_GIVE_UP_SUCCESS = "任务放弃成功！\n";
+
+    public static final String TASK_GIVE_UP_FAILED = "任务放弃失败，无法放弃未领取接受的任务！\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 

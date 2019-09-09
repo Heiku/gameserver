@@ -145,7 +145,8 @@ public class EmailService {
         email = emailDao.selectEmailById(eid);
         email.setState(1);
         email.setModifyTime(new Date());
-        emailDao.updateEmail(email);
+        int n = emailDao.updateEmail(email);
+        log.info("update email, affected rows: " + n);
 
         responseSuccess(channel, ContentType.EMAIL_RECEIVE_SUCCESS);
     }

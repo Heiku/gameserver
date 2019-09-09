@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
+ * 玩家技能数据库操作
+ *
  * @Author: Heiku
  * @Date: 2019/7/11
  */
@@ -15,11 +17,23 @@ import java.util.List;
 @Mapper
 public interface RoleSpellDao {
 
+
+    /**
+     * 插入玩家的技能信息
+     *
+     * @param roleId        玩家id
+     * @param spellId       技能id
+     * @return              affected rows
+     */
     @Insert("insert into role_spell(role_id, spell_id) values (#{roleId}, #{spellId})")
     int insertRoleSpell(long roleId, int spellId);
 
+
+    /**
+     * 查询所有的玩家技能信息
+     *
+     * @return      玩家技能列表
+     */
     @Select("select * from role_spell")
     List<RoleSpell> selectAllRoleSpell();
-
-
 }

@@ -19,17 +19,12 @@ public class TaskState {
     public static final int RECEIVE_TASK = 2;
 
     /**
-     * 正在进行任务中
-     */
-    public static final int WORK_ON_TASK = 3;
-
-    /**
      * 任务完成
      */
-    public static final int TASK_FINISH = 4;
+    public static final int TASK_FINISH = 3;
 
     /**
      * 放弃任务
      */
-    public static final int TASK_DISCARD = 5;
+    public static final int TASK_DISCARD = 4;
 }
