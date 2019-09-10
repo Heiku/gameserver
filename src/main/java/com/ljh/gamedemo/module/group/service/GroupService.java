@@ -2,7 +2,9 @@ package com.ljh.gamedemo.module.group.service;
 
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.group.bean.Group;
+import com.ljh.gamedemo.module.group.event.base.GroupEvent;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.group.cache.GroupCache;
@@ -18,6 +20,7 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,18 +36,42 @@ import java.util.List;
 @Service
 public class GroupService {
 
+    /**
+     * 用户服务
+     */
     @Autowired
     private UserService userService;
 
+
+    /**
+     * 场景服务
+     */
     @Autowired
     private SiteService siteService;
 
+
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
 
+    /**
+     * 事件发布者
+     */
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    /**
+     * 用户协议返回
+     */
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
+
+    /**
+     * 组队协议返回
+     */
     private MsgGroupProto.ResponseGroup groupResp;
 
 
@@ -169,6 +196,9 @@ public class GroupService {
 
         // 消息返回
         responseSuccess(channel, ContentType.GROUP_JOIN_SUCCESS);
+
+        // 消息发布
+        publisher.publishEvent(new GroupEvent(new BaseEvent(own, groupId)));
     }
 
 

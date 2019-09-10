@@ -131,12 +131,9 @@ public class LocalTaskMap {
         List<RoleTask> processTaskList = Optional.ofNullable(taskDao.selectUnCompleteTask())
                 .orElse(Lists.newArrayList());
         processTaskList.forEach(roleTask -> {
-            Task task = TaskCache.getIdTaskMap().get(roleTask.getTaskId());
-            task.setId(roleTask.getId());
-
-            List<Task> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(roleTask.getRoleId()))
+            List<RoleTask> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(roleTask.getRoleId()))
                     .orElse(Lists.newArrayList());
-            tasks.add(task);
+            tasks.add(roleTask);
             TaskCache.getRoleProcessTaskMap().put(roleTask.getRoleId(), tasks);
         });
 

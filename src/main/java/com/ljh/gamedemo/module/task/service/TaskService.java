@@ -2,9 +2,12 @@ package com.ljh.gamedemo.module.task.service;
 
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
+import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.common.TaskState;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.email.service.EmailService;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.task.bean.RoleTask;
 import com.ljh.gamedemo.module.task.bean.Task;
@@ -14,14 +17,15 @@ import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgTaskProto;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 
 /**
  * 任务的具体操作
@@ -40,11 +44,23 @@ public class TaskService {
     @Autowired
     private TaskDao taskDao;
 
+    /**
+     * 邮件服务
+     */
+    @Autowired
+    private EmailService emailService;
 
+
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
 
+    /**
+     * 任务协议返回
+     */
     private MsgTaskProto.ResponseTask respTask;
 
     /**
@@ -62,15 +78,20 @@ public class TaskService {
 
         // 查询所有的任务
         List<Task> allTask = Lists.newArrayList(TaskCache.getIdTaskMap().values());
+        List<RoleTask> tasks = Lists.newArrayList();
+        allTask.forEach(t ->
+            tasks.add(RoleTask.builder().taskId(t.getTaskId()).progress(TaskState.UN_RECEIVE_TASK).build()));
 
         // 查询所有已经完成的任务
         List<RoleTask> finishTasks = Optional.ofNullable(TaskCache.getRoleDoneTaskMap().get(role.getRoleId()))
                 .orElse(Lists.newArrayList());
-
-        finishTasks.forEach(t -> allTask.removeIf(task -> task.getTaskId().longValue() == t.getTaskId()));
+        log.info(finishTasks.toString());
+        finishTasks.forEach(t ->
+                tasks.removeIf(task -> task.getTaskId().longValue() == t.getTaskId())
+        );
 
         // 消息返回
-        sendMsg(MsgTaskProto.RequestType.TASK_ALL, allTask, ContentType.TASK_ALL, channel);
+        sendMsg(MsgTaskProto.RequestType.TASK_ALL, tasks, ContentType.TASK_ALL, channel);
     }
 
 
@@ -86,7 +107,7 @@ public class TaskService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 获取已经领取的任务列表
-        List<Task> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
+        List<RoleTask> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
                 .orElse(Lists.newArrayList());
 
         // 消息返回
@@ -112,7 +133,7 @@ public class TaskService {
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 判断玩家是否已经接受了该任务
-        Optional<Task> result = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
+        Optional<RoleTask> result = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
                 .orElse(Lists.newArrayList())
                 .stream()
                 .filter(t -> t.getTaskId() == req.getTaskId())
@@ -129,6 +150,50 @@ public class TaskService {
         // 消息返回
         sendMsg(MsgTaskProto.RequestType.TASK_COMMON, null, ContentType.TASK_RECEIVE_SUCCESS, channel);
     }
+
+
+
+    /**
+     * 任务提交
+     *
+     * @param req       请求
+     * @param channel   channel
+     */
+    public void taskSubmit(MsgTaskProto.RequestTask req, Channel channel) {
+        // 获取玩家信息
+        Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
+        long taskId = req.getTaskId();
+
+        // 任务id 判断
+        respTask = taskInterceptor(req.getTaskId());
+        if (!Objects.isNull(respTask)){
+            channel.writeAndFlush(respTask);
+            return;
+        }
+
+        // 判断玩家是否已经接受了该任务
+        Optional<RoleTask> result = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList())
+                .stream()
+                .filter(t -> t.getTaskId() == taskId)
+                .findFirst();
+        if (!result.isPresent()){
+            sendFailedMsg(channel, ContentType.TASK_RECEIVE_FAILED);
+            return;
+        }
+
+        RoleTask task = result.get();
+        if (task.getProgress() != TaskState.TASK_FINISH){
+            sendFailedMsg(channel, ContentType.TASK_SUBMIT_FAILED);
+        }
+
+        // 具体的任务提交操作
+        doTaskSubmit(role, task);
+
+        // 消息返回
+        sendMsg(MsgTaskProto.RequestType.TASK_COMMON, null, ContentType.TASK_SUBMIT_SUCCESS, channel);
+    }
+
 
 
     /**
@@ -149,7 +214,7 @@ public class TaskService {
         }
 
         // 判断玩家是否有接这个任务
-        Optional<Task> result = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
+        Optional<RoleTask> result = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
                 .orElse(Lists.newArrayList())
                 .stream()
                 .filter(t -> t.getTaskId() == req.getTaskId())
@@ -160,7 +225,7 @@ public class TaskService {
         }
 
         // 取消任务关联
-        doGiveUpTask(role, req.getTaskId());
+        doGiveUpTask(role, result.get());
 
         // 消息返回
         sendMsg(MsgTaskProto.RequestType.TASK_COMMON, null, ContentType.TASK_GIVE_UP_SUCCESS, channel);
@@ -189,15 +254,10 @@ public class TaskService {
         int n = taskDao.insertTask(roleTask);
         log.info("insert into role_task, affected rows: " + n);
 
-        // 构建任务信息
-        Task task = new Task();
-        BeanUtils.copyProperties(TaskCache.getIdTaskMap().get(taskId), task);
-        task.setId(roleTask.getId());
-
         // 缓存本地
-        List<Task> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
+        List<RoleTask> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
                 .orElse(Lists.newArrayList());
-        tasks.add(task);
+        tasks.add(roleTask);
         TaskCache.getRoleProcessTaskMap().put(role.getRoleId(), tasks);
     }
 
@@ -206,28 +266,101 @@ public class TaskService {
      * 实际放弃任务操作
      *
      * @param role      玩家信息
-     * @param taskId    任务 id
+     * @param task      任务信息
      */
-    private void doGiveUpTask(Role role, long taskId) {
-        // 缓存找到对应的任务信息
-        Optional<Task> result = TaskCache.getRoleProcessTaskMap().get(role.getRoleId())
+    private void doGiveUpTask(Role role, RoleTask task) {
+        // 更新任务状态
+        updateStoreTask(role, task, TaskState.TASK_DISCARD);
+    }
+
+
+    /**
+     * 任务提交
+     *
+     * @param role      玩家信息
+     * @param task      任务信息
+     */
+    private void doTaskSubmit(Role role, RoleTask task) {
+        // 更新任务状态
+        updateStoreTask(role, task, TaskState.TASK_ALL_FINISH);
+
+        // 获取具体的任务信息
+        Task t = TaskCache.getIdTaskMap().get(task.getTaskId());
+
+        // 任务奖励发放
+        emailService.sendEmail(role, t.getGoods(), EmailType.TASK_REWARD);
+    }
+
+
+    /**
+     * 更新任务的状态信息
+     *
+     * @param role      玩家信息
+     * @param task      任务信息
+     * @param state     任务状态
+     */
+    private void updateStoreTask(Role role, RoleTask task, int state){
+        // 更新db
+        task.setProgress(state);
+        task.setModifyTime(new Date());
+
+        int n = taskDao.updateTask(task);
+        log.info("update role_task, affected rows: " + n);
+
+        // 移除本地缓存中的信息
+        if (state == TaskState.TASK_ALL_FINISH || state == TaskState.TASK_DISCARD){
+            TaskCache.getRoleProcessTaskMap().get(role.getRoleId()).removeIf(t -> t.getTaskId().longValue() == task.getTaskId());
+        }
+
+        // 如果任务状态已经全部完成，那么就将任务记录缓存到本地
+        if (state == TaskState.TASK_ALL_FINISH){
+            List<RoleTask> doneTaskList = Optional.ofNullable(TaskCache.getRoleDoneTaskMap().get(role.getRoleId()))
+                    .orElse(Lists.newArrayList());
+            doneTaskList.add(task);
+            TaskCache.getRoleDoneTaskMap().put(role.getRoleId(), doneTaskList);
+        }
+    }
+
+
+    /**
+     * 任务完成
+     *
+     * @param role      玩家信息
+     * @param roleTask  任务信息
+     */
+    public void completeTask(Role role, RoleTask roleTask){
+
+        // 更新玩家的任务信息
+        updateStoreTask(role, roleTask, TaskState.TASK_FINISH);
+
+        Task t = TaskCache.getIdTaskMap().get(roleTask.getTaskId());
+        // 发送任务完成通知
+        sendMsg(MsgTaskProto.RequestType.TASK_COMMON, null,
+                String.format(ContentType.TASK_COMPLETE_ANN, t.getName()),
+                ChannelCache.getUserIdChannelMap().get(role.getUserId()));
+    }
+
+
+
+    /**
+     * 获取玩家的任务信息
+     *
+     * @param role      玩家信息
+     * @param taskId    任务类型
+     * @return          任务信息
+     */
+    public RoleTask getRoleTaskByType(Role role, long taskId){
+        List<RoleTask> tasks = TaskCache.getRoleProcessTaskMap().get(role.getRoleId());
+        if (CollectionUtils.isEmpty(tasks)){
+            return null;
+        }
+
+        // 是否存在相关的任务
+        Optional<RoleTask> result = TaskCache.getRoleProcessTaskMap().get(role.getRoleId())
                 .stream()
                 .filter(t -> t.getTaskId() == taskId)
                 .findFirst();
-        if (result.isPresent()){
-            Task task = result.get();
-
-            // 更新DB
-            RoleTask roleTask = taskDao.selectTaskById(task.getId());
-            roleTask.setProgress(TaskState.TASK_FINISH);
-            roleTask.setModifyTime(new Date());
-
-            int n = taskDao.updateTask(roleTask);
-            log.info("update role_task, affected rows: " + n);
-
-            // 移除本地缓存中的信息
-            TaskCache.getRoleProcessTaskMap().get(role.getRoleId()).removeIf(t -> t.getTaskId() == taskId);
-        }
+        return result.orElse(null);
     }
 
 
@@ -255,7 +388,7 @@ public class TaskService {
      * @param allTask       任务列表
      * @param msg           消息
      */
-    private void sendMsg(MsgTaskProto.RequestType reqType, List<Task> allTask, String msg, Channel channel) {
+    private void sendMsg(MsgTaskProto.RequestType reqType, List<RoleTask> allTask, String msg, Channel channel) {
         respTask = MsgTaskProto.ResponseTask.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(msg)

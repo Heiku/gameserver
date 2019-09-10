@@ -25,4 +25,9 @@ public class RequestTaskType {
      * 放弃任务
      */
     public static final int TASK_GIVE_UP = 3;
+
+    /**
+     * 提交任务
+     */
+    public static final int TASK_SUBMIT = 5;
 }

@@ -92,16 +92,13 @@ public class CreepBeAttackedScheduleRun implements Runnable {
             sumDamage += damage;
 
             if (hp <= 0){
-                creep.setHp(startUp);
-                creep.setNum(creep.getNum() - 1);
-                // 更新cache
-                LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
 
                 // 同时，野怪死亡，取消任务
                 FutureMap.futureMap.get(this.hashCode()).cancel(true);
                 log.info("野怪持续掉血任务：野怪死亡，任务取消");
 
-                creepService.sendCreepMsg(role, creep, ContentType.ATTACK_DEATH_CREEP);
+                // 野怪死亡具体操作
+                creepService.doCreepDeath(creep, role, startUp);
                 return;
             }
 

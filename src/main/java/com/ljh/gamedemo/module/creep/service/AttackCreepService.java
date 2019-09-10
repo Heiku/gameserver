@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.creep.bean.Creep;
+import com.ljh.gamedemo.module.creep.event.base.AttackCreepEvent;
+import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.spell.bean.Spell;
 import com.ljh.gamedemo.module.role.bean.RoleBuff;
@@ -32,6 +34,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -71,6 +74,11 @@ public class AttackCreepService {
     @Autowired
     private ProtoService protoService;
 
+    /**
+     * 事件发送者
+     */
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * 技能协议返回
@@ -259,6 +267,8 @@ public class AttackCreepService {
     }
 
 
+
+
     /**
      * 初始化野怪的攻击数据（攻击目标队列，攻击野怪的关联）
      *
@@ -278,6 +288,8 @@ public class AttackCreepService {
         LocalAttackCreepMap.getCurrentCreepMap().put(role.getRoleId(), creep.getCreepId());
     }
 
+
+
     /**
      * 具体的攻击野怪的操作操作
      *
@@ -296,6 +308,7 @@ public class AttackCreepService {
         // 装备消耗耐久任务
         equipService.synCutEquipDurability(role);
     }
+
 
 
 
@@ -333,6 +346,37 @@ public class AttackCreepService {
 
 
 
+
+    /**
+     * 野怪死亡的具体操作
+     *
+     * @param creep
+     * @param role
+     */
+    public void doCreepDeath(Creep creep, Role role, int startHp){
+        // 重置血量
+        creep.setHp(startHp);
+        creep.setNum(creep.getNum() - 1);
+        LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
+
+        // 野怪死亡，取消玩家自动扣血task
+        ScheduledFuture future = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
+        if (future != null) {
+            future.cancel(true);
+        }
+        LocalAttackCreepMap.getUserBeAttackedMap().remove(role.getRoleId());
+
+        // 消息返回
+        sendCreepMsg(role, creep, ContentType.ATTACK_DEATH_CREEP);
+
+        // 事件发布
+        publisher.publishEvent(new AttackCreepEvent(new BaseEvent(role, creep.getCreepId())));
+    }
+
+
+
+
+
     /**
      * 野怪信息拦截器，校验参数
      *
@@ -354,6 +398,8 @@ public class AttackCreepService {
     }
 
 
+
+
     /**
      * 消息返回
      *
@@ -371,6 +417,8 @@ public class AttackCreepService {
                 .build();
         channel.writeAndFlush(response);
     }
+
+
 
 
     /**
@@ -392,6 +440,9 @@ public class AttackCreepService {
         channel.writeAndFlush(response);
     }
 
+
+
+
     /**
      * 发送失败消息
      *
@@ -405,6 +456,9 @@ public class AttackCreepService {
                 .build();
         channel.writeAndFlush(response);
     }
+
+
+
 
     /**
      * 发送公共消息
@@ -420,6 +474,8 @@ public class AttackCreepService {
                 .build();
         channel.writeAndFlush(response);
     }
+
+
 
 
     /**

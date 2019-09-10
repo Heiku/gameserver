@@ -3,15 +3,18 @@ package com.ljh.gamedemo.module.talk.service;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.entity.bean.Entity;
+import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.talk.bean.TalkText;
 import com.ljh.gamedemo.module.entity.local.LocalEntityMap;
+import com.ljh.gamedemo.module.talk.event.base.TalkEvent;
 import com.ljh.gamedemo.module.talk.local.LocalTalkTextMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.TalkEntityProto;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -26,6 +29,13 @@ public class TalkEntityService {
      */
     @Autowired
     private ProtoService protoService;
+
+
+    /**
+     * 事件发布者
+     */
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * 交流协议返回
@@ -70,8 +80,10 @@ public class TalkEntityService {
                     .setRole(protoService.transToRole(role))
                     .build();
             channel.writeAndFlush(resp);
-
         }
+
+        // 发送事件通知
+        publisher.publishEvent(new TalkEvent(new BaseEvent(role, entity.getId())));
     }
 
 

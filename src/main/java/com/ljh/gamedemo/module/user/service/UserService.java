@@ -111,7 +111,7 @@ public class UserService {
         chatService.receiveOfflineMsg(role);
 
         // 进入公会聊天
-        guildService.joinGuildChannelGroup(role);
+        //guildService.joinGuildChannelGroup(role);
 
         // 确定角色成功，返回角色信息
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()

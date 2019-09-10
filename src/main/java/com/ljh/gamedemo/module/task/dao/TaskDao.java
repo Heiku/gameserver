@@ -42,7 +42,7 @@ public interface TaskDao {
      *
      * @return      玩家正在进行的任务列表
      */
-    @Select("select * from task where progress = @com.ljh.gamedemo.common.TaskState@RECEIVE_TASK")
+    @Select("select * from task where progress = 2")
     List<RoleTask> selectUnCompleteTask();
 
 
@@ -51,7 +51,7 @@ public interface TaskDao {
      *
      * @return      玩家已经完成的任务列表
      */
-    @Select("select * from task where progress = @com.ljh.gamedemo.common.TaskState@TASK_FINISH")
+    @Select("select * from task where progress = 3")
     List<RoleTask> selectFinishTask();
 
 
@@ -61,5 +61,6 @@ public interface TaskDao {
      * @param id    任务id
      * @return      玩家任务信息
      */
+    @Select("select * from task where id = #{id}")
     RoleTask selectTaskById(long id);
 }

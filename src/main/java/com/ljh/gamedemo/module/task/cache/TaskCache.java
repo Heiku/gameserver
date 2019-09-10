@@ -29,7 +29,7 @@ public class TaskCache {
     /**
      * 玩家正在进行中的任务
      */
-    private static Map<Long, List<Task>> roleProcessTaskMap = Maps.newConcurrentMap();
+    private static Map<Long, List<RoleTask>> roleProcessTaskMap = Maps.newConcurrentMap();
 
     /**
      * 玩家已经完成的任务
@@ -49,7 +49,7 @@ public class TaskCache {
         return roleDoneTaskMap;
     }
 
-    public static Map<Long, List<Task>> getRoleProcessTaskMap() {
+    public static Map<Long, List<RoleTask>> getRoleProcessTaskMap() {
         return roleProcessTaskMap;
     }
 }

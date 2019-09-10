@@ -406,6 +406,12 @@ public class ContentType {
 
     public static final String TASK_GIVE_UP_FAILED = "任务放弃失败，无法放弃未领取接受的任务！\n";
 
+    public static final String TASK_SUBMIT_FAILED = "任务未完成，无法进行任务提交操作！\n";
+
+    public static final String TASK_COMPLETE_ANN = "【任务通知】\n恭喜你完成任务：%s，请提交任务进行获取任务奖励！\n";
+
+    public static final String TASK_SUBMIT_SUCCESS = "任务提交成功，请等待邮件通知奖励信息！\n";
+
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
 

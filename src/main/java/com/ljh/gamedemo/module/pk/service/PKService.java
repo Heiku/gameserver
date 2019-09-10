@@ -2,7 +2,9 @@ package com.ljh.gamedemo.module.pk.service;
 
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.pk.dao.RolePKDao;
+import com.ljh.gamedemo.module.pk.event.base.PKEvent;
 import com.ljh.gamedemo.module.pk.local.LocalPKRewardMap;
 import com.ljh.gamedemo.module.spell.local.LocalSpellMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
@@ -32,6 +34,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -40,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 具体的 PK 操作
  *
- *
  * @Author: Heiku
  * @Date: 2019/8/12
  */
@@ -48,32 +50,68 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class PKService {
 
+    /**
+     * RolePKDao
+     */
     @Autowired
     private RolePKDao pkDao;
 
+
+    /**
+     * 用户服务
+     */
     @Autowired
     private UserService userService;
 
+
+    /**
+     * 玩家服务
+     */
     @Autowired
     private RoleService roleService;
 
+
+    /**
+     * 技能服务
+     */
     @Autowired
     private SpellService spellService;
 
+
+    /**
+     * 协议服务
+     */
     @Autowired
     private ProtoService protoService;
 
+
+    /**
+     * 事件发送者
+     */
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    /**
+     * 用户协议返回
+     */
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
+
+    /**
+     * pk协议返回
+     */
     private MsgPKProto.ResponsePK pkResp;
 
+    /**
+     * 技能协议返回
+     */
     private MsgSpellProto.ResponseSpell spellResp;
 
     /**
      * 玩家进行pk挑战
      *
-     * @param req
-     * @param channel
+     * @param req           请求
+     * @param channel       channel
      */
     public void pk(MsgPKProto.RequestPK req, Channel channel) {
 
@@ -109,8 +147,8 @@ public class PKService {
     /**
      * 接收方接受挑战，准备进行 pk 对决
      *
-     * @param req
-     * @param channel
+     * @param req           请求
+     * @param channel       channel
      */
     public void acceptChallenge(MsgPKProto.RequestPK req, Channel channel) {
 
@@ -143,8 +181,8 @@ public class PKService {
     /**
      * 玩家开始pk 攻击，使用技能进行战斗
      *
-     * @param req
-     * @param channel
+     * @param req           请求
+     * @param channel       channel
      */
     public void spellRole(MsgPKProto.RequestPK req, Channel channel) {
         // 用户状态认证
@@ -183,8 +221,8 @@ public class PKService {
     /**
      * pk 玩家退出战斗
      *
-     * @param req
-     * @param channel
+     * @param req           请求
+     * @param channel       channel
      */
     public void escape(MsgPKProto.RequestPK req, Channel channel) {
         // 用户状态认证
@@ -230,9 +268,9 @@ public class PKService {
     /**
      * 使用技能进行攻击操作
      *
-     * @param fromRole
-     * @param toRole
-     * @param spell
+     * @param fromRole      使用技能的玩家
+     * @param toRole        被攻击的玩家
+     * @param spell         技能信息
      */
     private void doSpellPk(Role fromRole, Role toRole, Spell spell) {
         // 普通攻击技能，直接打伤害
@@ -252,8 +290,8 @@ public class PKService {
     /**
      * 玩家受到普通攻击伤害
      *
-     * @param role
-     * @param spell
+     * @param role      玩家信息
+     * @param spell     技能信息
      */
     private void doAttackRole(Role fromRole, Role role, Spell spell) {
         // 获取普攻的额外伤害
@@ -268,8 +306,8 @@ public class PKService {
     /**
      * 使用技能攻击敌方角色
      *
-     * @param toRole
-     * @param spell
+     * @param toRole        被攻击的玩家
+     * @param spell         技能信息
      */
     private void doSpellRole(Role fromRole, Role toRole, Spell spell) {
         // 先进行扣蓝操作
@@ -323,8 +361,8 @@ public class PKService {
      * 3.通知双方已经进入 pk 竞技场的消息通知
      *
      *
-     * @param cRole
-     * @param dRole
+     * @param cRole     挑战玩家
+     * @param dRole     挑战玩家
      */
     private void enterPKMode(Role cRole, Role dRole) {
         // 获取奖励等级
@@ -344,9 +382,9 @@ public class PKService {
     /**
      * 存储 pk 记录
      *
-     * @param cRole
-     * @param dRole
-     * @param reward
+     * @param cRole     挑战者A
+     * @param dRole     挑战者B
+     * @param reward    挑战结果奖励
      */
     private void savePKRecord(Role cRole, Role dRole, PKReward reward) {
 
@@ -371,8 +409,8 @@ public class PKService {
     /**
      * 向 pk 双方发送可以进行pk的消息
      *
-     * @param cRole
-     * @param dRole
+     * @param cRole     挑战者A
+     * @param dRole     挑战者B
      */
     private void sendBothSidesMsg(Role cRole, Role dRole) {
         Channel cCh = ChannelCache.getUserIdChannelMap().get(cRole.getUserId());
@@ -387,8 +425,8 @@ public class PKService {
     /**
      * 根据双方角色的level 计算出 玩家pk 的奖励等级
      *
-     * @param cLevel
-     * @param dLevel
+     * @param cLevel        玩家A等级
+     * @param dLevel        玩家B等级
      * @return
      */
     private int calculateRewardLevel(int cLevel, int dLevel) {
@@ -399,8 +437,8 @@ public class PKService {
     /**
      * 向挑战方发送挑战邀请
      *
-     * @param cRole
-     * @param dRole
+     * @param cRole     玩家A
+     * @param dRole     玩家B
      */
     private void sendPKInvite(Role cRole, Role dRole) {
         // 找到接收方的 channel
@@ -418,8 +456,8 @@ public class PKService {
     /**
      * 直接返回消息
      *
-     * @param channel
-     * @param msg
+     * @param channel       channel
+     * @param msg           消息
      */
     private void responseMsg(Channel channel, String msg){
         pkResp = MsgPKProto.ResponsePK.newBuilder()
@@ -440,7 +478,7 @@ public class PKService {
      * 4.发送奖励荣誉值
      * 5.消息发送（双方）
      *
-     * @param role
+     * @param role      玩家信息
      */
     public void generatePkRecord(Role role) {
         // 获取之前的记录信息
@@ -465,9 +503,9 @@ public class PKService {
      * 2.消息发送
      * 3.更新db记录
      *
-     * @param winner
-     * @param loser
-     * @param pkRecord
+     * @param winner        获胜方
+     * @param loser         战败方
+     * @param pkRecord      pk记录信息
      */
     public void finishPK(Role winner, Role loser, PKRecord pkRecord){
         // 发放奖励
@@ -478,15 +516,18 @@ public class PKService {
 
         // 更新记录，删除本地的pk缓存
         updatePKRecord(winner, loser, pkRecord);
+
+        // 事件发送
+        publisher.publishEvent(new PKEvent(new BaseEvent(winner, 0L)));
     }
 
 
     /**
      * 在用户线程池中更新玩家的荣誉值信息
      *
-     * @param winner
-     * @param loser
-     * @param pkRecord
+     * @param winner        获胜方
+     * @param loser         战败方
+     * @param pkRecord      pk记录信息
      */
     private void sendHonorReward(Role winner, Role loser, PKRecord pkRecord) {
         winner.setHonor(winner.getHonor() + pkRecord.getWinHonor());
@@ -501,9 +542,9 @@ public class PKService {
     /**
      * 向pk 的双方发送结果信息
      *
-     * @param winner
-     * @param loser
-     * @param pkRecord
+     * @param winner        获胜方
+     * @param loser         战败方
+     * @param pkRecord      pk记录信息
      */
     private void sendBothMsg(Role winner, Role loser, PKRecord pkRecord) {
 
@@ -521,9 +562,9 @@ public class PKService {
      * 更新Db 中的战斗记录
      * 删除本地 pk 缓存
      *
-     * @param winner
-     * @param loser
-     * @param pkRecord
+     * @param winner        获胜方
+     * @param loser         战败方
+     * @param pkRecord      pk记录信息
      */
     private void updatePKRecord(Role winner, Role loser, PKRecord pkRecord) {
         pkRecord.setEndTime(new Date());
@@ -537,8 +578,8 @@ public class PKService {
     /**
      * 移除当前的 PK 信息
      *
-     * @param winner
-     * @param loser
+     * @param winner        获胜方
+     * @param loser         战败方
      */
     private void removePkRecord(Role winner, Role loser, PKRecord pkRecord) {
         // 移除 PK 信息
@@ -553,8 +594,8 @@ public class PKService {
     /**
      * 返回 pk 战斗结果的通知消息
      *
-     * @param msg
-     * @return
+     * @param msg       消息
+     * @return          pk协议返回
      */
     private MsgPKProto.ResponsePK combinePkResult(PKRecord record, String msg) {
         pkResp = MsgPKProto.ResponsePK.newBuilder()
@@ -579,9 +620,9 @@ public class PKService {
     /**
      * 规定 PK 战斗只能在竞技场上进行，判断玩家双方是否都在竞技场上
      *
-     * @param challenge
-     * @param defender
-     * @return
+     * @param challenge     挑战者id
+     * @param defender      被挑战者id
+     * @return              协议返回
      */
     private MsgPKProto.ResponsePK pkSiteInterceptor(long challenge, long defender){
         // 竞技场id
@@ -601,8 +642,8 @@ public class PKService {
     /**
      * 判断玩家是否在 pk 状态中
      *
-     * @param userId
-     * @return
+     * @param userId        用户id
+     * @return              pk协议返回
      */
     private MsgPKProto.ResponsePK pkStateInterceptor(long userId, long dRoleId){
         // 获取玩家状态
@@ -620,7 +661,7 @@ public class PKService {
     /**
      * pk 失构造败消息返回
      *
-     * @param content
+     * @param content       消息
      */
     private MsgPKProto.ResponsePK combineFailed(String content){
         pkResp = MsgPKProto.ResponsePK.newBuilder()

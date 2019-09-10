@@ -15,5 +15,7 @@ message Task{
     int32 gold = 5;     // 奖励金币值
     repeated Goods goods = 6;   // 物品奖励
     string desc = 7;        // 任务描述
+
+    int32 state = 8;    // 任务状态
 }
 

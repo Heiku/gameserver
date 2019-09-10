@@ -21,4 +21,9 @@ public class BaseEvent implements Serializable {
      * 玩家信息
      */
     private Role role;
+
+    /**
+     * 目标id
+     */
+    private Long desId;
 }

@@ -1,7 +1,9 @@
 package com.ljh.gamedemo.module.task.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -12,8 +14,11 @@ import java.util.Date;
  * @Date: 2019/9/4
  */
 
-@Builder
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleTask {
 
     /**
@@ -45,4 +50,6 @@ public class RoleTask {
      * 修改任务的时间
      */
     private Date modifyTime;
+
+
 }

@@ -58,6 +58,9 @@ public class TaskHandler extends SimpleChannelInboundHandler<MsgTaskProto.Reques
             case TASK_GIVE_UP:
                 taskService.taskGiveUp(req, channel);
                 break;
+            case TASK_SUBMIT:
+                taskService.taskSubmit(req, channel);
+                break;
         }
     }
 }

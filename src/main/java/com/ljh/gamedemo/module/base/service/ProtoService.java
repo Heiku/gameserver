@@ -5,7 +5,9 @@ import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
 import com.ljh.gamedemo.module.items.local.LocalItemsMap;
+import com.ljh.gamedemo.module.task.bean.RoleTask;
 import com.ljh.gamedemo.module.task.bean.Task;
+import com.ljh.gamedemo.module.task.cache.TaskCache;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.creep.bean.Creep;
 import com.ljh.gamedemo.module.duplicate.bean.Boss;
@@ -176,7 +178,7 @@ public class ProtoService {
                 .setItemsId(items.getItemsId())
                 .setType(items.getType())
                 .setName(items.getName())
-                .setNum(items.getNum())
+                .setNum(Optional.ofNullable(items.getNum()).orElse(1))
                 .setUp(items.getUp())
                 .setSec(items.getSec())
                 .setDesc(items.getDesc())
@@ -747,7 +749,7 @@ public class ProtoService {
      * @param allTask   任务列表
      * @return          任务协议列表
      */
-    public List<TaskProto.Task> transToTaskList(List<Task> allTask) {
+    public List<TaskProto.Task> transToTaskList(List<RoleTask> allTask) {
         List<TaskProto.Task> tasks = Lists.newArrayList();
         if (CollectionUtils.isEmpty(allTask)){
             return tasks;
@@ -764,17 +766,21 @@ public class ProtoService {
      * @param task      任务实体
      * @return          任务协议实体
      */
-    private TaskProto.Task transToTask(Task task) {
+    private TaskProto.Task transToTask(RoleTask task) {
         if (Objects.isNull(task)){
             return TaskProto.Task.newBuilder().build();
         }
+        Task t = TaskCache.getIdTaskMap().get(task.getTaskId());
+
         return TaskProto.Task.newBuilder()
-                .setId(task.getId())
-                .setName(task.getName())
-                .setDesc(task.getDesc())
-                .setGold(task.getGold())
-                .setType(task.getType())
-                .addAllGoods(transToGoodsList(task.getGoods()))
+                .setId(Optional.ofNullable(task.getId()).orElse(0L))
+                .setTaskId(t.getTaskId())
+                .setName(t.getName())
+                .setDesc(t.getDesc())
+                .setGold(t.getGold())
+                .setType(t.getType())
+                .setState(task.getProgress())
+                .addAllGoods(transToGoodsList(t.getGoods()))
                 .build();
     }
 }

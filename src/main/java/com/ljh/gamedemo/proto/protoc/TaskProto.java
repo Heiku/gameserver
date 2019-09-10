@@ -133,6 +133,15 @@ public final class TaskProto {
      */
     com.google.protobuf.ByteString
         getDescBytes();
+
+    /**
+     * <pre>
+     * 任务状态
+     * </pre>
+     *
+     * <code>int32 state = 8;</code>
+     */
+    int getState();
   }
   /**
    * Protobuf type {@code Task}
@@ -222,6 +231,11 @@ public final class TaskProto {
               java.lang.String s = input.readStringRequireUtf8();
 
               desc_ = s;
+              break;
+            }
+            case 64: {
+
+              state_ = input.readInt32();
               break;
             }
             default: {
@@ -450,6 +464,19 @@ public final class TaskProto {
       }
     }
 
+    public static final int STATE_FIELD_NUMBER = 8;
+    private int state_;
+    /**
+     * <pre>
+     * 任务状态
+     * </pre>
+     *
+     * <code>int32 state = 8;</code>
+     */
+    public int getState() {
+      return state_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -484,6 +511,9 @@ public final class TaskProto {
       }
       if (!getDescBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 7, desc_);
+      }
+      if (state_ != 0) {
+        output.writeInt32(8, state_);
       }
       unknownFields.writeTo(output);
     }
@@ -520,6 +550,10 @@ public final class TaskProto {
       if (!getDescBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, desc_);
       }
+      if (state_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, state_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -549,6 +583,8 @@ public final class TaskProto {
           .equals(other.getGoodsList())) return false;
       if (!getDesc()
           .equals(other.getDesc())) return false;
+      if (getState()
+          != other.getState()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -578,6 +614,8 @@ public final class TaskProto {
       }
       hash = (37 * hash) + DESC_FIELD_NUMBER;
       hash = (53 * hash) + getDesc().hashCode();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + getState();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -730,6 +768,8 @@ public final class TaskProto {
         }
         desc_ = "";
 
+        state_ = 0;
+
         return this;
       }
 
@@ -772,6 +812,7 @@ public final class TaskProto {
           result.goods_ = goodsBuilder_.build();
         }
         result.desc_ = desc_;
+        result.state_ = state_;
         onBuilt();
         return result;
       }
@@ -865,6 +906,9 @@ public final class TaskProto {
         if (!other.getDesc().isEmpty()) {
           desc_ = other.desc_;
           onChanged();
+        }
+        if (other.getState() != 0) {
+          setState(other.getState());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1537,6 +1581,44 @@ public final class TaskProto {
         onChanged();
         return this;
       }
+
+      private int state_ ;
+      /**
+       * <pre>
+       * 任务状态
+       * </pre>
+       *
+       * <code>int32 state = 8;</code>
+       */
+      public int getState() {
+        return state_;
+      }
+      /**
+       * <pre>
+       * 任务状态
+       * </pre>
+       *
+       * <code>int32 state = 8;</code>
+       */
+      public Builder setState(int value) {
+        
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务状态
+       * </pre>
+       *
+       * <code>int32 state = 8;</code>
+       */
+      public Builder clearState() {
+        
+        state_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1604,11 +1686,12 @@ public final class TaskProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nTask.proto\032\013Goods.proto\"q\n\004Task\022\n\n\002id\030" +
-      "\001 \001(\003\022\016\n\006taskId\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\014\n\004t" +
-      "ype\030\004 \001(\005\022\014\n\004gold\030\005 \001(\005\022\025\n\005goods\030\006 \003(\0132\006" +
-      ".Goods\022\014\n\004desc\030\007 \001(\tB*\n\035com.ljh.gamedemo" +
-      ".proto.protocB\tTaskProtob\006proto3"
+      "\n\nTask.proto\032\013Goods.proto\"\200\001\n\004Task\022\n\n\002id" +
+      "\030\001 \001(\003\022\016\n\006taskId\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\014\n\004" +
+      "type\030\004 \001(\005\022\014\n\004gold\030\005 \001(\005\022\025\n\005goods\030\006 \003(\0132" +
+      "\006.Goods\022\014\n\004desc\030\007 \001(\t\022\r\n\005state\030\010 \001(\005B*\n\035" +
+      "com.ljh.gamedemo.proto.protocB\tTaskProto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1620,7 +1703,7 @@ public final class TaskProto {
     internal_static_Task_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Task_descriptor,
-        new java.lang.String[] { "Id", "TaskId", "Name", "Type", "Gold", "Goods", "Desc", });
+        new java.lang.String[] { "Id", "TaskId", "Name", "Type", "Gold", "Goods", "Desc", "State", });
     com.ljh.gamedemo.proto.protoc.GoodsProto.getDescriptor();
   }
 

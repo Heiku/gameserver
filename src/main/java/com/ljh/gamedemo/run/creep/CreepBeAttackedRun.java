@@ -59,18 +59,9 @@ public class CreepBeAttackedRun implements Runnable {
 
             // 野怪死亡
             if (hp <= 0){
-                // 重置血量
-                creep.setHp(startHp);
-                creep.setNum(creep.getNum() - 1);
-                LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
-
-                // 野怪死亡，取消玩家自动扣血task
-                ScheduledFuture future = LocalAttackCreepMap.getUserBeAttackedMap().get(role.getRoleId());
-                future.cancel(true);
-                LocalAttackCreepMap.getUserBeAttackedMap().remove(role.getRoleId());
-
-                // 消息返回
-                creepService.sendCreepMsg(role, creep, ContentType.ATTACK_DEATH_CREEP);
+                // 野怪死亡的具体操作
+                creepService.doCreepDeath(creep, role, startHp);
+                return;
             }
 
             // 正常扣血

@@ -14,6 +14,7 @@ enum RequestType{
     TASK_RECEIVE = 2;   // 接收任务
     TASK_GIVE_UP = 3;   // 放弃任务
     TASK_COMMON = 4;    // 公共
+    TASK_SUBMIT = 5;    // 递交任务
 }
 
 

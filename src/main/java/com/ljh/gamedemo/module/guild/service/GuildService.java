@@ -2,7 +2,9 @@ package com.ljh.gamedemo.module.guild.service;
 
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
+import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
+import com.ljh.gamedemo.module.guild.event.base.GuildEvent;
 import com.ljh.gamedemo.module.items.local.LocalItemsMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.common.*;
@@ -25,6 +27,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -80,6 +83,13 @@ public class GuildService {
      */
     @Autowired
     private ProtoService protoService;
+
+
+    /**
+     * 事件订阅者
+     */
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     /**
      * 公会返回
@@ -781,6 +791,9 @@ public class GuildService {
 
             // 消息通知
             sendCommonMsg(channel, String.format(ContentType.GUILD_APPLY_AGREE, guild.getName()));
+
+            // 事件发送
+            publisher.publishEvent(new GuildEvent(new BaseEvent(applicant, guild.getId())));
         }else {
             sendCommonMsg(channel, String.format(ContentType.GUILD_APPLY_REFUSE, guild.getName()));
         }
