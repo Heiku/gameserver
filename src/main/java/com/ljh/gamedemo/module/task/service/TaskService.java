@@ -79,8 +79,13 @@ public class TaskService {
         // 查询所有的任务
         List<Task> allTask = Lists.newArrayList(TaskCache.getIdTaskMap().values());
         List<RoleTask> tasks = Lists.newArrayList();
-        allTask.forEach(t ->
-            tasks.add(RoleTask.builder().taskId(t.getTaskId()).progress(TaskState.UN_RECEIVE_TASK).build()));
+        allTask.forEach(t ->{
+            RoleTask task = new RoleTask();
+            task.setTaskId(t.getTaskId());
+            task.setProgress(TaskState.UN_RECEIVE_TASK);
+            tasks.add(task);
+                }
+            );
 
         // 查询所有已经完成的任务
         List<RoleTask> finishTasks = Optional.ofNullable(TaskCache.getRoleDoneTaskMap().get(role.getRoleId()))
@@ -242,13 +247,12 @@ public class TaskService {
      */
     private void doReceiveTask(Role role, long taskId) {
         // 构建玩家任务关联
-        RoleTask roleTask = RoleTask.builder()
-                .roleId(role.getRoleId())
-                .taskId(taskId)
-                .progress(TaskState.RECEIVE_TASK)
-                .createTime(new Date())
-                .modifyTime(new Date())
-                .build();
+        RoleTask roleTask = new RoleTask();
+        roleTask.setRoleId(role.getRoleId());
+        roleTask.setTaskId(taskId);
+        roleTask.setProgress(TaskState.RECEIVE_TASK);
+        roleTask.setCreateTime(new Date());
+        roleTask.setModifyTime(new Date());
 
         // 持久DB
         int n = taskDao.insertTask(roleTask);

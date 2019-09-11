@@ -20,12 +20,18 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RoleStateCache {
 
+    /**
+     * ChatRecordDao
+     */
     private static ChatRecordDao recordDao;
 
     static {
         recordDao = SpringUtil.getBean(ChatRecordDao.class);
     }
 
+    /**
+     * 玩家上下线本地记录
+     */
     private static Cache<Long, RoleState> cache = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.DAYS)
             .build();
@@ -34,6 +40,10 @@ public class RoleStateCache {
         return cache;
     }
 
+
+    /**
+     * 读取数据库中的上下线记录
+     */
     public static void postConstructReadDb(){
 
         List<RoleState> stateList = recordDao.selectAllRoleState();

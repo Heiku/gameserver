@@ -10,7 +10,11 @@ import java.util.Random;
  */
 public class CommonUtil {
 
-
+    /**
+     * 生成UUID
+     *
+     * @return  UUID
+     */
     public static long generateLong(){
         return Math.abs(new Random().nextLong());
     }

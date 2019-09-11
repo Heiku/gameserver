@@ -11,10 +11,25 @@ import java.util.List;
 
 @Data
 public class Site {
+
+    /**
+     * 场景id
+     */
     private int id;
+
+    /**
+     * 场景名称
+     */
     private String name;
+
+    /**
+     * 场景中文名
+     */
     private String cName;
 
+    /**
+     * 相邻的场景信息
+     */
     public List<String> next = new ArrayList<>();
 
 }

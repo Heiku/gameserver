@@ -6,6 +6,10 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
+
+/**
+ * 自定义解码器
+ */
 @ChannelHandler.Sharable
 public class CustomProtobufEncoder extends MessageToByteEncoder<MessageLite> {
 

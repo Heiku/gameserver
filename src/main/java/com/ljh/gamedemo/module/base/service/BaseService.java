@@ -1,26 +1,44 @@
 package com.ljh.gamedemo.module.base.service;
 
-import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.proto.protoc.MessageBase;
 import com.ljh.gamedemo.util.DateUtil;
+import io.netty.channel.Channel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
+/**
+ * 基础服务
+ */
 @Service
 public class BaseService {
 
-    public MessageBase.Message getDate(){
-        String date = DateUtil.getCurrentDate();
 
-        return MessageBase.Message.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(date)
-                .build();
+    /**
+     * 协议服务
+     */
+    @Autowired
+    private ProtoService protoService;
+
+
+    /**
+     * 获取时间
+     *
+     * @param channel channel
+     */
+    public void getDate(Channel channel){
+        String date = DateUtil.getCurrentDate();
+        protoService.sendCommonMsg(channel, date);
     }
 
 
-    public MessageBase.Message sendHeartBeatResponse(){
-        return MessageBase.Message.newBuilder()
+    /**
+     * 发送心跳消息返回
+     */
+    public void sendHeartBeatResponse(){
+        return;
+        /*return MessageBase.Message.newBuilder()
                 .setResult(ResultCode.SUCCESS)
-                .build();
+                .build();*/
     }
 }

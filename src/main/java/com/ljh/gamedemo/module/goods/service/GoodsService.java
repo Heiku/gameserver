@@ -83,7 +83,6 @@ public class GoodsService {
             if (!result.isPresent()){
                 return false;
             }
-
             return num == 1;
         }
         return false;

@@ -50,39 +50,25 @@ public class ItemService {
     private RoleItemsDao roleItemsDao;
 
     /**
-     * 用户服务
-     */
-    @Autowired
-    private UserService userService;
-
-    /**
      * 协议服务
      */
     @Autowired
     private ProtoService protoService;
 
 
-
-    private MsgUserInfoProto.ResponseUserInfo userResp;
-
+    /**
+     * 物品协议返回
+     */
     private MsgItemProto.ResponseItem itemResp;
 
 
     /**
      * 获取当前用户角色的所有背包物品
      *
-     * @param request
-     * @return
+     * @param request       请求
+     * @param channel       channel
      */
     public void getAll(MsgItemProto.RequestItem request, Channel channel){
-
-        // 用户状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         long userId = request.getUserId();
         long roleId = LocalUserMap.userRoleMap.get(userId).getRoleId();
 
@@ -107,17 +93,10 @@ public class ItemService {
     /**
      * 物品使用
      *
-     * @param requestItem
-     * @return
+     * @param requestItem       请求
+     * @param channel           channel
      */
     public void useItem(MsgItemProto.RequestItem requestItem, Channel channel){
-        // 用户状态判断
-        userResp = userService.userStateInterceptor(requestItem.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 物品状态判断
         itemResp = itemStateInterceptor(requestItem);
         if (itemResp != null){
@@ -139,9 +118,8 @@ public class ItemService {
     /**
      * 根据物品的类别 进行对应的使用操作
      *
-     * @param userId
-     * @param items
-     * @return
+     * @param userId        玩家id
+     * @param items         物品信息
      */
     private void doUseItem(long userId, Items items, Channel channel){
         int type = items.getType();
@@ -160,9 +138,8 @@ public class ItemService {
     /**
      * 具体的回血操作
      *
-     * @param userId
-     * @param items
-     * @return
+     * @param userId        玩家id
+     * @param items         物品信息
      */
     private void recoverBlood(long userId, Items items, Channel channel){
 
@@ -189,9 +166,8 @@ public class ItemService {
     /**
      * 具体的回蓝操作
      *
-     * @param userId
-     * @param items
-     * @return
+     * @param userId        玩家id
+     * @param items         物品信息
      */
     private void recoverBlue(long userId, Items items, Channel channel){
 
@@ -313,7 +289,7 @@ public class ItemService {
 
         // insert into db
         int n = roleItemsDao.insertRoleItems(r.getRoleId(), tmp.getItemsId(), tmp.getNum());
-        log.info("玩家新增加物品信息：更新玩家表 role_items 成功，影响的表中记录为：" + n);
+        log.info("insert into role_items, affected rows: " + n);
     }
 
 
@@ -354,7 +330,7 @@ public class ItemService {
 
         // 更新db
         int n = roleItemsDao.deleteItem(r.getRoleId(), i.getItemsId());
-        log.info("删除玩家物品记录，role: " + r.getRoleId() + " items: " + i.getItemsId() + " 影响条数：" + n);
+        log.info("delete from role_items, affected rows:"  + n);
     }
 
 
@@ -370,10 +346,7 @@ public class ItemService {
         // 判断itemId param
         long itemId = requestItem.getItemsId();
         if (itemId <= 0){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ITEM_PARAM_EMPTY)
-                    .build();
+            return combineFailedMsg(ContentType.ITEM_PARAM_EMPTY);
         }
 
 
@@ -384,20 +357,28 @@ public class ItemService {
         // 读取玩家的物品id列表，判断玩家是否拥有该物品
         List<Long> itemsIdList = LocalItemsMap.getRoleItemsIdMap().get(roleId);
         if (itemsIdList.contains(itemId)){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ITEM_NOT_CONTAIN)
-                    .build();
+            return combineFailedMsg(ContentType.ITEM_NOT_CONTAIN);
         }
 
         // 判断物品是否存在
         Items items = LocalItemsMap.getIdItemsMap().get(itemId);
         if (items == null){
-            return MsgItemProto.ResponseItem.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.ITEM_EMPTY)
-                    .build();
+            return combineFailedMsg(ContentType.ITEM_EMPTY);
         }
         return null;
+    }
+
+
+    /**
+     * 组成失败消息协议
+     *
+     * @param msg       消息信息
+     * @return          物品协议返回
+     */
+    private MsgItemProto.ResponseItem combineFailedMsg(String msg) {
+        return MsgItemProto.ResponseItem.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(msg)
+                .build();
     }
 }

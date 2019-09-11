@@ -1,27 +1,29 @@
 package com.ljh.gamedemo.module.chat.service;
 
-import com.google.common.base.Strings;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.chat.bean.ChatRecord;
+import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.bean.RoleState;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.role.cache.RoleStateCache;
-import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgChatProto;
-import com.ljh.gamedemo.module.base.service.ProtoService;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
 
 /**
+ * 聊天具体操作
+ *
  * @Author: Heiku
  * @Date: 2019/8/6
  */
@@ -29,27 +31,33 @@ import java.util.List;
 @Slf4j
 public class ChatService  {
 
+    /**
+     * ChatRecordDao
+     */
     @Autowired
     private ChatRecordDao recordDao;
 
-    private ProtoService protoService = ProtoService.getInstance();
+    /**
+     * 协议服务
+     */
+    @Autowired
+    private ProtoService protoService;
 
+    /**
+     * 聊天协议返回
+     */
     private MsgChatProto.ResponseChat response;
+
+
 
     /**
      * 玩家聊天的具体操作
      *
-     * @param request
-     * @param channel
+     * @param request       请求
+     * @param channel       channel
      */
     public void chatRole(MsgChatProto.RequestChat request, Channel channel) {
-
-        // 参数校验
-        response = chanInterceptor(request, true);
-        if (response != null){
-            channel.writeAndFlush(response);
-            return;
-        }
+        // 具体的对话操作
         doChatToRole(request, channel);
     }
 
@@ -57,16 +65,10 @@ public class ChatService  {
     /**
      * 群聊的具体操作
      *
-     * @param request
-     * @param channel
+     * @param request       请求
+     * @param channel       channel
      */
     public void chatAllGroup(MsgChatProto.RequestChat request, Channel channel) {
-        // 参数校验
-        response = chanInterceptor(request, false);
-        if (response != null){
-            channel.writeAndFlush(response);
-            return;
-        }
         Role fromRole = LocalUserMap.userRoleMap.get(request.getUserId());
         String msg = request.getContent();
 
@@ -78,8 +80,8 @@ public class ChatService  {
     /**
      * 全服消息发送
      *
-     * @param fromRole
-     * @param channel
+     * @param fromRole      发送者
+     * @param channel       channel
      */
     private void doChatToGroup(Role fromRole, String msg, Channel channel) {
         // 获取全服channelGroup
@@ -91,6 +93,7 @@ public class ChatService  {
         // 数据持久化
         saveRecordData(fromRole.getRoleId(), 0, msg);
 
+        // 消息返回
         sendResponse(channel, true);
     }
 
@@ -98,10 +101,11 @@ public class ChatService  {
     /**
      * 发送玩家消息
      *
-     * @param request
-     * @param channel
+     * @param request       请求
+     * @param channel       channel
      */
     private void doChatToRole(MsgChatProto.RequestChat request, Channel channel) {
+        // 参数信息
         long userId = request.getUserId();
         long roleId = request.getRoleId();
         String content = request.getContent();
@@ -135,28 +139,32 @@ public class ChatService  {
     /**
      * 持久化玩家的聊天记录
      *
-     * @param fromRoleId
-     * @param toRoleId
-     * @param content
+     * @param fromRoleId        发送者id
+     * @param toRoleId          接收者id
+     * @param content           消息文本
      */
     private void saveRecordData(Long fromRoleId, long toRoleId, String content) {
+        // 生成聊天记录实体
         ChatRecord record = new ChatRecord();
         record.setFromRole(fromRoleId);
         record.setToRole(toRoleId);
         record.setContent(content);
         record.setSendTime(new Date());
 
+        // 持久DB
         int n = recordDao.insertChatRecord(record);
-        log.info("新增玩家的私聊记录，插入的记录条数为：" + n);
+        log.info("insert into chat_record, affected rows: " + n);
     }
+
+
 
     /**
      * 组合成消息进行返回
      *
-     * @param fromRole
-     * @param content
-     * @param alone
-     * @return
+     * @param fromRole      发送方
+     * @param content       文本
+     * @param alone         是否为单独发送
+     * @return              聊天协议
      */
     private MsgChatProto.ResponseChat combineMsg(Role fromRole, String content, boolean alone) {
         String title;
@@ -178,47 +186,13 @@ public class ChatService  {
 
 
     /**
-     * 聊天参数校验拦截器
-     *
-     * @param request
-     * @return
-     */
-    private MsgChatProto.ResponseChat chanInterceptor(MsgChatProto.RequestChat request, boolean toRole){
-        long userId = request.getUserId();
-        if (userId <= 0){
-            return MsgChatProto.ResponseChat.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.USER_EMPTY_LOGIN_PARAM)
-                    .build();
-        }
-
-        String content = request.getContent();
-        if (Strings.isNullOrEmpty(content)){
-            return MsgChatProto.ResponseChat.newBuilder()
-                    .setResult(ResultCode.FAILED)
-                    .setContent(ContentType.CHAT_NOT_CONTENT)
-                    .build();
-        }
-
-        if (toRole){
-            long roleId = request.getRoleId();
-            if (roleId <= 0){
-                return MsgChatProto.ResponseChat.newBuilder()
-                        .setResult(ResultCode.FAILED)
-                        .setContent(ContentType.ROLE_EMPTY)
-                        .build();
-            }
-        }
-
-        return  null;
-    }
-
-    /**
      * 返回发送的消息
      *
-     * @param channel
+     * @param channel       channel
+     * @param line          是否为在线发送消息
      */
     private void sendResponse(Channel channel, boolean line) {
+        // 消息信息
         String content;
         if (line){
             content = ContentType.CHAT_SEND_SUCCESS;
@@ -234,25 +208,12 @@ public class ChatService  {
         channel.writeAndFlush(response);
     }
 
-    /**
-     * 返回失败消息
-     *
-     * @param channel
-     * @param content
-     */
-    private void responseFailed(Channel channel, String content) {
-        response = MsgChatProto.ResponseChat.newBuilder()
-                .setResult(ResultCode.FAILED)
-                .setContent(content)
-                .build();
-        channel.writeAndFlush(response);
-    }
 
 
     /**
      * 向玩家发送离线消息
      *
-     * @param role
+     * @param role      玩家信息
      */
     public void receiveOfflineMsg(Role role) {
 
@@ -268,27 +229,27 @@ public class ChatService  {
 
         // 查询历史消息
         List<ChatRecord> recordList = recordDao.selectOfflineMsg(toRoleId, state.getOfflineTime());
-        if (recordList == null || recordList.isEmpty()){
+        if (CollectionUtils.isEmpty(recordList)){
             return;
         }
 
         // 发送离线消息
-       recordList.forEach(r -> {
-           Role fromRole = LocalUserMap.idRoleMap.get(r.getFromRole());
-           sendMsg(channel, fromRole, r.getContent());
-       });
+        recordList.forEach(r -> {
+            Role fromRole = LocalUserMap.idRoleMap.get(r.getFromRole());
+            sendMsg(channel, fromRole, r.getContent());
+        });
     }
 
 
     /**
      * 向接收方发送消息
      *
-     * @param channel
-     * @param fromRole
-     * @param msg
+     * @param channel       channel
+     * @param fromRole      发送方
+     * @param msg           消息
      */
     private void sendMsg(Channel channel, Role fromRole, String msg){
         response = combineMsg(fromRole, msg, true);
-            channel.writeAndFlush(response);
+        channel.writeAndFlush(response);
     }
 }

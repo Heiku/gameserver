@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 背包中的物品，通用类
+ *
  * @Author: Heiku
  * @Date: 2019/8/7
- *
- * 背包中的物品，通用类
  */
 
 @Data
@@ -16,7 +16,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Goods {
 
+    /**
+     * 物品id
+     */
     private Long gid;
 
+    /**
+     * 物品类型
+     */
     private Integer type;
 }

@@ -2,6 +2,7 @@ package com.ljh.gamedemo.util;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ljh.gamedemo.run.CustomExecutor;
+import com.ljh.gamedemo.run.clean.CleanUpCacheRun;
 import io.netty.util.concurrent.RejectedExecutionHandlers;
 
 import java.util.concurrent.ThreadFactory;

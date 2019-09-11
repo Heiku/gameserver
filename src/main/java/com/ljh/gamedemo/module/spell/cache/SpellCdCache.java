@@ -8,13 +8,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 存储用户玩家的cd时间间隔
+ *
  * @Author: Heiku
  * @Date: 2019/7/19
- *
- * 存储用户玩家的cd时间间隔
  */
 public class SpellCdCache {
 
+
+    /**
+     * 玩家技能时间缓存
+     */
     private static Cache<Long, List<SpellTimeStamp>> cache = CacheBuilder.newBuilder()
             .expireAfterWrite(60, TimeUnit.SECONDS)
             .build();

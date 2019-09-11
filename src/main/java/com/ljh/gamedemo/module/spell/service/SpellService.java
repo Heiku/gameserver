@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.spell.service;
 
+import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.spell.dao.RoleSpellDao;
@@ -16,13 +17,11 @@ import com.ljh.gamedemo.proto.protoc.SpellProto;
 import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import io.netty.channel.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -31,6 +30,8 @@ import java.util.Map;
  * @Author: Heiku
  * @Date: 2019/7/11
  */
+
+@Slf4j
 @Service
 public class SpellService {
 
@@ -47,76 +48,49 @@ public class SpellService {
     private ProtoService protoService;
 
     /**
-     * userService
-     */
-    @Autowired
-    private UserService userService;
-
-
-    /**
      * 技能协议返回
      */
     private MsgSpellProto.ResponseSpell response;
 
-    /**
-     * 账号协议返回
-     */
-    private MsgUserInfoProto.ResponseUserInfo userResp;
+
 
     /**
      * 获取玩家角色当前的所有技能信息
      *
-     * @param requestSpell
-     * @return
+     * @param req           请求
+     * @param channel       channel
      */
-    public void getSpell(MsgSpellProto.RequestSpell requestSpell, Channel channel){
-
-        // 用户角色认证
-        userResp = userService.userStateInterceptor(requestSpell.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
-        // 获取请求参数
-        long userId = requestSpell.getUserId();
-        Role role = LocalUserMap.userRoleMap.get(userId);
+    public void getSpell(MsgSpellProto.RequestSpell req, Channel channel){
+        // 获取玩家信息
+        Role role = LocalUserMap.userRoleMap.get(req.getUserId());
 
         // 获取角色的类型
         int type = role.getType();
 
         // 获取所有的技能，除了已经学习的之外的
         List<Spell> spells = LocalSpellMap.getTypeSpellMap().get(type);
-        List<Spell> hasLearn = LocalSpellMap.getRoleSpellMap().get(role.getRoleId());
-        // 去重
+        List<Spell> hasLearn = Optional.ofNullable(LocalSpellMap.getRoleSpellMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
+
+
+        // 去除已经学习过的技能信息
         Map<Integer, Spell> setMap = new HashMap<>();
-        for (Spell s : spells){
-            setMap.put(s.getSpellId(), s);
-        }
-        if (hasLearn != null && !hasLearn.isEmpty()) {
-            for (Spell h : hasLearn) {
-                setMap.remove(h.getSpellId());
-            }
-        }
+        spells.forEach(s -> setMap.put(s.getSpellId(), s));
+        hasLearn.forEach(s -> setMap.remove(s.getSpellId()));
+
+        // 获取可学习的技能列表
         List<Spell> res = new ArrayList<>();
         setMap.forEach((k, v) -> res.add(v));
 
 
         // 构造response，包括全部技能和当前已经学习的技能
-        RoleProto.Role r = protoService.transToRole(role);
-        List<SpellProto.Spell> spellList = protoService.transToSpellList(res);
-        List<SpellProto.Spell> ownList = new ArrayList<>();
-        if (hasLearn != null && !hasLearn.isEmpty()){
-            ownList = protoService.transToSpellList(hasLearn);
-        }
-
         response =  MsgSpellProto.ResponseSpell.newBuilder()
                 .setType(MsgSpellProto.RequestType.SPELL)
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.SPELL_ALL)
-                .setRole(r)
-                .addAllSpell(spellList)
-                .addAllOwn(ownList)
+                .setRole(protoService.transToRole(role))
+                .addAllSpell(protoService.transToSpellList(res))
+                .addAllOwn(protoService.transToSpellList(hasLearn))
                 .build();
         channel.writeAndFlush(response);
     }
@@ -129,24 +103,15 @@ public class SpellService {
      * 3.存放 map<roleId, List<spell>>
      * 4.构造response
      *
-     * @param requestSpell      技能请求
-     * @return
+     * @param req      技能请求
+     * @param channel  channel
      */
-    public void learn(MsgSpellProto.RequestSpell requestSpell, Channel channel){
-        // 用户状态认证
-        userResp = userService.userStateInterceptor(requestSpell.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return ;
-        }
-
+    public void learn(MsgSpellProto.RequestSpell req, Channel channel){
         // 获取角色信息
-        long userId = requestSpell.getUserId();
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        long roleId = role.getRoleId();
+        Role role = LocalUserMap.userRoleMap.get(req.getUserId());
 
         // 获取技能信息
-        int spellId = requestSpell.getSpellId();
+        int spellId = req.getSpellId();
         Spell spell = LocalSpellMap.getIdSpellMap().get(spellId);
         if (spell == null){
             responseFailedMsg(channel, ContentType.SPELL_EMPTY);
@@ -155,18 +120,14 @@ public class SpellService {
 
         // 技能存在，新增信息至 数据库 & map
         // 更新数据库
-        int n = roleSpellDao.insertRoleSpell(roleId, spellId);
-        if (n <= 0){
-            responseFailedMsg(channel, ContentType.INSERT_FAILED);
-            return;
-        }
+        int n = roleSpellDao.insertRoleSpell(role.getRoleId(), spellId);
+        log.info("insert into role_spell, affected rows: " + n);
+
+
         Map<Long, List<Spell>> spellMap = LocalSpellMap.getRoleSpellMap();
-        List<Spell> spellList = spellMap.get(roleId);
-        if (spellList == null){
-            spellList = new ArrayList<>();
-        }
+        List<Spell> spellList = Optional.ofNullable(spellMap.get(role.getRoleId())).orElse(Lists.newArrayList());
         spellList.add(spell);
-        spellMap.put(roleId, spellList);
+        spellMap.put(role.getRoleId(), spellList);
 
         // 更新本地缓存
         LocalSpellMap.setRoleSpellMap(spellMap);
@@ -181,6 +142,8 @@ public class SpellService {
                 .build();
         channel.writeAndFlush(response);
     }
+
+
 
     /**
      * 技能信息查询拦截

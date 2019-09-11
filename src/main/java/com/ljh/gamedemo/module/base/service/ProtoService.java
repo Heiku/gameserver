@@ -2,13 +2,7 @@ package com.ljh.gamedemo.module.base.service;
 
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.CommodityType;
-import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
-import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
-import com.ljh.gamedemo.module.items.local.LocalItemsMap;
-import com.ljh.gamedemo.module.task.bean.RoleTask;
-import com.ljh.gamedemo.module.task.bean.Task;
-import com.ljh.gamedemo.module.task.cache.TaskCache;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
+import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.creep.bean.Creep;
 import com.ljh.gamedemo.module.duplicate.bean.Boss;
 import com.ljh.gamedemo.module.duplicate.bean.BossSpell;
@@ -17,24 +11,30 @@ import com.ljh.gamedemo.module.email.bean.Email;
 import com.ljh.gamedemo.module.email.bean.EmailGoods;
 import com.ljh.gamedemo.module.entity.bean.Entity;
 import com.ljh.gamedemo.module.equip.bean.Equip;
+import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import com.ljh.gamedemo.module.face.bean.Transaction;
 import com.ljh.gamedemo.module.goods.bean.Goods;
+import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
 import com.ljh.gamedemo.module.group.bean.Group;
 import com.ljh.gamedemo.module.guild.bean.Guild;
 import com.ljh.gamedemo.module.guild.bean.GuildApply;
 import com.ljh.gamedemo.module.guild.bean.Member;
-import com.ljh.gamedemo.module.guild.service.GuildService;
 import com.ljh.gamedemo.module.items.bean.Items;
+import com.ljh.gamedemo.module.items.local.LocalItemsMap;
 import com.ljh.gamedemo.module.mall.bean.Commodity;
 import com.ljh.gamedemo.module.pk.bean.PKRecord;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.bean.RoleInit;
 import com.ljh.gamedemo.module.spell.bean.Spell;
+import com.ljh.gamedemo.module.task.bean.RoleTask;
+import com.ljh.gamedemo.module.task.bean.Task;
+import com.ljh.gamedemo.module.task.cache.TaskCache;
 import com.ljh.gamedemo.module.trade.bean.Trade;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.*;
+import io.netty.channel.Channel;
 import org.joda.time.Interval;
 import org.joda.time.Period;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -89,6 +89,23 @@ public class ProtoService {
     /**
      * proto RoleList
      *
+     * @param roleList      玩家列表
+     * @return              玩家协议列表
+     */
+    public List<RoleProto.Role> transToRoleList(List<Role> roleList){
+        List<RoleProto.Role> roles = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(roleList)){
+            return roles;
+        }
+
+        roleList.forEach(r -> roles.add(transToRole(r)));
+        return roles;
+    }
+
+
+    /**
+     * proto RoleList
+     *
      * @param roleIdList        玩家id列表
      * @return                  玩家协议列表
      */
@@ -117,9 +134,10 @@ public class ProtoService {
      */
     public List<SpellProto.Spell> transToSpellList(List<Spell> res){
         List<SpellProto.Spell> spellList = new ArrayList<>();
-        for (Spell spell : res){
-            spellList.add(transToSpell(spell));
+        if (CollectionUtils.isEmpty(res)){
+            return spellList;
         }
+        res.forEach(s -> spellList.add(transToSpell(s)));
 
         return spellList;
     }
@@ -161,6 +179,22 @@ public class ProtoService {
                 .setMaxHp(creep.getMaxHp())
                 .setDamage(creep.getNum())
                 .build();
+    }
+
+
+    /**
+     * proto creepList
+     *
+     * @param creeps        野怪列表
+     * @return              野怪协议列表
+     */
+    public List<CreepProto.Creep> transToCreepList(List<Creep> creeps) {
+        List<CreepProto.Creep> creepList = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(creepList)){
+            return creepList;
+        }
+        creeps.forEach(c -> creepList.add(transToCreep(c)));
+        return creepList;
     }
 
 
@@ -691,6 +725,23 @@ public class ProtoService {
 
 
     /**
+     * proto entityList
+     *
+     * @param entities      实体列表
+     * @return              实体协议列表
+     */
+    public List<EntityProto.Entity> transToEntityList(List<Entity> entities) {
+        List<EntityProto.Entity> entityList = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(entities)){
+            return entityList;
+        }
+        entities.forEach(e -> entityList.add(transToEntity(e)));
+
+        return entityList;
+    }
+
+
+    /**
      * proto tradeList
      *
      * @param trades        交易列表
@@ -783,4 +834,35 @@ public class ProtoService {
                 .addAllGoods(transToGoodsList(t.getGoods()))
                 .build();
     }
+
+
+    /**
+     * 发送公共消息
+     *
+     * @param channel       channel
+     * @param msg           消息
+     */
+    public void sendCommonMsg(Channel channel, String msg){
+         MessageBase.Message base = MessageBase.Message.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setContent(msg)
+                .build();
+         channel.writeAndFlush(base);
+    }
+
+
+    /**
+     * 发送失败消息
+     *
+     * @param channel       channel
+     * @param msg           消息
+     */
+    public void sendFailedMsg(Channel channel, String msg){
+        MessageBase.Message base = MessageBase.Message.newBuilder()
+                .setResult(ResultCode.FAILED)
+                .setContent(msg)
+                .build();
+        channel.writeAndFlush(base);
+    }
+
 }

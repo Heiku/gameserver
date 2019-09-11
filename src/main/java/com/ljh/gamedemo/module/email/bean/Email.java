@@ -5,10 +5,10 @@ import lombok.Data;
 import java.util.Date;
 
 /**
+ * 邮件信息实体类
+ *
  * @Author: Heiku
  * @Date: 2019/8/7
- *
- * 邮件信息实体类
  */
 
 @Data

@@ -89,12 +89,6 @@ public class EquipService {
      * @param channel   channel
      */
     public void getEquip(MsgEquipProto.RequestEquip request, Channel channel) {
-        // 用户状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
         // 获取请求参数
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
 
@@ -135,12 +129,6 @@ public class EquipService {
      * @param channel       channel
      */
     public synchronized void putEquip(MsgEquipProto.RequestEquip request, Channel channel) {
-        // 用户的状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
         // 获取用户状态
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
 
@@ -212,13 +200,6 @@ public class EquipService {
      * @param channel
      */
     public void takeOffEquip(MsgEquipProto.RequestEquip request, Channel channel) {
-        // 用户的状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 初始化输信息
         Role role = LocalUserMap.getUserRoleMap().get(request.getUserId());
         long id = request.getId();
@@ -267,13 +248,6 @@ public class EquipService {
      * @param channel   channel
      */
     public synchronized void fixEquip(MsgEquipProto.RequestEquip request, Channel channel) {
-        // 用户状态判断
-        userResp = userService.userStateInterceptor(request.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 获取基本信息
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
         long id = request.getId();

@@ -82,13 +82,6 @@ public class GroupService {
      * @param channel   channel
      */
     public void getState(MsgGroupProto.RequestGroup req, Channel channel) {
-        // 玩家认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 判断是否有队伍
         groupResp = groupHasInterceptor(req.getUserId());
         if (groupResp != null){
@@ -116,13 +109,6 @@ public class GroupService {
      * @param channel   channel
      */
     public void invite(MsgGroupProto.RequestGroup req, Channel channel) {
-        // 用户认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 获取用户信息
         Role own = LocalUserMap.getUserRoleMap().get(req.getUserId());
         Role invite = LocalUserMap.getIdRoleMap().get(req.getRoleId());
@@ -163,13 +149,7 @@ public class GroupService {
      * @param channel   channel
      */
     public void join(MsgGroupProto.RequestGroup req, Channel channel) {
-        // 用户认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
+        // 获取玩家信息
         Role own = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
         // 判断当前玩家是否已经在当前队伍中
@@ -209,12 +189,7 @@ public class GroupService {
      * @param channel   channel
      */
     public void exit(MsgGroupProto.RequestGroup req, Channel channel) {
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
+        // 获取玩家信息
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
         Group group = GroupCache.getRoleGroupMap().get(role.getRoleId());
         if (group == null){
@@ -318,8 +293,8 @@ public class GroupService {
     /**
      * 判断是否拥有队伍
      *
-     * @param role
-     * @return
+     * @param role      玩家信息
+     * @return          是否在队伍中
      */
     public boolean hasGroup(Role role){
         Group group = GroupCache.getRoleGroupMap().get(role.getRoleId());
@@ -330,8 +305,8 @@ public class GroupService {
     /**
      * 获取队伍内的所有玩家信息
      *
-     * @param group
-     * @return
+     * @param group     队伍信息
+     * @return          队伍玩家列表
      */
     public List<Role> getGroupRoleList(Group group){
         List<Role> roleList = new ArrayList<>();
@@ -346,6 +321,8 @@ public class GroupService {
 
         return roleList;
     }
+
+
 
     /**
      * 发送组队邀请
@@ -368,8 +345,8 @@ public class GroupService {
     /**
      * 判断玩家是否有队伍信息
      *
-     * @param userId
-     * @return
+     * @param userId        用户id
+     * @return              组队协议返回
      */
     private MsgGroupProto.ResponseGroup groupHasInterceptor(long userId){
         Role role = LocalUserMap.getUserRoleMap().get(userId);

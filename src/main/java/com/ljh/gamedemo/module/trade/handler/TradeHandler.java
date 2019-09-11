@@ -3,10 +3,13 @@ package com.ljh.gamedemo.module.trade.handler;
 import com.ljh.gamedemo.proto.protoc.MsgTradeProto;
 import com.ljh.gamedemo.module.trade.service.TradeService;
 import com.ljh.gamedemo.module.user.service.UserService;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.util.Objects;
 
 import static com.ljh.gamedemo.server.request.RequestTradeType.*;
 
@@ -36,6 +39,14 @@ public class TradeHandler extends SimpleChannelInboundHandler<MsgTradeProto.Requ
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MsgTradeProto.RequestTrade req) throws Exception {
+        // 用户判断
+        MsgUserInfoProto.ResponseUserInfo userResp = userService.userStateInterceptor(req.getUserId());
+        if (!Objects.isNull(userResp)){
+            ctx.channel().writeAndFlush(userResp);
+            return;
+        }
+
+
         int type = req.getTypeValue();
         Channel channel = ctx.channel();
 

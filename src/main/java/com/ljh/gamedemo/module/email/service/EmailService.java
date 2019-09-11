@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 邮件操作
+ *
  * @Author: Heiku
  * @Date: 2019/8/8
- *
- * 邮件操作
  */
 
 @Service
@@ -70,8 +70,8 @@ public class EmailService {
     /**
      * 获取所有的邮件信息
      *
-     * @param request
-     * @param channel
+     * @param request       请求
+     * @param channel       channel
      */
     public void getAllEmail(MsgEmailProto.RequestEmail request, Channel channel){
         long userId = request.getUserId();

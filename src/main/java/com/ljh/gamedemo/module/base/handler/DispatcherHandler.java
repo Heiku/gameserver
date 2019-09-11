@@ -31,6 +31,8 @@ import java.util.Map;
 import static com.ljh.gamedemo.server.codec.MessageType.*;
 
 /**
+ * 请求分发处理器
+ *
  * @Author: Heiku
  * @Date: 2019/7/18
  */
@@ -38,8 +40,14 @@ import static com.ljh.gamedemo.server.codec.MessageType.*;
 @ChannelHandler.Sharable
 public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
 
+    /**
+     * 分发处理器实例
+     */
     public static final DispatcherHandler INSTANCE = new DispatcherHandler();
 
+    /**
+     * 请求映射 (protoCode, handler instance)
+     */
     private Map<Integer, SimpleChannelInboundHandler<? extends Message>> handlerMap;
 
     private DispatcherHandler(){
@@ -70,6 +78,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<Message> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception{
 
+        // 通过协议对应的 protoCode，找到对应的处理器
         Integer protoNum = LocalMessageMap.messageMap.get(msg.getClass());
         handlerMap.get(protoNum).channelRead(ctx, msg);
     }

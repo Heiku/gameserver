@@ -3,17 +3,23 @@ package com.ljh.gamedemo.module.duplicate.bean;
 import lombok.Data;
 
 /**
+ * Boss技能实体类
+ *
  * @Author: Heiku
  * @Date: 2019/7/29
- *
- * boss的技能值
  */
 
 @Data
 public class BossSpell {
 
+    /**
+     * 技能id
+     */
     private Long spellId;
 
+    /**
+     * 技能名称
+     */
     private String name;
 
     /**

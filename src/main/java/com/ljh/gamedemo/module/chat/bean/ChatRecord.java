@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
+ * 聊天记录实体类
+ *
  * @Author: Heiku
  * @Date: 2019/8/6
  */

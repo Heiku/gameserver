@@ -1,16 +1,16 @@
 package com.ljh.gamedemo.server.codec;
 
-import com.google.protobuf.*;
+import com.google.protobuf.MessageLite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.util.ReferenceCountUtil;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
 
+
+/**
+ * 自定以编码器
+ */
 public class CustomProtobufDecoder extends ByteToMessageDecoder {
 
     @Override

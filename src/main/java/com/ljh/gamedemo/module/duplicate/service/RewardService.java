@@ -58,8 +58,8 @@ public class RewardService {
     /**
      * 为玩家发放奖励，这里是立即得到的物品，不做队列处理
      *
-     * @param role
-     * @param dup
+     * @param role      玩家信息
+     * @param dup       副本信息
      */
     public void sendRoleReward(Role role, Duplicate dup) {
 

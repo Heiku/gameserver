@@ -30,7 +30,6 @@ public class TalkEntityService {
     @Autowired
     private ProtoService protoService;
 
-
     /**
      * 事件发布者
      */

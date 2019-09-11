@@ -8,15 +8,22 @@ import java.time.ZoneOffset;
 
 public class MD5Util {
 
+    /**
+     * password salt
+     */
     public static final String pwd_salt = "_&#809";
+
+    /**
+     * token salt
+     */
     public static final String  token_salt = "&#810";
 
 
     /**
      * MD5 密码
      *
-     * @param password
-     * @return
+     * @param password      密码明文
+     * @return              密码hash值
      */
     public static String hashPwd(String password){
         String pwdMD5 = Hashing.md5()
@@ -34,8 +41,8 @@ public class MD5Util {
      * 生成token信息
      * token = MD5(username + timestamp + token_salt) + timestamp[:8]
      *
-     * @param username
-     * @return
+     * @param username      玩家昵称
+     * @return              token值
      */
     public static String hashToken(String username){
         LocalDateTime localDateTime = LocalDateTime.now();

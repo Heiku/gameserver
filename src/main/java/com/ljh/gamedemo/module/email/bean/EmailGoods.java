@@ -4,10 +4,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 邮件与物品关联，存储邮件中的物品信息
+ *
  * @Author: Heiku
  * @Date: 2019/8/8
- *
- * 邮件与物品关联，存储邮件中的物品信息
  */
 
 @Data

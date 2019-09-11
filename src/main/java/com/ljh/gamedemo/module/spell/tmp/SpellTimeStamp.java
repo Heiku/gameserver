@@ -12,9 +12,13 @@ import lombok.Data;
 @Data
 public class SpellTimeStamp {
 
-    // 技能id
+    /**
+     * 技能id
+     */
     private int spellId;
 
-    // 施放技能的时间戳
+    /**
+     * 施放技能的时间戳
+     */
     private long timeStamp;
 }

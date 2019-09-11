@@ -3,6 +3,8 @@ package com.ljh.gamedemo.module.role.bean;
 import lombok.Data;
 
 /**
+ * 玩家Buff实体类
+ *
  * @Author: Heiku
  * @Date: 2019/7/22
  */

@@ -8,7 +8,13 @@ import lombok.Data;
 @Data
 public class UserSite {
 
+    /**
+     * 玩家id
+     */
     private Long userId;
 
+    /**
+     * 位置id
+     */
     private Integer siteId;
 }

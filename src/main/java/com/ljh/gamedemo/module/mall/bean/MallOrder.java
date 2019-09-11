@@ -5,15 +5,18 @@ import lombok.Data;
 import java.util.Date;
 
 /**
+ * 商品购买记录
+ *
  * @Author: Heiku
  * @Date: 2019/8/8
- *
- * 商品订单表
  */
 
 @Data
 public class MallOrder {
 
+    /**
+     * id
+     */
     private Long id;
 
     /**

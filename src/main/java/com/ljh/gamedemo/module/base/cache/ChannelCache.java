@@ -9,6 +9,8 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.util.Map;
 
 /**
+ * Channel 本地缓存
+ *
  * @Author: Heiku
  * @Date: 2019/8/6
  */

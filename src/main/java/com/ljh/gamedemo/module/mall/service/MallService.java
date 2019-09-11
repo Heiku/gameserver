@@ -13,6 +13,7 @@ import com.ljh.gamedemo.module.mall.bean.MallOrder;
 import com.ljh.gamedemo.module.role.dao.UserRoleDao;
 import com.ljh.gamedemo.module.mall.tmp.MallBuyTimes;
 import com.ljh.gamedemo.module.mall.local.LocalCommodityMap;
+import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.mall.cache.MallBuyCache;
 import com.ljh.gamedemo.proto.protoc.CommodityProto;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +53,12 @@ public class MallService {
      */
     @Autowired
     private MallOrderDao orderDao;
+
+    /**
+     * 玩家服务
+     */
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 邮件服务
@@ -146,8 +154,7 @@ public class MallService {
         // 商品限制的最大购买量
         int maxLimit = c.getLimit();
         List<MallBuyTimes> timesList = MallBuyCache.getBuyTimesCache().getIfPresent(role.getRoleId());
-        log.info("玩家：" + role.getName() + " 更新前的最大购买记录为；" + timesList);
-        if (timesList != null && !timesList.isEmpty()){
+        if (!CollectionUtils.isEmpty(timesList)){
             timesList.forEach(t -> {
 
                 // 找到对应购买商品的id
@@ -171,15 +178,15 @@ public class MallService {
 
         // 第一次购买
         timesList = new ArrayList<>();
-        MallBuyTimes times = new MallBuyTimes();
 
+        // 设置购买次数信息
+        MallBuyTimes times = new MallBuyTimes();
         times.setCId(c.getId());
         times.setTimes(times.getTimes() + num);
         timesList.add(times);
         MallBuyCache.getBuyTimesCache().put(role.getRoleId(), timesList);
 
-        log.info("玩家：" + role.getName() + " 更新后的最大购买记录为：" + timesList);
-
+        // 购买成功，实际购买操作
         doBuy(role, c, num, channel);
     }
 
@@ -212,9 +219,10 @@ public class MallService {
                 .setType(MsgMallProto.RequestType.BUY)
                 .setContent(ContentType.MALL_BUY_SUCCESS)
                 .build();
-
         channel.writeAndFlush(response);
     }
+
+
 
     /**
      * 填充邮件物品信息，调用 emailService 发送邮件
@@ -238,6 +246,8 @@ public class MallService {
     }
 
 
+
+
     /**
      * 生成订单实体类
      *
@@ -258,6 +268,8 @@ public class MallService {
     }
 
 
+
+
     /**
      * 缓存，Db 更新玩家的金币值
      *
@@ -266,24 +278,11 @@ public class MallService {
      * @param num       商品数量
      */
     private void updateRoleGold(Role role, Commodity c, int num){
-        log.info("玩家：" + role.getName() + " 购买商品前，金币为：" + role.getGold());
-
+        // 更新玩家的交易后金币值
         role.setGold(role.getGold() - c.getPrice() * num);
 
-        // 更新 role 信息
-        // cache
-        LocalUserMap.idRoleMap.put(role.getRoleId(), role);
-
-        LocalUserMap.siteRolesMap.get(role.getSiteId()).forEach(r -> {
-            if (r.getRoleId().intValue() == role.getRoleId()){
-                r.setGold(role.getGold());
-            }
-        });
-
-        // db
-        roleDao.updateRoleSiteInfo(role);
-
-        log.info("玩家：" + role.getName() + " 购买商品后，金币为：" + role.getGold());
+        // 队列更新
+        roleService.updateRoleInfo(role);
     }
 
 
@@ -319,7 +318,6 @@ public class MallService {
             list.add(c);
         });
 
-        System.out.println(list);
         return protoService.transToCommodityList(list);
     }
 

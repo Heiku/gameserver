@@ -4,13 +4,17 @@ import com.ljh.gamedemo.attribute.Attributes;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import io.netty.channel.Channel;
 
+
+/**
+ * Session工具类
+ */
 public class SessionUtil {
 
     /**
      * userId 绑定channel
      *
-     * @param userId
-     * @param channel
+     * @param userId        userId
+     * @param channel       channel
      */
     public static void bindSession(Long userId, Channel channel){
         if (ChannelCache.getUserIdChannelMap().containsKey(userId)){
@@ -27,7 +31,7 @@ public class SessionUtil {
     /**
      * 接触绑定
      *
-     * @param channel
+     * @param channel   channel
      */
     public static void unBindSession(Channel channel){
         // 移除玩家映射channel
@@ -42,6 +46,12 @@ public class SessionUtil {
     }
 
 
+    /**
+     * 获取玩家id
+     *
+     * @param channel       channel
+     * @return              userId
+     */
     public static long getUserId(Channel channel){
         if (channel.attr(Attributes.USER_ID).get() == null){
             return 0;

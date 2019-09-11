@@ -175,13 +175,6 @@ public class FaceTransService {
      * @param channel   channel
      */
     public void yesTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
-        // 用户判断
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 判断玩家是否已经交易中
         faceResp = faceTransInterceptor(req.getUserId());
         if (faceResp != null){
@@ -220,13 +213,6 @@ public class FaceTransService {
      * @param channel   channel
      */
     public void noTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
-        // 用户判断
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 获取申请信息
         long applyId = req.getTmpId();
         FaceTransApply apply = FaceTransCache.getApplyFaceTransCache().getIfPresent(applyId);
@@ -399,11 +385,6 @@ public class FaceTransService {
      * @param channel   channel
      */
     public void leaveTrans(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
         // 获取用户信息
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
 
@@ -597,10 +578,6 @@ public class FaceTransService {
      * @return          返回
      */
     private Message faceCommonInterceptor(MsgFaceTransProto.RequestFaceTrans req){
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            return userResp;
-        }
         // 判断交易连接
         Role receiver = LocalUserMap.getUserRoleMap().get(req.getUserId());
         faceResp = faceTransConnInterceptor(receiver);

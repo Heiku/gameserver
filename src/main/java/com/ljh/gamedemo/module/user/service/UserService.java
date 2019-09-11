@@ -27,9 +27,11 @@ import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -61,12 +63,6 @@ public class UserService {
     private ChatService chatService;
 
     /**
-     * 公会服务
-     */
-    @Autowired
-    private GuildService guildService;
-
-    /**
      * 协议服务
      */
     @Autowired
@@ -89,15 +85,12 @@ public class UserService {
 
         // 优先查找本地角色
         Role role = LocalUserMap.getUserRoleMap().get(userId);
-        if (role == null){
-
+        if (Objects.isNull(role)){
             // 数据库查找
             List<Role> roles = userRoleDao.selectUserRole(userId);
-            if (roles.isEmpty()){
+            if (CollectionUtils.isEmpty(roles)){
                 return combineFailedMsg(ContentType.ROLE_EMPTY);
             }
-
-            // 这里暂时只存在一个角色
             role = roles.get(0);
         }
 
@@ -110,8 +103,6 @@ public class UserService {
         // 获取离线的私信消息
         chatService.receiveOfflineMsg(role);
 
-        // 进入公会聊天
-        //guildService.joinGuildChannelGroup(role);
 
         // 确定角色成功，返回角色信息
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
@@ -123,6 +114,8 @@ public class UserService {
                 .build();
     }
 
+
+
     /**
      * 将自动回血回蓝的任务添加到用户线程池中
      *
@@ -132,11 +125,17 @@ public class UserService {
 
         long userId = role.getUserId();
 
+        // 判断是否已经
+        if (FutureMap.getRecoverFutureMap().get(role.getRoleId()) == null){
+            return;
+        }
         // 为每一个玩家添加自动恢复的task
         RecoverUserRun task = new RecoverUserRun(userId, null, null);
         ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
         FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
     }
+
+
 
 
     /**

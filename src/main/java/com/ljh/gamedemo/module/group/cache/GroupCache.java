@@ -16,12 +16,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class GroupCache {
 
-    // groupCache <groupId, Group>
+    /**
+     * 队伍信息缓存，groupCache <groupId, Group>
+     */
     private static Cache<Long, Group> groupCache = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.DAYS)
             .build();
 
-    // 玩家队伍关联信息
+    /**
+     * 玩家队伍关联信息 （roleId, Group）
+     */
     private static Map<Long, Group> roleGroupMap = Maps.newConcurrentMap();
 
 

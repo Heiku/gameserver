@@ -107,12 +107,4 @@ public class LocalEntityMap {
         return entity;
     }
 
-    public static void main(String[] args) {
-        LocalSiteMap.readExcel();
-
-        LocalSiteMap.idSiteMap.forEach((k,v) ->
-            System.out.println("k: " + k + " value: " + v));
-
-    }
-
 }

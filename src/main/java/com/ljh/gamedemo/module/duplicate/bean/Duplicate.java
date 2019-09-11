@@ -6,19 +6,24 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Author: Heiku
- * @Date: 2019/7/29
- *
  * 副本信息
  *
- * 因为根据临时副本的 hashCode值进行 map key存储，所以重写 hashCode()
+ * @Author: Heiku
+ * @Date: 2019/7/29
  */
 
 @Data
 public class Duplicate {
 
+    /**
+     * 副本id
+     */
     private Long id;
 
+
+    /**
+     * 副本名称
+     */
     private String name;
 
     /**
@@ -51,5 +56,8 @@ public class Duplicate {
      */
     private Long relatedId;
 
+    /**
+     * 装备奖励概率
+     */
     private List<Double> probability;
 }

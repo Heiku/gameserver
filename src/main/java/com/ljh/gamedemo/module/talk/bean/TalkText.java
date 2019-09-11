@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class TalkText implements Comparable<TalkText> {
 
+    /**
+     * 谈话的npc名称
+     */
     private String entityName;
 
     /**
@@ -27,9 +30,6 @@ public class TalkText implements Comparable<TalkText> {
 
     /**
      * 定义TalkText的排序规则，按照level进行倒序
-     *
-     * @param o
-     * @return
      */
     @Override
     public int compareTo(TalkText o) {

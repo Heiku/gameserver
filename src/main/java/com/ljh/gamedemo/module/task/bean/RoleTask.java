@@ -1,9 +1,6 @@
 package com.ljh.gamedemo.module.task.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -13,12 +10,7 @@ import java.util.Date;
  * @Author: Heiku
  * @Date: 2019/9/4
  */
-
-
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class RoleTask {
 
     /**
@@ -37,7 +29,7 @@ public class RoleTask {
     private Long taskId;
 
     /**
-     * 进度 (1：未领取， 2：正在进行中， 3：完成任务， 4：放弃任务)
+     * 进度 (1：未领取， 2：已领取任务，但还未进行， 3：任务完成，已经领取， 4：放弃任务， 5：任务完成，未领取)
      */
     private Integer progress;
 
@@ -50,6 +42,4 @@ public class RoleTask {
      * 修改任务的时间
      */
     private Date modifyTime;
-
-
 }

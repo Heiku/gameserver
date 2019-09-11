@@ -1,11 +1,15 @@
 package com.ljh.gamedemo.module.face.handler;
 
+import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.proto.protoc.MsgFaceTransProto;
 import com.ljh.gamedemo.module.face.service.FaceTransService;
+import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.util.Objects;
 
 import static com.ljh.gamedemo.server.request.RequestFaceTransType.*;
 
@@ -18,16 +22,29 @@ import static com.ljh.gamedemo.server.request.RequestFaceTransType.*;
 public class FaceTransactionHandler extends SimpleChannelInboundHandler<MsgFaceTransProto.RequestFaceTrans> {
 
     /**
+     * 用户服务
+     */
+    private static UserService userService;
+
+    /**
      * 面对面交易服务
      */
     private static FaceTransService faceTransService;
 
     static {
+        userService = SpringUtil.getBean(UserService.class);
         faceTransService = SpringUtil.getBean(FaceTransService.class);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MsgFaceTransProto.RequestFaceTrans req) throws Exception {
+        // 用户判断
+        MsgUserInfoProto.ResponseUserInfo userResp = userService.userStateInterceptor(req.getUserId());
+        if (!Objects.isNull(userResp)){
+            ctx.channel().writeAndFlush(userResp);
+            return;
+        }
+
         int type = req.getTypeValue();
         Channel channel = ctx.channel();
 

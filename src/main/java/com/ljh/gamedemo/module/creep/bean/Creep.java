@@ -4,7 +4,6 @@ import lombok.Data;
 
 /**
  * 野怪实体
- *
  */
 
 @Data

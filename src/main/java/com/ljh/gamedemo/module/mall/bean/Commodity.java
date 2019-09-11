@@ -5,10 +5,10 @@ import com.ljh.gamedemo.module.equip.bean.Equip;
 import lombok.Data;
 
 /**
+ * 商品实体类
+ *
  * @Author: Heiku
  * @Date: 2019/8/2
- *
- * 商品
  */
 
 @Data
@@ -41,9 +41,12 @@ public class Commodity {
 
 
     /**
-     * 装备
+     * 装备信息
      */
     private Equip equip;
 
+    /**
+     * 物品信息
+     */
     private Items items;
 }

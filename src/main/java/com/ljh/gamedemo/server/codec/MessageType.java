@@ -5,6 +5,10 @@ import com.ljh.gamedemo.proto.protoc.*;
 
 import java.lang.reflect.Constructor;
 
+
+/**
+ * 协议信息
+ */
 public enum MessageType {
 
     MESSAGE_PROTO(0x01, MessageBase.Message.class),

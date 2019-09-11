@@ -3,7 +3,7 @@ package com.ljh.gamedemo.attribute;
 import io.netty.util.AttributeKey;
 
 /**
- * channel
+ * channel attributes
  */
 public interface Attributes {
 

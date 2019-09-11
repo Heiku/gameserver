@@ -33,9 +33,8 @@ public interface TaskDao {
      * @param task      玩家任务信息
      * @return          affected rows
      */
-    @Update("update task set progress = #{progress} and modify_time = #{modifyTime} where id = #{id}")
+    @Update("update task set progress = #{progress}, modify_time = #{modifyTime} where id = #{id}")
     int updateTask(RoleTask task);
-
 
     /**
      * 查询所有未完成的任务信息

@@ -183,7 +183,7 @@ public class LocalEquipMap {
      * 将数据库roleEquip -> equip
      *
      * @param re    玩家装备关联
-     * @return
+     * @return      装备实体信息
      */
     private static Equip roleEquipToEquip(RoleEquip re){
         Equip equip = new Equip();
@@ -195,21 +195,6 @@ public class LocalEquipMap {
         equip.setHasOn(re.getHasOn());
 
         return equip;
-    }
-
-    public static void main(String[] args) {
-        try {
-            readExcel();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        idEquipMap.forEach((k, v) ->
-            System.out.println("k: " + k + " ,value: " + v));
-
-
-        hasEquipMap.forEach((k, v) ->
-            System.out.println("k: " + k + " ,value: " + v));
     }
 
 }

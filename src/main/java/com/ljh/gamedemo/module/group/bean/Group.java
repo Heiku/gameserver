@@ -15,9 +15,18 @@ import java.util.List;
 @Data
 public class Group {
 
+    /**
+     * 队伍id
+     */
     private Long id;
 
+    /**
+     * 队伍队长
+     */
     private Long leader;
 
+    /**
+     * 成员列表
+     */
     private List<Long> members = new ArrayList<>();
 }

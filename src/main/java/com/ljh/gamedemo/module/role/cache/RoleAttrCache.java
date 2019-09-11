@@ -11,15 +11,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 本地存储玩家角色的 增益属性值
+ *
  * @Author: Heiku
  * @Date: 2019/7/23
- *
- * 本地存储玩家角色的 增益属性值
  */
 public class RoleAttrCache {
 
+
+    /**
+     * 本地玩家属性缓存 (roleId, RoleAttr)
+     */
     private static Map<Long, RoleAttr> roleAttrMap = Maps.newConcurrentMap();
 
+
+    /**
+     * AttrDao
+     */
     private static RoleAttrDao attrDao;
 
     static {
@@ -30,6 +38,10 @@ public class RoleAttrCache {
         return roleAttrMap;
     }
 
+
+    /**
+     * 读取玩家的属性信息
+     */
     public static void readBDAttr(){
         List<RoleAttr> attrList = attrDao.selectAllAttr();
         for (RoleAttr attr : attrList) {

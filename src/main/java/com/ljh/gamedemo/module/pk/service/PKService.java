@@ -114,14 +114,6 @@ public class PKService {
      * @param channel       channel
      */
     public void pk(MsgPKProto.RequestPK req, Channel channel) {
-
-        // 用户状态认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-
         // 判断玩家是否都在竞技场
         pkResp = pkSiteInterceptor(req.getUserId(), req.getRoleId());
         if (pkResp != null){
@@ -151,13 +143,6 @@ public class PKService {
      * @param channel       channel
      */
     public void acceptChallenge(MsgPKProto.RequestPK req, Channel channel) {
-
-        // 用户状态认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
         long nowRoleId = LocalUserMap.getUserRoleMap().get(req.getUserId()).getRoleId();
 
         // 获取接收方的 挑战id
@@ -185,12 +170,6 @@ public class PKService {
      * @param channel       channel
      */
     public void spellRole(MsgPKProto.RequestPK req, Channel channel) {
-        // 用户状态认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
 
         // 技能状态认证
         spellResp = spellService.spellStateInterceptor(req.getSpellId());
@@ -225,12 +204,6 @@ public class PKService {
      * @param channel       channel
      */
     public void escape(MsgPKProto.RequestPK req, Channel channel) {
-        // 用户状态认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
 
         // pk 状态认证
         // 只有在 pk 状态下才能进行退出

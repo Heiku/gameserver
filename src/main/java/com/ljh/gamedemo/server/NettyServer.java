@@ -80,7 +80,7 @@ public class NettyServer {
 
 
     @PreDestroy
-    public void destory() throws InterruptedException{
+    public void destroy() throws InterruptedException{
         boss.shutdownGracefully().sync();
         worker.shutdownGracefully().sync();
 

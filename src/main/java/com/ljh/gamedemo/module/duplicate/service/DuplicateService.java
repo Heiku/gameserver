@@ -567,7 +567,8 @@ public class DuplicateService {
     /**
      * 用于记录Boss 的攻击目标队列
      *
-     * @param role  玩家信息
+     * @param role      玩家信息
+     * @param tmpDup    副本信息
      */
     private void recordRoleAttacked(Role role, Duplicate tmpDup){
         // 记录下进入Boss的次序

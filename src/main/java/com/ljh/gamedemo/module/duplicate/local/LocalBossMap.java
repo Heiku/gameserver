@@ -129,13 +129,4 @@ public class LocalBossMap {
     public static Map<Long, Boss> getBossMap() {
         return bossMap;
     }
-
-
-    public static void main(String[] args) {
-        readExcel();
-
-        bossSpellMap.forEach((k, v) -> System.out.println("k: " + k + " v: " + v));
-
-        bossMap.forEach((k, v) -> System.out.println("k: " + k + " v: " + v));
-    }
 }

@@ -59,7 +59,7 @@ public class UserDeclineMpRun implements Callable<Boolean> {
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Boolean call() {
         // 技能需要消耗的蓝量
         int needMp = spell.getCost();
 
@@ -102,7 +102,6 @@ public class UserDeclineMpRun implements Callable<Boolean> {
                 int interval = (int) Math.floor((cd * 1000 - t) / 1000);
 
                 responseMpFailed(ContentType.ATTACK_SPELL_CD + interval + "秒\n");
-                //CountDownLatchUtil.abort();
                 return false;
             }
         }

@@ -1,8 +1,10 @@
-package com.ljh.gamedemo.util;
+package com.ljh.gamedemo.run.clean;
 
 import com.ljh.gamedemo.module.trade.cache.TradeCache;
 
 /**
+ * 定期清除交易缓存记录，便于触发过期定时器
+ *
  * @Author: Heiku
  * @Date: 2019/8/30
  */

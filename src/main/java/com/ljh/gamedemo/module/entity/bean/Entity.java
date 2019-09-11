@@ -33,6 +33,8 @@ public class Entity {
      */
     private int alive;
 
-
+    /**
+     * 位置信息
+     */
     private Site site;
 }

@@ -3,10 +3,10 @@ package com.ljh.gamedemo.module.role.bean;
 import lombok.Data;
 
 /**
+ * 用户的增益属性栏
+ *
  * @Author: Heiku
  * @Date: 2019/7/23
- *
- * 用户的增益属性栏
  */
 
 @Data
