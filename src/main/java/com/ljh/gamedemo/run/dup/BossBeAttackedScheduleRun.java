@@ -22,29 +22,47 @@ import java.util.List;
 @Slf4j
 public class BossBeAttackedScheduleRun implements Runnable {
 
-    // 玩家的持续掉血技能
+    /**
+     * 技能信息
+     */
     private Spell spell;
 
-    // 副本信息
+    /**
+     * 副本信息
+     */
     private Duplicate dup;
 
-    // 玩家属性
+    /**
+     * 玩家信息
+     */
     private Role role;
 
-    // 加成的技能额外伤害
+    /**
+     * 技能的额外伤害
+     */
     private int extra;
 
-    // 技能持续的总伤害值
+    /**
+     * 技能总伤害
+     */
     private int allDamage;
 
-    // 累计的伤害值
+    /**
+     * 累计伤害值
+     */
     private int sumDamage = 0;
 
-    // 通信 channel
+    /**
+     * Channel
+     */
     private Channel channel;
 
-    // 任务
+    /**
+     * boss攻击实例
+     */
     private BossBeAttackedRun attackedRun;
+
+
 
     public BossBeAttackedScheduleRun(Role role, Spell spell, Duplicate _dup, int extra){
         this.role = role;

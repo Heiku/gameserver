@@ -7,6 +7,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 自定义的单线程线程池，用于线程隔离下的任务执行
+ *
  * @Author: Heiku
  * @Date: 2019/7/17
  */
@@ -27,7 +29,7 @@ public class CustomExecutor extends SingleThreadEventExecutor {
     }
 
     @Override
-    protected void addTask(Runnable task) {
+    public void addTask(Runnable task) {
         super.addTask(task);
     }
 
@@ -42,7 +44,7 @@ public class CustomExecutor extends SingleThreadEventExecutor {
     }
 
     @Override
-    protected boolean removeTask(Runnable task) {
+    public boolean removeTask(Runnable task) {
         return super.removeTask(task);
     }
 

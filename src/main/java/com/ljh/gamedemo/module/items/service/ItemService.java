@@ -10,15 +10,13 @@ import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import com.ljh.gamedemo.module.items.local.LocalItemsMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgItemProto;
-import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.db.SaveRoleItemRun;
 import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.record.RecoverBuff;
 import com.ljh.gamedemo.run.user.UseItemNowRun;
 import com.ljh.gamedemo.run.user.UseItemScheduledRun;
-import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
@@ -106,29 +104,30 @@ public class ItemService {
 
         long userId = requestItem.getUserId();
         long itemsId = requestItem.getItemsId();
+        Role role = LocalUserMap.getUserRoleMap().get(userId);
 
         // 获取物品
         Items items = LocalItemsMap.getIdItemsMap().get(itemsId);
 
         // 使用物品
-        doUseItem(userId, items, channel);
+        doUseItem(role, items, channel);
     }
 
 
     /**
      * 根据物品的类别 进行对应的使用操作
      *
-     * @param userId        玩家id
+     * @param role          玩家信息
      * @param items         物品信息
      */
-    private void doUseItem(long userId, Items items, Channel channel){
+    private void doUseItem(Role role, Items items, Channel channel){
         int type = items.getType();
         switch (type){
             case BLOOD:
-                recoverBlood(userId, items, channel);
+                recoverBlood(role, items, channel);
                 break;
             case BLUE:
-                recoverBlue(userId, items, channel);
+                recoverBlue(role, items, channel);
                 break;
         }
     }
@@ -138,10 +137,10 @@ public class ItemService {
     /**
      * 具体的回血操作
      *
-     * @param userId        玩家id
+     * @param role          玩家信息
      * @param items         物品信息
      */
-    private void recoverBlood(long userId, Items items, Channel channel){
+    private void recoverBlood(Role role, Items items, Channel channel){
 
         RecoverBuff buff = new RecoverBuff();
         buff.setHpBuf(items.getUp());
@@ -151,13 +150,14 @@ public class ItemService {
         if (items.getSec() == 0){
 
             // 执行立即恢复的任务
-            UserExecutorManager.addUserTask(userId, new UseItemNowRun(userId, items.getItemsId(), channel, buff));
+            UserExecutorManager.addUserTask(role.getUserId(), new UseItemNowRun(role, items.getItemsId(), buff));
         }else {
             buff.setHpBuf(items.getUp() / items.getSec());
-            UseItemScheduledRun r = new UseItemScheduledRun(userId, items, channel, buff);
+            UseItemScheduledRun r = new UseItemScheduledRun(role, items, buff);
 
             // 缓慢恢复，定期增加用户状态值
-            ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(r, 0, 1, TimeUnit.SECONDS);
+            ScheduledFuture future = UserExecutorManager.getUserExecutor(role.getUserId())
+                    .scheduleAtFixedRate(r, 0, 1, TimeUnit.SECONDS);
             FutureMap.futureMap.put(r.hashCode(), future);
         }
     }
@@ -166,10 +166,10 @@ public class ItemService {
     /**
      * 具体的回蓝操作
      *
-     * @param userId        玩家id
+     * @param role          玩家信息
      * @param items         物品信息
      */
-    private void recoverBlue(long userId, Items items, Channel channel){
+    private void recoverBlue(Role role, Items items, Channel channel){
 
         RecoverBuff buff = new RecoverBuff();
         buff.setHpBuf(0);
@@ -178,13 +178,15 @@ public class ItemService {
         if (items.getSec() == 0){
 
             // 执行立即恢复的任务
-            UserExecutorManager.addUserTask(userId, new UseItemNowRun(userId, items.getItemsId(), channel, buff));
+            UserExecutorManager.addUserTask(role.getUserId(), new UseItemNowRun(role, items.getItemsId(), buff));
+
         }else {
             buff.setMpBuf(items.getUp() / items.getSec() * 2);
-            UseItemScheduledRun r = new UseItemScheduledRun(userId, items,  channel, buff);
+            UseItemScheduledRun r = new UseItemScheduledRun(role, items, buff);
 
             // 缓慢恢复，定期增加用户状态值
-            ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
+            ScheduledFuture future = UserExecutorManager.getUserExecutor(role.getUserId())
+                    .scheduleAtFixedRate(r, 0, 2, TimeUnit.SECONDS);
             FutureMap.futureMap.put(r.hashCode(), future);
         }
     }
@@ -338,20 +340,20 @@ public class ItemService {
     /**
      * 物品状态拦截器
      *
-     * @param requestItem
-     * @return
+     * @param req       请求
+     * @return          物品消息返回
      */
-    private MsgItemProto.ResponseItem itemStateInterceptor(MsgItemProto.RequestItem requestItem){
+    private MsgItemProto.ResponseItem itemStateInterceptor(MsgItemProto.RequestItem req){
 
         // 判断itemId param
-        long itemId = requestItem.getItemsId();
+        long itemId = req.getItemsId();
         if (itemId <= 0){
             return combineFailedMsg(ContentType.ITEM_PARAM_EMPTY);
         }
 
 
         // 判断用户是否存有该物品
-        long userId = requestItem.getUserId();
+        long userId = req.getUserId();
         long roleId = LocalUserMap.userRoleMap.get(userId).getRoleId();
 
         // 读取玩家的物品id列表，判断玩家是否拥有该物品

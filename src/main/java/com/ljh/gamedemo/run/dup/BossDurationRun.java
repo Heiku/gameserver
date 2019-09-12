@@ -8,7 +8,7 @@ import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.UserBeAttackedScheduleRun;
 import com.ljh.gamedemo.module.duplicate.service.DuplicateService;

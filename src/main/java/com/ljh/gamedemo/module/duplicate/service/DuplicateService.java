@@ -28,8 +28,8 @@ import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.DuplicateManager;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.DuplicateManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.dup.BossBeAttackedRun;
 import com.ljh.gamedemo.run.dup.BossBeAttackedScheduleRun;
 import com.ljh.gamedemo.run.record.FutureMap;
@@ -277,7 +277,7 @@ public class DuplicateService {
 
         }else {
             // 扣蓝，技能cd判断
-            UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell);
+            UserDeclineMpRun mpTask = new UserDeclineMpRun(role, spell);
             Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(role.getUserId(), mpTask);
 
             // 异步转同步，等待扣蓝任务完成

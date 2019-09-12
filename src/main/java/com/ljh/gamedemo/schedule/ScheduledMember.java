@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * 每天更新玩家的今日贡献值
+ * 每天更新玩家的今日公会贡献值
  *
  * @Author: Heiku
  * @Date: 2019/8/28
@@ -22,6 +22,8 @@ public class ScheduledMember {
      */
     @Autowired
     private GuildDao guildDao;
+
+
 
     @Scheduled(cron = "0 0 0 * * ? ")
     private void updateMemberTodayCon(){

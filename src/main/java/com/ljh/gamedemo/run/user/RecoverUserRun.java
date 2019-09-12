@@ -1,14 +1,18 @@
 package com.ljh.gamedemo.run.user;
 
 import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
+import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.run.record.RecoverBuff;
-import io.netty.channel.Channel;
+import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import java.util.Optional;
+
+import static com.ljh.gamedemo.common.RecoverType.*;
 
 /**
+ * 玩家恢复任务
+ *
  * @Author: Heiku
  * @Date: 2019/7/22
  */
@@ -16,93 +20,59 @@ import java.util.List;
 @Slf4j
 public class RecoverUserRun implements Runnable {
 
-    // 玩家的最大生命值
-    public static  int MAX_HP = 1000;
+    /**
+     * 玩家信息
+     */
+    private Role role;
 
-    // 玩家的最大蓝量值
-    public static final int MAX_MP = 300;
-
-    // 玩家自动恢复生命的速度
-    private static final int DEFAULT_HP_SEC = 2;
-
-    // 玩家自动恢复蓝量的速度
-    private static final int DEFAULT_MP_SEC = 1;
-
-
-    private long userId;
-
+    /**
+     * 额外的恢复 buff
+     */
     private RecoverBuff buff;
 
-    private Channel channel;
+    /**
+     * 玩家服务
+     */
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
-    public RecoverUserRun(long userId, RecoverBuff buff, Channel channel){
-        this.userId = userId;
+
+    public RecoverUserRun(Role role, RecoverBuff buff){
+        this.role = role;
         this.buff = buff;
-        this.channel = channel;
     }
+
 
     @Override
     public void run() {
-
         // 无buff，采用默认的恢复速度
-        if (buff == null){
-            buff = new RecoverBuff();
-            buff.setHpBuf(DEFAULT_HP_SEC);
-            buff.setMpBuf(DEFAULT_MP_SEC);
-        }
+        buff = Optional.ofNullable(buff).orElse(new RecoverBuff(DEFAULT_HP_SEC, DEFAULT_MP_SEC));
 
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        log.info("用户自动恢复任务更新前：hp=" + role.getHp() + " mp=" + role.getMp());
+        // 玩家的最大生命值
+        int maxHp = role.getMaxHp();
 
-
-        // 血量恢复
-        MAX_HP = role.getMaxHp();
+        // 判断当前的血量值
         int hp = role.getHp();
-        if (hp >= MAX_HP){
-            log.info("玩家：" + role.getName() + " 当前血量已经满格，无法自动恢复生命值");
-        }else {
+        if (hp < maxHp){
             int hpSec = buff.getHpBuf();
             hp += hpSec;
-            log.info("玩家：" + role.getName() + " 血量恢复：" + hpSec);
-            if (hp > MAX_HP) {
-                hp = MAX_HP;
-            }
+            hp = hp > maxHp ? maxHp : hp;
+
+            // 设置最新的血量值
             role.setHp(hp);
         }
 
-        // 蓝量恢复
+        // 判断当前的蓝量值
         int mp = role.getMp();
-        if (mp >= MAX_MP){
-            log.info("玩家：" + role.getName() + " 当前蓝量已经满格，无法自动恢复蓝量值");
-        }else {
+        if (mp < MAX_MP){
             int mpSec = buff.getMpBuf();
             mp += mpSec;
-            log.info("玩家：" + role.getName() + " 蓝量恢复：" + mpSec);
-            if (mp > MAX_MP){
-                mp = MAX_MP;
-            }
-            role.setMp(mp);
+            mp = mp > MAX_MP ? maxHp : mp;
+
+            // 设置最新的蓝量值
+            role.setHp(mp);
         }
 
-        // 更新用户数据
-        LocalUserMap.idRoleMap.put(role.getRoleId(), role);
-        log.info("用户自动恢复任务更新后：hp=" + role.getHp() + " mp=" + role.getMp());
-
-
-        List<Role> siteRoleList = LocalUserMap.siteRolesMap.get(role.getSiteId());
-        for (Role role1 : siteRoleList) {
-            if (role1.getRoleId().intValue() == role.getRoleId().intValue()){
-                role1.setHp(role.getHp());
-                role1.setMp(role.getMp());
-                break;
-            }
-        }
-
-        for (Role role1 : siteRoleList) {
-            if (role1.getRoleId()== role.getRoleId().intValue()) {
-                log.info("用户自动恢复任务更新后：hp=" + role1.getHp() + " mp=" + role1.getMp());
-                break;
-            }
-        }
+        // 加入玩家线程池中更新属性信息
+        roleService.updateRoleInfo(role);
     }
 }

@@ -8,7 +8,7 @@ import com.ljh.gamedemo.module.creep.local.LocalCreepMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.spell.cache.PartnerCache;
 import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.DuplicateManager;
+import com.ljh.gamedemo.run.manager.DuplicateManager;
 import com.ljh.gamedemo.run.partner.PartnerAttackBossRun;
 import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
 import io.netty.util.concurrent.ScheduledFuture;

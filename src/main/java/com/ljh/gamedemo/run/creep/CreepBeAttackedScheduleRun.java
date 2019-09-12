@@ -44,11 +44,6 @@ public class CreepBeAttackedScheduleRun implements Runnable {
     private int extra;
 
     /**
-     * channel
-     */
-    private Channel channel;
-
-    /**
      * 技能总伤害
      */
     private Integer allDamage;
@@ -70,8 +65,6 @@ public class CreepBeAttackedScheduleRun implements Runnable {
         this.spell = spell;
         this.creep = creep;
         this.extra = extra;
-
-        this.channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
 
         // 持续伤害的总伤害值
         this.allDamage = spell.getDamage();

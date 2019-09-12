@@ -6,7 +6,7 @@ import com.ljh.gamedemo.module.spell.bean.Partner;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.spell.cache.PartnerCache;
-import com.ljh.gamedemo.run.DuplicateManager;
+import com.ljh.gamedemo.run.manager.DuplicateManager;
 import com.ljh.gamedemo.run.dup.BossBeAttackedRun;
 
 /**

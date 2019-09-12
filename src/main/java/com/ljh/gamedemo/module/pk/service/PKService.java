@@ -21,7 +21,7 @@ import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.UserBeAttackedRun;
 import com.ljh.gamedemo.run.user.UserBeAttackedScheduleRun;
@@ -284,7 +284,7 @@ public class PKService {
      */
     private void doSpellRole(Role fromRole, Role toRole, Spell spell) {
         // 先进行扣蓝操作
-        UserDeclineMpRun mpTask = new UserDeclineMpRun(fromRole.getRoleId(), spell);
+        UserDeclineMpRun mpTask = new UserDeclineMpRun(fromRole, spell);
         Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(fromRole.getUserId(), mpTask);
 
         // 异步转同步，等待扣蓝任务完成

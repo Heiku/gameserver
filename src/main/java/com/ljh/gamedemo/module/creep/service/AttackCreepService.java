@@ -18,8 +18,8 @@ import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.proto.protoc.MsgAttackCreepProto;
 import com.ljh.gamedemo.proto.protoc.MsgSpellProto;
 import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.SiteCreepExecutorManager;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.SiteCreepExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.creep.CreepBeAttackedRun;
 import com.ljh.gamedemo.run.creep.CreepBeAttackedScheduleRun;
 import com.ljh.gamedemo.run.record.FutureMap;
@@ -152,7 +152,7 @@ public class AttackCreepService {
 
         // 技能伤害
         // 扣蓝
-        UserDeclineMpRun mpTask = new UserDeclineMpRun(role.getRoleId(), spell);
+        UserDeclineMpRun mpTask = new UserDeclineMpRun(role, spell);
         Future<Boolean> mpFuture = UserExecutorManager.addUserCallableTask(role.getUserId(), mpTask);
 
         // 异步转同步，等待扣蓝任务完成
@@ -396,28 +396,6 @@ public class AttackCreepService {
         }
         return null;
     }
-
-
-
-
-    /**
-     * 消息返回
-     *
-     * @param role
-     */
-    public void responseAttacked(Role role, String msg){
-        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
-
-        MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep
-                .newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setType(MsgAttackCreepProto.RequestType.ATTACK)
-                .setContent(msg)
-                .setRole(protoService.transToRole(role))
-                .build();
-        channel.writeAndFlush(response);
-    }
-
 
 
 

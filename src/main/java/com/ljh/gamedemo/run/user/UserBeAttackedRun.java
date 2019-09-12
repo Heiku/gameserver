@@ -1,6 +1,8 @@
 package com.ljh.gamedemo.run.user;
 
 import com.ljh.gamedemo.common.ContentType;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.creep.service.AttackCreepService;
 import com.ljh.gamedemo.module.group.service.GroupService;
 import com.ljh.gamedemo.module.pk.service.PKService;
@@ -8,6 +10,7 @@ import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.util.SpringUtil;
+import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -35,24 +38,25 @@ public class UserBeAttackedRun implements Runnable {
      */
     private boolean pk;
 
-    // base roleService
-    private RoleService roleService = SpringUtil.getBean(RoleService.class);
-
-    // pkService
-    private PKService pkService = SpringUtil.getBean(PKService.class);
-
-    // groupService
-    private GroupService groupService = SpringUtil.getBean(GroupService.class);
 
     /**
-     * CreepAttackService
+     * 玩家服务
      */
-    private AttackCreepService attackCreepService = SpringUtil.getBean(AttackCreepService.class);
+    private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
 
-    public UserBeAttackedRun(){
+    /**
+     * pk服务
+     */
+    private PKService pkService = SpringUtil.getBean(PKService.class);
 
-    }
+
+    /**
+     * 协议服务
+     */
+    private ProtoService protoService = SpringUtil.getBean(ProtoService.class);
+
+
 
     public UserBeAttackedRun(long userId, Integer damage, boolean pk){
         this.userId = userId;
@@ -87,18 +91,17 @@ public class UserBeAttackedRun implements Runnable {
                 pkService.pkEnd(role);
                 return;
             }
-            // 退出队伍
-            groupService.removeGroup(role);
-            // 玩家复活
-            roleService.reliveRole(role);
+
+            // 玩家被野怪击杀
+            roleService.doRoleDeath(role);
             return;
         }
 
-        // 更新玩家角色信息
+        // 更新玩家的血量值
         role.setHp(hp);
         roleService.updateRoleInfo(role);
 
         // 消息通知
-        attackCreepService.responseAttacked(role, ContentType.ATTACK_CURRENT);
+        protoService.sendAttackedMsg(role,  ContentType.ATTACK_CURRENT);
     }
 }

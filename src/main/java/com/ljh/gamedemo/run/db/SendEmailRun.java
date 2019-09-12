@@ -70,7 +70,6 @@ public class SendEmailRun implements Runnable {
 
     @Override
     public void run() {
-        log.info("发送邮件发送记录！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
         // 获取基本信息
         long roleId = email.getToRoleId();
         Role role = LocalUserMap.getIdRoleMap().get(roleId);

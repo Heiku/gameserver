@@ -3,6 +3,7 @@ package com.ljh.gamedemo.module.role.service;
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.group.service.GroupService;
 import com.ljh.gamedemo.module.role.bean.RoleBuff;
 import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
 import com.ljh.gamedemo.module.role.local.LocalRoleInitMap;
@@ -15,7 +16,7 @@ import com.ljh.gamedemo.module.role.bean.RoleInit;
 import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
 import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
@@ -52,11 +53,6 @@ public class RoleService {
     @Autowired
     private UserService userService;
 
-    /**
-     * 协议转换
-     */
-    @Autowired
-    private ProtoService protoService;
 
     /**
      * 副本服务
@@ -64,13 +60,28 @@ public class RoleService {
     @Autowired
     private DuplicateService duplicateService;
 
+
     /**
-     * userResponse
+     * 组队服务
+     */
+    @Autowired
+    private GroupService groupService;
+
+    /**
+     * 协议转换
+     */
+    @Autowired
+    private ProtoService protoService;
+
+
+
+    /**
+     * 用户协议
      */
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
     /**
-     * roleResponse
+     * 玩家协议
      */
     private MsgRoleProto.ResponseRole roleResp;
 
@@ -219,9 +230,6 @@ public class RoleService {
      * @param role  玩家
      */
     public void reliveRole(Role role){
-        // 移出副本的攻击目标队列
-        duplicateService.removeAttackedQueue(role);
-
         role.setHp(role.getMaxHp());
 
         // 更新玩家信息
@@ -237,6 +245,8 @@ public class RoleService {
         Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
         channel.writeAndFlush(userResp);
     }
+
+
 
     /**
      * 治疗挑战队列的玩家
@@ -339,6 +349,8 @@ public class RoleService {
     }
 
 
+
+
     /**
      * 加锁判断是否足够金额购买物品，能得话直接支付，否得话返回失败
      *
@@ -353,6 +365,24 @@ public class RoleService {
         receiver.setGold(receiver.getGold() - amount);
         updateRoleInfo(receiver);
         return true;
+    }
+
+
+    /**
+     * 玩家被击杀时的具体操作
+     *
+     * @param role      玩家信息
+     */
+    public void doRoleDeath(Role role){
+
+        // 如果存在队伍信息，将玩家移除队伍
+        groupService.removeGroup(role);
+
+        // 如果存在副本中，移除副本队列
+        duplicateService.removeAttackedQueue(role);
+
+        // 复活
+        reliveRole(role);
     }
 
 

@@ -1,15 +1,18 @@
 package com.ljh.gamedemo.module.duplicate.service;
 
+import com.ljh.gamedemo.module.duplicate.bean.Boss;
 import com.ljh.gamedemo.module.duplicate.bean.BossSpell;
 import com.ljh.gamedemo.module.duplicate.bean.Duplicate;
 import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.DuplicateManager;
+import com.ljh.gamedemo.run.manager.DuplicateManager;
 import com.ljh.gamedemo.run.dup.BossAoeRun;
 import com.ljh.gamedemo.run.dup.BossDizzinessRun;
 import com.ljh.gamedemo.run.dup.BossDoAttackedRun;
 import com.ljh.gamedemo.run.dup.BossDurationRun;
 import io.netty.util.concurrent.ScheduledFuture;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +28,13 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class BossService {
+
+
+    /**
+     * 副本服务
+     */
+    @Autowired
+    private DuplicateService duplicateService;
 
     /**
      * Boss 进行普通攻击
@@ -109,4 +119,5 @@ public class BossService {
         dupAllFuture.add(future);
         LocalAttackCreepMap.getDupAllFutureMap().put(dup.getRelatedId(), dupAllFuture);
     }
+
 }

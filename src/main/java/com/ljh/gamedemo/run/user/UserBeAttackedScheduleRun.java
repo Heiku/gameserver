@@ -1,6 +1,7 @@
 package com.ljh.gamedemo.run.user;
 
 import com.ljh.gamedemo.common.ContentType;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.spell.tmp.DurationAttack;
 import com.ljh.gamedemo.module.creep.service.AttackCreepService;
 import com.ljh.gamedemo.module.group.service.GroupService;
@@ -46,10 +47,6 @@ public class UserBeAttackedScheduleRun implements Runnable {
      */
     private boolean pk;
 
-    /**
-     * 攻击野怪服务
-     */
-    private AttackCreepService attackCreepService = SpringUtil.getBean(AttackCreepService.class);
 
     /**
      * 玩家服务
@@ -62,10 +59,9 @@ public class UserBeAttackedScheduleRun implements Runnable {
     private PKService pkService = SpringUtil.getBean(PKService.class);
 
     /**
-     * 组队服务
+     * 协议服务
      */
-    private GroupService groupService = SpringUtil.getBean(GroupService.class);
-
+    private ProtoService protoService = SpringUtil.getBean(ProtoService.class);
 
 
     public UserBeAttackedScheduleRun(Role _role, DurationAttack _da, int _extra, boolean _pk){
@@ -84,24 +80,23 @@ public class UserBeAttackedScheduleRun implements Runnable {
         sumDamage += damage;
 
         if (sumDamage >= da.getDamage()){
-            log.info("已经达到最大持续伤害的最大值，任务取消!");
             FutureMap.getFutureMap().get(this.hashCode()).cancel(true);
             return;
         }
 
-        //玩家死亡，取消任务
+        // 玩家死亡，取消任务
         if (hp <= 0){
+
             // pk 处理
             if (pk){
                 // 移除 pk 记录
                 RoleInvitePKCache.getPkFutureMap().remove(role.getRoleId());
                 pkService.pkEnd(role);
-            }else {
-                // 退出队伍
-                groupService.removeGroup(role);
-                // 玩家复活
-                roleService.reliveRole(role);
+                return;
             }
+
+            // 玩家被击杀
+            roleService.doRoleDeath(role);
             return;
         }
 
@@ -110,6 +105,6 @@ public class UserBeAttackedScheduleRun implements Runnable {
         roleService.updateRoleInfo(role);
 
         // 消息回复
-        attackCreepService.responseAttacked(role, ContentType.ATTACK_DURATION);
+        protoService.sendAttackedMsg(role, ContentType.ATTACK_DURATION);
     }
 }

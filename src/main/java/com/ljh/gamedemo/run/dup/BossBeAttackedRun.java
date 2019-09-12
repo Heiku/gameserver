@@ -152,9 +152,9 @@ public class BossBeAttackedRun implements Runnable {
     /**
      * 攻击时间判断
      *
-     * @param empty
-     * @param role
-     * @param dup
+     * @param empty     是否空副本
+     * @param role      玩家信息
+     * @param dup       副本信息
      */
     public void attackTime(boolean empty, Role role, Duplicate dup){
         long bindId = duplicateService.getBindId(role);

@@ -3,6 +3,7 @@ package com.ljh.gamedemo.module.base.service;
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.CommodityType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.module.creep.bean.Creep;
 import com.ljh.gamedemo.module.duplicate.bean.Boss;
 import com.ljh.gamedemo.module.duplicate.bean.BossSpell;
@@ -837,6 +838,27 @@ public class ProtoService {
 
 
     /**
+     * 返回玩家被攻击的消息
+     *
+     * @param role      玩家信息
+     * @param msg       消息
+     */
+    public void sendAttackedMsg(Role role, String msg){
+        // 获取channel
+        Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
+
+        MsgAttackCreepProto.ResponseAttackCreep response = MsgAttackCreepProto.ResponseAttackCreep
+                .newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgAttackCreepProto.RequestType.ATTACK)
+                .setContent(msg)
+                .setRole(protoService.transToRole(role))
+                .build();
+        channel.writeAndFlush(response);
+    }
+
+
+    /**
      * 发送公共消息
      *
      * @param channel       channel
@@ -864,5 +886,6 @@ public class ProtoService {
                 .build();
         channel.writeAndFlush(base);
     }
+
 
 }

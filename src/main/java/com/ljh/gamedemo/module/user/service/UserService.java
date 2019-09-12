@@ -14,11 +14,10 @@ import com.ljh.gamedemo.module.user.dao.UserDao;
 import com.ljh.gamedemo.module.user.bean.User;
 import com.ljh.gamedemo.module.user.bean.UserToken;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.user.RecoverUserRun;
 import com.ljh.gamedemo.module.chat.service.ChatService;
-import com.ljh.gamedemo.module.guild.service.GuildService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.util.MD5Util;
 import com.ljh.gamedemo.util.SessionUtil;
@@ -130,7 +129,7 @@ public class UserService {
             return;
         }
         // 为每一个玩家添加自动恢复的task
-        RecoverUserRun task = new RecoverUserRun(userId, null, null);
+        RecoverUserRun task = new RecoverUserRun(role, null);
         ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
         FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
     }
@@ -374,9 +373,7 @@ public class UserService {
 
         // 更新数据库role的site信息
         int n = userRoleDao.updateRoleSiteInfo(role);
-        if (n <= 0){
-            return combineFailedMsg(ContentType.UPDATE_ROLE_SITE);
-        }
+        log.info("update role, affected rows: " + n);
 
         // 成功操作
         return combineFailedMsg(ContentType.EXIT_SUCCESS);

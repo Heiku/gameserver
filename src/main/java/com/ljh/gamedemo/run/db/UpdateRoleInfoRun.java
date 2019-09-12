@@ -18,10 +18,14 @@ import java.util.List;
 @Slf4j
 public class UpdateRoleInfoRun implements Runnable {
 
-    // 更新的角色信息
+    /**
+     * 玩家信息
+     */
     private Role role;
 
-    // 注入roleDao
+    /**
+     * userRoleDao
+     */
     private UserRoleDao userRoleDao = SpringUtil.getBean(UserRoleDao.class);
 
     public UpdateRoleInfoRun(Role role){

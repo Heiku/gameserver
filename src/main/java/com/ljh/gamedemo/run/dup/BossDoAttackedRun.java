@@ -7,7 +7,7 @@ import com.ljh.gamedemo.module.spell.bean.Partner;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.spell.cache.PartnerCache;
-import com.ljh.gamedemo.run.UserExecutorManager;
+import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.user.UserBeAttackedRun;
 import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
 import com.ljh.gamedemo.module.spell.service.PartnerService;

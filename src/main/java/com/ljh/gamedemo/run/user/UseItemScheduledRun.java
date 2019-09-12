@@ -1,21 +1,19 @@
 package com.ljh.gamedemo.run.user;
 
 import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.items.bean.Items;
+import com.ljh.gamedemo.module.items.service.ItemService;
 import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
-import com.ljh.gamedemo.proto.protoc.MsgItemProto;
+import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.run.record.FutureMap;
 import com.ljh.gamedemo.run.record.RecoverBuff;
-import com.ljh.gamedemo.module.items.service.ItemService;
-import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ljh.gamedemo.run.user.RecoverUserRun.MAX_HP;
-import static com.ljh.gamedemo.run.user.RecoverUserRun.MAX_MP;
+import static com.ljh.gamedemo.common.RecoverType.MAX_MP;
 
 /**
  * @Author: Heiku
@@ -27,139 +25,145 @@ import static com.ljh.gamedemo.run.user.RecoverUserRun.MAX_MP;
 @Slf4j
 public class UseItemScheduledRun implements Runnable {
 
-    // 玩家id
-    private long userId;
+    /**
+     * 玩家信息
+     */
+    private Role role;
 
-    // 物品id
-    private long itemId;
-
-    // 恢复的最大值
-    private int allUp;
-
-    // 累加恢复值
-    private int up;
-
-    // 恢复buff
+    /**
+     * 恢复buff
+     */
     private RecoverBuff buff;
 
-    // 通信channel
+    /**
+     * 物品id
+     */
+    private long itemId;
+
+    /**
+     * 恢复的最大值
+     */
+    private int allUp;
+
+    /**
+     * 累加恢复值
+     */
+    private int up;
+
+    /**
+     * channel
+     */
     private Channel channel;
 
-    // 是否已经更新物品信息
+    /**
+     * 是否已经更新物品信息
+     */
     private boolean decline = true;
 
 
-    private MsgItemProto.ResponseItem response;
-
-    // roleService
+    /**
+     * 玩家服务
+     */
     private RoleService roleService = SpringUtil.getBean(RoleService.class);
 
-    // 调用itemsService
+
+    /**
+     * 物品服务
+     */
     private ItemService itemService = SpringUtil.getBean(ItemService.class);
 
 
-    public UseItemScheduledRun(long userId, Items items,  Channel channel, RecoverBuff buff){
-        this.userId = userId;
+    /**
+     * 协议服务
+     */
+    private ProtoService protoService = SpringUtil.getBean(ProtoService.class);
+
+
+
+    public UseItemScheduledRun(Role role, Items items, RecoverBuff buff){
+        this.role = role;
+        this.buff = buff;
+
         this.itemId = items.getItemsId();
         this.allUp = items.getUp();
-        this.channel = channel;
-        this.buff = buff;
+        this.channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
     }
 
     @Override
     public void run() {
+        // 获取恢复的基本信息
         int hpBuf = buff.getHpBuf();
         int mpBuf = buff.getMpBuf();
 
-        Role role = LocalUserMap.userRoleMap.get(userId);
+        // 当前玩家属性值
         int hp = role.getHp();
         int mp = role.getMp();
 
+        // 判断是否正常回血
         if (hpBuf > 0){
-            if (hp == MAX_HP){
-                response = MsgItemProto.ResponseItem.newBuilder()
-                        .setResult(ResultCode.FAILED)
-                        .setContent(ContentType.ITEM_USE_FAILED_FULL_BLOOD)
-                        .build();
+            int maxHp = role.getMaxHp();
 
-                // 血量已满，不需要执行任务，移除任务队列
-                FutureMap.futureMap.get(this.hashCode()).cancel(true);
+            if (hp >= maxHp){
+                // 消息返回
+                protoService.sendFailedMsg(channel, ContentType.ITEM_USE_FAILED_FULL_BLOOD);
 
-                channel.writeAndFlush(response);
+                cancelRecoverTask();
                 return;
+
             }else {
-                // 用户的物品数量只减少一次
-                if (decline) {
-                    itemService.updateRoleItems(role, itemId, -1);
-                    decline = false;
-                }
-
+                // 达到最大恢复生命值
                 hp += hpBuf;
-                log.info("用户使用物品，缓慢恢复血量：" + hpBuf);
-
-                if (hp >= MAX_HP){
-                    hp = MAX_HP;
-
-                    // 血量已满，移除该任务
-                    FutureMap.futureMap.get(this.hashCode()).cancel(true);
-                    log.info("用户使用物品，血量已满，移除物品Buff");
+                if (hp >= maxHp){
+                    hp = maxHp;
+                    cancelRecoverTask();
                 }
-
 
                 up += hpBuf;
                 if (up >= allUp){
                     // 已经达到物品的最大恢复值，移除任务
-                    FutureMap.futureMap.get(this.hashCode()).cancel(true);
-                    log.info("已经达到物品的最大恢复值，移除恢复任务");
+                    cancelRecoverTask();
                 }
-
 
                 role.setHp(hp);
             }
         }else {
-            if (mp == MAX_MP){
-                response = MsgItemProto.ResponseItem.newBuilder()
-                        .setResult(ResultCode.FAILED)
-                        .setContent(ContentType.ITEM_USE_FAILED_FULL_BLUE)
-                        .build();
+            if (mp >= MAX_MP){
 
-                // 血量已满，不需要执行任务，移除任务队列
-                FutureMap.futureMap.get(this.hashCode()).cancel(true);
+                // 满蓝无法恢复
+                protoService.sendFailedMsg(channel, ContentType.ITEM_USE_FAILED_FULL_BLUE);
+                cancelRecoverTask();
+                return;
 
-                channel.writeAndFlush(response);
             }else {
-                // 用户的物品数量只减少一次
-                if (decline) {
-                    itemService.updateRoleItems(role, itemId, -1);
-                    decline = false;
-                }
 
                 mp += mpBuf;
-                log.info("用户使用物品，缓慢恢复蓝量：" + mpBuf);
-
                 if (mp >= MAX_MP){
                     mp = MAX_MP;
-
-                    // 蓝量已满，移除任务
-                    FutureMap.futureMap.get(this.hashCode()).cancel(true);
-                    log.info("用户使用物品，蓝量已满，移除物品Buff");
+                    cancelRecoverTask();
                 }
 
                 up += mpBuf;
                 if (up >= allUp){
-                    // 已经达到物品的最大恢复值，移除任务
-                    log.info("当前任务为："  + this);
-                    FutureMap.futureMap.get(this.hashCode()).cancel(true);
-                    log.info("已经达到物品的最大恢复值，移除恢复任务");
+                    cancelRecoverTask();
                 }
 
                 role.setMp(mp);
             }
         }
-
         // 更新缓存
         roleService.updateRoleInfo(role);
-        log.info("用户使用物品，状态缓慢恢复，已成功更新用户缓存");
+
+        if (decline) {
+            itemService.updateRoleItems(role, itemId, -1);
+            decline = false;
+        }
     }
 
+
+    /**
+     * 取消当前的恢复任务
+     */
+    private void cancelRecoverTask(){
+        FutureMap.futureMap.get(this.hashCode()).cancel(true);
+    }
 }
