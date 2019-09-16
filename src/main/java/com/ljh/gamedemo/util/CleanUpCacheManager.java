@@ -28,10 +28,6 @@ public class CleanUpCacheManager {
 
     }
 
-    public static CustomExecutor getExecutors() {
-        return executors;
-    }
-
     public static void run(){
         executors.scheduleAtFixedRate(new CleanUpCacheRun(), 0, 2, TimeUnit.SECONDS);
     }

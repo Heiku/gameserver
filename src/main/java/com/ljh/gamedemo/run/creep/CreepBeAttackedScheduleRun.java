@@ -74,7 +74,6 @@ public class CreepBeAttackedScheduleRun implements Runnable {
     public void run() {
         // 获取初始血量西悉尼
         int hp = creep.getHp();
-        int startUp = creep.getMaxHp();
 
         // 每秒造成的伤害值
         int damage = spell.getDamage() / spell.getSec() + extra;
@@ -91,7 +90,7 @@ public class CreepBeAttackedScheduleRun implements Runnable {
                 log.info("野怪持续掉血任务：野怪死亡，任务取消");
 
                 // 野怪死亡具体操作
-                creepService.doCreepDeath(creep, role, startUp);
+                creepService.doCreepDeath(creep, role);
                 return;
             }
 
@@ -104,7 +103,7 @@ public class CreepBeAttackedScheduleRun implements Runnable {
 
             // 更新野怪的血量
             creep.setHp(hp);
-            LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
+            LocalCreepMap.getIdCreepMap().put(creep.getId(), creep);
 
             // 最后攻击成功，返回消息给client
             creepService.sendCreepMsg(role, creep, ContentType.ATTACK_CURRENT);

@@ -124,12 +124,18 @@ public class LocalSiteMap {
 
         log.info("site 数据载入成功");
     }
-    public static void main(String[] args) {
-        readExcel();
 
-        SiteCreepExecutorManager.siteCreepExecutorMap.forEach(
-                (k, v) ->
-            System.out.println("k: " + k + " ,v: " + v));
 
+    public static Map<Integer, Site> getIdSiteMap() {
+        return idSiteMap;
+    }
+
+
+    public static Map<String, Site> getSiteMap() {
+        return siteMap;
+    }
+
+    public static Map<String, String> getNameMap() {
+        return nameMap;
     }
 }

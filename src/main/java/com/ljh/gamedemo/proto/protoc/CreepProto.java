@@ -19,47 +19,52 @@ public final class CreepProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 creepId = 1;</code>
+     * <code>int64 id = 1;</code>
+     */
+    long getId();
+
+    /**
+     * <code>int64 creepId = 2;</code>
      */
     long getCreepId();
 
     /**
-     * <code>int32 type = 2;</code>
+     * <code>int32 type = 3;</code>
      */
     int getType();
 
     /**
-     * <code>string name = 3;</code>
+     * <code>string name = 4;</code>
      */
     java.lang.String getName();
     /**
-     * <code>string name = 3;</code>
+     * <code>string name = 4;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>int32 num = 4;</code>
+     * <code>int32 num = 5;</code>
      */
     int getNum();
 
     /**
-     * <code>int32 level = 5;</code>
+     * <code>int32 level = 6;</code>
      */
     int getLevel();
 
     /**
-     * <code>int32 hp = 6;</code>
+     * <code>int32 hp = 7;</code>
      */
     int getHp();
 
     /**
-     * <code>int32 damage = 7;</code>
+     * <code>int32 damage = 8;</code>
      */
     int getDamage();
 
     /**
-     * <code>int32 maxHp = 8;</code>
+     * <code>int32 maxHp = 9;</code>
      */
     int getMaxHp();
   }
@@ -111,41 +116,46 @@ public final class CreepProto {
               break;
             case 8: {
 
-              creepId_ = input.readInt64();
+              id_ = input.readInt64();
               break;
             }
             case 16: {
 
+              creepId_ = input.readInt64();
+              break;
+            }
+            case 24: {
+
               type_ = input.readInt32();
               break;
             }
-            case 26: {
+            case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
               name_ = s;
               break;
             }
-            case 32: {
+            case 40: {
 
               num_ = input.readInt32();
               break;
             }
-            case 40: {
+            case 48: {
 
               level_ = input.readInt32();
               break;
             }
-            case 48: {
+            case 56: {
 
               hp_ = input.readInt32();
               break;
             }
-            case 56: {
+            case 64: {
 
               damage_ = input.readInt32();
               break;
             }
-            case 64: {
+            case 72: {
 
               maxHp_ = input.readInt32();
               break;
@@ -182,28 +192,37 @@ public final class CreepProto {
               com.ljh.gamedemo.proto.protoc.CreepProto.Creep.class, com.ljh.gamedemo.proto.protoc.CreepProto.Creep.Builder.class);
     }
 
-    public static final int CREEPID_FIELD_NUMBER = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private long id_;
+    /**
+     * <code>int64 id = 1;</code>
+     */
+    public long getId() {
+      return id_;
+    }
+
+    public static final int CREEPID_FIELD_NUMBER = 2;
     private long creepId_;
     /**
-     * <code>int64 creepId = 1;</code>
+     * <code>int64 creepId = 2;</code>
      */
     public long getCreepId() {
       return creepId_;
     }
 
-    public static final int TYPE_FIELD_NUMBER = 2;
+    public static final int TYPE_FIELD_NUMBER = 3;
     private int type_;
     /**
-     * <code>int32 type = 2;</code>
+     * <code>int32 type = 3;</code>
      */
     public int getType() {
       return type_;
     }
 
-    public static final int NAME_FIELD_NUMBER = 3;
+    public static final int NAME_FIELD_NUMBER = 4;
     private volatile java.lang.Object name_;
     /**
-     * <code>string name = 3;</code>
+     * <code>string name = 4;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -218,7 +237,7 @@ public final class CreepProto {
       }
     }
     /**
-     * <code>string name = 3;</code>
+     * <code>string name = 4;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -234,46 +253,46 @@ public final class CreepProto {
       }
     }
 
-    public static final int NUM_FIELD_NUMBER = 4;
+    public static final int NUM_FIELD_NUMBER = 5;
     private int num_;
     /**
-     * <code>int32 num = 4;</code>
+     * <code>int32 num = 5;</code>
      */
     public int getNum() {
       return num_;
     }
 
-    public static final int LEVEL_FIELD_NUMBER = 5;
+    public static final int LEVEL_FIELD_NUMBER = 6;
     private int level_;
     /**
-     * <code>int32 level = 5;</code>
+     * <code>int32 level = 6;</code>
      */
     public int getLevel() {
       return level_;
     }
 
-    public static final int HP_FIELD_NUMBER = 6;
+    public static final int HP_FIELD_NUMBER = 7;
     private int hp_;
     /**
-     * <code>int32 hp = 6;</code>
+     * <code>int32 hp = 7;</code>
      */
     public int getHp() {
       return hp_;
     }
 
-    public static final int DAMAGE_FIELD_NUMBER = 7;
+    public static final int DAMAGE_FIELD_NUMBER = 8;
     private int damage_;
     /**
-     * <code>int32 damage = 7;</code>
+     * <code>int32 damage = 8;</code>
      */
     public int getDamage() {
       return damage_;
     }
 
-    public static final int MAXHP_FIELD_NUMBER = 8;
+    public static final int MAXHP_FIELD_NUMBER = 9;
     private int maxHp_;
     /**
-     * <code>int32 maxHp = 8;</code>
+     * <code>int32 maxHp = 9;</code>
      */
     public int getMaxHp() {
       return maxHp_;
@@ -293,29 +312,32 @@ public final class CreepProto {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0L) {
+        output.writeInt64(1, id_);
+      }
       if (creepId_ != 0L) {
-        output.writeInt64(1, creepId_);
+        output.writeInt64(2, creepId_);
       }
       if (type_ != 0) {
-        output.writeInt32(2, type_);
+        output.writeInt32(3, type_);
       }
       if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, name_);
       }
       if (num_ != 0) {
-        output.writeInt32(4, num_);
+        output.writeInt32(5, num_);
       }
       if (level_ != 0) {
-        output.writeInt32(5, level_);
+        output.writeInt32(6, level_);
       }
       if (hp_ != 0) {
-        output.writeInt32(6, hp_);
+        output.writeInt32(7, hp_);
       }
       if (damage_ != 0) {
-        output.writeInt32(7, damage_);
+        output.writeInt32(8, damage_);
       }
       if (maxHp_ != 0) {
-        output.writeInt32(8, maxHp_);
+        output.writeInt32(9, maxHp_);
       }
       unknownFields.writeTo(output);
     }
@@ -326,36 +348,40 @@ public final class CreepProto {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, id_);
+      }
       if (creepId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, creepId_);
+          .computeInt64Size(2, creepId_);
       }
       if (type_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, type_);
+          .computeInt32Size(3, type_);
       }
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, name_);
       }
       if (num_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, num_);
+          .computeInt32Size(5, num_);
       }
       if (level_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, level_);
+          .computeInt32Size(6, level_);
       }
       if (hp_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, hp_);
+          .computeInt32Size(7, hp_);
       }
       if (damage_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(7, damage_);
+          .computeInt32Size(8, damage_);
       }
       if (maxHp_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, maxHp_);
+          .computeInt32Size(9, maxHp_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -372,6 +398,8 @@ public final class CreepProto {
       }
       com.ljh.gamedemo.proto.protoc.CreepProto.Creep other = (com.ljh.gamedemo.proto.protoc.CreepProto.Creep) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (getCreepId()
           != other.getCreepId()) return false;
       if (getType()
@@ -399,6 +427,9 @@ public final class CreepProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getId());
       hash = (37 * hash) + CREEPID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCreepId());
@@ -549,6 +580,8 @@ public final class CreepProto {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0L;
+
         creepId_ = 0L;
 
         type_ = 0;
@@ -591,6 +624,7 @@ public final class CreepProto {
       @java.lang.Override
       public com.ljh.gamedemo.proto.protoc.CreepProto.Creep buildPartial() {
         com.ljh.gamedemo.proto.protoc.CreepProto.Creep result = new com.ljh.gamedemo.proto.protoc.CreepProto.Creep(this);
+        result.id_ = id_;
         result.creepId_ = creepId_;
         result.type_ = type_;
         result.name_ = name_;
@@ -647,6 +681,9 @@ public final class CreepProto {
 
       public Builder mergeFrom(com.ljh.gamedemo.proto.protoc.CreepProto.Creep other) {
         if (other == com.ljh.gamedemo.proto.protoc.CreepProto.Creep.getDefaultInstance()) return this;
+        if (other.getId() != 0L) {
+          setId(other.getId());
+        }
         if (other.getCreepId() != 0L) {
           setCreepId(other.getCreepId());
         }
@@ -701,15 +738,41 @@ public final class CreepProto {
         return this;
       }
 
+      private long id_ ;
+      /**
+       * <code>int64 id = 1;</code>
+       */
+      public long getId() {
+        return id_;
+      }
+      /**
+       * <code>int64 id = 1;</code>
+       */
+      public Builder setId(long value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 id = 1;</code>
+       */
+      public Builder clearId() {
+        
+        id_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private long creepId_ ;
       /**
-       * <code>int64 creepId = 1;</code>
+       * <code>int64 creepId = 2;</code>
        */
       public long getCreepId() {
         return creepId_;
       }
       /**
-       * <code>int64 creepId = 1;</code>
+       * <code>int64 creepId = 2;</code>
        */
       public Builder setCreepId(long value) {
         
@@ -718,7 +781,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int64 creepId = 1;</code>
+       * <code>int64 creepId = 2;</code>
        */
       public Builder clearCreepId() {
         
@@ -729,13 +792,13 @@ public final class CreepProto {
 
       private int type_ ;
       /**
-       * <code>int32 type = 2;</code>
+       * <code>int32 type = 3;</code>
        */
       public int getType() {
         return type_;
       }
       /**
-       * <code>int32 type = 2;</code>
+       * <code>int32 type = 3;</code>
        */
       public Builder setType(int value) {
         
@@ -744,7 +807,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int32 type = 2;</code>
+       * <code>int32 type = 3;</code>
        */
       public Builder clearType() {
         
@@ -755,7 +818,7 @@ public final class CreepProto {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>string name = 3;</code>
+       * <code>string name = 4;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -770,7 +833,7 @@ public final class CreepProto {
         }
       }
       /**
-       * <code>string name = 3;</code>
+       * <code>string name = 4;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -786,7 +849,7 @@ public final class CreepProto {
         }
       }
       /**
-       * <code>string name = 3;</code>
+       * <code>string name = 4;</code>
        */
       public Builder setName(
           java.lang.String value) {
@@ -799,7 +862,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>string name = 3;</code>
+       * <code>string name = 4;</code>
        */
       public Builder clearName() {
         
@@ -808,7 +871,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>string name = 3;</code>
+       * <code>string name = 4;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
@@ -824,13 +887,13 @@ public final class CreepProto {
 
       private int num_ ;
       /**
-       * <code>int32 num = 4;</code>
+       * <code>int32 num = 5;</code>
        */
       public int getNum() {
         return num_;
       }
       /**
-       * <code>int32 num = 4;</code>
+       * <code>int32 num = 5;</code>
        */
       public Builder setNum(int value) {
         
@@ -839,7 +902,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int32 num = 4;</code>
+       * <code>int32 num = 5;</code>
        */
       public Builder clearNum() {
         
@@ -850,13 +913,13 @@ public final class CreepProto {
 
       private int level_ ;
       /**
-       * <code>int32 level = 5;</code>
+       * <code>int32 level = 6;</code>
        */
       public int getLevel() {
         return level_;
       }
       /**
-       * <code>int32 level = 5;</code>
+       * <code>int32 level = 6;</code>
        */
       public Builder setLevel(int value) {
         
@@ -865,7 +928,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int32 level = 5;</code>
+       * <code>int32 level = 6;</code>
        */
       public Builder clearLevel() {
         
@@ -876,13 +939,13 @@ public final class CreepProto {
 
       private int hp_ ;
       /**
-       * <code>int32 hp = 6;</code>
+       * <code>int32 hp = 7;</code>
        */
       public int getHp() {
         return hp_;
       }
       /**
-       * <code>int32 hp = 6;</code>
+       * <code>int32 hp = 7;</code>
        */
       public Builder setHp(int value) {
         
@@ -891,7 +954,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int32 hp = 6;</code>
+       * <code>int32 hp = 7;</code>
        */
       public Builder clearHp() {
         
@@ -902,13 +965,13 @@ public final class CreepProto {
 
       private int damage_ ;
       /**
-       * <code>int32 damage = 7;</code>
+       * <code>int32 damage = 8;</code>
        */
       public int getDamage() {
         return damage_;
       }
       /**
-       * <code>int32 damage = 7;</code>
+       * <code>int32 damage = 8;</code>
        */
       public Builder setDamage(int value) {
         
@@ -917,7 +980,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int32 damage = 7;</code>
+       * <code>int32 damage = 8;</code>
        */
       public Builder clearDamage() {
         
@@ -928,13 +991,13 @@ public final class CreepProto {
 
       private int maxHp_ ;
       /**
-       * <code>int32 maxHp = 8;</code>
+       * <code>int32 maxHp = 9;</code>
        */
       public int getMaxHp() {
         return maxHp_;
       }
       /**
-       * <code>int32 maxHp = 8;</code>
+       * <code>int32 maxHp = 9;</code>
        */
       public Builder setMaxHp(int value) {
         
@@ -943,7 +1006,7 @@ public final class CreepProto {
         return this;
       }
       /**
-       * <code>int32 maxHp = 8;</code>
+       * <code>int32 maxHp = 9;</code>
        */
       public Builder clearMaxHp() {
         
@@ -1019,11 +1082,12 @@ public final class CreepProto {
   static {
     java.lang.String[] descriptorData = {
       "\n0src/main/java/com/ljh/gamedemo/proto/C" +
-      "reep.proto\"{\n\005Creep\022\017\n\007creepId\030\001 \001(\003\022\014\n\004" +
-      "type\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\013\n\003num\030\004 \001(\005\022\r\n" +
-      "\005level\030\005 \001(\005\022\n\n\002hp\030\006 \001(\005\022\016\n\006damage\030\007 \001(\005" +
-      "\022\r\n\005maxHp\030\010 \001(\005B+\n\035com.ljh.gamedemo.prot" +
-      "o.protocB\nCreepProtob\006proto3"
+      "reep.proto\"\207\001\n\005Creep\022\n\n\002id\030\001 \001(\003\022\017\n\007cree" +
+      "pId\030\002 \001(\003\022\014\n\004type\030\003 \001(\005\022\014\n\004name\030\004 \001(\t\022\013\n" +
+      "\003num\030\005 \001(\005\022\r\n\005level\030\006 \001(\005\022\n\n\002hp\030\007 \001(\005\022\016\n" +
+      "\006damage\030\010 \001(\005\022\r\n\005maxHp\030\t \001(\005B+\n\035com.ljh." +
+      "gamedemo.proto.protocB\nCreepProtob\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1034,7 +1098,7 @@ public final class CreepProto {
     internal_static_Creep_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Creep_descriptor,
-        new java.lang.String[] { "CreepId", "Type", "Name", "Num", "Level", "Hp", "Damage", "MaxHp", });
+        new java.lang.String[] { "Id", "CreepId", "Type", "Name", "Num", "Level", "Hp", "Damage", "MaxHp", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

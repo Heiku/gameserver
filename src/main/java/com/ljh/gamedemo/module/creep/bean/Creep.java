@@ -10,6 +10,11 @@ import lombok.Data;
 public class Creep {
 
     /**
+     * id
+     */
+    private Long id;
+
+    /**
      * 野怪id
      */
     private Long creepId;
@@ -24,10 +29,6 @@ public class Creep {
      */
     private String name;
 
-    /**
-     * 野怪数量
-     */
-    private Integer num;
 
     /**
      * 等级

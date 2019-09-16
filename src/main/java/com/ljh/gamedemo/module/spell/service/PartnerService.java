@@ -59,7 +59,7 @@ public class PartnerService {
                     break;
 
                 case CREEP:
-                    Creep creep = LocalCreepMap.getIdCreepMap().get(LocalAttackCreepMap.getCurrentCreepMap().get(roleId));
+                    Creep creep = LocalCreepMap.getIdCreepMap().get(LocalAttackCreepMap.getRoleCurrentCreepMap().get(roleId));
                     deque = LocalAttackCreepMap.getCreepAttackedMap().get(creep.getCreepId());
                     deque.remove(partner.getId());
                     break;
@@ -119,5 +119,4 @@ public class PartnerService {
         ScheduledFuture future = executor.scheduleAtFixedRate(task, 0, 3, TimeUnit.SECONDS);
         PartnerCache.getPartnerFutureMap().put(p.getId(), future);
     }
-
 }

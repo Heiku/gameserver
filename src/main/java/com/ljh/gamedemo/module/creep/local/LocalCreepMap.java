@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.creep.local;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.module.creep.bean.Creep;
 import com.ljh.gamedemo.module.site.local.LocalSiteMap;
@@ -14,13 +15,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
 
 /**
  * 野兽本地存储数据
- *
  */
 
 @Slf4j
@@ -36,10 +37,6 @@ public class LocalCreepMap {
      */
     private static Map<Long, Creep> idCreepMap = Maps.newConcurrentMap();
 
-    /**
-     * creep nameCreepMap：<creepName, Creep>
-     */
-    private static Map<String, Creep> nameCreepMap = Maps.newConcurrentMap();
 
     /**
      * creep siteCreepMap：<siteName, List<Creep>>
@@ -60,6 +57,7 @@ public class LocalCreepMap {
      * 读取文件数据
      */
     public static void readExcel(){
+        long creepId = 20000L;
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(creepFile);
@@ -75,32 +73,30 @@ public class LocalCreepMap {
             for (int j = 1; j <= sheet.getLastRowNum(); j++){
                 Row row = sheet.getRow(j);
                 if (row != null){
-                    Creep creep = new Creep();
+                    int num = Integer.valueOf(getValue(row.getCell(3)));
+                    while (num-- > 0) {
+                        Creep creep = new Creep();
 
-                    // 设置野怪的属性
-                    creep.setCreepId(Long.valueOf(getValue(row.getCell(0))));
-                    creep.setName(getValue(row.getCell(1)));
-                    creep.setType(Integer.valueOf(getValue(row.getCell(2))));
-                    creep.setNum(Integer.valueOf(getValue(row.getCell(3))));
-                    creep.setLevel(Integer.valueOf(getValue(row.getCell(4))));
-                    creep.setHp(Integer.valueOf(getValue(row.getCell(5))));
-                    creep.setMaxHp(Integer.valueOf(getValue(row.getCell(6))));
-                    creep.setDamage(Integer.valueOf(getValue(row.getCell(7))));
-                    creep.setSiteId(Integer.valueOf(getValue(row.getCell(8))));
-                    creep.setCoolDown(Integer.valueOf(getValue(row.getCell(8))));
+                        // 设置野怪的属性
+                        creep.setId(creepId++);
+                        creep.setCreepId(Long.valueOf(getValue(row.getCell(0))));
+                        creep.setName(getValue(row.getCell(1)));
+                        creep.setType(Integer.valueOf(getValue(row.getCell(2))));
+                        creep.setLevel(Integer.valueOf(getValue(row.getCell(4))));
+                        creep.setHp(Integer.valueOf(getValue(row.getCell(5))));
+                        creep.setMaxHp(Integer.valueOf(getValue(row.getCell(6))));
+                        creep.setDamage(Integer.valueOf(getValue(row.getCell(7))));
+                        creep.setSiteId(Integer.valueOf(getValue(row.getCell(8))));
+                        creep.setCoolDown(Integer.valueOf(getValue(row.getCell(8))));
 
-                    idCreepMap.put(creep.getCreepId(), creep);
-                    nameCreepMap.put(creep.getName(), creep);
+                        idCreepMap.put(creep.getId(), creep);
 
-                    // 存放 siteCreepMap
-                    List<Creep> creepList;
-                    Integer siteId = creep.getSiteId();
-                    creepList = siteCreepMap.get(siteId);
-                    if (creepList == null){
-                        creepList = new ArrayList<>();
+                        // 存放 siteCreepMap
+                        Integer siteId = creep.getSiteId();
+                        List<Creep> creepList = Optional.ofNullable(siteCreepMap.get(siteId)).orElse(Lists.newArrayList());
+                        creepList.add(creep);
+                        siteCreepMap.put(siteId, creepList);
                     }
-                    creepList.add(creep);
-                    siteCreepMap.put(siteId, creepList);
                 }
             }
         }
@@ -115,18 +111,11 @@ public class LocalCreepMap {
         return idCreepMap;
     }
 
-    public static Map<String, Creep> getNameCreepMap() {
-        return nameCreepMap;
-    }
 
     public static void main(String[] args) {
 
         LocalSiteMap.readExcel();
         readExcel();
-
-        nameCreepMap.forEach((k, v) ->
-            System.out.println("k: " + k + " value: " + v));
-
 
         System.out.println("======================");
 
@@ -137,7 +126,7 @@ public class LocalCreepMap {
 
 
         siteCreepMap.forEach((k, v) ->
-            System.out.println("k: " + k + " value: " + v));
+            System.out.println("k: " + k + " value: " + v.size()));
 
     }
 

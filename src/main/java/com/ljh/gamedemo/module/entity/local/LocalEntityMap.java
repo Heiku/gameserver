@@ -97,6 +97,15 @@ public class LocalEntityMap {
         log.info("Entity 数据载入成功");
     }
 
+
+    public static Map<String, Entity> getEntityMap() {
+        return entityMap;
+    }
+
+    public static Map<String, List<Entity>> getSiteEntityMap() {
+        return siteEntityMap;
+    }
+
     private static Entity transformEntity(Entity entity, Row row) {
         entity.setId(Integer.valueOf(getValue(row.getCell(0))));
         entity.setType(Integer.valueOf(getValue(row.getCell(1))));
