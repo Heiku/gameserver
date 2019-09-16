@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.run.clean;
 
+import com.ljh.gamedemo.module.creep.cache.RevivalCreepCache;
 import com.ljh.gamedemo.module.trade.cache.TradeCache;
 
 /**
@@ -13,7 +14,10 @@ public class CleanUpCacheRun implements Runnable {
     @Override
     public void run() {
 
-        // 清除cache中的过期项，便于监听器的察觉
+        // 拍卖时间定时
         TradeCache.getTradeCache().cleanUp();
+
+        // 野怪复活定时清除触发
+        RevivalCreepCache.getRevivalCache().cleanUp();
     }
 }

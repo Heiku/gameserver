@@ -17,19 +17,23 @@ import java.util.Map;
 public class LocalAttackCreepMap {
 
     /**
-     * 玩家受到的伤害future，现只用于Creep
+     * 野怪的攻击目标队列
      */
-    private static Map<Long, ScheduledFuture> userBeAttackedMap = Maps.newConcurrentMap();
+    private static Map<Long, Deque<Long>> creepAttackedMap = Maps.newConcurrentMap();
 
     /**
      * 玩家当前攻击的野怪信息
      */
-    private static Map<Long, Long> currentCreepMap = Maps.newConcurrentMap();
+    private static Map<Long, Long> roleCurrentCreepMap = Maps.newConcurrentMap();
+
 
     /**
-     * 野怪与玩家攻击相关联  <creepId, List<RoleId>>
+     * 玩家受到的伤害future
      */
-    private static Map<Long, Deque<Long>> creepAttackedMap = Maps.newConcurrentMap();
+    private static Map<Long, ScheduledFuture> userBeAttackedMap = Maps.newConcurrentMap();
+
+
+
 
 
     /**
@@ -78,8 +82,8 @@ public class LocalAttackCreepMap {
         return creepAttackedMap;
     }
 
-    public static Map<Long, Long> getCurrentCreepMap() {
-        return currentCreepMap;
+    public static Map<Long, Long> getRoleCurrentCreepMap() {
+        return roleCurrentCreepMap;
     }
 
     public static Map<Long, Long> getDupTimeStampMap() {

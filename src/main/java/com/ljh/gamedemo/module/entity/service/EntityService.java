@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.entity.service;
 
+import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.base.service.ProtoService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 实体服务类
@@ -49,20 +51,40 @@ public class EntityService {
 
         // 获取当前角色的场景
         int siteId = role.getSiteId();
-        String siteName = LocalSiteMap.idSiteMap.get(siteId).getName();
+        String siteName = LocalSiteMap.getIdSiteMap().get(siteId).getName();
 
         // 获取当前场景下的所有npc
-        List<Entity> entityList = LocalEntityMap.siteEntityMap.get(siteName);
+        List<Entity> entityList = LocalEntityMap.getSiteEntityMap().get(siteName);
 
         // 获取当前场景下的所有野怪信息
         List<Creep> creepList = LocalCreepMap.getSiteCreepMap().get(siteId);
 
         // 添加真实的玩家角色信息：
-        List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
+        List<Role> roleList = LocalUserMap.getSiteRolesMap().get(siteId);
 
         // 消息返回
         sendEntityMsg(roleList, entityList, creepList, channel);
     }
+
+
+
+    /**
+     * 复活野怪信息
+     *
+     * @param creep     野怪
+     */
+    public void revivalCreep(Creep creep) {
+
+        // 更新野怪信息
+        LocalCreepMap.getIdCreepMap().put(creep.getId(), creep);
+
+        // 场景中增加野怪实体
+        List<Creep> creepList = Optional.ofNullable(LocalCreepMap.getSiteCreepMap().get(creep.getSiteId()))
+                .orElse(Lists.newArrayList());
+        creepList.add(creep);
+        LocalCreepMap.getSiteCreepMap().put(creep.getSiteId(), creepList);
+    }
+
 
 
     /**
@@ -82,4 +104,6 @@ public class EntityService {
                 .build();
         channel.writeAndFlush(entityResp);
     }
+
+
 }

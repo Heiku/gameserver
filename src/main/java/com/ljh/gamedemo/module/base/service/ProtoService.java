@@ -171,14 +171,14 @@ public class ProtoService {
      */
     public CreepProto.Creep transToCreep(Creep creep){
         return CreepProto.Creep.newBuilder()
+                .setId(creep.getId())
                 .setCreepId(creep.getCreepId())
                 .setName(creep.getName())
                 .setType(creep.getType())
                 .setLevel(creep.getLevel())
-                .setNum(creep.getNum())
                 .setHp(creep.getHp())
                 .setMaxHp(creep.getMaxHp())
-                .setDamage(creep.getNum())
+                .setDamage(creep.getDamage())
                 .build();
     }
 
@@ -191,7 +191,7 @@ public class ProtoService {
      */
     public List<CreepProto.Creep> transToCreepList(List<Creep> creeps) {
         List<CreepProto.Creep> creepList = Lists.newArrayList();
-        if (CollectionUtils.isEmpty(creepList)){
+        if (CollectionUtils.isEmpty(creeps)){
             return creepList;
         }
         creeps.forEach(c -> creepList.add(transToCreep(c)));
@@ -838,7 +838,7 @@ public class ProtoService {
 
 
     /**
-     * 返回玩家被攻击的消息
+     * 返回玩家攻击消息
      *
      * @param role      玩家信息
      * @param msg       消息
@@ -852,7 +852,7 @@ public class ProtoService {
                 .setResult(ResultCode.SUCCESS)
                 .setType(MsgAttackCreepProto.RequestType.ATTACK)
                 .setContent(msg)
-                .setRole(protoService.transToRole(role))
+                .setRole(transToRole(role))
                 .build();
         channel.writeAndFlush(response);
     }

@@ -49,9 +49,6 @@ public class CreepBeAttackedRun implements Runnable {
 
     @Override
     public void run() {
-
-        // 指定攻击的野怪
-        int startHp = creep.getHp();
         int hp = creep.getHp();
 
         if (hp > 0){
@@ -60,16 +57,16 @@ public class CreepBeAttackedRun implements Runnable {
             // 野怪死亡
             if (hp <= 0){
                 // 野怪死亡的具体操作
-                creepService.doCreepDeath(creep, role, startHp);
+                creepService.doCreepDeath(creep, role);
                 return;
             }
 
             // 正常扣血
             creep.setHp(hp);
-            LocalCreepMap.getIdCreepMap().put(creep.getCreepId(), creep);
+            LocalCreepMap.getIdCreepMap().put(creep.getId(), creep);
 
             // 最后攻击成功，返回消息给client
-            creepService.sendCreepMsg(role, creep, ContentType.ATTACK_CURRENT);
+            creepService.sendCreepMsg(role, creep, ContentType.ATTACK_SPELL_SUCCESS);
         }
     }
 }

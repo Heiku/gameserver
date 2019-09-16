@@ -10,7 +10,5 @@ public class RequestAttackCreepType {
 
     public static final int SPELL = 1;
 
-    public static final int SAVE = 2;
-
     public static final int STOP = 3;
 }
