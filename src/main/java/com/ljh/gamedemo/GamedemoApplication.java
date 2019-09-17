@@ -20,7 +20,7 @@ import com.ljh.gamedemo.module.trade.local.LocalTradeMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.run.manager.SaveRoleItemManager;
 import com.ljh.gamedemo.run.manager.SendEmailManager;
-import com.ljh.gamedemo.util.CleanUpCacheManager;
+import com.ljh.gamedemo.run.manager.CleanUpCacheManager;
 import com.ljh.gamedemo.server.codec.local.LocalMessageMap;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

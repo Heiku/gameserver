@@ -38,7 +38,6 @@ public class ChatRecord {
 
     /**
      * 发送时间
-     *
      */
     private Date sendTime;
 }

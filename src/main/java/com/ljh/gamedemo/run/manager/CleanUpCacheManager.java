@@ -1,4 +1,4 @@
-package com.ljh.gamedemo.util;
+package com.ljh.gamedemo.run.manager;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ljh.gamedemo.run.CustomExecutor;

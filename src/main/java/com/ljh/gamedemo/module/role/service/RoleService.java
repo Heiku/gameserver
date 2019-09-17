@@ -94,12 +94,12 @@ public class RoleService {
      * @param channel   channel
      */
     public void getRole(MsgRoleProto.RequestRole req, Channel channel) {
-            // 用户认证
-            userResp = userService.userStateInterceptor(req.getUserId());
-            if (userResp != null){
-                channel.writeAndFlush(userResp);
-                return;
-            }
+        // 用户认证
+        userResp = userService.userStateInterceptor(req.getUserId());
+        if (userResp != null) {
+            channel.writeAndFlush(userResp);
+            return;
+        }
 
         // 获取玩家信息
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());

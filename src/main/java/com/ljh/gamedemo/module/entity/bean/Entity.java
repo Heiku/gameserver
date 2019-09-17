@@ -11,12 +11,12 @@ public class Entity {
     /**
      * 唯一标识符
      */
-    private long id;
+    private Long id;
 
     /**
      * 实体类型 EntityType
      */
-    private int type;
+    private Integer type;
 
     /**
      * 名字
@@ -26,12 +26,12 @@ public class Entity {
     /**
      * 等级
      */
-    private int level;
+    private Integer level;
 
     /**
      * 是否或者 1：存活，0：死亡
      */
-    private int alive;
+    private Integer alive;
 
     /**
      * 位置信息

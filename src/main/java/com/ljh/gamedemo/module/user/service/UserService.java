@@ -72,8 +72,11 @@ public class UserService {
      */
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
+
+
+
     /**
-     * 用户登录后，并没有角色状态，需要通过 getState() 初始化玩家角色
+     * 进入角色信息状态
      *
      * @param requestUserInfo       请求
      * @return                      用户协议返回
@@ -94,7 +97,7 @@ public class UserService {
         }
 
         // 初始化玩家状态
-        initUserState(role, channel);
+        initUserState(role);
 
         // 添加玩家回血回蓝task
         addRecoverTask(role);
@@ -130,7 +133,7 @@ public class UserService {
         }
         // 为每一个玩家添加自动恢复的task
         RecoverUserRun task = new RecoverUserRun(role, null);
-        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 8, TimeUnit.SECONDS);
         FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
     }
 
@@ -142,12 +145,11 @@ public class UserService {
      *
      *
      * @param role          玩家信息
-     * @param channel       channel
      */
-    private void initUserState(Role role, Channel channel) {
+    private void initUserState(Role role) {
 
         // 本地保存
-        LocalUserMap.userRoleMap.put(role.getUserId(), role);
+        LocalUserMap.getUserRoleMap().put(role.getUserId(), role);
 
         // 分配用户的业务线程
         UserExecutorManager.bindUserExecutor(role.getUserId());
@@ -239,7 +241,7 @@ public class UserService {
             return combineFailedMsg(ContentType.BAD_PASSWORD);
         }
 
-        // 判断是否已经有账号登录
+        // 判断是否异地登录
         Channel oldCh = ChannelCache.getUserIdChannelMap().get(user.getUserId());
         if (oldCh != null){
             doOutLineUser(oldCh);

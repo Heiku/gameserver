@@ -107,7 +107,7 @@ public class LocalEntityMap {
     }
 
     private static Entity transformEntity(Entity entity, Row row) {
-        entity.setId(Integer.valueOf(getValue(row.getCell(0))));
+        entity.setId(Long.valueOf(getValue(row.getCell(0))));
         entity.setType(Integer.valueOf(getValue(row.getCell(1))));
         entity.setName(getValue(row.getCell(2)));
         entity.setLevel(Integer.valueOf(getValue(row.getCell(3))));
