@@ -2,6 +2,7 @@ package com.ljh.gamedemo.server;
 
 import com.ljh.gamedemo.module.base.service.SaveDataService;
 import com.ljh.gamedemo.util.SessionUtil;
+import com.ljh.gamedemo.util.SpringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -21,7 +22,10 @@ public class ServerIdleStateHandler extends IdleStateHandler {
      */
     private static final int READER_IDLE_TIME = 60 * 10;
 
-    private static SaveDataService saveDataService = new SaveDataService();
+    /**
+     * 存档服务
+     */
+    private static SaveDataService saveDataService = SpringUtil.getBean(SaveDataService.class);
 
     public ServerIdleStateHandler(){
         super(READER_IDLE_TIME, 0, 0, TimeUnit.SECONDS);
@@ -40,8 +44,6 @@ public class ServerIdleStateHandler extends IdleStateHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-
-        log.warn(channel.toString() + "连接断开! ");
 
         // 用户数据落地
         saveDataService.leaveSaveUserData(channel);

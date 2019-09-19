@@ -12,14 +12,19 @@ enum RequestType{
     ROLE = 0;
     ROLE_TYPE = 1;
     CREATE_ROLE = 2;
+    ROLE_LIST = 3;
+    ROLE_STATE = 4;
+
+    ROLE_RELIVE = 5;
 }
 
 message RequestRole{
     int64 userId = 1;
     int32 roleType = 2;
     string roleName = 3;
+    int64 roleId = 4;
 
-    RequestType type = 4;
+    RequestType type = 5;
 }
 
 message ResponseRole{
@@ -29,4 +34,5 @@ message ResponseRole{
 
     Role role = 4;
     repeated RoleInit roleInit = 5;
+    repeated Role hasRole = 6;
 }

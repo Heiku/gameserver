@@ -49,6 +49,8 @@ public class ContentType {
 
     public static final String ROLE_GET_HEAL = "获得治疗量：%s";
 
+    public static final String ROLE_lIST = "当前玩家的角色列表如下：\n";
+
 
     // Entity
     public static final String ENTITY_FIND_ALL = "获取所有实体信息成功！\n";

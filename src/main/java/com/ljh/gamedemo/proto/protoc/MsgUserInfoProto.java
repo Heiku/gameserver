@@ -28,17 +28,9 @@ public final class MsgUserInfoProto {
      */
     REGISTER(1),
     /**
-     * <code>STATE = 2;</code>
-     */
-    STATE(2),
-    /**
      * <code>EXIT = 3;</code>
      */
     EXIT(3),
-    /**
-     * <code>RELIVE = 4;</code>
-     */
-    RELIVE(4),
     UNRECOGNIZED(-1),
     ;
 
@@ -51,17 +43,9 @@ public final class MsgUserInfoProto {
      */
     public static final int REGISTER_VALUE = 1;
     /**
-     * <code>STATE = 2;</code>
-     */
-    public static final int STATE_VALUE = 2;
-    /**
      * <code>EXIT = 3;</code>
      */
     public static final int EXIT_VALUE = 3;
-    /**
-     * <code>RELIVE = 4;</code>
-     */
-    public static final int RELIVE_VALUE = 4;
 
 
     public final int getNumber() {
@@ -84,9 +68,7 @@ public final class MsgUserInfoProto {
       switch (value) {
         case 0: return LOGIN;
         case 1: return REGISTER;
-        case 2: return STATE;
         case 3: return EXIT;
-        case 4: return RELIVE;
         default: return null;
       }
     }
@@ -2520,10 +2502,9 @@ public final class MsgUserInfoProto {
       "seUserInfo\022\016\n\006result\030\001 \001(\005\022\016\n\006userId\030\002 \001" +
       "(\003\022\017\n\007content\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\022\032\n\004ty" +
       "pe\030\005 \001(\0162\014.RequestType\022\023\n\004role\030\006 \001(\0132\005.R" +
-      "ole*G\n\013RequestType\022\t\n\005LOGIN\020\000\022\014\n\010REGISTE" +
-      "R\020\001\022\t\n\005STATE\020\002\022\010\n\004EXIT\020\003\022\n\n\006RELIVE\020\004B1\n\035" +
-      "com.ljh.gamedemo.proto.protocB\020MsgUserIn" +
-      "foProtob\006proto3"
+      "ole*0\n\013RequestType\022\t\n\005LOGIN\020\000\022\014\n\010REGISTE" +
+      "R\020\001\022\010\n\004EXIT\020\003B1\n\035com.ljh.gamedemo.proto." +
+      "protocB\020MsgUserInfoProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

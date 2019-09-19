@@ -3,9 +3,12 @@ package com.ljh.gamedemo.module.role.service;
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
 import com.ljh.gamedemo.module.group.service.GroupService;
 import com.ljh.gamedemo.module.role.bean.RoleBuff;
 import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.module.role.bean.RoleState;
+import com.ljh.gamedemo.module.role.cache.RoleStateCache;
 import com.ljh.gamedemo.module.role.local.LocalRoleInitMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
@@ -20,16 +23,16 @@ import com.ljh.gamedemo.run.manager.UserExecutorManager;
 import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
 import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.run.record.FutureMap;
+import com.ljh.gamedemo.run.user.RecoverUserRun;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 具体的玩家职业操作
@@ -46,6 +49,12 @@ public class RoleService {
      */
     @Autowired
     private UserRoleDao roleDao;
+
+    /**
+     * recordDao
+     */
+    @Autowired
+    private ChatRecordDao recordDao;
 
     /**
      * 用户服务
@@ -103,12 +112,10 @@ public class RoleService {
 
         // 获取玩家信息
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
-        roleResp = MsgRoleProto.ResponseRole.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setType(MsgRoleProto.RequestType.ROLE)
-                .setRole(protoService.transToRole(role))
-                .build();
-        channel.writeAndFlush(roleResp);
+
+        // 消息返回
+        sendRoleResponse(channel, role, null, null,
+                MsgRoleProto.RequestType.ROLE, "");
     }
 
 
@@ -124,13 +131,8 @@ public class RoleService {
         LocalRoleInitMap.getRoleInitMap().forEach((k,v) -> roleInitList.add(v));
 
         // 消息返回
-        roleResp = MsgRoleProto.ResponseRole.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(ContentType.ROLE_TYPE)
-                .setType(MsgRoleProto.RequestType.ROLE_TYPE)
-                .addAllRoleInit(protoService.transToRoleInitList(roleInitList))
-                .build();
-        channel.writeAndFlush(roleResp);
+        sendRoleResponse(channel, null, roleInitList, null,
+                MsgRoleProto.RequestType.ROLE_TYPE, ContentType.ROLE_TYPE);
     }
 
 
@@ -145,8 +147,7 @@ public class RoleService {
         // 判断是否已经存在角色信息
         Role role = LocalUserMap.getUserRoleMap().get(req.getUserId());
         if (role != null){
-            roleResp = responseRoleFailed(ContentType.ROLE_HAS);
-            channel.writeAndFlush(roleResp);
+            protoService.sendFailedMsg(channel, ContentType.ROLE_HAS);
             return;
         }
         // 读取请求参数
@@ -157,12 +158,62 @@ public class RoleService {
         Role r = generateRoleInfo(type, name, req.getUserId());
 
         // 消息返回
-        roleResp = MsgRoleProto.ResponseRole.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setContent(ContentType.ROLE_CREATE_SUCCESS)
-                .setRole(protoService.transToRole(r))
-                .build();
-        channel.writeAndFlush(roleResp);
+        sendRoleResponse(channel, r, null, null,
+                MsgRoleProto.RequestType.CREATE_ROLE, ContentType.ROLE_CREATE_SUCCESS);
+    }
+
+
+    /**
+     * 获取当前账号下的所有角色信息
+     *
+     * @param req           请求
+     * @param channel       channel
+     */
+    public void getRoleList(MsgRoleProto.RequestRole req, Channel channel) {
+        // 获取userId
+        long userId = req.getUserId();
+
+        // 获取玩家的角色列表
+        List<Role> roles = roleDao.selectUserRole(userId);
+
+        // 消息返回
+        sendRoleResponse(channel, null, null, roles,
+                MsgRoleProto.RequestType.ROLE_LIST, ContentType.ROLE_lIST);
+    }
+
+
+    /**
+     * 选择对应的角色信息
+     *
+     * @param req       请求
+     * @param channel   channel
+     */
+    public void roleState(MsgRoleProto.RequestRole req, Channel channel) {
+        // 获取选择的角色id
+        long userId = req.getUserId();
+        long roleId = req.getRoleId();
+
+        // 角色选择
+        List<Role> roles = roleDao.selectUserRole(userId);
+        Optional<Role> result = roles.stream().filter(r -> r.getRoleId() == roleId).findFirst();
+        if (!result.isPresent()){
+            protoService.sendFailedMsg(channel, ContentType.ROLE_EMPTY);
+            return;
+        }
+
+        Role role = result.get();
+
+        // 初始化玩家状态
+        initUserState(role);
+
+        // 添加玩家回血回蓝task
+        addRecoverTask(role);
+
+        // 更新玩家在线记录
+        updateRoleState(role, true);
+
+        // 消息返回
+        protoService.sendCommonMsg(channel, ContentType.ROLE_CHOOSE);
     }
 
 
@@ -236,14 +287,9 @@ public class RoleService {
         updateRoleInfo(role);
 
         // 消息通知
-        userResp = MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .setType(MsgUserInfoProto.RequestType.RELIVE)
-                .setContent(ContentType.USER_RELIVE_SUCCESS)
-                .setRole(protoService.transToRole(role))
-                .build();
         Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
-        channel.writeAndFlush(userResp);
+        sendRoleResponse(channel, role, null, null,
+                MsgRoleProto.RequestType.ROLE_RELIVE, ContentType.USER_RELIVE_SUCCESS);
     }
 
 
@@ -279,7 +325,7 @@ public class RoleService {
 
             // 发送治疗消息
             Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
-            channel.writeAndFlush(responseRoleSuccess(String.format(ContentType.ROLE_GET_HEAL, heal)));
+            protoService.sendCommonMsg(channel, String.format(ContentType.ROLE_GET_HEAL, heal));
         }
     }
 
@@ -387,6 +433,105 @@ public class RoleService {
 
 
     /**
+     * 初始化玩家数据
+     *
+     *
+     * @param role          玩家信息
+     */
+    private void initUserState(Role role) {
+
+        // 本地保存
+        LocalUserMap.getUserRoleMap().put(role.getUserId(), role);
+
+        // 分配用户的业务线程
+        UserExecutorManager.bindUserExecutor(role.getUserId());
+
+        // 记录玩家在线信息
+        updateRoleState(role, true);
+    }
+
+
+
+    /**
+     * 更新玩家的在线记录
+     *
+     * @param role      玩家角色
+     * @param line      是否下线
+     */
+    public void updateRoleState(Role role, boolean line) {
+        Date date = new Date();
+
+        // 获取本地缓存的玩家在线记录
+        RoleState record = RoleStateCache.getCache().getIfPresent(role.getRoleId());
+
+        // cache not found
+        if (record == null){
+            // 缓存为空，直接Db中查找
+            record = recordDao.selectUserOffline(role.getRoleId());
+
+            // db not found
+            if (record == null){
+
+                // 记录玩家的在线状态信息
+                RoleState state = new RoleState();
+                state.setRoleId(role.getRoleId());
+
+                if (line) {
+                    state.setOnlineTime(date);
+                }else {
+                    state.setOfflineTime(date);
+                }
+
+                // 插入新增记录
+                recordDao.insertUserState(state);
+                RoleStateCache.getCache().put(role.getRoleId(), state);
+                return;
+            }else{
+                // 设置旧的在线下线属性信息
+                if (line){
+                    record.setOnlineTime(date);
+                }else {
+                    record.setOfflineTime(date);
+                }
+                recordDao.updateUserState(record);
+            }
+        }else {
+            if (line) {
+                record.setOnlineTime(date);
+            } else {
+                record.setOfflineTime(date);
+            }
+            recordDao.updateUserState(record);
+        }
+        RoleStateCache.getCache().put(role.getRoleId(), record);
+    }
+
+
+
+    /**
+     * 将自动回血回蓝的任务添加到用户线程池中
+     *
+     * @param role  玩家信息
+     */
+    private void addRecoverTask(Role role) {
+
+        long userId = role.getUserId();
+
+        // 判断是否已经
+        if (FutureMap.getRecoverFutureMap().get(role.getRoleId()) == null){
+            return;
+        }
+        // 为每一个玩家添加自动恢复的task
+        RecoverUserRun task = new RecoverUserRun(role, null);
+        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 8, TimeUnit.SECONDS);
+        FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
+    }
+
+
+
+
+
+    /**
      * 判断玩家是否存在
      *
      * @param roleId    玩家id
@@ -423,33 +568,30 @@ public class RoleService {
         roleFutureList.forEach(f -> f.cancel(true));
     }
 
-    /**
-     * 返回失败消息
-     *
-     * @param msg   消息
-     * @return      协议返回
-     */
-    private MsgRoleProto.ResponseRole responseRoleFailed(String msg){
-        roleResp = MsgRoleProto.ResponseRole.newBuilder()
-                .setResult(ResultCode.FAILED)
-                .setContent(msg)
-                .build();
-        return roleResp;
-    }
+
 
 
     /**
-     * 返回成功消息
+     * 发送玩家角色消息
      *
-     * @param msg   消息
-     * @return      协议返回
+     * @param channel       channel
+     * @param role          玩家信息
+     * @param roleInits     玩家初始化信息
+     * @param roles         玩家角色列表
+     * @param type          消息类型
+     * @param msg           消息
      */
-    private MsgRoleProto.ResponseRole responseRoleSuccess(String msg){
-        roleResp = MsgRoleProto.ResponseRole.newBuilder()
+    private void sendRoleResponse(Channel channel, Role role, List<RoleInit> roleInits,
+                                  List<Role> roles, MsgRoleProto.RequestType type, String msg){
+        MsgRoleProto.ResponseRole roleResp = MsgRoleProto.ResponseRole.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(msg)
+                .setType(type)
+                .setRole(protoService.transToRole(role))
+                .addAllRoleInit(protoService.transToRoleInitList(roleInits))
+                .addAllHasRole(protoService.transToRoleList(roles))
                 .build();
-        return roleResp;
+        channel.writeAndFlush(roleResp);
     }
 
 

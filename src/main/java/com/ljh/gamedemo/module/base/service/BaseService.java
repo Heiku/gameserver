@@ -37,8 +37,5 @@ public class BaseService {
      */
     public void sendHeartBeatResponse(){
         return;
-        /*return MessageBase.Message.newBuilder()
-                .setResult(ResultCode.SUCCESS)
-                .build();*/
     }
 }

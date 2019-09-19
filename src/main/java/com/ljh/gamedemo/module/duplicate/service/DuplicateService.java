@@ -597,6 +597,10 @@ public class DuplicateService {
             return;
         }
         Duplicate dup = LocalAttackCreepMap.getCurDupMap().get(getBindId(role));
+        if (dup == null){
+            return;
+        }
+
         // 移除目标队列
         Deque<Long> deque = LocalAttackCreepMap.getBossAttackQueueMap().get(dup.getRelatedId());
         if (deque != null){

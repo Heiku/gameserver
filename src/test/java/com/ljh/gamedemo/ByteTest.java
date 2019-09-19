@@ -104,9 +104,16 @@ public class ByteTest {
 
         //System.out.println(0.3 - 0.2 == 0.1);
 
-        String str = "1001,2";
-        String[] strArr = str.split("\\|");
-        System.out.println(strArr[0]);
+
+        int a1 = 100;
+        Integer a2 = new Integer(100);
+        Integer a3 = 100;
+        Integer a4 = new Integer(100);
+        System.out.println(a2 == a3);
+        System.out.println(a2.equals(a3));
+        System.out.println(a2 == a4);
+        System.out.println(a2.equals(a4));
+        System.out.println(a1 == a2);
 
     }
 }

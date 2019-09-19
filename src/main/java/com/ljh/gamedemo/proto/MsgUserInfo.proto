@@ -11,10 +11,7 @@ option java_outer_classname = "MsgUserInfoProto";
 enum RequestType{
     LOGIN = 0;
     REGISTER = 1;
-    STATE = 2;
     EXIT = 3;
-
-    RELIVE = 4;
 }
 
 message RequestUserInfo{

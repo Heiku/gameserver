@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
+import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.module.role.cache.RoleStateCache;
@@ -50,16 +51,16 @@ public class UserService {
     private UserRoleDao userRoleDao;
 
     /**
-     * ChatRecordDao
-     */
-    @Autowired
-    private ChatRecordDao recordDao;
-
-    /**
      * 聊天服务
      */
     @Autowired
     private ChatService chatService;
+
+    /**
+     * 玩家服务
+     */
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 协议服务
@@ -74,148 +75,8 @@ public class UserService {
 
 
 
-
     /**
-     * 进入角色信息状态
-     *
-     * @param requestUserInfo       请求
-     * @return                      用户协议返回
-     */
-    public MsgUserInfoProto.ResponseUserInfo getState(Channel channel, MsgUserInfoProto.RequestUserInfo requestUserInfo){
-        // 解析得到userId
-        long userId = requestUserInfo.getUserId();
-
-        // 优先查找本地角色
-        Role role = LocalUserMap.getUserRoleMap().get(userId);
-        if (Objects.isNull(role)){
-            // 数据库查找
-            List<Role> roles = userRoleDao.selectUserRole(userId);
-            if (CollectionUtils.isEmpty(roles)){
-                return combineFailedMsg(ContentType.ROLE_EMPTY);
-            }
-            role = roles.get(0);
-        }
-
-        // 初始化玩家状态
-        initUserState(role);
-
-        // 添加玩家回血回蓝task
-        addRecoverTask(role);
-
-        // 获取离线的私信消息
-        chatService.receiveOfflineMsg(role);
-
-
-        // 确定角色成功，返回角色信息
-        return MsgUserInfoProto.ResponseUserInfo.newBuilder()
-                .setType(MsgUserInfoProto.RequestType.STATE)
-                .setUserId(userId)
-                .setContent(ContentType.ROLE_CHOOSE)
-                .setResult(ResultCode.SUCCESS)
-                .setRole(protoService.transToRole(role))
-                .build();
-    }
-
-
-
-    /**
-     * 将自动回血回蓝的任务添加到用户线程池中
-     *
-     * @param role  玩家信息
-     */
-    private void addRecoverTask(Role role) {
-
-        long userId = role.getUserId();
-
-        // 判断是否已经
-        if (FutureMap.getRecoverFutureMap().get(role.getRoleId()) == null){
-            return;
-        }
-        // 为每一个玩家添加自动恢复的task
-        RecoverUserRun task = new RecoverUserRun(role, null);
-        ScheduledFuture future = UserExecutorManager.getUserExecutor(userId).scheduleAtFixedRate(task, 0, 8, TimeUnit.SECONDS);
-        FutureMap.getRecoverFutureMap().put(role.getRoleId(), future);
-    }
-
-
-
-
-    /**
-     * 初始化玩家数据
-     *
-     *
-     * @param role          玩家信息
-     */
-    private void initUserState(Role role) {
-
-        // 本地保存
-        LocalUserMap.getUserRoleMap().put(role.getUserId(), role);
-
-        // 分配用户的业务线程
-        UserExecutorManager.bindUserExecutor(role.getUserId());
-
-        // 记录玩家在线信息
-        updateRoleState(role, true);
-    }
-
-
-    /**
-     * 更新玩家的在线记录
-     *
-     * @param role      玩家角色
-     * @param line      是否下线
-     */
-    public void updateRoleState(Role role, boolean line) {
-        Date date = new Date();
-
-        // 获取本地缓存的玩家在线记录
-        RoleState record = RoleStateCache.getCache().getIfPresent(role.getRoleId());
-
-        // cache not found
-        if (record == null){
-            // 缓存为空，直接Db中查找
-            record = recordDao.selectUserOffline(role.getRoleId());
-
-            // db not found
-            if (record == null){
-
-                // 记录玩家的在线状态信息
-                RoleState state = new RoleState();
-                state.setRoleId(role.getRoleId());
-
-                if (line) {
-                    state.setOnlineTime(date);
-                }else {
-                    state.setOfflineTime(date);
-                }
-
-                // 插入新增记录
-                recordDao.insertUserState(state);
-                RoleStateCache.getCache().put(role.getRoleId(), state);
-                return;
-            }else{
-                // 设置旧的在线下线属性信息
-                if (line){
-                    record.setOnlineTime(date);
-                }else {
-                    record.setOfflineTime(date);
-                }
-                recordDao.updateUserState(record);
-            }
-        }else {
-            if (line) {
-                record.setOnlineTime(date);
-            } else {
-                record.setOfflineTime(date);
-            }
-            recordDao.updateUserState(record);
-        }
-        RoleStateCache.getCache().put(role.getRoleId(), record);
-    }
-
-
-    /**
-     * 登录操作7
+     * 登录操作
      *
      * @param requestUserInfo   请求
      * @return                  用户协议返回
@@ -358,17 +219,17 @@ public class UserService {
         long roleId = role.getRoleId();
 
         // 移除当前玩家角色的位置信息
-        List<Role> roleList = LocalUserMap.siteRolesMap.get(siteId);
+        List<Role> roleList = LocalUserMap.getSiteRolesMap().get(siteId);
         roleList.removeIf(r -> r.getRoleId() == roleId);
 
         // 移除当前的玩家在线信息
-        LocalUserMap.userMap.remove(userId);
-        LocalUserMap.userRoleMap.remove(userId);
+        LocalUserMap.getUserMap().remove(userId);
+        LocalUserMap.getUserRoleMap().remove(userId);
 
         SessionUtil.unBindSession(channel);
 
         // 更新玩家的在线信息
-        updateRoleState(role, false);
+        roleService.updateRoleState(role, false);
 
         // 解除绑定用户线程
         UserExecutorManager.unBindUserExecutor(userId);

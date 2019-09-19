@@ -128,13 +128,7 @@ public class FaceTransService {
      * @param channel   channel
      */
     public void initiate(MsgFaceTransProto.RequestFaceTrans req, Channel channel) {
-        // 用户认证
-        userResp = userService.userStateInterceptor(req.getUserId());
-        if (userResp != null){
-            channel.writeAndFlush(userResp);
-            return;
-        }
-        // 玩家认证
+        // 判断交易的玩家是否存在
         roleResp = roleService.roleInterceptor(req.getRoleId());
         if (roleResp != null){
             channel.writeAndFlush(roleResp);

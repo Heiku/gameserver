@@ -1,13 +1,16 @@
 package com.ljh.gamedemo.module.group.event;
 
 import com.ljh.gamedemo.common.TaskType;
+import com.ljh.gamedemo.module.base.event.OfflineEvent;
 import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.group.event.base.GroupEvent;
+import com.ljh.gamedemo.module.group.service.GroupService;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.task.bean.RoleTask;
 import com.ljh.gamedemo.module.task.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -27,6 +30,12 @@ public class GroupEventService {
      */
     @Autowired
     private TaskService taskService;
+
+    /**
+     * 组队服务
+     */
+    @Autowired
+    private GroupService groupService;
 
 
     /**
@@ -53,5 +62,25 @@ public class GroupEventService {
         if (desId != 0){
             taskService.completeTask(role, task);
         }
+    }
+
+
+
+    /**
+     * 监听玩家离线退出队伍事件
+     *
+     * @param offlineEvent      离线事件
+     */
+    @Async
+    @EventListener
+    public void listenLeaveGroupEvent(OfflineEvent offlineEvent){
+        // 获取事件源
+        BaseEvent baseEvent = (BaseEvent) offlineEvent.getSource();
+
+        // 获取事件参数信息
+        Role role = baseEvent.getRole();
+
+        // 退出队伍
+        groupService.removeGroup(role);
     }
 }

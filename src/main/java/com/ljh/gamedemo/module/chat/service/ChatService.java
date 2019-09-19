@@ -125,6 +125,8 @@ public class ChatService  {
             // 返回写信人在线发送成功结果
             sendResponse(channel, true);
         }else {
+
+
             // 返回写信人在线发送失败结果
             sendResponse(channel, false);
         }

@@ -79,4 +79,8 @@ public class LocalUserMap {
     public static Map<Integer, List<Role>> getSiteRolesMap() {
         return siteRolesMap;
     }
+
+    public static Map<Long, User> getUserMap() {
+        return userMap;
+    }
 }

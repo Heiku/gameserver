@@ -1,18 +1,14 @@
 package com.ljh.gamedemo.module.base.service;
 
-import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
-import com.ljh.gamedemo.module.group.service.GroupService;
-import com.ljh.gamedemo.module.role.dao.UserRoleDao;
+import com.ljh.gamedemo.module.base.event.OfflineEvent;
+import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
-import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 
@@ -26,67 +22,28 @@ public class SaveDataService {
 
 
     /**
-     * UserRoleDao
+     * 事件发送者
      */
     @Autowired
-    private UserRoleDao userRoleDao;
+    private ApplicationEventPublisher publisher;
 
-    /**
-     * 用户服务
-     */
-    @Autowired
-    private UserService userService;
-
-    /**
-     * 玩家服务
-     */
-    @Autowired
-    private RoleService roleService;
-
-    /**
-     * 副本服务
-     */
-    @Autowired
-    private DuplicateService duplicateService;
-
-    /**
-     * 组队服务
-     */
-    @Autowired
-    private GroupService groupService;
 
     /**
      * 用于用户掉线时，保存用户的数据
      *
-     * @param channel
+     * @param channel       channel
      */
     public void leaveSaveUserData(Channel channel){
-        // 获取对应的userId
+        // 获取channel 绑定的 userId
         long userId = SessionUtil.getUserId(channel);
         if (userId <= 0){
             return;
         }
-        Role role = LocalUserMap.userRoleMap.get(userId);
-        int n = userRoleDao.updateRoleSiteInfo(role);
-        System.out.println(role);
-        log.info("update user data before inactive(): " + n);
-        log.info(userId + " - "  + role.getName() + " 暂时下线！");
 
+        // 获取玩家角色信息
+        Role role = LocalUserMap.getUserRoleMap().get(userId);
 
-        // 同时，取消玩家的自动恢复任务
-        ScheduledFuture future = FutureMap.getRecoverFutureMap().get(role.getRoleId());
-        future.cancel(true);
-
-        // 取消玩家的受攻击任务
-        roleService.removeRoleFutureList(role);
-
-        // 如果在挑战副本，移出攻击目标队列中
-        duplicateService.removeAttackedQueue(role);
-
-        // 退出队伍信息
-        groupService.removeGroup(role);
-
-        // 下线信息记录
-        userService.updateRoleState(role, false);
+        // 发送离线事件消息
+        publisher.publishEvent(new OfflineEvent(new BaseEvent(role, 0L)));
     }
 }

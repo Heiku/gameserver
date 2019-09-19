@@ -39,6 +39,12 @@ public class RoleHandler extends SimpleChannelInboundHandler<MsgRoleProto.Reques
             case CREATE_ROLE:
                 roleService.createRole(req, ctx.channel());
                 break;
+            case ROLE_LIST:
+                roleService.getRoleList(req, ctx.channel());
+                break;
+            case ROLE_STATE:
+                roleService.roleState(req, ctx.channel());
+                break;
         }
     }
 }
