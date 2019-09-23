@@ -23,7 +23,7 @@ public interface RoleEquipDao {
      * @param roleEquip     玩家装备信息
      * @return              affected rows
      */
-    @Insert("insert into role_equip(role_id, equip_id, durability, state, on) values(#{roleId}, #{equipId}, #{durability}, #{state}, #{on})")
+    @Insert("insert into role_equip(role_id, equip_id, durability, state, has_on) values (#{roleId}, #{equipId}, #{durability}, #{state}, #{on})")
     @Options(useGeneratedKeys = true, keyProperty ="id", keyColumn = "id")
     int insertRoleEquip(RoleEquip roleEquip);
 

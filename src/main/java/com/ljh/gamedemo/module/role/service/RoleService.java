@@ -204,6 +204,20 @@ public class RoleService {
         Role role = result.get();
 
         // 初始化玩家状态
+        doRoleInit(role);
+
+        // 消息返回
+        protoService.sendCommonMsg(channel, ContentType.ROLE_CHOOSE);
+    }
+
+
+    /**
+     * 初始化玩家状态
+     *
+     * @param role      玩家信息
+     */
+    private void doRoleInit(Role role){
+        // 初始化玩家状态
         initUserState(role);
 
         // 添加玩家回血回蓝task
@@ -211,9 +225,6 @@ public class RoleService {
 
         // 更新玩家在线记录
         updateRoleState(role, true);
-
-        // 消息返回
-        protoService.sendCommonMsg(channel, ContentType.ROLE_CHOOSE);
     }
 
 
@@ -258,6 +269,9 @@ public class RoleService {
                 .orElse(Lists.newArrayList());
         siteRoleList.add(r);
         LocalUserMap.getSiteRolesMap().put(r.getSiteId(), siteRoleList);
+
+        // 初始化玩家状态
+        doRoleInit(r);
 
         return r;
     }

@@ -68,7 +68,8 @@ public class SpellService {
         int type = role.getType();
 
         // 获取所有的技能，除了已经学习的之外的
-        List<Spell> spells = LocalSpellMap.getTypeSpellMap().get(type);
+        List<Spell> spells = Optional.ofNullable(LocalSpellMap.getTypeSpellMap().get(type))
+                .orElse(Lists.newArrayList());
         List<Spell> hasLearn = Optional.ofNullable(LocalSpellMap.getRoleSpellMap().get(role.getRoleId()))
                 .orElse(Lists.newArrayList());
 
@@ -188,8 +189,8 @@ public class SpellService {
     /**
      * 通过技能构造一个伙伴实体
      *
-     * @param role
-     * @param spell
+     * @param role      玩家信息
+     * @param spell     技能信息
      */
     public Partner doSpellCallPartner(Role role, Spell spell){
         Partner partner = new Partner();

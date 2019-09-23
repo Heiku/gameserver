@@ -49,7 +49,7 @@ public class AttackCreepEventService {
         long desId = baseEvent.getDesId();
 
         // 判断玩家当前是否接下这个类型的任务
-        RoleTask task = taskService.getRoleTaskByType(role, TaskType.NPC_TALK_TASK);
+        RoleTask task = taskService.getRoleTaskByType(role, TaskType.ATTACK_CREEP_TASK);
         if (Objects.isNull(task) || TaskCache.getIdTaskMap().get(task.getTaskId()).getDesId() != desId){
             return;
         }

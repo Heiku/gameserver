@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.equip.service;
 
+import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EntityType;
 import com.ljh.gamedemo.common.ResultCode;
@@ -363,7 +364,8 @@ public class EquipService {
      */
     public void addRoleEquips(Role role, List<Goods> goods){
         // cache
-        List<Equip> hasEquips = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
+        List<Equip> hasEquips = Optional.ofNullable(LocalEquipMap.getHasEquipMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
         goods.forEach(g -> {
 
             // 构建新装备信息
@@ -377,13 +379,13 @@ public class EquipService {
             re.setRoleId(role.getRoleId());
             re.setDurability(tmp.getDurability());
             re.setState(tmp.getState());
-            re.setHasOn(0);
+            re.setOn(0);
             int n = equipDao.insertRoleEquip(re);
             log.info("insert role_equip, affected row: " + n);
 
             // 设置装备编号
             data.setId(re.getId());
-            data.setHasOn(re.getHasOn());
+            data.setHasOn(re.getOn());
 
             // 添加到装备背包中
             hasEquips.add(data);

@@ -192,7 +192,7 @@ public class LocalEquipMap {
         equip.setId(re.getId());
         equip.setDurability(re.getDurability());
         equip.setState(re.getState());
-        equip.setHasOn(re.getHasOn());
+        equip.setHasOn(re.getOn());
 
         return equip;
     }

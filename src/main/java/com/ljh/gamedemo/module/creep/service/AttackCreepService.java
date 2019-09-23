@@ -37,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -118,6 +119,11 @@ public class AttackCreepService {
 
         // 获取施放的技能spell
         Spell spell = LocalSpellMap.getIdSpellMap().get(request.getSpellId());
+        if (CollectionUtils.isEmpty(role.getSpellList())){
+            List<Spell> spells = LocalSpellMap.getRoleSpellMap().get(role.getRoleId());
+            role.setSpellList(spells);
+        }
+
 
         // 进行技能施放
         doSpellAttack(role, spell, creep);
