@@ -3,37 +3,26 @@ package com.ljh.gamedemo.module.user.service;
 import com.google.common.base.Strings;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
-import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.module.user.bean.UserAccount;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
-import com.ljh.gamedemo.module.role.cache.RoleStateCache;
-import com.ljh.gamedemo.module.role.dao.UserRoleDao;
+import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.chat.service.ChatService;
 import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.role.bean.RoleState;
-import com.ljh.gamedemo.module.user.dao.UserDao;
+import com.ljh.gamedemo.module.role.dao.UserRoleDao;
+import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.module.user.bean.User;
-import com.ljh.gamedemo.module.user.bean.UserToken;
+import com.ljh.gamedemo.module.user.bean.UserAccount;
+import com.ljh.gamedemo.module.user.dao.UserDao;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.run.manager.UserExecutorManager;
-import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.run.user.RecoverUserRun;
-import com.ljh.gamedemo.module.chat.service.ChatService;
-import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.util.MD5Util;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -52,22 +41,10 @@ public class UserService {
     private UserRoleDao userRoleDao;
 
     /**
-     * 聊天服务
-     */
-    @Autowired
-    private ChatService chatService;
-
-    /**
      * 玩家服务
      */
     @Autowired
     private RoleService roleService;
-
-    /**
-     * 协议服务
-     */
-    @Autowired
-    private ProtoService protoService;
 
     /**
      * 用户协议返回
@@ -112,9 +89,6 @@ public class UserService {
         // 登录成功，获取ID和token
         long userId = user.getUserId();
 
-        UserToken userToken = userDao.selectUserTokenByID(userId);
-        String token = userToken.getToken();
-
         // 在本地缓存Map中存储当前的用户信息
         LocalUserMap.userMap.put(userId, user);
 
@@ -126,7 +100,6 @@ public class UserService {
                 .setType(MsgUserInfoProto.RequestType.LOGIN)
                 .setContent(ContentType.LOGIN_SUCCESS)
                 .setUserId(userId)
-                .setToken(token)
                 .setResult(ResultCode.SUCCESS)
                 .build();
     }
@@ -173,20 +146,13 @@ public class UserService {
         User user = userDao.selectUser(userName);
         long userId = user.getUserId();
 
-        // 写入token返回
-        String token = MD5Util.hashToken(userName);
-        int m = userDao.insertUserToken(userId, token);
-        log.info("insert into user_token, affected rows: " + m);
-
         // 注册成功，将玩家信息写如本地缓存
         LocalUserMap.userMap.put(userId, user);
-
 
         return MsgUserInfoProto.ResponseUserInfo.newBuilder()
                 .setType(MsgUserInfoProto.RequestType.REGISTER)
                 .setResult(ResultCode.SUCCESS)
                 .setUserId(userId)
-                .setToken(token)
                 .setContent(ContentType.REGISTER_SUCCESS)
                 .build();
     }
