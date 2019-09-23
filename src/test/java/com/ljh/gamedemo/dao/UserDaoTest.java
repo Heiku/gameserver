@@ -24,8 +24,8 @@ public class UserDaoTest {
         String userName = "mystic";
         String password = MD5Util.hashPwd("sise");
 
-        int n = userDao.insertUserAccount(0, userName, password);
-        System.out.println(n);
+        /*int n = userDao.insertUserAccount(0, userName, password);
+        System.out.println(n);*/
     }
 
 

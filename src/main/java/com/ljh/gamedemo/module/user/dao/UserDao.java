@@ -1,9 +1,11 @@
 package com.ljh.gamedemo.module.user.dao;
 
 import com.ljh.gamedemo.module.user.bean.User;
+import com.ljh.gamedemo.module.user.bean.UserAccount;
 import com.ljh.gamedemo.module.user.bean.UserToken;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
 @Mapper
@@ -15,8 +17,9 @@ public interface UserDao {
     @Select("select * from user_account where user_id = #{userId}")
     User selectUserById(long userId);
 
-    @Insert("insert into user_account(user_id, user_name, password) values(#{userId}, #{userName}, #{password})")
-    int insertUserAccount(long userId, String userName, String password);
+    @Insert("insert into user_account(user_name, password) values(#{userName}, #{password})")
+    @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "user_id")
+    int insertUserAccount(UserAccount userAccount);
 
     @Insert("insert into user_token (user_id, token) values(#{userId}, #{token})")
     int insertUserToken(long userId, String token);

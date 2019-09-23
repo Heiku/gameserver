@@ -5,6 +5,7 @@ import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
 import com.ljh.gamedemo.module.role.service.RoleService;
+import com.ljh.gamedemo.module.user.bean.UserAccount;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.module.role.cache.RoleStateCache;
@@ -164,7 +165,8 @@ public class UserService {
 
         // 获取md5Pwd，存数据库user_account
         String md5Pwd = MD5Util.hashPwd(password);
-        int n = userDao.insertUserAccount(0L, userName, md5Pwd);
+        UserAccount userAccount = new UserAccount(userName, md5Pwd);
+        int n = userDao.insertUserAccount(userAccount);
         log.info("insert into user_account, affected rows: " + n);
 
         // 接着查找user信息
