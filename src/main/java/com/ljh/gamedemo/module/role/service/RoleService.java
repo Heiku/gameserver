@@ -254,7 +254,8 @@ public class RoleService {
         LocalUserMap.getIdRoleMap().put(r.getRoleId(), r);
         LocalUserMap.getUserRoleMap().put(r.getUserId(), r);
 
-        List<Role> siteRoleList = LocalUserMap.getSiteRolesMap().get(r.getSiteId());
+        List<Role> siteRoleList = Optional.ofNullable(LocalUserMap.getSiteRolesMap().get(r.getSiteId()))
+                .orElse(Lists.newArrayList());
         siteRoleList.add(r);
         LocalUserMap.getSiteRolesMap().put(r.getSiteId(), siteRoleList);
 
