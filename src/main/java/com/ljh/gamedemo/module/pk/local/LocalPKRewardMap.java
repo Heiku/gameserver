@@ -43,7 +43,7 @@ public class LocalPKRewardMap {
         }
     }
 
-    public static void readExcel() {
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(pkRewardFile);
@@ -70,6 +70,9 @@ public class LocalPKRewardMap {
                 }
             }
         }
+
+        workbook.close();
+        log.info("PK Reward 数据载入成功");
     }
 
     public static Map<Integer, PKReward> getPkLevelRewardMap() {

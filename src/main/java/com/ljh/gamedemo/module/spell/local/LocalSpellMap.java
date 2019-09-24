@@ -75,7 +75,7 @@ public class LocalSpellMap {
     /**
      * 读取本地文件数据
      */
-    public static void readExcel(){
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(spellFile);
@@ -124,6 +124,7 @@ public class LocalSpellMap {
         }
 
         readRoleSpell();
+        workbook.close();
         log.info("spell 数据载入成功");
     }
 
@@ -181,13 +182,4 @@ public class LocalSpellMap {
         LocalSpellMap.roleSpellMap = roleSpellMap;
     }
 
-    public static void main(String[] args) {
-        LocalSpellMap.readExcel();
-
-
-        roleSpellMap.forEach((k, v) ->
-            System.out.println("k: " + k + " value: " + v));
-
-
-    }
 }

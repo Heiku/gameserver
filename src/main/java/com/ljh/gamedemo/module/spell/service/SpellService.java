@@ -119,19 +119,16 @@ public class SpellService {
             return;
         }
 
-        // 技能存在，新增信息至 数据库 & map
-        // 更新数据库
+        // 更新数据库技能信息
         int n = roleSpellDao.insertRoleSpell(role.getRoleId(), spellId);
         log.info("insert into role_spell, affected rows: " + n);
 
-
-        Map<Long, List<Spell>> spellMap = LocalSpellMap.getRoleSpellMap();
-        List<Spell> spellList = Optional.ofNullable(spellMap.get(role.getRoleId())).orElse(Lists.newArrayList());
+        // 更新缓存技能信息
+        List<Spell> spellList = Optional.ofNullable(LocalSpellMap.getRoleSpellMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
         spellList.add(spell);
-        spellMap.put(role.getRoleId(), spellList);
+        LocalSpellMap.getRoleSpellMap().put(role.getRoleId(), spellList);
 
-        // 更新本地缓存
-        LocalSpellMap.setRoleSpellMap(spellMap);
 
         // 构造返回消息
         response =  MsgSpellProto.ResponseSpell.newBuilder()

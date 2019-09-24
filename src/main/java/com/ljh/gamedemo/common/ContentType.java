@@ -53,6 +53,8 @@ public class ContentType {
 
     public static final String NOT_FOUND_ROLE = "找不到对应的玩家信息！\n";
 
+    public static final String WRONG_ROLE_TYPE = "请输入正确的玩家角色类型，请入【roleType】可查看所有的角色类型\n";
+
 
     // Entity
     public static final String ENTITY_FIND_ALL = "获取所有实体信息成功！\n";
@@ -418,6 +420,7 @@ public class ContentType {
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
+
 
 
 }

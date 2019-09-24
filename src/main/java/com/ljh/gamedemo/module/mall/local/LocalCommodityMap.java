@@ -85,7 +85,7 @@ public class LocalCommodityMap {
         }
     }
 
-    public static void readExcel(){
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(mallFile);
@@ -125,6 +125,8 @@ public class LocalCommodityMap {
         }
 
         initCommodity();
+
+        workbook.close();
         log.info("Commodity 数据载入成功");
     }
 

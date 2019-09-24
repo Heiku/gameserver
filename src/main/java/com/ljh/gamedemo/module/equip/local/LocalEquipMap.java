@@ -78,7 +78,7 @@ public class LocalEquipMap {
     /**
      * 读取数据文件
      */
-    public static void readExcel(){
+    public static void readExcel() throws Exception{
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(equipFile);
 
@@ -128,6 +128,7 @@ public class LocalEquipMap {
         }
 
         readDB();
+        workbook.close();
         log.info("Equip 数据成功载入");
     }
 

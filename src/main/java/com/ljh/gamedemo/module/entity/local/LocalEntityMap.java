@@ -53,7 +53,7 @@ public class LocalEntityMap {
     /**
      * 载入数据文件
      */
-    public static void readExcel() {
+    public static void readExcel() throws Exception {
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(entityFile);
@@ -94,6 +94,8 @@ public class LocalEntityMap {
 
             }
         }
+
+        workbook.close();
         log.info("Entity 数据载入成功");
     }
 

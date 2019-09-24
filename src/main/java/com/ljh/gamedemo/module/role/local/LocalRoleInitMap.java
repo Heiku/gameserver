@@ -47,7 +47,7 @@ public class LocalRoleInitMap {
     /**
      * 读取文件，载入信息
      */
-    public static void readExcel() {
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(bossInitFile);
@@ -75,6 +75,8 @@ public class LocalRoleInitMap {
                 }
             }
         }
+
+        workbook.close();
         log.info("RoleInit 数据载入成功");
     }
 

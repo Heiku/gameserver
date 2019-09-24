@@ -56,7 +56,7 @@ public class LocalCreepMap {
     /**
      * 读取文件数据
      */
-    public static void readExcel(){
+    public static void readExcel() throws Exception{
         long creepId = 20000L;
 
         // 判断文件类型，获取workBook
@@ -100,6 +100,8 @@ public class LocalCreepMap {
                 }
             }
         }
+
+        workbook.close();
         log.info("Creep 数据载入成功");
     }
 
@@ -112,7 +114,7 @@ public class LocalCreepMap {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
         LocalSiteMap.readExcel();
         readExcel();

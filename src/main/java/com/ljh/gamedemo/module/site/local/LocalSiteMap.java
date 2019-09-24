@@ -57,7 +57,7 @@ public class LocalSiteMap {
     /**
      * 载入数据文件
      */
-    public static void readExcel() {
+    public static void readExcel() throws Exception {
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(siteFile);
@@ -122,6 +122,7 @@ public class LocalSiteMap {
             SiteCreepExecutorManager.bindSiteExecutor(k);
         } );
 
+        workbook.close();
         log.info("site 数据载入成功");
     }
 

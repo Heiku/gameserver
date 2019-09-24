@@ -56,7 +56,7 @@ public class LocalTaskMap {
     /**
      *  获取csv文件信息，得到map集合
      */
-    public static void readExcel(){
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(taskFile);
@@ -119,6 +119,7 @@ public class LocalTaskMap {
         // 读取数据库任务信息
         readDB();
 
+        workbook.close();
         log.info("task 数据载入成功");
     }
 
@@ -150,9 +151,4 @@ public class LocalTaskMap {
         });
     }
 
-    public static void main(String[] args) {
-        readExcel();
-
-        TaskCache.getIdTaskMap().forEach((k, v) -> System.out.println(k + " " + v));
-    }
 }

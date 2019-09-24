@@ -59,7 +59,7 @@ public class LocalBossMap {
     /**
      * 读取文件，载入Boss 信息
      */
-    public static void readExcel() {
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(spellBossFile);
@@ -123,6 +123,8 @@ public class LocalBossMap {
                 }
             }
         }
+
+        workbook.close();
         log.info("Boss 数据载入成功");
     }
 

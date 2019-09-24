@@ -83,7 +83,6 @@ public class RoleService {
     private ProtoService protoService;
 
 
-
     /**
      * 用户协议
      */
@@ -144,9 +143,16 @@ public class RoleService {
             protoService.sendFailedMsg(channel, ContentType.ROLE_HAS);
             return;
         }
+
         // 读取请求参数
         int type = req.getRoleType();
         String name = req.getRoleName();
+
+        // 判断角色类型
+        if (!LocalRoleInitMap.getRoleInitMap().containsKey(type)){
+            protoService.sendFailedMsg(channel, ContentType.WRONG_ROLE_TYPE);
+            return;
+        }
 
         // 构造玩家角色信息，并保存数据
         Role r = generateRoleInfo(type, name, req.getUserId());

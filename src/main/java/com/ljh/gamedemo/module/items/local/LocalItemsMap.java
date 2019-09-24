@@ -71,7 +71,7 @@ public class LocalItemsMap {
     /**
      * 读取文件数据
      */
-    public static void readExcel() {
+    public static void readExcel() throws Exception{
 
         // 判断文件类型，获取workBook
         Workbook workbook = formatWorkBook(spellFile);
@@ -106,7 +106,10 @@ public class LocalItemsMap {
                 }
             }
         }
+
         readRoleItems();
+
+        workbook.close();
         log.info("Items 数据载入成功");
     }
 

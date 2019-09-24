@@ -259,7 +259,9 @@ public class PKService {
 
         // 通知攻击成功
         Channel channel = ChannelCache.getUserIdChannelMap().get(fromRole.getUserId());
-        responseMsg(channel, ContentType.ATTACK_SPELL_SUCCESS);
+
+        // 消息返回
+        responseToRoleState(channel, toRole);
     }
 
     /**
@@ -281,8 +283,12 @@ public class PKService {
 
         // 通知攻击成功
         Channel channel = ChannelCache.getUserIdChannelMap().get(fromRole.getUserId());
-        responseMsg(channel, ContentType.ATTACK_SPELL_SUCCESS);
+
+        // 消息返回
+        responseToRoleState(channel, role);
     }
+
+
 
 
     /**
@@ -409,12 +415,14 @@ public class PKService {
      *
      * @param cLevel        玩家A等级
      * @param dLevel        玩家B等级
-     * @return
+     * @return              奖励等级
      */
     private int calculateRewardLevel(int cLevel, int dLevel) {
         // 这里粗略地计算等级值
         return (cLevel + dLevel) % 3 + 1;
     }
+
+
 
     /**
      * 向挑战方发送挑战邀请
@@ -462,7 +470,7 @@ public class PKService {
      *
      * @param role      玩家信息
      */
-    public void generatePkRecord(Role role) {
+    private void generatePkRecord(Role role) {
         // 获取之前的记录信息
         PKRecord pkRecord = RoleInvitePKCache.getPkRecordMap().get(role.getRoleId());
 
@@ -489,7 +497,7 @@ public class PKService {
      * @param loser         战败方
      * @param pkRecord      pk记录信息
      */
-    public void finishPK(Role winner, Role loser, PKRecord pkRecord){
+    private void finishPK(Role winner, Role loser, PKRecord pkRecord){
         // 发放奖励
         sendHonorReward(winner, loser, pkRecord);
 
@@ -671,5 +679,21 @@ public class PKService {
         return pkResp;
     }
 
+
+    /**
+     * 返回被攻击者的最新状态信息
+     *
+     * @param channel               channel
+     * @param role                  玩家信息
+     */
+    private void responseToRoleState(Channel channel, Role role) {
+        pkResp = MsgPKProto.ResponsePK.newBuilder()
+                .setResult(ResultCode.SUCCESS)
+                .setType(MsgPKProto.RequestType.SPR)
+                .setContent(ContentType.ATTACK_SPELL_SUCCESS)
+                .setOpponent(protoService.transToRole(role))
+                .build();
+        channel.writeAndFlush(pkResp);
+    }
 
 }
