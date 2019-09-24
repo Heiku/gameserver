@@ -51,6 +51,8 @@ public class ContentType {
 
     public static final String ROLE_lIST = "当前玩家的角色列表如下：\n";
 
+    public static final String NOT_FOUND_ROLE = "找不到对应的玩家信息！\n";
+
 
     // Entity
     public static final String ENTITY_FIND_ALL = "获取所有实体信息成功！\n";
@@ -220,7 +222,7 @@ public class ContentType {
 
     public static final String PK_INVITE_SEND_SUCCESS =  "发起挑战成功，请等待对方接受挑战！\n";
 
-    public static final String PK_SEND_MSG = "玩家：ID: 【%d】 名称：【%s】 向你发送挑战邀请，输入指令【ac】可接受挑战！\n";
+    public static final String PK_SEND_MSG = "玩家：ID: 【%d】 名称：【%s】 向你发送挑战邀请，输入指令【acceptPK】可接受挑战！\n";
 
     public static final String PK_INVITE_ACCEPT_SUCCESS = "成功接受 pk 邀请，正在进入 pk 竞技场！\n";
 
@@ -416,5 +418,6 @@ public class ContentType {
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
+
 
 }

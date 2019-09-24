@@ -89,12 +89,6 @@ public class RoleService {
      */
     private MsgUserInfoProto.ResponseUserInfo userResp;
 
-    /**
-     * 玩家协议
-     */
-    private MsgRoleProto.ResponseRole roleResp;
-
-
 
     /**
      * 玩家获取当前的职业信息
@@ -254,7 +248,7 @@ public class RoleService {
         r.setSiteId(1);
         r.setGold(0);
         r.setHonor(0);
-        r.setLevel(1);
+        r.setLevel(10);
         r.setAlive(1);
 
         // 插入数据库

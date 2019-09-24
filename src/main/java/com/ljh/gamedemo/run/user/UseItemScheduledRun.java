@@ -156,6 +156,8 @@ public class UseItemScheduledRun implements Runnable {
         if (decline) {
             itemService.updateRoleItems(role, itemId, -1);
             decline = false;
+
+            protoService.sendCommonMsg(channel, ContentType.ITEM_USE_SUCCESS);
         }
     }
 

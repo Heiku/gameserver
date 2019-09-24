@@ -358,7 +358,7 @@ public class ItemService {
 
         // 读取玩家的物品id列表，判断玩家是否拥有该物品
         List<Long> itemsIdList = LocalItemsMap.getRoleItemsIdMap().get(roleId);
-        if (itemsIdList.contains(itemId)){
+        if (!itemsIdList.contains(itemId)){
             return combineFailedMsg(ContentType.ITEM_NOT_CONTAIN);
         }
 

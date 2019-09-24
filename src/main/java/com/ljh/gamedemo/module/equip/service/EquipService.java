@@ -452,7 +452,7 @@ public class EquipService {
      * 玩家背包中的对应操作的装备
      *
      * @param r     玩家信息
-     * @param id    装备编号id
+     * @param id    E
      * @return      装备信息
      */
     private Equip getEquipFromBag(Role r, long id){

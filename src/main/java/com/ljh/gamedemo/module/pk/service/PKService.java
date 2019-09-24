@@ -6,6 +6,7 @@ import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.pk.dao.RolePKDao;
 import com.ljh.gamedemo.module.pk.event.base.PKEvent;
 import com.ljh.gamedemo.module.pk.local.LocalPKRewardMap;
+import com.ljh.gamedemo.module.role.bean.RoleAttr;
 import com.ljh.gamedemo.module.spell.local.LocalSpellMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.role.cache.RoleAttrCache;
@@ -38,6 +39,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -267,12 +269,19 @@ public class PKService {
      * @param spell     技能信息
      */
     private void doAttackRole(Role fromRole, Role role, Spell spell) {
+        int extra;
+
         // 获取普攻的额外伤害
-        int extra = RoleAttrCache.getRoleAttrMap().get(fromRole.getRoleId()).getDamage();
+        RoleAttr attr = RoleAttrCache.getRoleAttrMap().get(fromRole.getRoleId());
+        extra = attr == null ? 0 : attr.getDamage();
 
         // 构建任务
         UserBeAttackedRun task = new UserBeAttackedRun(role.getUserId(), spell.getDamage() + extra, true);
         UserExecutorManager.addUserTask(role.getUserId(), task);
+
+        // 通知攻击成功
+        Channel channel = ChannelCache.getUserIdChannelMap().get(fromRole.getUserId());
+        responseMsg(channel, ContentType.ATTACK_SPELL_SUCCESS);
     }
 
 
@@ -602,7 +611,11 @@ public class PKService {
         int arena = 7;
 
         Role cRole = LocalUserMap.getUserRoleMap().get(challenge);
-        Role dRole = LocalUserMap.getIdRoleMap().get(defender);
+        Role r = LocalUserMap.getIdRoleMap().get(defender);
+        if (r == null){
+            return combineFailed(ContentType.NOT_FOUND_ROLE);
+        }
+        Role dRole = LocalUserMap.getUserRoleMap().get(r.getUserId());
 
         //判断是否都在竞技场位置上
         if (cRole.getSiteId() != arena || dRole.getSiteId() != arena){

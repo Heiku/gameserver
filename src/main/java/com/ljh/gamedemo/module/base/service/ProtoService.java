@@ -250,6 +250,7 @@ public class ProtoService {
             return EquipProto.Equip.newBuilder().build();
         }
         return EquipProto.Equip.newBuilder()
+                .setId(equip.getId() == null ? 0 : equip.getId())
                 .setEquipId(equip.getEquipId())
                 .setName(equip.getName())
                 .setType(equip.getType())

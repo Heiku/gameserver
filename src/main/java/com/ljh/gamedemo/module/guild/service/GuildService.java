@@ -786,7 +786,15 @@ public class GuildService {
 
             // 加入到公会群聊中
             ChannelGroup cg = ChannelCache.getGuildChannelMap().get(guild.getId());
-            cg.add(channel);
+            if (cg == null){
+                cg = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+                List<Member> ms = Optional.ofNullable(guild.getMembers()).orElse(Lists.newArrayList());
+                for (Member m : ms) {
+                    cg.add(ChannelCache.getUserIdChannelMap().get(LocalUserMap.getIdRoleMap().get(m.getRoleId()).getUserId()));
+                }
+            }else {
+                cg.add(channel);
+            }
             ChannelCache.getGuildChannelMap().put(guild.getId(), cg);
 
             // 消息通知
