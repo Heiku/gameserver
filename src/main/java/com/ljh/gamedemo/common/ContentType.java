@@ -173,6 +173,8 @@ public class ContentType {
 
     public static final String DUPLICATE_LEAVE_SUCCESS = "成功离开副本！\n";
 
+    public static final String DUPLICATE_LEAVE_BOSS = "成功离开BOSS的攻击范围！\n";
+
     public static final String DUPLICATE_SPELL_FAILED = "施放技能失败！\n";
 
     public static final String DUPLICATE_DEBUFF_FAILED = "施放技能失败，当前在眩晕状态下，还需 %d 秒才可以继续行动！\n";
@@ -188,7 +190,7 @@ public class ContentType {
 
     public static final String MALL_MONEY_NOT_ENOUGH = "当前金币不足以购买该物品，请尝试刷副本获得更多金币！\n";
 
-    public static final String MALL_BUY_SUCCESS = "购买成功，物品已经发送到你的背包中！\n";
+    public static final String MALL_BUY_SUCCESS = "购买成功，物品随后将通过邮件发送，请注意查收！\n";
 
     public static final String MALL_BUY_NUM_GT_LIMIT = "超过最大购买额度，请重新选择购买数量！";
 
@@ -420,7 +422,5 @@ public class ContentType {
 
     // DB
     public static final String INSERT_FAILED = "插入失败！\n";
-
-
 
 }

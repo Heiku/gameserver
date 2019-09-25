@@ -52,7 +52,7 @@ public interface RoleEquipDao {
      * @param equip     装备信息
      * @return          affected rows
      */
-    @Update("update role_equip set durability = #{durability} and state = #{state} and on = #{on} where id = #{id}")
+    @Update("update role_equip set durability = #{durability} and state = #{state} and has_on = #{hasOn} where id = #{id}")
     int updateRoleEquip(Equip equip);
 
 
@@ -63,5 +63,5 @@ public interface RoleEquipDao {
      * @return          affected rows
      */
     @Delete("delete from role_equip where id = #{id}")
-    int deleteRoleEquip(long id);
+    int deleteRoleEquip(Equip id);
 }

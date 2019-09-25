@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import com.ljh.gamedemo.module.event.BaseEvent;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
+import com.ljh.gamedemo.module.guild.asyn.GuildSaveManager;
+import com.ljh.gamedemo.module.guild.asyn.run.*;
 import com.ljh.gamedemo.module.guild.event.base.GuildEvent;
 import com.ljh.gamedemo.module.items.local.LocalItemsMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
@@ -53,18 +55,6 @@ public class GuildService {
      */
     @Autowired
     private GuildDao guildDao;
-
-    /**
-     * guildApplyDao
-     */
-    @Autowired
-    private GuildApplyDao guildApplyDao;
-
-    /**
-     * guildGoodsDao
-     */
-    @Autowired
-    private GuildGoodsDao guildGoodsDao;
 
     /**
      * 物品服务
@@ -317,9 +307,9 @@ public class GuildService {
 
         // 更新记录，并保存
         guild.setBulletin(ann);
-        int n = guildDao.updateGuild(guild);
-        log.info("update guild, affected rows: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildSaveRun(guild, CommonDBType.UPDATE));
 
+        // 更新本地缓存
         GuildCache.getIdGuildMap().put(guild.getId(), guild);
 
         // 消息返回
@@ -424,6 +414,17 @@ public class GuildService {
      */
     private void sendGuildChannel(Guild guild, Role role, long goodsId, int num) {
         ChannelGroup cg = ChannelCache.getGuildChannelMap().get(guild.getId());
+        if (cg == null){
+            cg = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+            for (Member m : guild.getMembers()) {
+                Role r = LocalUserMap.getIdRoleMap().get(m.getRoleId());
+                Channel channel = ChannelCache.getUserIdChannelMap().get(r.getUserId());
+                if (channel != null) {
+                    cg.add(ChannelCache.getUserIdChannelMap().get(r.getUserId()));
+                }
+            }
+            ChannelCache.getGroupChannelMap().put(guild.getId(), cg);
+        }
         String name = LocalGoodsMap.getIdGoodsMap().get(goodsId).getType().intValue() == CommodityType.ITEM.getCode() ?
                 LocalItemsMap.getIdItemsMap().get(goodsId).getName() :
                 LocalEquipMap.getIdEquipMap().get(goodsId).getName();
@@ -453,8 +454,7 @@ public class GuildService {
         member.setAllCon(member.getAllCon() + con);
 
         // 更新数据库
-        int n = guildDao.updateMemberByRoleId(member);
-        log.info("update guild_member, affected rows: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildMemberSaveRun(member, CommonDBType.UPDATE));
 
         // 更新缓存
         GuildCache.getRoleMemberMap().put(member.getRoleId(), member);
@@ -533,15 +533,14 @@ public class GuildService {
 
             // 公会物品全部取出，删除数据库记录
             if (gs.getNum() == 0){
-                int n = guildGoodsDao.deleteGuildStore(gs);
-                log.info("delete guild_goods_store, affected rows: " + n);
-
                 // 移除本地缓存
                 goodsStores.removeIf(g -> g.getGoodsId() == goodsId);
+
+                // 移除数据库记录
+                GuildSaveManager.getExecutorService().submit(new GuildStoreSaveRun(gs, CommonDBType.DELETE));
             }else {
                 // 更新数据库
-                int n = guildGoodsDao.updateGuildStore(gs);
-                log.info("update guild_goods_store, affected rows: " + n);
+                GuildSaveManager.getExecutorService().submit(new GuildStoreSaveRun(gs, CommonDBType.UPDATE));
             }
         }else {
             if (isDonate){
@@ -549,11 +548,10 @@ public class GuildService {
                 gs.setGuildId(guild.getId());
                 gs.setGoodsId(goodsId);
                 gs.setNum(num);
-
-                int n = guildGoodsDao.insertGuildStore(gs);
-                log.info("insert guild_goods_store, affected rows: " + n);
-
                 goodsStores.add(gs);
+
+                // 存储数据库
+                GuildSaveManager.getExecutorService().submit(new GuildStoreSaveRun(gs, CommonDBType.INSERT));
             }else {
                 // 无该物品，无法取出
                 sendFailedMsg(ch, ContentType.GUILD_STORE_NO_ENOUGH);
@@ -586,8 +584,7 @@ public class GuildService {
         record.setType(isDonate ? DONATE : TAKE_OUT);
 
         // 保存db
-        int n = guildGoodsDao.insertGuildGoodsRecord(record);
-        log.info("insert guild_goods_record, affected rows: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildGoodsRecordSaveRun(record, CommonDBType.INSERT));
     }
 
 
@@ -670,21 +667,19 @@ public class GuildService {
         Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
 
         // 删除对应的记录
-        int n = guildDao.deleteMemberInfo(kickM.getRoleId());
-        log.info("delete guild_member, affected row: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildMemberSaveRun(kickM, CommonDBType.DELETE));
 
         List<Member> members = guild.getMembers();
         members.removeIf(m -> m.getRoleId().longValue() == kickM.getRoleId());
         if (members.size() == 0){
-             n = guildDao.deleteGuild(guild);
-             log.info("delete guild, affected rows: " + n);
+            // 移除缓存信息
+            GuildCache.getIdGuildMap().remove(guild.getId());
+            GuildSaveManager.getExecutorService().submit(new GuildSaveRun(guild, CommonDBType.DELETE));
 
-             GuildCache.getIdGuildMap().remove(guild.getId());
+        }else {
+            guild.setNum(guild.getNum() - 1);
+            GuildSaveManager.getExecutorService().submit(new GuildSaveRun(guild, CommonDBType.UPDATE));
         }
-        guild.setNum(guild.getNum() - 1);
-        n = guildDao.updateGuild(guild);
-        log.info("update guild, affected rows: " + n);
-
         // 移除本地记录
         GuildCache.getRoleIdGuildMap().remove(role.getRoleId());
         GuildCache.getRoleMemberMap().remove(role.getRoleId());
@@ -735,8 +730,7 @@ public class GuildService {
             apply.setProcess(approval);
 
             // 更新数据库
-            int n = guildApplyDao.updateGuildApply(apply);
-            log.info("update guild_apply, affected rows: " + n);
+            GuildSaveManager.getExecutorService().submit(new GuildApplySaveRun(apply, CommonDBType.UPDATE));
 
             // 获取申请人信息
             Role applicant = LocalUserMap.getIdRoleMap().get(apply.getRoleId());
@@ -768,16 +762,15 @@ public class GuildService {
             Member member = buildMember(applicant, guild, MemberType.ORDINARY);
 
             // 保存成员信息
-            int n = guildDao.insertGuildMember(member);
-            log.info("insert guild_member, affected rows: "  + n);
+            GuildSaveManager.getExecutorService().submit(new GuildMemberSaveRun(member, CommonDBType.INSERT));
 
+            // 更新公共人数
             List<Member> members = guild.getMembers();
             members.add(member);
             guild.setNum(guild.getNum() + 1);
 
             // 更新公会信息
-            n = guildDao.updateGuild(guild);
-            log.info("update guild, affrcted rows: " + n);
+            GuildSaveManager.getExecutorService().submit(new GuildSaveRun(guild, CommonDBType.UPDATE));
 
             // 本地保存
             GuildCache.getRoleMemberMap().put(applicant.getRoleId(), member);
@@ -824,8 +817,7 @@ public class GuildService {
         apply.setModifyTime(new Date());
 
         // 保存申请信息
-        int n = guildApplyDao.insertGuildApply(apply);
-        log.info("insert guild_apply, affected rows: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildApplySaveRun(apply, CommonDBType.INSERT));
 
         // 存储公会的申请信息
         List<GuildApply> applyList = Optional.ofNullable(GuildCache.getGuildApplyMap().get(guild.getId()))
@@ -859,15 +851,13 @@ public class GuildService {
         guild.setPresident(role.getRoleId());
 
         // 保存公会信息
-        int n = guildDao.insertGuild(guild);
-        log.info("insert guild, affected row: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildSaveRun(guild, CommonDBType.INSERT));
 
         // 构建
         Member member = buildMember(role, guild, MemberType.PRESIDENT);
 
         // 保存公会成员信息
-        n = guildDao.insertGuildMember(member);
-        log.info("insert role_guild, affected row: " + n);
+        GuildSaveManager.getExecutorService().submit(new GuildMemberSaveRun(member, CommonDBType.INSERT));
 
         // 设置公会成员属性
         guild.setMembers(Lists.newArrayList(member));

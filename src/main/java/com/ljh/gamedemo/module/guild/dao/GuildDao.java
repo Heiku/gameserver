@@ -112,11 +112,11 @@ public interface GuildDao {
     /**
      * 删除公会的成员信息
      *
-     * @param roleId        玩家id
+     * @param member        成员信息
      * @return              affected rows
      */
     @Delete("delete from role_guild where role_id = #{roleId}")
-    int deleteMemberInfo(long roleId);
+    int deleteMemberInfo(Member member);
 
 
     /**

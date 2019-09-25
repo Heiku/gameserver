@@ -1,8 +1,11 @@
 package com.ljh.gamedemo.module.pk.service;
 
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.event.BaseEvent;
+import com.ljh.gamedemo.module.pk.asyn.PKSaveManager;
+import com.ljh.gamedemo.module.pk.asyn.run.PKRecordSaveRun;
 import com.ljh.gamedemo.module.pk.dao.RolePKDao;
 import com.ljh.gamedemo.module.pk.event.base.PKEvent;
 import com.ljh.gamedemo.module.pk.local.LocalPKRewardMap;
@@ -21,12 +24,12 @@ import com.ljh.gamedemo.proto.protoc.MsgSpellProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.manager.UserExecutorManager;
-import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.run.user.UserBeAttackedRun;
-import com.ljh.gamedemo.run.user.UserBeAttackedScheduleRun;
-import com.ljh.gamedemo.run.user.UserDeclineMpRun;
+import com.ljh.gamedemo.module.base.asyn.run.CustomExecutor;
+import com.ljh.gamedemo.module.user.asyn.UserExecutorManager;
+import com.ljh.gamedemo.module.base.asyn.run.FutureMap;
+import com.ljh.gamedemo.module.role.asyn.run.UserBeAttackedRun;
+import com.ljh.gamedemo.module.role.asyn.run.UserBeAttackedScheduleRun;
+import com.ljh.gamedemo.module.role.asyn.run.UserDeclineMpRun;
 import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.spell.service.SpellService;
@@ -39,7 +42,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -385,8 +387,8 @@ public class PKService {
         record.setCreateTime(new Date());
 
         // 持久 pk 记录
-        int n = pkDao.insertPKRecord(record);
-        log.info("插入pk挑战记录，id：" + record.getId() + " 影响数据行：" + n);
+        PKSaveManager.getExecutorService().submit(new PKRecordSaveRun(record, CommonDBType.INSERT));
+
 
         // 本地缓存存储
         RoleInvitePKCache.getPkRecordMap().put(cRole.getRoleId(), record);
@@ -557,10 +559,11 @@ public class PKService {
      * @param pkRecord      pk记录信息
      */
     private void updatePKRecord(Role winner, Role loser, PKRecord pkRecord) {
+        // 持久pk结束记录
         pkRecord.setEndTime(new Date());
-        int n = pkDao.updateRecord(pkRecord);
-        log.info("update PK Record: affect rows: " + n);
+        PKSaveManager.getExecutorService().submit(new PKRecordSaveRun(pkRecord, CommonDBType.UPDATE));
 
+        // 移除缓存中的pk记录信息
         removePkRecord(winner, loser, pkRecord);
     }
 

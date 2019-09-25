@@ -1,24 +1,22 @@
 package com.ljh.gamedemo.module.trade.service;
 
 import com.google.common.collect.Lists;
-import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.EmailType;
-import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.common.TradeType;
-import com.ljh.gamedemo.module.trade.dao.TradeDao;
-import com.ljh.gamedemo.module.email.bean.EmailGoods;
-import com.ljh.gamedemo.module.goods.bean.Goods;
-import com.ljh.gamedemo.module.email.service.EmailService;
-import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.trade.bean.Trade;
-import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
-import com.ljh.gamedemo.module.trade.cache.TradeCache;
+import com.ljh.gamedemo.common.*;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
-import com.ljh.gamedemo.proto.protoc.MsgTradeProto;
-import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.module.goods.service.GoodsService;
 import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.email.bean.EmailGoods;
+import com.ljh.gamedemo.module.email.service.EmailService;
+import com.ljh.gamedemo.module.goods.bean.Goods;
+import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
+import com.ljh.gamedemo.module.goods.service.GoodsService;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.role.service.RoleService;
+import com.ljh.gamedemo.module.trade.asyn.TradeSaveManager;
+import com.ljh.gamedemo.module.trade.asyn.run.TradeSaveRun;
+import com.ljh.gamedemo.module.trade.bean.Trade;
+import com.ljh.gamedemo.module.trade.cache.TradeCache;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
+import com.ljh.gamedemo.proto.protoc.MsgTradeProto;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -41,11 +39,6 @@ import java.util.Optional;
 @Slf4j
 public class TradeService {
 
-    /**
-     * TradeDao
-     */
-    @Autowired
-    private TradeDao tradeDao;
 
     /**
      * 玩家服务
@@ -103,6 +96,7 @@ public class TradeService {
     public void fixedPriceAll(MsgTradeProto.RequestTrade req, Channel channel) {
         // 获取一口价的所有交易信息
         List<Trade> trades = Lists.newArrayList(TradeCache.getFixTradeMap().values());
+        trades.removeIf(t -> t.getProcess() == TradeType.TRADE_STATE_OFF);
 
         // 消息返回
         tradeResp = combineResp(trades, MsgTradeProto.RequestType.FIXED_PRICE_ALL);
@@ -119,6 +113,7 @@ public class TradeService {
     public void auctionAll(MsgTradeProto.RequestTrade req, Channel channel) {
         // 获取拍卖的所有交易信息
         List<Trade> trades = Lists.newArrayList(TradeCache.getAuctionTradeMap().values());
+        trades.removeIf(t -> t.getProcess() == TradeType.TRADE_STATE_OFF);
 
         // 消息返回
         tradeResp = combineResp(trades, MsgTradeProto.RequestType.AUCTION_ALL);
@@ -405,8 +400,8 @@ public class TradeService {
         // 设置结束的购买时间
         trade.setEndTime(DateTime.now().plus(Minutes.minutes(TradeType.AUCTION_DURATION)).toDate());
 
-        int n = tradeDao.insertTrade(trade);
-        log.info("inert into trade, affected rows: " + n);
+        // 持久数据库
+        TradeSaveManager.getExecutorService().submit(new TradeSaveRun(trade, CommonDBType.INSERT));
 
         return trade;
     }
@@ -475,8 +470,7 @@ public class TradeService {
     private void updateTradeRecord(Trade trade, Role role){
         // 更新交易信息
         trade.setProcess(TradeType.TRADE_STATE_OFF);
-        int n = tradeDao.updateTrade(trade);
-        log.info("update trade, affected rows: " + n);
+        TradeSaveManager.getExecutorService().submit(new TradeSaveRun(trade, CommonDBType.UPDATE));
 
         // 移除玩家的当前交易记录
         TradeCache.getRoleTradeMap().get(role.getRoleId()).removeIf(t -> t.getId().longValue() == trade.getId());

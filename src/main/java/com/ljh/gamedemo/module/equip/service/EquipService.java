@@ -1,23 +1,29 @@
 package com.ljh.gamedemo.module.equip.service;
 
 import com.google.common.collect.Lists;
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EntityType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.equip.bean.RoleEquip;
-import com.ljh.gamedemo.module.role.dao.RoleAttrDao;
-import com.ljh.gamedemo.module.equip.dao.RoleEquipDao;
+import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.equip.asyn.EquipSaveManager;
+import com.ljh.gamedemo.module.equip.asyn.run.EquipEntitySaveRun;
+import com.ljh.gamedemo.module.equip.asyn.run.RoleEquipSaveRun;
 import com.ljh.gamedemo.module.equip.bean.Equip;
+import com.ljh.gamedemo.module.equip.bean.RoleEquip;
+import com.ljh.gamedemo.module.equip.dao.RoleEquipDao;
+import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
 import com.ljh.gamedemo.module.goods.bean.Goods;
+import com.ljh.gamedemo.module.role.asyn.RoleSaveManager;
+import com.ljh.gamedemo.module.role.asyn.run.RoleAttrSaveRun;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.bean.RoleAttr;
-import com.ljh.gamedemo.module.equip.local.LocalEquipMap;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.role.cache.RoleAttrCache;
+import com.ljh.gamedemo.module.role.dao.RoleAttrDao;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
+import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.proto.protoc.MsgEquipProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.module.user.service.UserService;
-import com.ljh.gamedemo.module.base.service.ProtoService;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -45,22 +51,10 @@ public class EquipService {
     public static final int MIN_FIX_DUR = 10;
 
     /**
-     * roleEquip：玩家装备
-     */
-    @Autowired
-    private RoleEquipDao equipDao;
-
-    /**
      * roleAttr：玩家属性
      */
     @Autowired
     private RoleAttrDao attrDao;
-
-    /**
-     * 用户服务
-     */
-    @Autowired
-    private UserService userService;
 
     /**
      * 协议服务
@@ -68,11 +62,6 @@ public class EquipService {
     @Autowired
     private ProtoService protoService;
 
-
-    /**
-     * 用户返回
-     */
-    private MsgUserInfoProto.ResponseUserInfo userResp;
 
     /**
      * 装备返回
@@ -94,14 +83,16 @@ public class EquipService {
         Role role = LocalUserMap.userRoleMap.get(request.getUserId());
 
         // 玩家拥有的装备
-        List<Equip> allList = LocalEquipMap.getHasEquipMap().get(role.getRoleId());
+        List<Equip> allList = Optional.ofNullable(LocalEquipMap.getHasEquipMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
 
         // 穿戴上的装备
-        List<Equip> hasOn = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
+        List<Equip> hasOn = Optional.ofNullable(LocalEquipMap.getRoleEquipMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
 
         List<Equip> notOnList = new ArrayList<>();
         allList.forEach(e -> {
-            if (e.getHasOn() != 1){
+            if (e.getHasOn() == null || e.getHasOn() != 1){
                 notOnList.add(e);
             }
         });
@@ -150,14 +141,14 @@ public class EquipService {
             Optional<Equip> idResult = ownList.stream().
                     filter(e -> e.getId() == id)
                     .findFirst();
-            if (!idResult.isPresent()){
+            if (idResult.isPresent()){
                 sendFailedMsg(channel, ContentType.EQUIP_SAME);
                 return;
             }
 
             // 找到相同部位的装备
             Optional<Equip> typeResult = ownList.stream().
-                    filter(e -> e.getType().intValue() == equip.getType())
+                    filter(e -> e.getPart().intValue() == equip.getPart())
                     .findFirst();
             if (typeResult.isPresent()){
                 Equip e = typeResult.get();
@@ -200,7 +191,7 @@ public class EquipService {
      * @param request
      * @param channel
      */
-    public void takeOffEquip(MsgEquipProto.RequestEquip request, Channel channel) {
+    public synchronized void takeOffEquip(MsgEquipProto.RequestEquip request, Channel channel) {
         // 初始化输信息
         Role role = LocalUserMap.getUserRoleMap().get(request.getUserId());
         long id = request.getId();
@@ -213,15 +204,18 @@ public class EquipService {
         }
 
         // 获取玩家要卸下的装备信息
-        List<Equip> onList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
-        onList.forEach( e -> {
-            if (e.getId() == id){
-                // 更新缓存，db 中的卸下信息
-                removeOnEquip(role, e);
-                // 更新角色属性
-                addRoleAttr(role, e, false);
-            }
-        });
+        List<Equip> onList = Optional.ofNullable(LocalEquipMap.getRoleEquipMap().get(role.getRoleId()))
+                .orElse(Lists.newArrayList());
+        Optional<Equip> result = onList.stream().filter(e -> e.getId() == id).findFirst();
+        if (result.isPresent()){
+            Equip e = result.get();
+
+            // 更新缓存，db 中的卸下信息
+            removeOnEquip(role, e);
+            // 更新角色属性
+            addRoleAttr(role, e, false);
+        }
+
 
         // 更新onList
         onList = LocalEquipMap.getRoleEquipMap().get(role.getRoleId());
@@ -316,8 +310,7 @@ public class EquipService {
             LocalEquipMap.getRoleEquipMap().put(role.getRoleId(), list);
 
             // 更新数据库中的装备信息
-            int n = equipDao.updateRoleEquip(equip);
-            log.info("update role_equip, affected row: " + n);
+            EquipSaveManager.getExecutorService().submit(new EquipEntitySaveRun(equip, CommonDBType.UPDATE));
         }
     }
 
@@ -334,8 +327,7 @@ public class EquipService {
 
         // 更新装备的 on 属性
         equip.setHasOn(0);
-        int n = equipDao.updateRoleEquip(equip);
-        log.info("update role_equip, affected row: " + n);
+        EquipSaveManager.getExecutorService().submit(new EquipEntitySaveRun(equip, CommonDBType.UPDATE));
     }
 
 
@@ -351,8 +343,7 @@ public class EquipService {
         equip.setState(1);
 
         // 更新数据库信息
-        int n = equipDao.updateRoleEquip(equip);
-        log.info("update role_equip, affected row: " + n);
+        EquipSaveManager.getExecutorService().submit(new EquipEntitySaveRun(equip, CommonDBType.UPDATE));
     }
 
 
@@ -379,13 +370,14 @@ public class EquipService {
             re.setRoleId(role.getRoleId());
             re.setDurability(tmp.getDurability());
             re.setState(tmp.getState());
-            re.setOn(0);
-            int n = equipDao.insertRoleEquip(re);
-            log.info("insert role_equip, affected row: " + n);
+            re.setHasOn(0);
+
+            // 异步save
+            EquipSaveManager.getExecutorService().submit(new RoleEquipSaveRun(re, CommonDBType.INSERT));
 
             // 设置装备编号
             data.setId(re.getId());
-            data.setHasOn(re.getOn());
+            data.setHasOn(re.getHasOn());
 
             // 添加到装备背包中
             hasEquips.add(data);
@@ -412,9 +404,7 @@ public class EquipService {
                 LocalEquipMap.getHasEquipMap().get(role.getRoleId()).removeIf(e -> e.getEquipId() == goodsId);
 
                 // 同时删除数据库信息
-                int n = equipDao.deleteRoleEquip(result.get().getId());
-                log.info("delete equip, affected rows: " + n);
-
+                EquipSaveManager.getExecutorService().submit(new EquipEntitySaveRun(result.get(), CommonDBType.DELETE));
                 num--;
             }
         }
@@ -440,8 +430,7 @@ public class EquipService {
             }
 
             // 更新db
-            int n = equipDao.updateRoleEquip(e);
-            log.info("攻击野怪之后，装备栏中的更新的行数为：" + n);
+            EquipSaveManager.getExecutorService().submit(new EquipEntitySaveRun(e, CommonDBType.UPDATE));
         }
         log.info("攻击野怪之后，装备栏的耐久度为：" + equipList);
     }
@@ -513,7 +502,7 @@ public class EquipService {
         if (add){
             // 装备替换，只需更新数据库中属性的增量
             if (attrDao.selectAttrById(role.getRoleId()) != null){
-                i = attrDao.updateRoleAttr(attr);
+                RoleSaveManager.getExecutorService().submit(new RoleAttrSaveRun(attr, CommonDBType.UPDATE));
 
                 // 替换装备，血量只加上增量
                 role.setHp((role.getHp() + attr.getHp()));
@@ -521,7 +510,7 @@ public class EquipService {
 
             }else {
                 // 装备新添，进行装备数据的插入
-                i = attrDao.insertRoleAttr(attr);
+                RoleSaveManager.getExecutorService().submit(new RoleAttrSaveRun(attr, CommonDBType.INSERT));
 
                 // 装备增加后，用户的属性得到提升
                 role.setHp(role.getHp() + equip.getHpUp());
@@ -529,13 +518,13 @@ public class EquipService {
             }
         }else {
             // 装备卸下，属性下降，更新玩家的属性信息
+            RoleSaveManager.getExecutorService().submit(new RoleAttrSaveRun(attr, CommonDBType.UPDATE));
             i = attrDao.updateRoleAttr(attr);
 
             // 卸下装备，玩家的血量下降
             role.setHp(role.getHp() - equip.getHpUp());
             role.setMaxHp(role.getMaxHp() - equip.getHpUp());
         }
-        log.info("更新用户属性成功，当前的更新记录为：" + i);
 
 
         LocalUserMap.idRoleMap.put(role.getRoleId(), role);

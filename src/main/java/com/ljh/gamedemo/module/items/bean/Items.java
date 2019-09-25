@@ -14,6 +14,11 @@ import lombok.EqualsAndHashCode;
 public class Items {
 
     /**
+     * id
+     */
+    private Long id;
+
+    /**
      * 道具id
      */
     private Long itemsId;

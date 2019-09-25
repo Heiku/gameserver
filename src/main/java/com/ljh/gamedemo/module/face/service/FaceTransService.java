@@ -1,26 +1,27 @@
 package com.ljh.gamedemo.module.face.service;
 
 import com.google.protobuf.Message;
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.face.dao.FaceTransDao;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.email.bean.EmailGoods;
 import com.ljh.gamedemo.module.email.service.EmailService;
-import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.face.asyn.FaceTradeSaveManager;
+import com.ljh.gamedemo.module.face.asyn.run.FaceTradeSaveRun;
 import com.ljh.gamedemo.module.face.bean.Transaction;
-import com.ljh.gamedemo.module.face.tmp.FaceTransApply;
-import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.module.face.cache.FaceTransCache;
-import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.face.dao.FaceTransDao;
+import com.ljh.gamedemo.module.face.tmp.FaceTransApply;
+import com.ljh.gamedemo.module.goods.service.GoodsService;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.module.site.service.SiteService;
+import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgFaceTransProto;
 import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
-import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.module.user.service.UserService;
-import com.ljh.gamedemo.module.goods.service.GoodsService;
-import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.util.CommonUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -52,17 +53,6 @@ public class FaceTransService {
      */
     public static final int MIN_TRANS_HONOR = 50;
 
-    /**
-     * 交易记录
-     */
-    @Autowired
-    private FaceTransDao transDao;
-
-    /**
-     * 用户服务
-     */
-    @Autowired
-    private UserService userService;
 
     /**
      * 玩家服务
@@ -98,11 +88,6 @@ public class FaceTransService {
      * 回复
      */
     private Message message;
-
-    /**
-     * 用户回复
-     */
-    private MsgUserInfoProto.ResponseUserInfo userResp;
 
     /**
      * 玩家回复
@@ -271,7 +256,7 @@ public class FaceTransService {
 
 
     /**
-     * 接受交易
+     * 接受交易 (第二次验证)
      *
      * @param req       请求
      * @param channel   channel
@@ -296,8 +281,9 @@ public class FaceTransService {
             // 更新交易状态
             trans.setSuccess(1);
             trans.setModifyTime(new Date());
-            int n = transDao.updateFaceTrans(trans);
-            log.info("update face_trans, affected row: " + n);
+
+            // 异步更新数据库
+            FaceTradeSaveManager.getExecutorService().submit(new FaceTradeSaveRun(trans, CommonDBType.UPDATE));
 
             // 移除当前的交易单
             removeCurrentTrans(trans.getPromoter(), trans.getReceiver());
@@ -473,8 +459,8 @@ public class FaceTransService {
         trans.setCreateTime(new Date());
         trans.setModifyTime(new Date());
 
-        int n = transDao.insertFaceTrans(trans);
-        log.info("insert into face_trans, affected rows: " + n);
+        // 异步存储数据库
+        FaceTradeSaveManager.getExecutorService().submit(new FaceTradeSaveRun(trans, CommonDBType.INSERT));
 
         // 本地存储记录
         FaceTransCache.getUnConfirmTransMap().put(receiver.getRoleId(), trans);

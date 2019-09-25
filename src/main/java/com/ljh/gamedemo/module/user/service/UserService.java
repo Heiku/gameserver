@@ -1,20 +1,23 @@
 package com.ljh.gamedemo.module.user.service;
 
 import com.google.common.base.Strings;
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
-import com.ljh.gamedemo.module.base.service.ProtoService;
-import com.ljh.gamedemo.module.chat.service.ChatService;
+import com.ljh.gamedemo.module.role.asyn.RoleSaveManager;
+import com.ljh.gamedemo.module.role.asyn.run.RoleSaveRun;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.dao.UserRoleDao;
 import com.ljh.gamedemo.module.role.service.RoleService;
+import com.ljh.gamedemo.module.user.asyn.UserSaveManager;
+import com.ljh.gamedemo.module.user.asyn.run.UserSaveRun;
 import com.ljh.gamedemo.module.user.bean.User;
 import com.ljh.gamedemo.module.user.bean.UserAccount;
 import com.ljh.gamedemo.module.user.dao.UserDao;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.run.manager.UserExecutorManager;
+import com.ljh.gamedemo.module.user.asyn.UserExecutorManager;
 import com.ljh.gamedemo.util.MD5Util;
 import com.ljh.gamedemo.util.SessionUtil;
 import io.netty.channel.Channel;
@@ -139,8 +142,7 @@ public class UserService {
         // 获取md5Pwd，存数据库user_account
         String md5Pwd = MD5Util.hashPwd(password);
         UserAccount userAccount = new UserAccount(userName, md5Pwd);
-        int n = userDao.insertUserAccount(userAccount);
-        log.info("insert into user_account, affected rows: " + n);
+        UserSaveManager.getExecutorService().submit(new UserSaveRun(userAccount, CommonDBType.INSERT));
 
         // 接着查找user信息
         User user = userDao.selectUser(userName);
@@ -203,8 +205,7 @@ public class UserService {
         UserExecutorManager.unBindUserExecutor(userId);
 
         // 更新数据库role的site信息
-        int n = userRoleDao.updateRoleSiteInfo(role);
-        log.info("update role, affected rows: " + n);
+        RoleSaveManager.getExecutorService().submit(new RoleSaveRun(role, CommonDBType.UPDATE));
 
         // 成功操作
         return combineFailedMsg(ContentType.EXIT_SUCCESS);

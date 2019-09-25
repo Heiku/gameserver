@@ -785,8 +785,8 @@ public class ProtoService {
 
         return TradeProto.Trade.newBuilder()
                 .setTradeId(t.getId())
-                .setBuyer(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getBuyer())))
-                .setSeller(protoService.transToRole(LocalUserMap.getIdRoleMap().get(t.getSeller())))
+                .setBuyer(transToRole(LocalUserMap.getIdRoleMap().get(t.getBuyer())))
+                .setSeller(transToRole(LocalUserMap.getIdRoleMap().get(t.getSeller())))
                 .setGoods(transToGoods(eg))
                 .setPrice(t.getPrice())
                 .setType(t.getType())

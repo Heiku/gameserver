@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
 import com.ljh.gamedemo.module.role.bean.RoleState;
+import com.ljh.gamedemo.module.role.dao.RoleStateDao;
 import com.ljh.gamedemo.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,10 +24,10 @@ public class RoleStateCache {
     /**
      * ChatRecordDao
      */
-    private static ChatRecordDao recordDao;
+    private static RoleStateDao roleStateDao;
 
     static {
-        recordDao = SpringUtil.getBean(ChatRecordDao.class);
+        roleStateDao = SpringUtil.getBean(RoleStateDao.class);
     }
 
     /**
@@ -46,7 +47,7 @@ public class RoleStateCache {
      */
     public static void postConstructReadDb(){
 
-        List<RoleState> stateList = recordDao.selectAllRoleState();
+        List<RoleState> stateList = roleStateDao.selectAllRoleState();
         stateList.forEach(s -> {
             cache.put(s.getRoleId(), s);
         });

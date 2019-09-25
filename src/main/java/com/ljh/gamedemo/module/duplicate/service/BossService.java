@@ -1,16 +1,14 @@
 package com.ljh.gamedemo.module.duplicate.service;
 
-import com.ljh.gamedemo.module.duplicate.bean.Boss;
 import com.ljh.gamedemo.module.duplicate.bean.BossSpell;
 import com.ljh.gamedemo.module.duplicate.bean.Duplicate;
 import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
-import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.manager.DuplicateManager;
-import com.ljh.gamedemo.run.dup.BossAoeRun;
-import com.ljh.gamedemo.run.dup.BossDizzinessRun;
-import com.ljh.gamedemo.run.dup.BossDoAttackedRun;
-import com.ljh.gamedemo.run.dup.BossDurationRun;
+import com.ljh.gamedemo.module.base.asyn.run.CustomExecutor;
+import com.ljh.gamedemo.module.duplicate.asyn.DuplicateManager;
+import com.ljh.gamedemo.module.duplicate.asyn.run.BossAoeRun;
+import com.ljh.gamedemo.module.duplicate.asyn.run.BossDizzinessRun;
+import com.ljh.gamedemo.module.duplicate.asyn.run.BossDoAttackedRun;
+import com.ljh.gamedemo.module.duplicate.asyn.run.BossDurationRun;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -39,5 +39,5 @@ public class RoleEquip {
     /**
      * 是否穿上，0：否， 1：穿上
      */
-    private Integer on;
+    private Integer hasOn;
 }

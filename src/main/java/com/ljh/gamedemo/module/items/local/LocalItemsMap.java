@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.items.local;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
 import com.ljh.gamedemo.common.CommodityType;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -19,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
@@ -131,23 +134,21 @@ public class LocalItemsMap {
             // 具体的items实体
             long roleId = roleItems.getRoleId();
 
-            list = roleItemsMap.get(roleId);
-            if (list == null){
-                list = new ArrayList<>();
-            }
+            // 获取当前的物品列表
+            list = Optional.ofNullable(roleItemsMap.get(roleId)).orElse(Lists.newArrayList());
 
             Items items = idItemsMap.get(roleItems.getObjectsId());
-            items.setNum(roleItems.getNum());
-            list.add(items);
+            Items it = new Items();
+            BeanUtils.copyProperties(items, it);
+            it.setId(roleItems.getId());
+            it.setNum(roleItems.getNum());
+            list.add(it);
 
+            // 保存玩家物品缓存信息
             roleItemsMap.put(roleId, list);
 
-
             // itemsId role 关联
-            itemsIdList = roleItemsIdMap.get(roleId);
-            if (itemsIdList == null){
-                itemsIdList = new ArrayList<>();
-            }
+            itemsIdList = Optional.ofNullable(roleItemsIdMap.get(roleId)).orElse(Lists.newArrayList());
             itemsIdList.add(roleItems.getObjectsId());
             roleItemsIdMap.put(roleId, itemsIdList);
         }

@@ -39,9 +39,9 @@ public interface FaceTransDao {
     /**
      * 删除交易记录
      *
-     * @param id        交易d
+     * @param tran      交易信息
      * @return          affected rows
      */
     @Delete("delete from face_trans where id = #{id}")
-    int deleteFaceTrans(int id);
+    int deleteFaceTrans(Transaction tran);
 }

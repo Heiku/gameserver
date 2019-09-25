@@ -88,7 +88,7 @@ public class RewardService {
         // 同时返回给玩家奖励信息
         dupResp = combineDupMsg(dup, equips);
         Channel channel = ChannelCache.getUserIdChannelMap().get(role.getUserId());
-        channel.writeAndFlush(dup);
+        channel.writeAndFlush(dupResp);
     }
 
 
@@ -181,7 +181,7 @@ public class RewardService {
         dupResp = MsgDuplicateProto.ResponseDuplicate.newBuilder()
                 .setResult(ResultCode.SUCCESS)
                 .setContent(ContentType.DUPLICATE_CHALLENGE_SUCCESS)
-                .setType(MsgDuplicateProto.RequestType.DUPLICATE)
+                .setType(MsgDuplicateProto.RequestType.REWARD)
                 .addDuplicate(protoService.transToDuplicate(dup))
                 .addAllEquip(protoService.transToEquipList(equips))
                 .build();

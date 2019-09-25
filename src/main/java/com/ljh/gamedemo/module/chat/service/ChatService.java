@@ -1,14 +1,18 @@
 package com.ljh.gamedemo.module.chat.service;
 
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.chat.asyn.ChatRecordSaveManager;
+import com.ljh.gamedemo.module.chat.asyn.run.ChatRecordSaveRun;
 import com.ljh.gamedemo.module.chat.bean.ChatRecord;
 import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.bean.RoleState;
 import com.ljh.gamedemo.module.role.cache.RoleStateCache;
+import com.ljh.gamedemo.module.role.dao.RoleStateDao;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.MsgChatProto;
 import io.netty.channel.Channel;
@@ -36,6 +40,12 @@ public class ChatService  {
      */
     @Autowired
     private ChatRecordDao recordDao;
+
+    /**
+     * RoleStateDao
+     */
+    @Autowired
+    private RoleStateDao roleStateDao;
 
     /**
      * 协议服务
@@ -154,8 +164,7 @@ public class ChatService  {
         record.setSendTime(new Date());
 
         // 持久DB
-        int n = recordDao.insertChatRecord(record);
-        log.info("insert into chat_record, affected rows: " + n);
+        ChatRecordSaveManager.getExecutorService().submit(new ChatRecordSaveRun(record, CommonDBType.INSERT));
     }
 
 
@@ -226,7 +235,7 @@ public class ChatService  {
         // 获取玩家在线信息
         RoleState state = RoleStateCache.getCache().getIfPresent(toRoleId);
         if (state == null){
-            state = recordDao.selectUserOffline(toRoleId);
+            state = roleStateDao.selectUserOffline(toRoleId);
         }
 
         // 查询历史消息

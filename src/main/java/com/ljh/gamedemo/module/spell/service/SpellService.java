@@ -1,8 +1,12 @@
 package com.ljh.gamedemo.module.spell.service;
 
 import com.google.common.collect.Lists;
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
+import com.ljh.gamedemo.module.spell.asyn.SpellSaveManager;
+import com.ljh.gamedemo.module.spell.asyn.run.RoleSpellSaveRun;
+import com.ljh.gamedemo.module.spell.bean.RoleSpell;
 import com.ljh.gamedemo.module.spell.dao.RoleSpellDao;
 import com.ljh.gamedemo.module.spell.bean.Partner;
 import com.ljh.gamedemo.module.role.bean.Role;
@@ -120,8 +124,8 @@ public class SpellService {
         }
 
         // 更新数据库技能信息
-        int n = roleSpellDao.insertRoleSpell(role.getRoleId(), spellId);
-        log.info("insert into role_spell, affected rows: " + n);
+        RoleSpell rs = new RoleSpell(role.getRoleId(), spellId);
+        SpellSaveManager.getExecutorService().submit(new RoleSpellSaveRun(rs, CommonDBType.INSERT));
 
         // 更新缓存技能信息
         List<Spell> spellList = Optional.ofNullable(LocalSpellMap.getRoleSpellMap().get(role.getRoleId()))

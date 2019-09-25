@@ -27,13 +27,13 @@ import com.ljh.gamedemo.proto.protoc.MsgSpellProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.run.CustomExecutor;
-import com.ljh.gamedemo.run.manager.DuplicateManager;
-import com.ljh.gamedemo.run.manager.UserExecutorManager;
-import com.ljh.gamedemo.run.dup.BossBeAttackedRun;
-import com.ljh.gamedemo.run.dup.BossBeAttackedScheduleRun;
-import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.run.user.UserDeclineMpRun;
+import com.ljh.gamedemo.module.base.asyn.run.CustomExecutor;
+import com.ljh.gamedemo.module.duplicate.asyn.DuplicateManager;
+import com.ljh.gamedemo.module.user.asyn.UserExecutorManager;
+import com.ljh.gamedemo.module.duplicate.asyn.run.BossBeAttackedRun;
+import com.ljh.gamedemo.module.duplicate.asyn.run.BossBeAttackedScheduleRun;
+import com.ljh.gamedemo.module.base.asyn.run.FutureMap;
+import com.ljh.gamedemo.module.role.asyn.run.UserDeclineMpRun;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.role.service.RoleAttrService;
 import io.netty.channel.Channel;
@@ -437,7 +437,7 @@ public class DuplicateService {
         doBossAttacked(nowDup);
 
         // 消息返回
-        sendCommonMsg(channel, ContentType.DUPLICATE_LEAVE_SUCCESS);
+        sendCommonMsg(channel, ContentType.DUPLICATE_LEAVE_BOSS);
     }
 
 
@@ -474,6 +474,9 @@ public class DuplicateService {
 
         // 销毁副本
         destroyDupSource(role, dup);
+
+        // 消息返回
+        protoService.sendCommonMsg(channel, ContentType.DUPLICATE_LEAVE_SUCCESS);
     }
 
 

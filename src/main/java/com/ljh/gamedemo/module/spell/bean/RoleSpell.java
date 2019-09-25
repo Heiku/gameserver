@@ -1,6 +1,8 @@
 package com.ljh.gamedemo.module.spell.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 玩家技能关联
@@ -10,6 +12,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleSpell {
 
     /**

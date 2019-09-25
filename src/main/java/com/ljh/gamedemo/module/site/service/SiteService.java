@@ -4,15 +4,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.role.dao.UserRoleDao;
 import com.ljh.gamedemo.module.site.bean.Site;
 import com.ljh.gamedemo.module.site.local.LocalSiteMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
-import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.proto.protoc.MsgSiteInfoProto;
-import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
 import io.netty.channel.Channel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

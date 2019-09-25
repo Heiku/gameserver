@@ -1,14 +1,14 @@
 package com.ljh.gamedemo.module.task.service;
 
 import com.google.common.collect.Lists;
-import com.ljh.gamedemo.common.ContentType;
-import com.ljh.gamedemo.common.EmailType;
-import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.common.TaskState;
+import com.ljh.gamedemo.common.*;
 import com.ljh.gamedemo.module.base.cache.ChannelCache;
 import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.email.service.EmailService;
 import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.role.service.RoleService;
+import com.ljh.gamedemo.module.task.asyn.TaskSaveManager;
+import com.ljh.gamedemo.module.task.asyn.run.TaskSaveRun;
 import com.ljh.gamedemo.module.task.bean.RoleTask;
 import com.ljh.gamedemo.module.task.bean.Task;
 import com.ljh.gamedemo.module.task.cache.TaskCache;
@@ -50,6 +50,11 @@ public class TaskService {
     @Autowired
     private EmailService emailService;
 
+    /**
+     * 玩家服务
+     */
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 协议服务
@@ -255,8 +260,7 @@ public class TaskService {
         roleTask.setModifyTime(new Date());
 
         // 持久DB
-        int n = taskDao.insertTask(roleTask);
-        log.info("insert into role_task, affected rows: " + n);
+        TaskSaveManager.getExecutorService().submit(new TaskSaveRun(roleTask, CommonDBType.INSERT));
 
         // 缓存本地
         List<RoleTask> tasks = Optional.ofNullable(TaskCache.getRoleProcessTaskMap().get(role.getRoleId()))
@@ -291,6 +295,10 @@ public class TaskService {
         // 获取具体的任务信息
         Task t = TaskCache.getIdTaskMap().get(task.getTaskId());
 
+        // 更新玩家金币值
+        role.setGold(t.getGold());
+        roleService.updateRoleInfo(role);
+
         // 任务奖励发放
         emailService.sendEmail(role, t.getGoods(), EmailType.TASK_REWARD);
     }
@@ -308,8 +316,7 @@ public class TaskService {
         task.setProgress(state);
         task.setModifyTime(new Date());
 
-        int n = taskDao.updateTask(task);
-        log.info("update role_task, affected rows: " + n);
+        TaskSaveManager.getExecutorService().submit(new TaskSaveRun(task, CommonDBType.UPDATE));
 
         // 移除本地缓存中的信息
         if (state == TaskState.TASK_ALL_FINISH || state == TaskState.TASK_DISCARD){

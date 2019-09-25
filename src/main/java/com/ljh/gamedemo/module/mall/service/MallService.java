@@ -1,25 +1,27 @@
 package com.ljh.gamedemo.module.mall.service;
 
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.items.bean.Items;
-import com.ljh.gamedemo.module.mall.dao.MallOrderDao;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.email.bean.EmailGoods;
 import com.ljh.gamedemo.module.email.service.EmailService;
 import com.ljh.gamedemo.module.equip.bean.Equip;
+import com.ljh.gamedemo.module.items.bean.Items;
+import com.ljh.gamedemo.module.mall.asyn.MallSaveManager;
+import com.ljh.gamedemo.module.mall.asyn.run.MallOrderSaveRun;
 import com.ljh.gamedemo.module.mall.bean.Commodity;
 import com.ljh.gamedemo.module.mall.bean.MallOrder;
-import com.ljh.gamedemo.module.role.dao.UserRoleDao;
-import com.ljh.gamedemo.module.mall.tmp.MallBuyTimes;
+import com.ljh.gamedemo.module.mall.cache.MallBuyCache;
+import com.ljh.gamedemo.module.mall.dao.MallOrderDao;
 import com.ljh.gamedemo.module.mall.local.LocalCommodityMap;
+import com.ljh.gamedemo.module.mall.tmp.MallBuyTimes;
+import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.service.RoleService;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
-import com.ljh.gamedemo.module.mall.cache.MallBuyCache;
 import com.ljh.gamedemo.proto.protoc.CommodityProto;
 import com.ljh.gamedemo.proto.protoc.MsgMallProto;
-import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.base.service.ProtoService;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -41,18 +43,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class MallService {
-
-    /**
-     * RoleDao
-     */
-    @Autowired
-    private UserRoleDao roleDao;
-
-    /**
-     * MallOrderDao
-     */
-    @Autowired
-    private MallOrderDao orderDao;
 
     /**
      * 玩家服务
@@ -209,7 +199,7 @@ public class MallService {
 
         // 生成订单，并存入Db 中
         MallOrder order = generateOrder(role, c, num);
-        orderDao.insertMallOrder(order);
+        MallSaveManager.getExecutorService().submit(new MallOrderSaveRun(order, CommonDBType.INSERT));
 
         // 异步发送邮件通知
         sendCommodityEmail(role, order, EmailType.BUY);

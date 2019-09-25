@@ -16,6 +16,7 @@ enum RequestType{
     SPELL = 3;
     STOP = 4;
     LEAVE = 5;
+    REWARD = 6;
 }
 
 message RequestDuplicate{

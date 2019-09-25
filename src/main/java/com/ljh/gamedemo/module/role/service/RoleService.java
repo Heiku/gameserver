@@ -1,30 +1,34 @@
 package com.ljh.gamedemo.module.role.service;
 
 import com.google.common.collect.Lists;
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.chat.dao.ChatRecordDao;
-import com.ljh.gamedemo.module.group.service.GroupService;
-import com.ljh.gamedemo.module.role.bean.RoleBuff;
+import com.ljh.gamedemo.module.base.cache.ChannelCache;
+import com.ljh.gamedemo.module.base.service.ProtoService;
 import com.ljh.gamedemo.module.creep.local.LocalAttackCreepMap;
+import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
+import com.ljh.gamedemo.module.group.service.GroupService;
+import com.ljh.gamedemo.module.role.asyn.RoleSaveManager;
+import com.ljh.gamedemo.module.role.asyn.run.RoleSaveRun;
+import com.ljh.gamedemo.module.role.asyn.run.RoleStateSaveRun;
+import com.ljh.gamedemo.module.role.bean.Role;
+import com.ljh.gamedemo.module.role.bean.RoleBuff;
+import com.ljh.gamedemo.module.role.bean.RoleInit;
 import com.ljh.gamedemo.module.role.bean.RoleState;
+import com.ljh.gamedemo.module.role.cache.RoleBuffCache;
 import com.ljh.gamedemo.module.role.cache.RoleStateCache;
+import com.ljh.gamedemo.module.role.dao.RoleStateDao;
+import com.ljh.gamedemo.module.role.dao.UserRoleDao;
 import com.ljh.gamedemo.module.role.local.LocalRoleInitMap;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
-import com.ljh.gamedemo.module.base.cache.ChannelCache;
-import com.ljh.gamedemo.module.role.cache.RoleBuffCache;
-import com.ljh.gamedemo.module.role.dao.UserRoleDao;
-import com.ljh.gamedemo.module.role.bean.Role;
-import com.ljh.gamedemo.module.role.bean.RoleInit;
 import com.ljh.gamedemo.module.user.service.UserService;
 import com.ljh.gamedemo.proto.protoc.MsgRoleProto;
 import com.ljh.gamedemo.proto.protoc.MsgUserInfoProto;
-import com.ljh.gamedemo.run.manager.UserExecutorManager;
-import com.ljh.gamedemo.run.db.UpdateRoleInfoRun;
-import com.ljh.gamedemo.module.duplicate.service.DuplicateService;
-import com.ljh.gamedemo.module.base.service.ProtoService;
-import com.ljh.gamedemo.run.record.FutureMap;
-import com.ljh.gamedemo.run.user.RecoverUserRun;
+import com.ljh.gamedemo.module.role.asyn.run.UpdateRoleInfoRun;
+import com.ljh.gamedemo.module.user.asyn.UserExecutorManager;
+import com.ljh.gamedemo.module.base.asyn.run.FutureMap;
+import com.ljh.gamedemo.module.role.asyn.run.RecoverUserRun;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +58,7 @@ public class RoleService {
      * recordDao
      */
     @Autowired
-    private ChatRecordDao recordDao;
+    private RoleStateDao roleStateDao;
 
     /**
      * 用户服务
@@ -258,8 +262,7 @@ public class RoleService {
         r.setAlive(1);
 
         // 插入数据库
-        int n = roleDao.insertUserRole(r);
-        log.info("insert into user_role, affect rows : " + n);
+        RoleSaveManager.getExecutorService().submit(new RoleSaveRun(r, CommonDBType.INSERT));
 
         // 更新缓存
         LocalUserMap.getIdRoleMap().put(r.getRoleId(), r);
@@ -482,7 +485,7 @@ public class RoleService {
         // cache not found
         if (record == null){
             // 缓存为空，直接Db中查找
-            record = recordDao.selectUserOffline(role.getRoleId());
+            record = roleStateDao.selectUserOffline(role.getRoleId());
 
             // db not found
             if (record == null){
@@ -498,7 +501,7 @@ public class RoleService {
                 }
 
                 // 插入新增记录
-                recordDao.insertUserState(state);
+                RoleSaveManager.getExecutorService().submit(new RoleStateSaveRun(state, CommonDBType.INSERT));
                 RoleStateCache.getCache().put(role.getRoleId(), state);
                 return;
             }else{
@@ -508,7 +511,7 @@ public class RoleService {
                 }else {
                     record.setOfflineTime(date);
                 }
-                recordDao.updateUserState(record);
+                RoleSaveManager.getExecutorService().submit(new RoleStateSaveRun(record, CommonDBType.UPDATE));
             }
         }else {
             if (line) {
@@ -516,7 +519,7 @@ public class RoleService {
             } else {
                 record.setOfflineTime(date);
             }
-            recordDao.updateUserState(record);
+            RoleSaveManager.getExecutorService().submit(new RoleStateSaveRun(record, CommonDBType.UPDATE));
         }
         RoleStateCache.getCache().put(role.getRoleId(), record);
     }

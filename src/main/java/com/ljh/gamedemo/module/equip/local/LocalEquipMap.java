@@ -1,5 +1,6 @@
 package com.ljh.gamedemo.module.equip.local;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
 import com.ljh.gamedemo.module.equip.bean.RoleEquip;
@@ -20,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ljh.gamedemo.util.ExcelUtil.formatWorkBook;
 import static com.ljh.gamedemo.util.ExcelUtil.getValue;
@@ -143,10 +145,7 @@ public class LocalEquipMap {
             Equip equip = roleEquipToEquip(re);
 
             long roleId = re.getRoleId();
-            List<Equip> list = roleEquipMap.get(roleId);
-            if (list == null){
-                list = new ArrayList<>();
-            }
+            List<Equip> list = Optional.ofNullable(roleEquipMap.get(roleId)).orElse(Lists.newArrayList());
             list.add(equip);
 
             roleEquipMap.put(roleId, list);
@@ -193,7 +192,7 @@ public class LocalEquipMap {
         equip.setId(re.getId());
         equip.setDurability(re.getDurability());
         equip.setState(re.getState());
-        equip.setHasOn(re.getOn());
+        equip.setHasOn(re.getHasOn());
 
         return equip;
     }

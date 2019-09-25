@@ -21,12 +21,11 @@ public interface RoleSpellDao {
     /**
      * 插入玩家的技能信息
      *
-     * @param roleId        玩家id
-     * @param spellId       技能id
+     * @param rs            玩家技能信息
      * @return              affected rows
      */
     @Insert("insert into role_spell(role_id, spell_id) values (#{roleId}, #{spellId})")
-    int insertRoleSpell(long roleId, int spellId);
+    int insertRoleSpell(RoleSpell rs);
 
 
     /**

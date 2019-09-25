@@ -1,22 +1,25 @@
 package com.ljh.gamedemo.module.email.service;
 
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.common.ContentType;
 import com.ljh.gamedemo.common.EmailType;
 import com.ljh.gamedemo.common.ResultCode;
-import com.ljh.gamedemo.module.email.dao.EmailGoodsDao;
-import com.ljh.gamedemo.module.email.dao.RoleEmailDao;
+import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.email.asyn.EmailSaveManager;
+import com.ljh.gamedemo.module.email.asyn.run.RoleEmailSaveRun;
 import com.ljh.gamedemo.module.email.bean.Email;
 import com.ljh.gamedemo.module.email.bean.EmailGoods;
+import com.ljh.gamedemo.module.email.dao.EmailGoodsDao;
+import com.ljh.gamedemo.module.email.dao.RoleEmailDao;
 import com.ljh.gamedemo.module.goods.bean.Goods;
-import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.goods.local.LocalGoodsMap;
+import com.ljh.gamedemo.module.goods.service.GoodsService;
+import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.user.local.LocalUserMap;
 import com.ljh.gamedemo.proto.protoc.EmailProto;
 import com.ljh.gamedemo.proto.protoc.MsgEmailProto;
-import com.ljh.gamedemo.run.db.SendEmailRun;
-import com.ljh.gamedemo.run.manager.SendEmailManager;
-import com.ljh.gamedemo.module.goods.service.GoodsService;
-import com.ljh.gamedemo.module.base.service.ProtoService;
+import com.ljh.gamedemo.module.email.asyn.run.SendEmailRun;
+import com.ljh.gamedemo.module.email.asyn.SendEmailManager;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,9 +148,9 @@ public class EmailService {
         email = emailDao.selectEmailById(eid);
         email.setState(1);
         email.setModifyTime(new Date());
-        int n = emailDao.updateEmail(email);
-        log.info("update email, affected rows: " + n);
+        EmailSaveManager.getExecutorService().submit(new RoleEmailSaveRun(email, CommonDBType.UPDATE));
 
+        // 消息返回
         responseSuccess(channel, ContentType.EMAIL_RECEIVE_SUCCESS);
     }
 

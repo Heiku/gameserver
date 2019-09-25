@@ -55,6 +55,6 @@ public interface RoleItemsDao {
      * @param itemId        物品信息
      * @return              affected rows
      */
-    @Delete("delete role_objects where role_id = #{roleId} and objects_id = #{itemId}")
+    @Delete("delete from role_objects where role_id = #{roleId} and objects_id = #{itemId}")
     int deleteItem(long roleId, long itemId);
 }

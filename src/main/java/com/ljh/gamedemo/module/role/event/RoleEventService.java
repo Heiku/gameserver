@@ -1,11 +1,14 @@
 package com.ljh.gamedemo.module.role.event;
 
+import com.ljh.gamedemo.common.CommonDBType;
 import com.ljh.gamedemo.module.base.event.OfflineEvent;
 import com.ljh.gamedemo.module.event.BaseEvent;
+import com.ljh.gamedemo.module.role.asyn.RoleSaveManager;
+import com.ljh.gamedemo.module.role.asyn.run.RoleSaveRun;
 import com.ljh.gamedemo.module.role.bean.Role;
 import com.ljh.gamedemo.module.role.dao.UserRoleDao;
 import com.ljh.gamedemo.module.role.service.RoleService;
-import com.ljh.gamedemo.run.record.FutureMap;
+import com.ljh.gamedemo.module.base.asyn.run.FutureMap;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +58,8 @@ public class RoleEventService {
         // 获取事件参数信息
         Role role = baseEvent.getRole();
 
-        int n = userRoleDao.updateRoleSiteInfo(role);
-        log.info("update role info, affected rows: " + n);
+        // 数据库持久
+        RoleSaveManager.getExecutorService().submit(new RoleSaveRun(role, CommonDBType.UPDATE));
 
         // 同时，取消玩家的自动恢复任务
         ScheduledFuture future = FutureMap.getRecoverFutureMap().get(role.getRoleId());
